@@ -2247,5 +2247,41 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "recurring_issue_series": [
+    "id",
+    "workspace_id",
+    "configuring_operator_id",
+    "team_id",
+    "template_id",
+    "template_version",
+    "name",
+    "timezone",
+    "starts_on",
+    "next_on",
+    "due_offset_days",
+    "skip_while_open",
+    "overrides_json",
+    "state",
+    "version",
+    "last_issue_id",
+    "last_error",
+    "created_at",
+    "updated_at"
+  ],
+  "recurring_issue_occurrences": [
+    "series_id",
+    "due_on",
+    "scheduled_at",
+    "template_id",
+    "template_version",
+    "outcome",
+    "issue_id",
+    "child_ids_json",
+    "error",
+    "created_at"
+  ],
+  "recurring_issue_activations": [
+    "series_id"
   ]
 }

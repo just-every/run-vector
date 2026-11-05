@@ -21,6 +21,7 @@ export function decide(actor: Authority, question: Question): Decision {
   const cell = matrix[question.row].cells[actor.role]
   if (teamCells.includes(cell) && teams !== undefined && teams !== null) {
     const every = (test: (standing: TeamStanding | undefined) => boolean) => teams.length > 0 && teams.every(team => test(actor.teams.get(team)))
+    if (cell === 'member-teams') return every(standing => !!standing?.role) ? 'allow' : 'forbidden'
     if (cell === 'invited-teams') return every(standing => !!standing?.role) ? 'allow' : 'hidden'
     if (cell === 'team-owner') return every(standing => standing?.role === 'owner') ? 'allow' : 'forbidden'
     return every(standing => manages(standing, cell === 'team-setting' ? 'settings' : 'planning')) ? 'allow' : 'forbidden'
@@ -31,7 +32,7 @@ export function decide(actor: Authority, question: Question): Decision {
   if (cell === 'member-invites') return question.invitation === true && actor.memberInvites ? 'allow' : 'forbidden'
   return cell === 'no' ? 'forbidden' : 'allow'
 }
-const teamCells: Cell[] = ['invited-teams', 'team-owner', 'team-setting', 'planning-setting']
+const teamCells: Cell[] = ['member-teams', 'invited-teams', 'team-owner', 'team-setting', 'planning-setting']
 const manages = (standing: TeamStanding | undefined, permission: 'settings' | 'planning') =>
   standing?.role === 'owner' || (standing?.role === 'member' && standing[permission] === 'all_members')
 

@@ -1,3 +1,4 @@
+import {runRecurringIssues} from '../../src/core/features/recurring-issues/scheduler';
 import {mentionToken} from '../../src/core/features/notifications/mention-token';
 import { auditSchema } from '../../src/core/features/audit/schema';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -63,6 +64,13 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const dashboardCreated=await f.call('/dashboards','POST',{name:'synthetic-vector-35',widgets:[{name:'Portable count',kind:'count',filters:{q:f.issue.identifier},chart:{}}]});expect(dashboardCreated.status).toBe(201);const portableDashboard=await dashboardCreated.json() as {id:string;widgets:unknown[]};
  const templateCreated=await f.call('/project-templates','POST',{name:'synthetic-vector-69',description:'Portable structure',cadence:'Weekly',milestones:[{name:'Launch',offsetDays:7}],labels:['synthetic-vector-70'],issues:[{title:'synthetic-vector-71',startOffsetDays:1,offsetDays:3,milestonePosition:0}]});expect(templateCreated.status).toBe(201);const portableTemplate=await templateCreated.json() as {id:string};
  const issueTemplateResponse=await f.call('/issue-templates','POST',{name:'synthetic-vector-1615',teamId:f.team.id,defaults:{title:'synthetic-vector-1616',description:'## Portable bug',priority:'high'},subissues:[{title:'synthetic-vector-1617'},{title:'synthetic-vector-1618'}]});expect(issueTemplateResponse.status).toBe(201);const portableIssueTemplate=await issueTemplateResponse.json() as any;
+ const recurringResponse=await f.call('/recurring-issues','POST',{name:'synthetic-vector-1720',teamId:f.team.id,templateId:portableIssueTemplate.id,templateVersion:1,cadence:'weekly',startsOn:'2033-01-03',skipWhileOpen:true});
+ expect(recurringResponse.status,await recurringResponse.clone().text()).toBe(201);const portableRecurring=await recurringResponse.json() as any;
+ await runRecurringIssues({DB:env.DB},new Date('2033-01-03T00:00:00Z'));
+ const recurringBefore=await (await f.call('/recurring-issues/'+portableRecurring.id)).json() as any;
+ expect(recurringBefore.history).toMatchObject([{outcome:'created',issue:{title:'synthetic-vector-1616'},children:expect.arrayContaining([expect.objectContaining({title:'synthetic-vector-1617'}),expect.objectContaining({title:'synthetic-vector-1618'})])}]);
+ const recurringTables=['recurring_issue_series','recurring_issue_occurrences'];
+ const recurringRows=await Promise.all(recurringTables.map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
  const referenceResponse=await f.call('/issues','POST',{teamId:f.team.id,title:'Portable reference source',description:'See '+f.issue.identifier});expect(referenceResponse.status).toBe(201);const referenceSource=await referenceResponse.json() as {identifier:string};
  const referenceBefore=await (await f.call('/issues/'+referenceSource.identifier+'/references')).json();
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
@@ -179,6 +187,11 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT parent_comment_id,body,deleted_at FROM issue_comments WHERE id=?').bind(replyComment).first()).toMatchObject({parent_comment_id:rootComment,body:null,deleted_at:expect.any(String)});
  const restoredIssueTemplate=await targetCall('/api/issue-templates/'+portableIssueTemplate.id,'GET',undefined,historical);expect(restoredIssueTemplate.status).toBe(200);expect(await restoredIssueTemplate.json()).toEqual(portableIssueTemplate);
 
+ expect(await Promise.all(recurringTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(recurringRows);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM recurring_issue_activations').first('n')).toBe(0);
+ const restoredRecurring=await targetCall('/api/recurring-issues/'+portableRecurring.id,'GET',undefined,historical);expect(restoredRecurring.status).toBe(200);
+ expect(await restoredRecurring.json()).toEqual({...recurringBefore,restoreHeld:true});
+
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
  const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
  expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);
@@ -272,6 +285,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision')).toBe(subscriptionRevision);
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT subscription_revision FROM vector_restore_status WHERE id=1').first<number>('subscription_revision')).toBe(subscriptionRevision);
  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
+ const recurringIssueCount=await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM issues').first('n');
+ await runRecurringIssues(targetBindings,new Date('2034-01-10T00:00:00Z'));
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM issues').first('n')).toBe(recurringIssueCount);
+ expect(await Promise.all(recurringTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(recurringRows);
  const reportAfter=(await (await targetCall('/api/settings/report-exports','GET',undefined,historical)).json() as any).schedules.find((row:any)=>row.id===reportProfile.id);
  expect(reportAfter).toMatchObject({requiresReentry:true,enabled:true,kind:'bucket',configuration:{team:f.team.id}});
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_report_export_runs WHERE export_id=? ORDER BY id').bind(reportProfile.id).all()).results).toEqual(reportRuns);

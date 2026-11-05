@@ -110,7 +110,17 @@ const issueTemplateDoors: Door[] = [
   ...(['POST','PUT','DELETE'] as const).map((method):Door=>({method,path:method==='POST'?'/issue-templates':'/issue-templates/:id',row:templateManagement,teams:templateTeam})),
 ]
 
+const recurringTeam: Resolve<string[] | null> = async request => {
+  if(!request.params.id)return bodyTeam(request)
+  const row=await request.db.prepare('SELECT s.team_id FROM recurring_issue_series s JOIN operators o ON o.workspace_id=s.workspace_id AND o.id=? WHERE s.id=?').bind(request.actor,request.params.id).first<{team_id:string}>()
+  return row?teamsOf(request.db,request.actor,[row.team_id]):null
+}
+
 export const doors: Door[] = [
+  {method:'GET',path:'/recurring-issues',row:null,page:'account'},
+  {method:'GET',path:'/recurring-issues/:id',row:null,page:'account'},
+  {method:'POST',path:'/recurring-issues',row:'recurring.manage',teams:recurringTeam},
+  {method:'PATCH',path:'/recurring-issues/:id',row:'recurring.manage',teams:recurringTeam},
   {method:'GET',path:'/settings/report-exports',row:'reports.export'},
   {method:'POST',path:'/settings/report-exports',row:'reports.export'},
   {method:'PATCH',path:'/settings/report-exports/:id',row:'reports.export'},

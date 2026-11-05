@@ -1,3 +1,4 @@
+import {runRecurringIssues} from '../features/recurring-issues/scheduler';
 import {processSubscriptionQueue} from '../features/subscriptions/process';
 import { runReportExports } from '../features/report-exports/scheduled';
 import { captureDailyReports } from "../features/project-report/capture";
@@ -32,6 +33,7 @@ export async function scheduled(
     runHousekeeping(env, now),
     settleInterruptedEmailIntake(env, now),
   ]);
+  await runRecurringIssues(env,now);
   await processSubscriptionQueue(env);
   // Route notifications after scheduled Inbox producers finish, including SQL automation.
   await drainNotificationMail(env, { scheduled: true, now });

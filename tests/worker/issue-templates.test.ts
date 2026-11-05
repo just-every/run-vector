@@ -1,3 +1,4 @@
+import {recurringIssuesJourney} from './recurring-issues-journey'
 import { it,expect } from 'vitest'
 import { env } from 'cloudflare:workers'
 import { beforeCommit } from './removal-interleaving'
@@ -127,4 +128,5 @@ it('[ISSUE-016 ROLE-009] native and scoped templates create an atomic issue grap
   await unchanged(()=>api('/issue-templates'),401)
   expect((await f.call('/issue-templates/'+template.id,'DELETE',{expectedVersion:3})).status).toBe(200)
   expect((await f.call('/issues/'+native.identifier)).status).toBe(200)
+  await recurringIssuesJourney()
 },90000)

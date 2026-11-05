@@ -17,7 +17,7 @@ export type AssignableRole = typeof assignableRoles[number]
  * - lead: the subject project's lead
  * - approved-initiative: the feature admits only an initiative the member may edit, bound to a
  *   destination an Owner or Admin approved for that initiative (INIT-001) */
-export type Cell = 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'member-team-creation' | 'own' | 'lead' | 'approved-initiative'
+export type Cell = 'member-teams' | 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'member-team-creation' | 'own' | 'lead' | 'approved-initiative'
 type Row = { action: string; cells: Record<Role, Cell> }
 const row = (action: string, owner: Cell, admin: Cell, member: Cell, guest: Cell, viewer: Cell = 'no'): Row => ({ action, cells: { owner, admin, member, guest, viewer } })
 
@@ -63,6 +63,7 @@ export const matrix = {
   'sources.manage': row('Register, rotate or revoke a signal source and its signing secret (INTAKE-011)', 'yes', 'yes', 'no', 'no'),
   'issue-templates.workspace': row('Create, edit or delete workspace issue and project templates (ISSUE-016, PROJ-012)', 'yes', 'yes', 'no', 'no'),
   'issue-templates.team': row('Create, edit or delete a team\'s issue and project templates (ISSUE-016, PROJ-012)', 'yes', 'yes', 'planning-setting', 'no'),
+  'recurring.manage': row('Create, pause or end a recurring issue (AUTO-001)', 'yes', 'yes', 'member-teams', 'no'),
   'cycles.manage': row('Create, edit, complete or delete a cycle (CYCLE-001)', 'yes', 'yes', 'planning-setting', 'no'),
   'cycles.schedule': row('Set a team\'s cycle schedule (ROLE-007/ROLE-009; CYCLE-007 action)', 'yes', 'yes', 'planning-setting', 'no'),
   'cycles.commit': row('Commit, move or uncommit an issue in a cycle (CYCLE-002)', 'yes', 'yes', 'teams', 'invited-teams'),

@@ -16,6 +16,22 @@ import { templateCreateSchema } from './schema'
  * The browser applies defaults only to controls that are still empty. */
 export async function createIssueFromRequest(db:D1Database,actor:string,raw:unknown,now=new Date(),onCommitted?:()=>Promise<unknown>) {
   if(!raw||typeof raw!=='object'||!('templateId' in raw))return createIssue(db,actor,createIssueInputSchema.parse(raw),now,onCommitted)
+  const plan=await planIssueFromTemplate(db,actor,raw,now)
+  db=plan.db
+  const {writes,parent}=plan
+  try { await db.batch(writes) } catch(error) {
+    if(isMutationAccessError(error))throw error
+    const current=await readTemplate(db,actor,plan.templateId)
+    if(current.version!==plan.templateVersion)throw new SettingsError('stale_template','Template changed. Choose it again before creating.',409)
+    return creationError(db,plan.teamId,error)
+  }
+  const [issue]=await Promise.all([getIssueDetail(db,parent.identifier,now),onCommitted?.()])
+  if(!issue)throw new Error('Created issue is unavailable.')
+  return issue
+}
+
+/** Validated native graph plan; callers commit their own receipt in this same batch. */
+export async function planIssueFromTemplate(db:D1Database,actor:string,raw:unknown,now=new Date()) {
   const {templateId,templateVersion,...typed}=templateCreateSchema.parse(raw)
   const template=await readTemplate(db,actor,templateId)
   if(template.version!==templateVersion)throw new SettingsError('stale_template','Template changed. Choose it again before creating.',409)
@@ -33,13 +49,5 @@ export async function createIssueFromRequest(db:D1Database,actor:string,raw:unkn
   )
   writes.push(db.prepare("INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at) VALUES(?,?,?,'issue.template_applied',?,?,?)").bind(createUlid(now),parent.issueId,actor,JSON.stringify({templateId,templateVersion}),at,at))
   if(plans.length>1)writes.push(reconcileParent(db,parent.issueId,at))
-  try { await db.batch(writes) } catch(error) {
-    if(isMutationAccessError(error))throw error
-    const current=await readTemplate(db,actor,templateId)
-    if(current.version!==templateVersion)throw new SettingsError('stale_template','Template changed. Choose it again before creating.',409)
-    return creationError(db,typed.teamId,error)
-  }
-  const [issue]=await Promise.all([getIssueDetail(db,parent.identifier,now),onCommitted?.()])
-  if(!issue)throw new Error('Created issue is unavailable.')
-  return issue
+  return {db,writes,parent,children:plans.slice(1),templateId,templateVersion,teamId:typed.teamId}
 }

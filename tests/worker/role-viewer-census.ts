@@ -1,3 +1,4 @@
+import {seriesInputSchema,stopInputSchema} from '../../src/core/features/recurring-issues/schema';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -87,6 +88,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
  const template=await call(member,'/project-templates','POST',templateInput);
  const issueTemplateInput=issueTemplateInputSchema.parse({name:'synthetic-vector-1653',teamId:w.team.id,defaults:{title:'synthetic-vector-1654'},subissues:[{title:'synthetic-vector-1655'},{title:'synthetic-vector-1656'}]});
  const issueTemplate=await call(member,'/issue-templates','POST',issueTemplateInput);
+ const recurringInput=seriesInputSchema.parse({name:'synthetic-vector-1724',teamId:w.team.id,templateId:issueTemplate.id,templateVersion:issueTemplate.version,cadence:'weekly',startsOn:'2099-01-05'});
+ const recurring=await call(member,'/recurring-issues','POST',recurringInput);
  const dashboardInput={name:'synthetic-vector-31019',teamId:w.team.id,widgets:[{name:'synthetic-vector-31020',kind:'count',filters:{team:w.team.id},chart:{}}]};
  const dashboard=await call(member,'/dashboards','POST',dashboardInput);
  const document=await call(owner,'/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31100',body:'synthetic-vector-31100'});
@@ -158,6 +161,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const native=(method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>add('native',method,route,body,params,path);
   const reportExport=await call(owner,'/settings/report-exports','POST',bucketScheduleInput);
   native('POST','/settings/report-exports',bucketScheduleInput);
+  native('POST','/recurring-issues',recurringInput);
+  native('PATCH','/recurring-issues/:id',{expectedVersion:recurring.version,state:'paused'},{id:recurring.id});
   native('PATCH','/settings/report-exports/:id',{expectedVersion:1,enabled:true,consent:true},{id:reportExport.id});
   native('DELETE','/settings/report-exports/:id',undefined,{id:reportExport.id});
   const both=(method:Door['method'],nativePath:string,bearerPath:string,body:unknown,params:Record<string,string>={})=>{add('native',method,nativePath,body,params);add('bearer',method,bearerPath,body,params);};
@@ -234,6 +239,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   // Validate the administration/resource family bodies with the same schemas
   // their handlers use, independently of the role gate's early refusal.
   const schemas:Record<string,{parse(input:unknown):unknown}>={
+   'POST /recurring-issues':seriesInputSchema,
+   'PATCH /recurring-issues/:id':stopInputSchema,
    'POST /settings/report-exports':createSchedule,
    'PATCH /settings/report-exports/:id':changeSchedule,
    'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,
