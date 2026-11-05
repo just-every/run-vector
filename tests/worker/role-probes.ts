@@ -141,6 +141,14 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "intake.decide": { session: async (_who, actor) => {
       const intake = await json<Issue>(owner.call("/intake", "POST", { title: `Decision ${unique()}`, teamId: w.team.id }));
       return () => actor.call(`/issues/${intake.identifier}/decline`, "POST", { expectedVersion: intake.version, reason: "Not ours" }); } },
+    "triage-routing.workspace": { session: async (_who, actor) => {
+      const path = '/settings/triage-routing', config = await json<{version:number}>(owner.call(path));
+      return () => actor.call(path, 'PUT', {expectedVersion:config.version,rules:[]});
+    } },
+    "triage-routing.team": { permission: 'settings', session: async (_who, actor, team) => {
+      const path = `/settings/teams/${team}/triage-routing`, config = await json<{version:number}>(owner.call(path));
+      return () => actor.call(path, 'PUT', {expectedVersion:config.version,rules:[]});
+    } },
     "sources.manage": { session: async (_who, actor) => () => actor.call("/settings/integrations/sources", "POST", { sourceId: `probe-source-${unique()}`, name: "Probe source", teamId: w.team.id }) },
     "issue-templates.workspace": {
       session:async(_who,actor)=>()=>actor.call('/issue-templates','POST',{name:'synthetic-vector-'+(1650+unique()),teamId:null,defaults:{title:'synthetic-vector-1650'},subissues:[{title:'synthetic-vector-1651'},{title:'synthetic-vector-1652'}]}),

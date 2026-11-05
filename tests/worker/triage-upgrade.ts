@@ -12,7 +12,7 @@ const addedAfterBoundary: Record<string, Record<string, unknown>> = {
 };
 /** A populated prior head retains every value, including queued candidates and mutes. */
 export async function triageUpgrade() {
-  const db = env.ARCHIVE_TARGET_DB,
+  const db = (env as unknown as { TRIAGE_UPGRADE_DB: D1Database }).TRIAGE_UPGRADE_DB,
     migrations = inject("migrations"),
     boundary = migrations.findIndex(
       (m) => m.name === "0121_triage_responsibility.sql",

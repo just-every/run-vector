@@ -523,6 +523,10 @@
     {
       "source": "ADOPTING.md",
       "reason": "Contributor instructions for dependency-key schema and private installation custody; not an installed application guide."
+    },
+    {
+      "source": "docs/TRIAGE-ROUTING.md",
+      "reason": "Contributor reference for Sentry routing API configuration and custody; rendered routing settings remain unimplemented."
     }
   ]
 }

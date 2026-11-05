@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8c01937a662d1ff3c78a19636b82b555d8be3eaefc4eaa8eb14293e2a2c6cc32",
+      "sha256": "de8e3f035b7d9c528a0c205ec1b63b7f73724daf1b3ff81e1d6f5395835010f7",
       "executable": false
     },
     "DEMO.md": {
@@ -722,11 +722,11 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "100a46fa820787ca980ae440e84587a93dad3cdac832cbbb907a72721aeeafb7",
+      "sha256": "c9551d0ec09d0e6c1321eb3b54d8a000fcf46390cf6d6fb45ecfe79c85d67cc4",
       "executable": false
     },
     "docs/TRIAGE-ROUTING.md": {
-      "sha256": "de2d8afcd01f9436f5def9f126639959b1f2e1393bda6e292b10ce22a9c77228",
+      "sha256": "b47d0eacb518acf52e73b7c5085fc7c5daa5c29b6f060fee42181ece75440324",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -4594,7 +4594,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "5f295cfbdeb922fa0830f440705a9e151508e90fb39ecef6b5e2b9a73d4586a3",
+      "sha256": "879e46d91062af6ddc311a35cc1fba723487099f2a0380daede1b6562bb0335d",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -6858,7 +6858,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "06015037597db9aff45f8be081b8173dd997b2d4acd974f087bc5477d0705330",
+      "sha256": "1e3c6011729b7b0c66e8a5f49554ecac58d0770fa44b7afc0ea202002250356c",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -9486,7 +9486,7 @@
       "executable": false
     },
     "tests/worker/outbound-subscription-upgrade.ts": {
-      "sha256": "c5f93749115073f345a8c194ab3b8655f7775769e3a047028efee3aa76a9ba98",
+      "sha256": "5de0d4dffb118a0d29559b8958ca893ad318bebaf529a486e923e262cc37991f",
       "executable": false
     },
     "tests/worker/outbound-webhooks.test.ts": {
@@ -9626,7 +9626,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "466b836ecdc87284b1686090df1ed51919ffef3dd46e4b230d211e70f1607d9f",
+      "sha256": "0a5d5ace1ccca26ef232726571737ece19453ef38bcb3d7620ee8a3e44826386",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
@@ -9634,11 +9634,11 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "2c54c5a51c6f01b3b82a27f9f590ba2963c32184e168bcc1f6a7ace611314138",
+      "sha256": "ef97875160f20f518d8214ad17041284b6fb286963eb64d0a0569e3c62d0deb5",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "c487e892d0f3ba59169cf4819bca4a2f131912a8a0c7e6fa01ed154c01dd3924",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
@@ -9725,12 +9725,16 @@
       "sha256": "3f62fc54329c9a790fcad2bc1f006e33bfaf3cef1a9c9aa95bd8250d0ba5f739",
       "executable": false
     },
+    "tests/worker/triage-routing-archive.ts": {
+      "sha256": "c6891be236440eb9bd478b7dd8c7f1f525a38eea8f85893e4b4f2ba86e7650fd",
+      "executable": false
+    },
     "tests/worker/triage-routing-journey.ts": {
-      "sha256": "ac06d037ccef8985680b61195d7f1684be233febe0aabd0716f534a280eeb1d3",
+      "sha256": "47020d40f907d151cadb2256f7a7d9b72adbc565773a496a2c398f48878b2562",
       "executable": false
     },
     "tests/worker/triage-upgrade.ts": {
-      "sha256": "dfd6e5448fa10ed8894a837ade2a0f228670098a39a19bd727678fed663f3c38",
+      "sha256": "5e34bf0f786174d21fe9162b75b4e5056aafa55e6cb1a306b29cdd472e4890bd",
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {
@@ -12358,7 +12362,7 @@
       "executable": false
     },
     "vitest.config.ts": {
-      "sha256": "20b9d07141765b221ba12d82311ba4a4393c31a6f385dee58e13fc4668bf964e",
+      "sha256": "3c45f8450b1f7f6e71eaf0004f865e8b537732e18fbe1f0090c5b92d2797a3df",
       "executable": false
     },
     "vitest.markdown.config.ts": {

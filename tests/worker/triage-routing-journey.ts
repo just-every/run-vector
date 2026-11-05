@@ -1,3 +1,4 @@
+import { routingArchiveRoundTrip } from './triage-routing-archive';
 import { env } from 'cloudflare:workers';
 import { expect } from 'vitest';
 import { actor, invite, request } from './base-auth-fixture';
@@ -51,6 +52,9 @@ export async function triageRoutingJourney(f: Awaited<ReturnType<typeof setupInt
   expect((await request('/api' + path, 'PUT', { expectedVersion: 0, rules: [rule] })).status).toBe(401);
   const configured = await save([rule]);
   expect(configured).toMatchObject({ version: 1, configuredBy: f.owner, rules: [rule] });
+  const concurrent = await Promise.all([f.call(path, 'PUT', { expectedVersion: version, rules: [rule] }), f.call(path, 'PUT', { expectedVersion: version, rules: [rule] })]);
+  expect(concurrent.map(response => response.status).sort()).toEqual([200, 409]);
+  version = (await read(concurrent.find(response => response.status === 200)!)).version;
   before = await stored();
   expect((await f.call(path, 'PUT', { expectedVersion: 0, rules: [] })).status).toBe(409);
   expect(await stored()).toEqual(before);
@@ -141,6 +145,10 @@ export async function triageRoutingJourney(f: Awaited<ReturnType<typeof setupInt
   await env.DB.prepare("CREATE TRIGGER routing_receipt_failure BEFORE INSERT ON vector_source_receipts BEGIN SELECT RAISE(ABORT,'synthetic-vector-9319'); END").run();
   try { expect((await send('9320')).status).toBe(503); expect(await stored()).toEqual(before); }
   finally { await env.DB.prepare('DROP TRIGGER routing_receipt_failure').run(); }
+  const configurationRace = beforeCommit(sql => sql.includes('INSERT INTO evidence_revisions'), async () => {
+    await save([rule]); before = await stored();
+  });
+  expect((await send('9327', '1', { DB: configurationRace })).status).toBe(503); expect(await stored()).toEqual(before);
   // An unavailable matching destination is refused, never silently rerouted.
   await save([rule], member);
   await read(await f.call(`/settings/teams/${target.id}`, 'PATCH', { archived: true }));
@@ -166,6 +174,12 @@ export async function triageRoutingJourney(f: Awaited<ReturnType<typeof setupInt
   });
   expect((await send('9325', '1', { DB: raced })).status).toBe(503); expect(await stored()).toEqual(before);
   await save([rule]);
+  // Removing the configuring person hides their name and retires that custody.
+  await read(await f.call(`/settings/operators/${member.id}`, 'DELETE'));
+  const retained = await detail((await env.DB.prepare("SELECT identifier FROM issues WHERE json_extract(triage_route_json,'$.configuredBy')=? LIMIT 1").bind(member.id).first<string>('identifier'))!);
+  expect(retained.routing.configuredByName).toBeNull();
+  before = await stored(); expect((await send('9310')).status).toBe(409); expect(await stored()).toEqual(before);
+  await routingArchiveRoundTrip(f, sentry, payload('9311'));
   // Erased source records and revoked credentials cannot create replacements.
   item = await detail(); await read(await f.call('/issues/' + first.identifier, 'DELETE', { expectedVersion: item.version, confirmed: true }));
   before = await stored(); expect((await send('9310')).status).toBe(410); expect(await stored()).toEqual(before);

@@ -42,8 +42,9 @@ credentials are re-entered and restored effects are reviewed.
 
 Configuration and immutable item provenance are included in native archives.
 Earlier imported issue snapshots omit unset routing provenance, preserving their
-existing comparison semantics. Removed configuring people have no retained name
-in provenance; current detail reads resolve only an active person's display name.
+existing comparison semantics. Preserve the additive routing schema, configuration
+and item provenance during a compatible source rollback. Removed configuring people have no retained name
+in provenance; current detail reads resolve a display name only while that person has not been removed.
 
 Zendesk routing, the complete two-source acceptance, label, customer-tier, text
 and form-field conditions, label, priority, assignee and template actions,
