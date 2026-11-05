@@ -2026,7 +2026,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "d559c0dfae494563d8286a3f067b30ba8375b468621fb1e90f4bd63340b91517",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -8334,7 +8334,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "16ba9bd61db5fe8b37c9c57b399cc5c146a511d3754e72fe24d1c374c2b9ea68",
+      "sha256": "7c3f682749ac98d6d204f784994bc1ac06f90595c53e17f437ecf36f74bb3453",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
@@ -8354,7 +8354,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "941f1b564fc9fadae07aa941cd5d60d19a5aa76fbfacd9e7dfd0d17d74dcf3c2",
+      "sha256": "d5421b1222644f392d1e8a89b85f79c11c36acc303220c72f5595457dc113160",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {

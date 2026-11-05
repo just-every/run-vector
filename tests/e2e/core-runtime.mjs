@@ -7,7 +7,7 @@ import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
 import { requestLedger } from './core-request-ledger.mjs';
 import { intakePolicyJourney } from './core-intake-policy-journey.mjs';
-import { projectMembershipJourney, projectUpdatesJourney } from './core-project-membership-journey.mjs';
+import { projectMembershipJourney } from './core-project-membership-journey.mjs';
 import { currentDisjointJourney } from './core-current-disjoint-journey.mjs';
 import { currentRecentlyDoneJourney } from './core-current-recently-done-journey.mjs';
 import { currentNextJourney } from './core-current-next-journey.mjs';
@@ -785,18 +785,13 @@ try {
   await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');
   await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');
   }
-  if (journeyGroup === 'current') {
-    await withInvitedOperator(page,context,base,state,()=>projectUpdatesJourney(page,context,base,async(id,name,currentPage)=>{
-      await currentPage.screenshot({path:evidence+'/'+name+'.png',fullPage:true});record(id,name);
-    },state,async()=>{await stop();start();await ready();}),'Project update reviewer');
-  }
   // Balance the independent project, initiative and release proof with Current;
   // Planning keeps the complete agent-role matrix without increasing its timeout.
   if (['all', 'projects'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  }, state), 'Project maintenance teammate');
+  }, state, async () => { await stop(); start(); await ready(); }), 'Project maintenance teammate');
   }
   if (['all', 'planning'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {

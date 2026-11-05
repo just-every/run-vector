@@ -1,5 +1,4 @@
 import { projectUpdatesJourney } from './core-project-updates-journey.mjs';
-export { projectUpdatesJourney } from './core-project-updates-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {initiativesJourney} from './initiatives-journey.mjs';
 import {releasesJourney} from './releases-journey.mjs';
@@ -7,7 +6,7 @@ import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 import { readDevelopmentLink } from './outbox-session.mjs';
 
-export async function projectMembershipJourney(page, context, base, capture = async () => {}, state) {
+export async function projectMembershipJourney(page, context, base, capture = async () => {}, state, restart) {
   const api = async (path, method = 'GET', data) => {
     return withOperatorClient(context, async client => {
       const response = await client.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
@@ -19,6 +18,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
     await beforePrivateNavigation(page, base + path);
     await page.goto(base + path);
   };
+  await projectUpdatesJourney(page, context, base, capture, state, restart);
   const team = (await api('/settings/administration')).teams.find(t => !t.archivedAt);
   const email = `synthetic-vector-${Date.now()}@vector.test`;
   await api('/settings/operators/invite', 'POST', { email, displayName: 'Project lead', role: 'member' });
@@ -37,7 +37,6 @@ export async function projectMembershipJourney(page, context, base, capture = as
     });
     assert.equal(minted.status(), 201);
     const { token } = await minted.json();
-    await projectUpdatesJourney(page,context,base,capture,state);
     await contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId:member.operatorId});
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
