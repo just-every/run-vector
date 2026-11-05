@@ -1,3 +1,4 @@
+import { IssueAttachmentImages } from "../../markdown/attachments/context";
 import { DescriptionDiscussion } from '../../issues/ui/description-discussion';
 import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState } from 'react';
@@ -14,7 +15,7 @@ const json = (value: unknown): RequestInit => ({ method: 'POST', headers: { 'con
 export function IssueDescription({ issue, onRefresh, writable = true }: { writable?:boolean; issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  return <DescriptionDiscussion key={issue.identifier} identifier={issue.identifier} description={issue.description} version={issue.version} writable={writable} onRefresh={onRefresh}>
+  return <IssueAttachmentImages key={issue.identifier} identifier={issue.identifier}><DescriptionDiscussion key={issue.identifier} identifier={issue.identifier} description={issue.description} version={issue.version} writable={writable} onRefresh={onRefresh}>
     {issue.description ? <details className="detail-section issue-description" open><summary>Description</summary>
       <SafeMarkdown descriptionAnchors taskBusy={busy} onTaskChange={writable ? async task => {
         if (busy) return;
@@ -30,7 +31,7 @@ export function IssueDescription({ issue, onRefresh, writable = true }: { writab
       {error && <p role="alert">{error}</p>}
     </details> : null}
     <DescriptionHistory writable={writable} key={issue.identifier} issue={issue} onRefresh={onRefresh} />
-  </DescriptionDiscussion>;
+  </DescriptionDiscussion></IssueAttachmentImages>;
 }
 
 function DescriptionHistory({ issue, onRefresh, writable = true }: { writable?:boolean; issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {

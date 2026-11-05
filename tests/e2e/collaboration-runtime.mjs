@@ -1,3 +1,4 @@
+import { attachmentImagesJourney } from "./attachment-images-journey.mjs";
 import { lifecycleOperation, observeLifecycle, lifecycleEvidence } from "./collaboration-lifecycle.mjs";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -38,7 +39,8 @@ await contract(
     try {
       browser = await chromium.launch({
         headless: true,
-        args: ["--use-mock-keychain", "--password-store=basic"],
+        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+        args: ["--use-mock-keychain", "--password-store=basic", ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? ["--no-sandbox"] : [])],
       });
       for (const viewport of [
         { width: 1440, height: 1000 },
@@ -174,6 +176,9 @@ await contract(
             peerCapture(`${viewport.width}-recipient-${name}`),
           timings,
           fixtures,
+        });
+        if (viewport.width === 1440) await clause("ISSUE-024", "existing issue PNG display and viewer", async () => {
+          await attachmentImagesJourney({page, runtime, output: resolve(evidence, 'attachment-images'), returnIssue: issue});
         });
         assert.deepEqual(errors, [], "no browser page errors");
         assert.deepEqual(failed, [], "no browser request failures");

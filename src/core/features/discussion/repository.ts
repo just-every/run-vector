@@ -51,7 +51,7 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
       .bind(actor ?? null, actor ?? null, actor ?? null, issueId),
     db
       .prepare(
-        "SELECT id,name,content_type AS contentType,bytes,state,removal_requested_at AS removalPending,cleanup_error AS cleanupError,created_at AS createdAt FROM issue_files WHERE issue_id=? AND (deleted_at IS NULL OR (removal_requested_at IS NOT NULL AND removal_confirmed_at IS NULL)) ORDER BY created_at,id",
+        "SELECT id,name,content_type AS contentType,bytes,image_width AS imageWidth,image_height AS imageHeight,state,removal_requested_at AS removalPending,cleanup_error AS cleanupError,created_at AS createdAt FROM issue_files WHERE issue_id=? AND (deleted_at IS NULL OR (removal_requested_at IS NOT NULL AND removal_confirmed_at IS NULL)) ORDER BY created_at,id",
       )
       .bind(issueId),
     namedLinksStatement(db, issueId),
@@ -245,6 +245,8 @@ export async function addFile(
     bytes: number;
     key: string;
     sha256: string;
+    width?: number;
+    height?: number;
   },
 ) {
   db = mutationDatabase(db, actor);
@@ -252,8 +254,8 @@ export async function addFile(
   const now = new Date().toISOString();
   const result = await db
     .prepare(
-      `INSERT INTO issue_files(id,issue_id,actor_operator_id,name,content_type,bytes,blob_key,state,writer_settled,content_sha256,created_at,updated_at)
- SELECT ?,?,?,?,?,?,?,'pending',0,?,?,? WHERE EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) AND COALESCE((SELECT SUM(bytes) FROM issue_files WHERE removal_confirmed_at IS NULL),0)+COALESCE((SELECT SUM(bytes) FROM detached_file_removals WHERE removal_confirmed_at IS NULL),0)+?<=10737418240`,
+      `INSERT INTO issue_files(id,issue_id,actor_operator_id,name,content_type,bytes,blob_key,state,writer_settled,content_sha256,image_width,image_height,created_at,updated_at)
+ SELECT ?,?,?,?,?,?,?,'pending',0,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) AND COALESCE((SELECT SUM(bytes) FROM issue_files WHERE removal_confirmed_at IS NULL),0)+COALESCE((SELECT SUM(bytes) FROM detached_file_removals WHERE removal_confirmed_at IS NULL),0)+?<=10737418240`,
     )
     .bind(
       file.id,
@@ -264,6 +266,8 @@ export async function addFile(
       file.bytes,
       file.key,
       file.sha256,
+      file.width ?? null,
+      file.height ?? null,
       now,
       now,
       issue.id,

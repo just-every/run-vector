@@ -1,3 +1,4 @@
+import { uploadPng, pngBytes } from './attachment-png-journey';
 import {mentionToken} from '../../src/core/features/notifications/mention-token';
 import { auditSchema } from '../../src/core/features/audit/schema';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -16,6 +17,11 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const pngResponse=await uploadPng(f.issue.identifier,f.cookie);expect(pngResponse.status).toBe(201);
+ const portablePng=await pngResponse.json() as {id:string};
+ const pngIssue=await (await f.call('/issues/'+f.issue.identifier)).json() as any;
+ const pngEmbed=pngIssue.description+'\n\n![synthetic-vector-2410](attachment:'+portablePng.id+')';
+ expect((await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:pngIssue.version,description:pngEmbed})).status).toBe(200);
  const triagePath='/settings/teams/'+f.team.id+'/triage-rotation';
  expect((await f.call('/settings/teams/'+f.team.id+'/members/'+f.peer,'PUT',{role:'member'})).status).toBe(200);
  expect((await f.call(triagePath,'PUT',{startsLocal:'2026-01-05T09:00',operatorIds:[f.owner,f.peer]})).status).toBe(200);
@@ -241,6 +247,11 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await canonical.json() as {duplicates:{identifier:string}[]}).duplicates.map(row=>row.identifier)).toEqual([f.duplicate.identifier]);
  expect(await destination.ARCHIVE_TARGET_DB.prepare("SELECT writer_settled FROM detached_file_removals WHERE id='http-unsettled'").first<number>('writer_settled')).toBe(0);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+ const restoredPng=await targetCall('/api/issues/'+f.issue.identifier+'/files/'+portablePng.id,'GET',undefined,historical);
+ expect(restoredPng.status).toBe(200);expect(new Uint8Array(await restoredPng.arrayBuffer())).toEqual(pngBytes());
+ const pngListing=await (await targetCall('/api/issues/'+f.issue.identifier+'/discussion','GET',undefined,historical)).json() as any;
+ expect(pngListing.files).toContainEqual(expect.objectContaining({id:portablePng.id,imageWidth:1,imageHeight:1,state:'ready'}));
+ expect((await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json() as any).description).toBe(pngEmbed);
  const object=(await destination.ARCHIVE_TARGET_FILES.get('http-archive-file'))!;expect(new Uint8Array(await object.arrayBuffer())).toEqual(new Uint8Array([0,1,2,255]));expect(object.customMetadata).toEqual({evidence:'http-roundtrip'});
  expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT count(*) AS n FROM search_issues WHERE search_issues MATCH 'searchable'").first())?.n).toBe(1);
  const cycle=await targetCall('/api/cycles/'+f.closing.id,'GET',undefined,historical);expect(cycle.status).toBe(200);expect((await cycle.json() as {snapshot:unknown}).snapshot).toEqual(f.closed.snapshot);

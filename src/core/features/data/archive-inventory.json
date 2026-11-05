@@ -543,7 +543,9 @@
     "removal_actor_operator_id",
     "removal_confirmed_at",
     "cleanup_error",
-    "content_sha256"
+    "content_sha256",
+    "image_width",
+    "image_height"
   ],
   "issue_followers": [
     "issue_id",

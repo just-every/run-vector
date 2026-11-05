@@ -1,3 +1,4 @@
+import { pngDimensions } from "./png";
 import { descriptionAnchorSchema } from "./anchors";
 import { DescriptionAnchorError } from "./anchor-error";
 import { addReactionRoutes } from "../reactions/routes";
@@ -202,6 +203,9 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
       data.set(chunk, offset);
       offset += chunk.length;
     }
+    const dimensions = type === "image/png" ? pngDimensions(data) : null;
+    if (type === "image/png" && !dimensions)
+      return c.json({ error: "invalid_upload", message: "The PNG header is invalid." }, 400);
     const id = createUlid(new Date()),
       key = `issues/${issue.id}/${id}`;
     const sha256 = Array.from(
@@ -217,6 +221,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         bytes: size,
         key,
         sha256,
+        ...(dimensions ?? {}),
       }))
     )
       return c.json({ error: "storage_limit" }, 413);

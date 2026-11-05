@@ -81,3 +81,10 @@ for (const method of ["POST", "DELETE"] as const)
         );
       },
     );
+
+contractWith(it, "ISSUE-024 ISSUE-009 ROLE-002 ROLE-003 ROLE-013 DATA-005",
+  "PNG attachment identity, dimensions, revision retention and current authority survive the public doors",
+  async () => {
+    const { attachmentPngJourney } = await import('./attachment-png-journey');
+    await attachmentPngJourney();
+  });

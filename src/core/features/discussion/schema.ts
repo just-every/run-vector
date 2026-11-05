@@ -27,6 +27,8 @@ export const discussionSchema = z.object({
       name: z.string(),
       contentType: z.string(),
       bytes: z.number(),
+      imageWidth: z.number().int().positive().nullable(),
+      imageHeight: z.number().int().positive().nullable(),
       state: z.enum(["pending", "ready", "failed"]),
       removalPending: z.string().nullable(),
       cleanupError: z.string().nullable(),

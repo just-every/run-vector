@@ -1,3 +1,4 @@
+import { AttachmentImage, attachmentId } from "../attachments/context";
 import { remarkDescriptionAnchors } from "../../discussion/anchors";
 import { useIssueReferences } from '../../issue-references/ui/context';
 import { remarkIssueReferences } from '../../issue-references/ui/remark';
@@ -15,6 +16,7 @@ import Markdown, { type Components, type ExtraProps } from "react-markdown";
 // control character. The private routes below are the reviewed document routes;
 // auth, API, assets, and generated-function endpoints are not navigation targets.
 function safeUrl(value: string | undefined, image = false): string | undefined {
+  if (image && value && attachmentId(value)) return value;
   if (!value || /[\u0000-\u0020\u007f-\u009f\\]/u.test(value)) return undefined;
   let decoded: string;
   try {
@@ -127,6 +129,8 @@ const components: Components = {
   table: ({ children }) => <table tabIndex={0}>{children}</table>,
   a: MarkdownLink,
   img({ src, alt, title }) {
+    const id = typeof src === "string" ? attachmentId(src) : undefined;
+    if (id) return <AttachmentImage key={id} id={id} alt={alt || ""} />;
     const safe = safeUrl(typeof src === "string" ? src : undefined, true);
     if (!safe) return <span>{alt || "Image unavailable"}</span>;
     // A changed URL remounts the control: permission to fetch one image cannot

@@ -1,3 +1,4 @@
+import { DescriptionImageInsert } from "../../markdown/attachments/insert";
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useRef, useState } from "react";
 import "./issue-editor.css";
@@ -166,6 +167,7 @@ function IssueWritingEditor({
 }
 
 function IssueEditFields({ issue }: { issue: IssueDetailData }) {
+  const [description, setDescription] = useState(issue.description);
   return (
     <>
       <label>
@@ -183,9 +185,11 @@ function IssueEditFields({ issue }: { issue: IssueDetailData }) {
           aria-label="Description"
           name="description"
           maxLength={100_000}
-          defaultValue={issue.description}
+          value={description}
+          onValueChange={setDescription}
         />
       </label>
+      <DescriptionImageInsert identifier={issue.identifier} onInsert={text => setDescription(value => value + (value ? "\n\n" : "") + text)} />
     </>
   );
 }
