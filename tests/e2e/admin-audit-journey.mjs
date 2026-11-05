@@ -19,7 +19,9 @@ export async function exerciseAuditView({ page, runtime, capture, clause, eviden
     assert.ok(invitee);
     const invitation = all.entries.find(item => item.action === 'operator.invited' && item.subjectName === invitee.name);
     assert.ok(invitation, 'the invitation resolves to the invited person rather than an auth ID');
-    const { cycles } = await (await page.request.get(runtime.base + '/api/settings/cycles')).json();
+    const metadata = await page.request.get(runtime.base + '/api/metadata');
+    assert.equal(metadata.status(), 200);
+    const { cycles } = await metadata.json();
     const cycle = cycles.find(cycle => all.entries.some(item => item.action === 'cycle.created' && item.subjectRef === cycle.id));
     assert.ok(cycle, 'the preceding cycle journey produced an audit event');
     for (const name of labelNames) assert.ok(all.entries.some(item => item.action === 'label.created' && item.subjectName === name));
