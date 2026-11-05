@@ -1,0 +1,30 @@
+{
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "base": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "branch": "cloud/sd-vector-c-f189",
+  "candidate_commits": [
+    {
+      "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+      "parents": [
+        "6de99b93e44d6e5a508f5ca83ed66bca12e37e5e"
+      ],
+      "status_rows": 272,
+      "identity_checked": true,
+      "trailers": []
+    },
+    {
+      "head": "6de99b93e44d6e5a508f5ca83ed66bca12e37e5e",
+      "parents": [
+        "7c811313e446ae19630f387f2ac927dafba3dbe5"
+      ],
+      "status_rows": 272,
+      "identity_checked": true,
+      "trailers": []
+    }
+  ],
+  "product_diff_from_save": "",
+  "generated_views_diff": "",
+  "source_lock_sha256": "105bbff20a92e6c1b8aafd8ae5448231a90dfa5815c27171e2c9b917c69023cc",
+  "working_tree_clean": true,
+  "recorded_at": "2026-11-05T22:55:40.143120+00:00"
+}

@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f189",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f189",
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "base": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "recorded_at": "2026-11-05T22:56:33.077131+00:00",
+  "product_source_matches_save": "6de99b93e44d6e5a508f5ca83ed66bca12e37e5e",
+  "clause": {
+    "id": "GITLAB-001",
+    "before": "missing",
+    "after": "partial"
+  },
+  "counts_before": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66,
+    "total": 272
+  },
+  "proof": [
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts --reporter=verbose tests/worker/gitlab-setup.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "log": "gitlab-setup.log",
+      "note": "Final setup journey bytes; successful registrations on both origins precede partial and unknown updates."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts --reporter=verbose tests/worker/gitlab-setup.test.ts tests/worker/gitlab-upgrade.test.ts",
+      "exit": 0,
+      "tests": 2,
+      "log": "gitlab-upgrade.log",
+      "note": "Upgrade journey and product bytes unchanged on the final head; the setup journey was subsequently strengthened and rerun separately."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts",
+      "exit": 0,
+      "tests": 6,
+      "log": "roles.log",
+      "note": "Final role declarations, census fixtures and contract role-row bytes. No relevant byte changed after this run."
+    },
+    {
+      "command": "cloud_run perl -e 'alarm 1200; exec @ARGV' -- node --import ./tests/e2e/integrations/register-loader.mjs .artifacts/verification/run-gitlab.mjs",
+      "exit": 0,
+      "log": "browser.log",
+      "note": "Focused runner calls the committed exerciseGitlabSetup helper, mounted in the existing integration runtime. System Chromium, no sandbox; assertions at 1440 and captures at 1440 and 390. Product build bytes match the final head."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-check.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write GITLAB-001; node scripts/contract-docs.mjs check GITLAB-001",
+      "exit": 0,
+      "note": "Generated ACCEPTANCE.md and docs/CLAIMS.md restored whole from origin/main before commit."
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "exit": 0,
+      "note": "Regenerated after final test and contract edits and merge; committed lock checked again on final head."
+    },
+    {
+      "command": "node IPC runner for scripts/data/ledger.mjs",
+      "exit": 0,
+      "log": "migration-ledger.log",
+      "result": {
+        "platform": false
+      },
+      "note": "No Platform-owned migration ledger. Additive upgrade independently preserves every prior row and schema object."
+    }
+  ],
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "dc2688516daa1c31503a405c9327277d056d4ab0",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42125559127",
+      "id": 42125559127,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "publication_scan": "Fleet gate; not run in cloud",
+  "landing": "Not performed; cloud branch only",
+  "provider": "Network-edge fixtures; no live provider commissioning",
+  "interface_qualification": "Supplied Claude Opus implementation qualification and independent gate remain outstanding"
+}

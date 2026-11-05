@@ -1,0 +1,100 @@
+{
+  "files": [
+    {
+      "blob": "6a5a816a7a4cfabafc124f71bd71945ad40466f9",
+      "bytes": 934,
+      "path": "FOCUSED_BROWSER_RUNNER.mjs",
+      "sha256": "82c2b3e1a10eaca3ac855400b53ec7837f202af4bf9556605ffd85baf822e62b"
+    },
+    {
+      "blob": "e453cb02c7ce395d70a6ee57e064dc885db15067",
+      "bytes": 3758,
+      "path": "LOCAL_RECEIPT.json",
+      "sha256": "7852416e241700fa4749e6cc4407a4b122f3ae4435112de314ea0578c1a9f567"
+    },
+    {
+      "blob": "4507809476ffbda5b7a95e13080eebe76344c855",
+      "bytes": 873,
+      "path": "PROVENANCE.json",
+      "sha256": "2ff20569dea26f46079477f244674ef3621c033091a613906a89cdae5a8af837"
+    },
+    {
+      "blob": "0ce3535e6f96c981049907514e7d4d1752021e61",
+      "bytes": 10473,
+      "path": "REPORT.md",
+      "sha256": "a1543fce0d2009f3a6396ddb1ef96de91a60d7512f0f61604d95a632ed010ac4"
+    },
+    {
+      "blob": "80561519cd4fbfc40ca9977c058d462888586143",
+      "bytes": 350,
+      "path": "browser.log",
+      "sha256": "2089e775b64c2dd64b203fab0d6070ed66d36a3fffd43ac567b7d0600d81a068"
+    },
+    {
+      "blob": "2f6e9c6c966faa18f83347a33c6361335469fc43",
+      "bytes": 147565,
+      "path": "browser/gitlab/setup-1440.png",
+      "sha256": "5795d1cdef7489afcb81bcee264b1cefb1450f8f303116dcc9918123eb6a4319"
+    },
+    {
+      "blob": "70f38188c44649551cba38e714c512f2908954ac",
+      "bytes": 146703,
+      "path": "browser/gitlab/setup-390.png",
+      "sha256": "81ec0df0b363e951162ba9c610a5f23d1a28c11f2fb70cb1ae7ceafbe00bfb39"
+    },
+    {
+      "blob": "3a98900705c24a01cac6a4841bed97f59a066116",
+      "bytes": 224,
+      "path": "candidate-ci.jsonl",
+      "sha256": "9d42a08910fe9304208859d94cb70705b5c38988d8456ad8c75677449493cb65"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "a2e48727519281099fa509cd868d29c62a859764",
+      "bytes": 557,
+      "path": "gitlab-setup.log",
+      "sha256": "176962a89d0e089db9c498a66ace17b4988825160911497598e2f80cff60e85f"
+    },
+    {
+      "blob": "870604fe9f85c9977f5c63cdba71f83e299a22dc",
+      "bytes": 729,
+      "path": "gitlab-upgrade.log",
+      "sha256": "f40e2b79bbf59915e857030296522c5ef259a04cf93a65ecb59c31c842d838de"
+    },
+    {
+      "blob": "880ebd451b37f15e0824b67bac451715f8699684",
+      "bytes": 1148,
+      "path": "main-ci.jsonl",
+      "sha256": "f5a4b4e21c7f576e018873cccd7ba45db71e3a28df195d31f00a3551128113a1"
+    },
+    {
+      "blob": "66bd65650ed72adb76ff62a300ef13fb452bbb70",
+      "bytes": 1199,
+      "path": "migration-ledger.log",
+      "sha256": "84f24c78268aa157c0ecad598aeed7ea39edf2227b368632b8301f85d8485cc9"
+    },
+    {
+      "blob": "358a82290313a88b7e2b12a27bdb448708676e97",
+      "bytes": 398,
+      "path": "roles.log",
+      "sha256": "9133757c5c567b2224ab3ff0cac4e38f0e62a57b14126673a9c6eed126bfddb9"
+    },
+    {
+      "blob": "647def73051fbaff7a2d21fd9a9fda4013898bc9",
+      "bytes": 181,
+      "path": "typecheck.log",
+      "sha256": "ea54dcc2655069447c31ac9f954eaa964016b00aa5a8e8498ea61457b5e9b2a3"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f189",
+  "product_head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "ref": "refs/heads/evidence/sd-vector-c-f189",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f189"
+}
