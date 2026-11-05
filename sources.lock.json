@@ -8762,7 +8762,7 @@
       "executable": false
     },
     "tests/e2e/releases-journey.mjs": {
-      "sha256": "971299e1b491b9d8e2d4ef95e6a44a066c9163a49fcae80052312a0cce93be23",
+      "sha256": "d07b8915c91dfced5c3f914e5421bbfe70c3fb13726ef7217e0a0107147c4f8b",
       "executable": false
     },
     "tests/e2e/removal-runtime-support.mjs": {
