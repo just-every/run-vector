@@ -97,6 +97,6 @@ export async function recurringIssuesJourney({page,runtime,capture}) {
     assert.deepEqual(states.sort(),[[weekly.id,'paused',['created']],[stale.id,'ended',['failed']]].sort())
     await capture('recurring-issue-stopped')
     assert.deepEqual(errors,[],'no browser exceptions or hydration errors')
-    console.log('PROBE AUTO-001 browser: Settings creates a weekly series from a native template; repeated scheduled exports -> one parent and two linked children with provenance; stale template -> visible failure and no partial graph; keyboard pause and end -> later export creates nothing')
+    console.log('PROBE AUTO-001 browser: Settings creates a weekly series from a native template; repeated scheduled exports -> one parent and two linked children with provenance; stale template -> visible failure and no partial graph; keyboard pause and confirmed end -> later export creates nothing')
   } finally { page.off('pageerror',onError) }
 }
