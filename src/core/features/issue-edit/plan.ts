@@ -1,4 +1,5 @@
 import { issueReferenceStatements } from "../issue-references/repository";
+import { titleEventStatement } from "../agent-door/title-event";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import {
   assignmentStatements,
@@ -347,6 +348,8 @@ export async function planIssueUpdate(
         ...guardValues,
       ),
   ];
+  if ("title" in values)
+    writes.push(await titleEventStatement(binding, event, where, guardValues));
   writes.push(...blockerStatements(binding, event));
   writes.push(...followerChangeStatements(binding, event));
   if ("assigneeOperatorId" in values)
