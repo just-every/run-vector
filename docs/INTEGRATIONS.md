@@ -486,3 +486,31 @@ so previously accepted mentions cannot recreate issues.
 This installation remains partial: the hosted real-workspace installation needs
 the owner's Slack console setup and reinstallation with the generated scopes and
 URLs. The recorded acceptance uses Slack API fixtures, not a hosted provider.
+
+## GitLab project setup
+
+An Owner or Admin opens Settings → Connections → GitLab, selects GitLab.com or
+the public HTTPS origin of a self-managed GitLab server, and pastes a group or
+project access token with only the `api` scope. Grant Maintainer access only to
+the projects that will use Vector. Vector reads the token grant and the first
+100 maintained projects, then offers their returned identities. A project-scoped
+token can narrow that list. No callback URL or secret is entered by hand.
+
+Select projects and register their hooks. Vector generates a separate signing
+secret per project and the callback for this installation. A confirmed hook is
+shown as registered; this setup does not claim event processing or a connected
+live integration. Merge requests, branches, commits, approvals, pipelines and
+production deployments remain GITLAB-001 work.
+
+Each project retains its own confirmed, refused or unknown result. Vector makes
+one provider write after a durable claim. Lost acknowledgements and interrupted
+claims stay inert across reload and restart; check GitLab before taking further
+action. A changed credential requires explicit registration, updating an existing
+known hook rather than creating another. Unknown hook identities are never
+automatically retried. Redirects are refused without forwarding the credential.
+
+Tokens and signing secrets are sealed on the server and excluded from archives.
+An archive retains only the origin, returned project identities and registration
+outcomes. After restore, re-enter the token and explicitly update known hooks
+with fresh signing secrets. Removing GitLab credentials stops local provider calls
+and removes stored signing secrets; remove any remaining hooks in GitLab yourself.

@@ -21,12 +21,13 @@ export async function exerciseGitlabSetup({page,runtime,cookie,evidence}){
  assert.equal(new Set(hooks.map(row=>row.secretHash)).size,4);
  await mkdir(resolve(evidence,'gitlab'),{recursive:true});
  const require=createRequire(import.meta.url),axe=require.resolve('axe-core/axe.min.js');
+ await region.scrollIntoViewIfNeeded();
+ assert.equal(await region.evaluate(root=>root.scrollWidth<=root.clientWidth+1),true);
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
+ const small=await region.locator('input,button,label,p,span').evaluateAll(nodes=>nodes.filter(n=>getComputedStyle(n).display!=='none'&&parseFloat(getComputedStyle(n).fontSize)<13).length);assert.equal(small,0);
+ await page.addScriptTag({path:axe});const accessibility=await page.evaluate(async()=>window.axe.run(document.querySelector('[aria-labelledby="gitlab-heading"]')));assert.deepEqual(accessibility.violations.filter(v=>['serious','critical'].includes(v.impact)),[]);
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:1100});await region.scrollIntoViewIfNeeded();
-  assert.equal(await region.evaluate(root=>root.scrollWidth<=root.clientWidth+1),true);
-  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
-  const small=await region.locator('input,button,label,p,span').evaluateAll(nodes=>nodes.filter(n=>getComputedStyle(n).display!=='none'&&parseFloat(getComputedStyle(n).fontSize)<13).length);assert.equal(small,0);
-  await page.addScriptTag({path:axe});const accessibility=await page.evaluate(async()=>window.axe.run(document.querySelector('[aria-labelledby="gitlab-heading"]')));assert.deepEqual(accessibility.violations.filter(v=>['serious','critical'].includes(v.impact)),[]);
   await region.screenshot({path:resolve(evidence,'gitlab','setup-'+width+'.png'),mask:[page.locator('[data-rer-private]')]});
  }
  await page.setViewportSize({width:1440,height:1000});await region.getByLabel('GitLab origin',{exact:true}).focus();await page.keyboard.press('Tab');assert.equal(await region.getByLabel('GitLab access token',{exact:true}).evaluate(node=>node===document.activeElement),true);

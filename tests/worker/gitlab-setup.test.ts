@@ -54,6 +54,8 @@ it('GitLab setup registers chosen projects, fences authority and uncertain write
   // A second origin produces an honest partial result, then refuses blind replay after a lost response.
   const adminCall=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,coOwner);
   const self=await read(await adminCall(prefix,'POST',{origin:'https://gitlab.example.com',token}),201);
+  expect((await read(await adminCall(prefix+'/'+self.id+'/hooks','POST',{projectIds:[18911,18912]}))).outcomes).toEqual([{projectId:18911,state:'registered'},{projectId:18912,state:'registered'}]);
+  await read(await adminCall(prefix,'POST',{origin:'https://gitlab.example.com',token}),201);
   failure='rejected';expect((await read(await adminCall(prefix+'/'+self.id+'/hooks','POST',{projectIds:[18911,18912]}))).outcomes).toEqual([{projectId:18911,state:'registered'},{projectId:18912,state:'rejected'}]);
   failure='timeout';expect((await read(await adminCall(prefix+'/'+self.id+'/hooks','POST',{projectIds:[18912]}))).outcomes[0].state).toBe('unknown');const unknownCount=writes.length;f.restart();await read(await adminCall(prefix+'/'+self.id+'/hooks','POST',{projectIds:[18912]}));expect(writes).toHaveLength(unknownCount);failure='';
   config=await read(await f.call(prefix));expect(JSON.stringify(config)).not.toContain(token);for(const write of writes)expect(JSON.stringify(config)).not.toContain(write.body.token);

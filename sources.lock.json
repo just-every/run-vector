@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a6cbe19263bc3e02f532013b411927181c5cadf9b9517f158b412da823824260",
+      "sha256": "0c50f1b713eb86909ff3a77d1a2f3985241235403fa8b77606e23b88bf00ab4c",
       "executable": false
     },
     "DEMO.md": {
@@ -662,7 +662,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "570879f16f798cc5cf7dd636b7c6c320ce73493c03d1130563b94df04fba8942",
+      "sha256": "b9faab4af8a662b3d52ad23856312a268aa2e2a22c4aaea57f6848565f4de043",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -8514,7 +8514,7 @@
       "executable": false
     },
     "tests/e2e/gitlab-setup-journey.mjs": {
-      "sha256": "134cbe5ca77f1c3399beeb03dfeaf8bed7d1af81d2277fdc66025c2814164e70",
+      "sha256": "856dbd6b78acd3b852338eaee64112eec0c3b8023730b2f42581e557477974dc",
       "executable": false
     },
     "tests/e2e/housekeeping-runtime.mjs": {
@@ -9290,7 +9290,7 @@
       "executable": false
     },
     "tests/worker/gitlab-setup.test.ts": {
-      "sha256": "57fc67c40e6054bbbbecd347ad4aefcc59520ae257f31db2504776dbbd68ed7d",
+      "sha256": "40a889210bb2e2e808785e7a665e074b7ed9c85a78c59e6a42e122a698613536",
       "executable": false
     },
     "tests/worker/gitlab-upgrade.test.ts": {
