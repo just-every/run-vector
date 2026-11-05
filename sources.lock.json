@@ -550,11 +550,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "3ca20c011371a53e8c0ea50d7e7d80317aa3eef18d6399b6229b59e3c75683df",
-      "executable": false
-    },
-    "docs/AGENT-EVENTS.md": {
-      "sha256": "c201a93078fb624bd2ce2946ae3dc8fb60998c2c543f0f897970071bd2e1f21a",
+      "sha256": "2014d3478a91edecb411f1708d77416e2aaf906f0c106488026134f4832a8480",
       "executable": false
     },
     "docs/API.md": {
