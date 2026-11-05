@@ -26,7 +26,8 @@ export async function readSeries(db:D1Database,actor:string,id:string) {
   for(const receipt of receipts) {
     // A retained receipt confers no access to an issue subsequently moved or erased.
     const issue=receipt.issue_id?await db.prepare('SELECT id,identifier,title FROM issues WHERE id=?').bind(receipt.issue_id).first():null
-    const children=(await db.prepare('SELECT id,identifier,title FROM issues WHERE id IN(SELECT value FROM json_each(?)) ORDER BY id').bind(receipt.child_ids_json).all()).results
+    // Receipts keep the template's subissue order; readable children are listed in that order.
+    const children=(await db.prepare('SELECT i.id,i.identifier,i.title FROM json_each(?) c JOIN issues i ON i.id=c.value ORDER BY c.key').bind(receipt.child_ids_json).all()).results
     history.push({dueOn:receipt.due_on,scheduledAt:receipt.scheduled_at,outcome:receipt.outcome,issue,children,error:receipt.error,at:receipt.created_at})
   }
   return {id:row.id,name:row.name,teamId:row.team_id,configuringPersonId:row.configuring_operator_id,

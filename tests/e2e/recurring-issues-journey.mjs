@@ -60,7 +60,7 @@ export async function recurringIssuesJourney({page,runtime,capture}) {
     assert.deepEqual({title:parent.title,assignee:parent.assignee?.id,project:parent.project?.id,dueDate:parent.dueDate},{title:'synthetic-vector-1741',assignee:owner.id,project:project.id,dueDate:due})
     const children=(await api('/issues/'+parent.identifier+'/subissues')).children
     assert.deepEqual(children.map(c=>c.title),['synthetic-vector-1742','synthetic-vector-1743'])
-    assert.deepEqual(occurrence.children.map(c=>c.id).sort(),children.map(c=>c.id).sort())
+    assert.deepEqual(occurrence.children.map(c=>c.id),children.map(c=>c.id),'history lists the exact children in template order')
     const provenance=runtime.sql(`SELECT next_value_json v FROM issue_activity WHERE issue_id='${parent.id}' AND kind='issue.template_applied'`)
     assert.deepEqual(provenance.map(r=>JSON.parse(r.v)),[{templateId:template.id,templateVersion:1}])
 
