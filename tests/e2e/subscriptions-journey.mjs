@@ -2,6 +2,7 @@ import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {roleScreens} from './role-ui-support.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
+import {openIssueControls} from './ui-controls-checks.mjs';
 export async function subscriptionsJourney({recipientPage:page,actorPage,base,evidence}){
  trackRequests(page);trackRequests(actorPage);
  const errors=[];for(const p of [page,actorPage]){p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(/hydration|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());});}
@@ -52,6 +53,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await navigate(page,base+'/app/projects/'+project.id);await page.getByRole('heading',{name:projectName,exact:true}).waitFor();
   await toggle('Subscribe to project');await page.getByRole('button',{name:'Unsubscribe from project',exact:true}).waitFor();await capture(page.locator('main:visible').first(),'subscriptions-project');
   await navigate(page,base+'/app/views/'+view.id);await page.getByRole('heading',{name:viewName,exact:true}).waitFor();
+  await openIssueControls(page);
   await toggle('Subscribe to saved view');await page.getByRole('button',{name:'Unsubscribe from saved view',exact:true}).waitFor();await capture(page.locator('main:visible').first(),'subscriptions-view');
   await navigate(page,base+'/app/issues?team='+team.id+'&label='+label.id);
   await toggle('Subscribe to label');await page.getByRole('button',{name:'Unsubscribe from label',exact:true}).waitFor();await capture(page.locator('main:visible').first(),'subscriptions-team-label');
