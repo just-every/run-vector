@@ -17,6 +17,30 @@ it('native title events commit atomically and replay through mounted MCP with cu
   await json(await owner.call(`/settings/teams/${team.id}/members/${member.id}`, 'PUT', { role: 'member' }));
   const issue = await json(await member.call('/issues', 'POST', { teamId: team.id, title: 'synthetic-vector-3702' }), 201);
   const person = (await json(await member.call('/options'))).operators.find((p: any) => p.id === member.id);
+  // This native author is removed and erased before the first agent admission.
+  // Its private record remains readable by the Owner, never by the main reader.
+  const formerTeam = (await json(await owner.call('/settings/teams', 'POST', {
+    name: 'synthetic-vector-3719', identifierPrefix: 'FORMER', isPrivate: true,
+  }))).teams.find((t: any) => t.name === 'synthetic-vector-3719');
+  await json(await owner.call(`/settings/teams/${formerTeam.id}/members/${w.lead.id}`, 'PUT', { role: 'member' }));
+  const departed = await json(await w.lead.call('/issues', 'POST', { teamId: formerTeam.id, title: 'synthetic-vector-3720' }), 201);
+  const departedPerson = (await json(await w.lead.call('/options'))).operators.find((p: any) => p.id === w.lead.id);
+  await json(await w.lead.call('/issues/' + departed.identifier, 'PATCH', { expectedVersion: 1, title: 'synthetic-vector-3721' }));
+  const beforeRemoval = JSON.parse((await env.DB.prepare('SELECT event FROM agent_door_events WHERE uri=?')
+    .bind('vector://issue/' + departed.id).first<string>('event'))!);
+  expect(beforeRemoval.actor.person).toEqual({ id: w.lead.id, name: departedPerson.name });
+  const removalTables = ['operators', 'operator_removals', 'oa_operators', 'oa_sessions', 'agent_door_events'];
+  const removalBefore = await snapshot(removalTables);
+  await env.DB.exec("CREATE TRIGGER synthetic_vector_removal_failure BEFORE UPDATE ON agent_door_events WHEN NEW.id='" + beforeRemoval.id + "' BEGIN SELECT RAISE(ABORT,'synthetic-vector-3723'); END");
+  try {
+    expect((await owner.call('/settings/operators/' + w.lead.id, 'DELETE')).status).toBe(500);
+    expect(await snapshot(removalTables)).toEqual(removalBefore);
+  } finally { await env.DB.exec('DROP TRIGGER synthetic_vector_removal_failure'); }
+  await json(await owner.call('/settings/operators/' + w.lead.id, 'DELETE'));
+  expect((await w.lead.call('/issues/' + departed.identifier)).status).toBe(401);
+  const subject = { names: [departedPerson.name] };
+  const erasure = await json(await owner.call('/data/erasure/preview', 'POST', subject));
+  await json(await owner.call('/data/erasure', 'POST', { subject, confirmation: erasure.confirmation }));
   const control = (path: string, method: string, body: unknown) => agentRequest('/agents/api/' + path, {
     method, headers: { Origin: origin, Cookie: owner.cookie, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });
@@ -25,6 +49,17 @@ it('native title events commit atomically and replay through mounted MCP with cu
     rules: [{ id: 'standard', class: 'standard', do: disposition }, { id: 'rest', class: '*', do: 'blocked' }], spend: { none: true },
   } }));
   await policy('autonomous');
+  const ownerGrant = await json(await owner.call('/settings/integrations/tokens', 'POST', {
+    name: 'synthetic-vector-3722', scopes: ['events:read', 'evidence:read'],
+  }), 201);
+  const ownerEvents = await agentToolClient(ownerGrant.token)('vector.events.list', {});
+  expect(ownerEvents.status).toBe(200);
+  const afterRemoval = ownerEvents.body.result.structuredContent.events.find((e: any) => e.id === beforeRemoval.id);
+  expect(afterRemoval).toEqual({ ...beforeRemoval, actor: { kind: 'person', person: { id: w.lead.id, name: 'Removed operator' } } });
+  expect(JSON.stringify(afterRemoval)).not.toContain(departedPerson.name);
+  const held = await json(await owner.call('/data/erasure/preview', 'POST', subject), 409);
+  expect(held.error).toBe('agent_custody_unavailable');
+
   const grant = async (scopes: string[], n: number) => json(await member.call('/settings/integrations/tokens', 'POST', {
     name: 'synthetic-vector-' + n, scopes,
   }), 201);
@@ -156,4 +191,5 @@ it('native title events commit atomically and replay through mounted MCP with cu
   const replay = await write('vector.issue.concurrent_edits', { identifier: issue.identifier, change: { expectedVersion: 4, title: 'synthetic-vector-3714' }, idempotency_key: crypto.randomUUID() });
   expect(replay.body.result.isError).toBe(true);
   expect(await snapshot(tables)).toEqual(erased);
+
 });

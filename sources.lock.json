@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "629a8cabe72460e55e27ff7879e5407eca98e0180123d80c2b86b53f4537b4ef",
+      "sha256": "d9727966dd927af635a4698d76f8b3e926c967a9293630338af8cb3a8a11dcf3",
       "executable": false
     },
     "DEMO.md": {
@@ -550,7 +550,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "2014d3478a91edecb411f1708d77416e2aaf906f0c106488026134f4832a8480",
+      "sha256": "0362fb1d392461c9ef154312b00b9a093352d6ff79a3aafc93fc17e60fab9173",
       "executable": false
     },
     "docs/API.md": {
@@ -4238,7 +4238,7 @@
       "executable": false
     },
     "src/core/features/agent-door/title-event.ts": {
-      "sha256": "bca978be5e7edd2c9bf95193525d6e488406bb567b9f1289ef696ed6411fc97d",
+      "sha256": "5a7d771a2abb7e966e254a7e397188ae6ce9aeea513fd58996613a57359c48f5",
       "executable": false
     },
     "src/core/features/audit/csv.ts": {
@@ -6962,7 +6962,7 @@
       "executable": false
     },
     "src/core/features/settings/removal.ts": {
-      "sha256": "3315e53c538ec777ce88e3efe65919d97f31025c0c63f68f7fecfcc7e030b88a",
+      "sha256": "6fc7c01497e483eae55c6a284da92923428c14b6fb847b5143b3fb35c2cb279b",
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
@@ -8982,7 +8982,7 @@
       "executable": false
     },
     "tests/worker/agent-events.test.ts": {
-      "sha256": "ae325cb1be45881465a30a98d2116469f9d71f7295460d47550b37e06eda2280",
+      "sha256": "cf31c73fcfd7744817dfd42dd6cf5931c63f56a924c07a21a8781b76a0a346eb",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {

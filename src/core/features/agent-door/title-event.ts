@@ -26,3 +26,15 @@ export async function titleEventStatement(
     SELECT ?,?,? FROM issues WHERE ${where}`)
     .bind(event.id, event.uri, JSON.stringify(event), ...guardValues);
 }
+
+/** Native removal anonymizes its new retained copy in the same transaction.
+ * Agent artifacts retain their existing separate custody and erasure hold. */
+export function anonymizeTitleEvents(db: D1Database, person: string, removal: string) {
+  return db.prepare(`UPDATE agent_door_events
+    SET event=json_set(event,'$.actor.person.name','Removed operator')
+    WHERE json_extract(event,'$.type')='issue.updated'
+      AND json_extract(event,'$.actor.kind')='person'
+      AND json_extract(event,'$.actor.person.id')=?
+      AND EXISTS(SELECT 1 FROM operator_removals WHERE id=?)`)
+    .bind(person, removal);
+}

@@ -44,6 +44,8 @@ text. Semantic no-ops, stale edits and refused mutations produce no title event.
 An event-storage failure rolls back the mutation and its side effects.
 
 This uses the pinned Base retained-event table, which remains excluded from
-native archives. Existing agent custody and person-erasure holds are unchanged.
+native archives. Native operator removal anonymizes the human event actor in
+the same transaction while retaining event IDs, order and actor identity. Existing
+agent custody and person-erasure holds are unchanged.
 Subscription transport, latency, webhook parity and recovery, policy and decision
 event qualification and other producers remain BASE-AGENT-010 gaps.
