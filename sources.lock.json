@@ -9174,7 +9174,7 @@
       "executable": false
     },
     "tests/worker/discussion-access.test.ts": {
-      "sha256": "f3d6273ab56dedacbb790298160308cd2ac2b77de552260a4a63cee270ac026f",
+      "sha256": "7d8125e64969c4aec2144feffdc32417e1d0f4342ac30db9a1f2c35032fd4ab7",
       "executable": false
     },
     "tests/worker/discussion-file-admission.test.ts": {
