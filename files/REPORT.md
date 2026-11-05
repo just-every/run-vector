@@ -65,3 +65,7 @@ GITLAB-002 issue and comment sync and every unselected provider behavior remain 
 Base main Verify 42014502098 and Run site 42014502043 are completed success on 7c811313e446ae19630f387f2ac927dafba3dbe5; these are baseline results, not candidate results. Candidate observations: [{"conclusion": null, "event": "push", "head_sha": "dc2688516daa1c31503a405c9327277d056d4ab0", "html_url": "https://github.com/just-every/run-vector/actions/runs/42125559127", "id": 42125559127, "name": "Verify", "status": "in_progress"}].
 
 Product push and evidence publication are separate. Evidence does not assert READY, acceptance or landing. The final message names terminal branch custody and the exact evidence ref and head. No publication scan receipt is fabricated.
+
+Terminal custody: PUSHED branch=cloud/sd-vector-c-f189 head=dc2688516daa1c31503a405c9327277d056d4ab0
+
+Verify 42125559127 remains in progress after one discovery and one follow-up separated by at least 300 seconds. No failing candidate run was observed. CI green is not established. Three GitHub API calls were used in total, including the baseline-main discovery. The local cloud CI wait is complete; the fleet keeps independent gate, publication scan and landing custody.

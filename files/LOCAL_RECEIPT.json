@@ -5,7 +5,7 @@
   "branch": "cloud/sd-vector-c-f189",
   "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
   "base": "7c811313e446ae19630f387f2ac927dafba3dbe5",
-  "recorded_at": "2026-11-05T22:56:33.077131+00:00",
+  "recorded_at": "2026-11-05T23:01:35.929500+00:00",
   "product_source_matches_save": "6de99b93e44d6e5a508f5ca83ed66bca12e37e5e",
   "clause": {
     "id": "GITLAB-001",
@@ -96,5 +96,8 @@
   "publication_scan": "Fleet gate; not run in cloud",
   "landing": "Not performed; cloud branch only",
   "provider": "Network-edge fixtures; no live provider commissioning",
-  "interface_qualification": "Supplied Claude Opus implementation qualification and independent gate remain outstanding"
+  "interface_qualification": "Supplied Claude Opus implementation qualification and independent gate remain outstanding",
+  "terminal_custody": "PUSHED branch=cloud/sd-vector-c-f189 head=dc2688516daa1c31503a405c9327277d056d4ab0",
+  "ci_green_established": false,
+  "github_api_calls": 3
 }
