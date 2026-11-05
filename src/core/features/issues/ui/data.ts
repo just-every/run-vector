@@ -1,3 +1,4 @@
+import { submissionProjectionSchema } from '../../request-forms/schema';
 import { z } from "zod";
 
 const personSchema = z.object({ id: z.string(), name: z.string() });
@@ -30,6 +31,7 @@ const evidenceSchema = z.object({
 });
 
 export const issueDetailSchema = z.object({
+  requestForm: submissionProjectionSchema.nullable().optional(),
   id: z.string(),
   identifier: z.string(),
   title: z.string(),

@@ -1,3 +1,4 @@
+import { SettingsError } from '../settings/repository';
 import { requireIssueProjection } from "../issues/projection-access";
 import { IssueAccessError } from "../issues/access";
 import { isMutationAccessError } from "../auth/mutation-database";
@@ -35,6 +36,7 @@ export async function createOperatorIntakeRoute(
     await requireIssueProjection(context, result.identifier);
     return context.json(issue, 201);
   } catch (error) {
+    if (error instanceof SettingsError) return context.json({error:error.code,message:error.message},error.status);
     if (isMutationAccessError(error)) throw error;
     if (error instanceof IssueAccessError) return context.json({error:error.code,message:error.message},error.status);
     if (error instanceof IssueMutationError)

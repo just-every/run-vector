@@ -2247,5 +2247,32 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "request_forms": [
+    "id",
+    "team_id",
+    "name",
+    "fields_json",
+    "published",
+    "revision",
+    "created_at",
+    "updated_at"
+  ],
+  "request_form_revisions": [
+    "form_id",
+    "revision",
+    "name",
+    "fields_json",
+    "published",
+    "created_at"
+  ],
+  "request_form_submissions": [
+    "issue_id",
+    "form_id",
+    "revision",
+    "form_name",
+    "fields_json",
+    "answers_json",
+    "created_at"
   ]
 }

@@ -1,3 +1,4 @@
+import { prepareFormSubmission } from '../request-forms/submission';
 import {triageCreationStatements} from '../triage-responsibility/repository';
 import { issueReferenceStatements } from "../issue-references/repository";
 import { followStatements, mentionStatements, finalizeEvent } from '../notifications/events';
@@ -23,6 +24,7 @@ export async function createOperatorIntake(
   onCommit?: (db: D1Database, created: { id: string; identifier: string }) => D1PreparedStatement[],
 ) {
   db = mutationDatabase(db, actor);
+  const form = await prepareFormSubmission(db, actor, input.teamId, input.requestForm);
   const orm = drizzle(db);
   let team;
   try { team = await requireActiveTeam(orm, input.teamId); } catch(error) { return creationError(db,input.teamId,error,true); }
@@ -118,7 +120,7 @@ export async function createOperatorIntake(
   const event = { id: activityId, issueId, actor, at };
   const triage = await triageCreationStatements(db,event,team.id);
   let result;
-  try { result = await db.batch<{ id: string }>([creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[]},status.category,allocation.prefix),issue,evidence,activity,...triage,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...issueReferenceStatements(db,event,input.description),...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
+  try { result = await db.batch<{ id: string }>([creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[]},status.category,allocation.prefix),issue,evidence,activity,...(form ? [form.guard(db), ...form.statements(db,issueId,at)] : []),...triage,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...issueReferenceStatements(db,event,input.description),...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
   catch (error) { return creationError(db,team.id,error,true); }
   // The indexed issue insert returns its own identity independently of trigger writes.
   if (result[1].results.length !== 1 || result[1].results[0].id !== issueId)

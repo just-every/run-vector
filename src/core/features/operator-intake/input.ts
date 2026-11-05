@@ -1,3 +1,4 @@
+import { submissionSchema } from '../request-forms/schema';
 import { z } from "zod";
 import { isSafeHttpsUrl } from "../links/schema";
 const link = z
@@ -13,6 +14,7 @@ const link = z
 const text = z.string().trim().max(20000).nullable().optional().default(null);
 export const operatorIntakeInputSchema = z
   .object({
+    requestForm: submissionSchema.optional(),
     title: z.string().trim().min(1).max(500),
     teamId: z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/),
     description: z.string().max(100000).optional().default(""),

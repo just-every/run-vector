@@ -256,6 +256,9 @@ export const doors: Door[] = [
   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
   // Intake and triage
+  { method: 'GET', path: '/teams/:teamId/request-forms', row: 'intake.create', teams: team('teamId') },
+  { method: 'POST', path: '/teams/:teamId/request-forms', row: 'request-forms.manage', teams: team('teamId') },
+  { method: 'PUT', path: '/teams/:teamId/request-forms/:id', row: 'request-forms.manage', teams: team('teamId') },
   { method: 'POST', path: '/intake', row: 'intake.create', teams: bodyTeam },
   ...(['accept', 'defer', 'decline', 'return'] as const).map((action): Door => ({ method: 'POST', path: '/issues/:identifier/' + action, row: 'intake.decide', teams: issue })),
   ...([['POST', '/settings/integrations/sources'], ['POST', '/settings/integrations/sources/:id/rotate'], ['POST', '/settings/integrations/sources/:id/webhook-url'], ['DELETE', '/settings/integrations/sources/:id']] as const)

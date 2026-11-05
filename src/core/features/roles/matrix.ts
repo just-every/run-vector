@@ -58,6 +58,7 @@ export const matrix = {
   'issues.delete-permanent': row('Permanently delete an issue before retention ends (ISSUE-010)', 'yes', 'yes', 'no', 'no'),
   'labels.create': row('Create and apply labels (ISSUE-014)', 'yes', 'yes', 'yes', 'no'),
   'labels.manage': row('Rename, recolor, merge or delete a workspace label (ISSUE-014)', 'yes', 'yes', 'no', 'no'),
+  'request-forms.manage': row('Publish team request forms (TRIAGE-004)', 'yes', 'yes', 'team-setting', 'no'),
   'intake.create': row('Create an intake item by hand or submit a request form (INTAKE-001, TRIAGE-004)', 'yes', 'yes', 'yes', 'invited-teams'),
   'intake.decide': row('Accept, defer, end a deferral or decline an intake item (INTAKE-005, INTAKE-006, INTAKE-007)', 'yes', 'yes', 'teams', 'no'),
   'sources.manage': row('Register, rotate or revoke a signal source and its signing secret (INTAKE-011)', 'yes', 'yes', 'no', 'no'),

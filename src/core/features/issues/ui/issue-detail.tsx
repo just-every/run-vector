@@ -1,3 +1,4 @@
+import { RequestFormAnswers } from '../../request-forms/answers';
 import {DocumentsSection} from '../../documents/ui/list';
 import {IssueSpecification,documentIssueDetailSchema,type DocumentIssueDetailData} from '../../documents/ui/specification';
 import { useDateFormat } from "../../../shared/date-format";
@@ -294,6 +295,7 @@ function IssueInspector({
           <Subissues writable={writable} key={issue.identifier + ":subissues"} issue={issue} onRefresh={onRefresh} />
         </div>
         <IssueDescription writable={writable} issue={issue} onRefresh={onRefresh} />
+        <RequestFormAnswers submission={issue.requestForm} />
         {issue.evidence.map((evidence) => (
           <EvidenceInspector
             key={evidence.id}

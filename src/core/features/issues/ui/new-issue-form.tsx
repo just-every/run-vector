@@ -1,3 +1,5 @@
+import { RequestFormChoice } from '../../request-forms/controls';
+import type { RequestForm, FormSubmission } from '../../request-forms/schema';
 import {IssueTemplateChoice} from '../../issue-templates/controls';
 import type {IssueTemplate} from '../../issue-templates/schema';
 import { preferenceSchema } from "../../views/schema";
@@ -43,6 +45,8 @@ export function NewIssueForm() {
   const administration = useApiResource("/api/metadata", administrationSchema);
   const boardPreference = useApiResource("/api/preferences/board", preferenceSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
+  const [requestForm, setRequestForm] = useState<RequestForm | null>(null);
+  const [formAnswers, setFormAnswers] = useState<FormSubmission['answers']>({});
   const [templateLoading,setTemplateLoading]=useState(false);
   const [template,setTemplate]=useState<IssueTemplate|null>(null);
   const typedTemplateFields=useRef(new Set<string>());
@@ -117,6 +121,7 @@ export function NewIssueForm() {
 
   const changeTeam = (teamId: string) => {
     setTemplate(null);
+    setRequestForm(null); setFormAnswers({});
     // A team change retains deliberate empty choices for workspace properties.
     if (values.statusId && !options.data?.statuses.some(status =>
       status.id === values.statusId && status.teamId === teamId && allowedStatusCategories.has(status.category)))
@@ -166,7 +171,7 @@ export function NewIssueForm() {
           method: "POST",
           headers: { "content-type": "application/json", ...(!isIntake ? { 'x-vector-page': 'issue' } : {}) },
           body: JSON.stringify(
-            isIntake ? createIntakePayload(values, effectiveTimezone) : {...createIssuePayload({ ...values, cycleId: options.data?.teams.find(team => team.id === values.teamId)?.cyclesEnabled ? values.cycleId : "" }),...(template?{templateId:template.id,templateVersion:template.version}:{})},
+            isIntake ? {...createIntakePayload(values, effectiveTimezone), ...(requestForm ? {requestForm:{id:requestForm.id,revision:requestForm.revision,answers:formAnswers}} : {})} : {...createIssuePayload({ ...values, cycleId: options.data?.teams.find(team => team.id === values.teamId)?.cyclesEnabled ? values.cycleId : "" }),...(template?{templateId:template.id,templateVersion:template.version}:{})},
           ),
         },
       );
@@ -307,6 +312,7 @@ export function NewIssueForm() {
               Intake<span>Needs a decision</span>
             </label>
           </fieldset>
+          {values.mode==='intake'&&values.teamId&&<RequestFormChoice key={values.teamId} teamId={values.teamId} selected={requestForm} answers={formAnswers} choose={form=>{setRequestForm(form);setFormAnswers({})}} answer={(key,value)=>setFormAnswers(current=>({...current,[key]:value}))}/>}
           {values.mode==='issue'&&<IssueTemplateChoice key={values.teamId} values={values} setValues={setValues} onApplied={setTemplate} onBusy={setTemplateLoading} typed={typedTemplateFields.current}/>}
           {template&&values.mode==='issue'&&<p role="status">{template.name} · {template.subissues.length} subissues will be created. <button type="button" onClick={()=>setTemplate(null)}>Remove template selection</button></p>}
           <section className="new-issue-section">

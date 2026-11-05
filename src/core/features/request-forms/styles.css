@@ -1,0 +1,13 @@
+.request-form-settings, .request-form-editor, .request-form-editor > fieldset, .request-form-field, .request-form-choice { display: grid; gap: 1rem; min-width: 0; font-size: 14px; }
+.request-form-rows { padding: 0; margin: 0; list-style: none; }
+.request-form-rows li { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: space-between; align-items: center; padding: 0.5rem 0; overflow-wrap: anywhere; }
+.request-form-editor > fieldset { border: 0; padding: 0; margin: 0; }
+.request-form-field { border: 1px solid var(--app-line); border-radius: 0.5rem; padding: 1rem; margin: 0; }
+.request-form-check { display: flex; align-items: center; gap: 0.5rem; }
+.request-form-check input { width: auto; }
+.request-form-choice label { display: grid; gap: 0.5rem; }
+.request-form-saved { margin: 1rem 0; padding: 1rem; border: 1px solid var(--app-line); border-radius: 0.5rem; font-size: 14px; overflow-wrap: anywhere; }
+.request-form-saved h2 { font-size: 16px; }
+.request-form-saved dl { display: grid; gap: 0.75rem; }
+.request-form-saved dt { font-weight: 600; }
+.request-form-saved dd { margin: 0.25rem 0 0; white-space: pre-wrap; }
