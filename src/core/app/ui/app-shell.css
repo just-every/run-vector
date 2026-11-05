@@ -194,12 +194,11 @@
   .app-sidebar-foot button { min-height: 44px; }
   .app-mobile-daily { flex: 0 0 auto; }
   .app-mobile-daily > .app-nav-link { min-width: 4.75rem; }
-  .app-mobile-places-row, .app-mobile-daily {
+  .app-mobile-daily {
     display: flex;
     min-width: 0;
     gap: 0.25rem;
   }
-  .app-mobile-places-row > .app-nav-link { flex: 0 0 5.5rem; }
   .app-mobile-places {
     display: flex;
     flex: 1;

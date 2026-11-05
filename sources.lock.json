@@ -4090,7 +4090,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.css": {
-      "sha256": "fc5a17e5343ae3497fd4f1e4d59294c7161a0c32d83c570bd40e8d00c3179abd",
+      "sha256": "7e2a879661104a0ecfc1abde823915b7be5fa31d9b02948f1ba876a8efa87f17",
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
@@ -6417,8 +6417,12 @@
       "sha256": "17abc2e137c8e26f100b3070921b508b0fdb1a5ced28a4622805ef416609af8d",
       "executable": false
     },
+    "src/core/features/notifications/removed-mentions.ts": {
+      "sha256": "461fea5f50c2eb1775755d64f3e449fa00324deebc32c720e979febc572dc82d",
+      "executable": false
+    },
     "src/core/features/notifications/routes.ts": {
-      "sha256": "86c7bdf4ce8aec44430689c078b2e10b73b6a8b3a1efc364e581d5a338205738",
+      "sha256": "56235df677e5192a8dfe0708e3f94c05d0daf1215f4691a45c92063936fd764f",
       "executable": false
     },
     "src/core/features/notifications/schema.ts": {
