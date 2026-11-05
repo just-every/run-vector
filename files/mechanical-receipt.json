@@ -1,0 +1,28 @@
+{
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "results": [
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "name": "views-write",
+      "command": "node scripts/contract-docs.mjs write PUSH-007",
+      "exit": 0,
+      "output_sha256": "e36bdcf41428061baab0ac072e29a94ab6b87e2b3ff707835f853fcaeee72401"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "name": "views-check",
+      "command": "node scripts/contract-docs.mjs check PUSH-007",
+      "exit": 0,
+      "output_sha256": "9d0027a9cfc4205706b43743fdff67b1f232c0a3d60c81e3bf4f511302cfb0d2"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "name": "source-lock",
+      "command": "node scripts/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "output_sha256": "e3d47617c4360ce7303c77b9f550338b503da92344489343d119db1fab0f4f57"
+    }
+  ],
+  "views_restored_from": "origin/main",
+  "migration_ledger": "not applicable: no migrations changed"
+}

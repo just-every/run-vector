@@ -1,0 +1,9 @@
+{
+  "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+  "job": "build",
+  "command": "pnpm build",
+  "test": "vector:docs inventory",
+  "exit": 1,
+  "failure": "docs/site.json is invalid: docs/PROJECT-FORECASTS.md is neither a page nor in githubOnly; add it to one with a reason",
+  "scope": "Local reproduction of existing workflow build command; CI job discovery pending"
+}

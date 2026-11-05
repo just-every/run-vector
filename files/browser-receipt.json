@@ -1,0 +1,11 @@
+{
+  "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run perl -e 'alarm 1200; exec @ARGV' -- node tests/e2e/project-report-runtime.mjs",
+  "exit": 0,
+  "widths": [
+    1440,
+    390
+  ],
+  "note": "Existing report and document screens only; no forecast UI or numerical browser acceptance is claimed.",
+  "output_sha256": "a47d70e02ff808a1c1ec360daa187337731b90bbd723f5fb7e3ca9aba710a131"
+}

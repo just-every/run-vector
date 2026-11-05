@@ -1,0 +1,30 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f185",
+  "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+  "remote_ref": "b5909b5df1f8ef002f21840f2354c77c8889ff55\trefs/heads/cloud/sd-vector-c-f185",
+  "origin_main": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "candidate_commits": [
+    "b5909b5df1f8ef002f21840f2354c77c8889ff55\u0000054f543e45cbdce16927b31ab4770c271931c833\u0000Run Edit Run fleet <fleet@runeditrun.com>\u0000Run Edit Run fleet <fleet@runeditrun.com>\u0000",
+    "054f543e45cbdce16927b31ab4770c271931c833\u00007c811313e446ae19630f387f2ac927dafba3dbe5\u0000Run Edit Run fleet <fleet@runeditrun.com>\u0000Run Edit Run fleet <fleet@runeditrun.com>\u0000"
+  ],
+  "status_rows_before": 272,
+  "status_rows_after": 272,
+  "counts_before": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67
+  },
+  "source_lock_sha256": "604a0988a418a444832ecee1602872cf5c95284f3aaf7beea463e56e98c29f35",
+  "working_tree": "",
+  "publication_scan": {
+    "status": "NOT RUN IN CLOUD",
+    "custody": "fleet lander"
+  },
+  "pr": null
+}

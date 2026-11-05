@@ -1,0 +1,11 @@
+{
+  "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+  "command": "cloud_run npx -y @runeditrun/rer build",
+  "exit": 1,
+  "node": "22.20.0",
+  "output_sha256": "4f8eb0685d58b75ee79bca72cb3d741f38e0cb4ebcfafb4dfbb9ac0215b158d4",
+  "summary": [
+    "Log: [REDACTED]/.seed/installer/commands-5090/install.log",
+    "build: failed (exit 1)"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "command": "cloud_run pnpm build",
+  "exit": 0,
+  "node": "22.20.0",
+  "output_sha256": "256bd2b35d90badf4b7ef44ad76c9489542415d4151a1553be8e344001b38264",
+  "summary": [
+    "Your application is built",
+    "build: complete (exit 0)"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+  "results": [
+    {
+      "name": "touched-tests",
+      "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+      "command": "cloud_run pnpm test:worker tests/worker/project-report.test.ts tests/worker/workload.test.ts tests/worker/cycle-report.test.ts",
+      "exit": 0,
+      "output_sha256": "23cc41929aeac29f33a384a108e32e4db065cde79f84fc074b71c1bb637dfe22",
+      "node": "22.20.0"
+    },
+    {
+      "name": "typecheck",
+      "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+      "command": "cloud_run pnpm typecheck",
+      "exit": 0,
+      "output_sha256": "d94888a8953f4f8a9eb19084bcb02b867e9dd01accb7c3c291f6d4213e1631d7",
+      "node": "22.20.0"
+    },
+    {
+      "name": "first-party",
+      "head": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+      "command": "cloud_run npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "node": "22.20.0"
+    }
+  ]
+}

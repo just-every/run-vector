@@ -1,0 +1,46 @@
+{
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "calls": 7,
+  "last_discovery_not_before": 1793919868.5657053,
+  "run_id": 42125138769,
+  "old_candidate_discovery": {
+    "runs": [
+      {
+        "conclusion": "failure",
+        "event": "push",
+        "head_sha": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42124338135",
+        "id": 42124338135,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ],
+    "total_count": 1
+  },
+  "observations": [
+    {
+      "id": 42124338135,
+      "head_sha": "b5909b5df1f8ef002f21840f2354c77c8889ff55",
+      "status": "completed",
+      "conclusion": "failure",
+      "event": "push",
+      "failed_job": 127584603211,
+      "command": "pnpm build",
+      "error": "Missing docs inventory registration; reproduced with exit 1 and fixed by e6010126."
+    },
+    {
+      "id": 42125138769,
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "status": "in_progress",
+      "conclusion": null,
+      "event": "push"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42125138769",
+      "status": "in_progress",
+      "id": 42125138769
+    }
+  ]
+}
