@@ -1675,6 +1675,14 @@ try {
   );
   sql(`UPDATE operators SET name='Sarah Chen' WHERE id='${ids.sarah}'`);
   }
+  // The independent phase retains the same strict browser boundary even
+  // though the shared issue/auth journey runs in the original two partitions.
+  if (journeyGroup === 'projects') {
+    assert.equal(classifiedDraftConsole.length, 0, 'Project proofs inject no metadata failure');
+    assert.deepEqual(errors, []);
+    assert.deepEqual(failed, []);
+    assert.deepEqual(externalRequests, []);
+  }
   await writeFile(
     evidence + "/runtime-results.json",
     JSON.stringify({ passed: true, results, documents, requestLedger: requestLedger(sql) }, null, 2),
