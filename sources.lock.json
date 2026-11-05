@@ -8086,7 +8086,7 @@
       "executable": false
     },
     "tests/e2e/admin-audit-journey.mjs": {
-      "sha256": "63687c215e5846db9352f2b8b80ad3b00bee9efd9b3666ef9b3b0c9a54c4066d",
+      "sha256": "277ac384e99974106222b6d2dc006e6dd6ace705cd68c5e7e12ad7efedb17f01",
       "executable": false
     },
     "tests/e2e/admin-cycle-list-journey.mjs": {
