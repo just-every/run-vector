@@ -2026,7 +2026,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "db348ad5924e35275b2fd2a060260941ba06c8db04381ecf60f21cb49a77263f",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -6582,7 +6582,7 @@
       "executable": false
     },
     "src/core/features/project-dependencies/repository.ts": {
-      "sha256": "a70077e44bd1a8d125360dea75fe1b9050e5cf8524d302da1bf479d4d0d60b1a",
+      "sha256": "7de0354c930fa32f2a892e4ed8d8dc9361dd779ad56ef29e86543467cdf164d8",
       "executable": false
     },
     "src/core/features/project-dependencies/routes.ts": {

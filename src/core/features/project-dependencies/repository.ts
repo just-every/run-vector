@@ -57,7 +57,7 @@ export async function setProjectDependency(source: D1Database, actor: string, bl
       if(/invalid_project_dependency/.test(String(error)))
         throw new SettingsError('not_found','The selected record is unavailable.',404);
       // A competing identical request may have won. Re-read only duplicate or
-      // stale-edge conflicts; never retry admission, notification or I/O errors.
+      // stale-edge conflicts; never retry admission, notification or transport errors.
       if(!(error instanceof SettingsError&&error.code==='administration_conflict')||attempt===2)throw error;
     }
   }
