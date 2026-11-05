@@ -67,9 +67,10 @@ const baseSnapshotExpression = `CASE WHEN EXISTS(SELECT 1 FROM issue_relations W
 
 // Receipts acquired after an import count as later work. Old snapshots keep
 // their exact shape while no occurrence names the imported issue.
+export const recurringSnapshotExpression=relation('recurring_issue_occurrences','issue_id','due_on');
 export const snapshotExpression = 'json_patch('+baseSnapshotExpression+
   ",CASE WHEN EXISTS(SELECT 1 FROM recurring_issue_occurrences WHERE issue_id=i.id) THEN json_object('recurringOccurrences',json("+
-  relation('recurring_issue_occurrences','issue_id','due_on')+")) ELSE json('{}') END)";
+  recurringSnapshotExpression+")) ELSE json('{}') END)";
 
 export function emptyIssueValue(issue: Record<string,Json>): NativeIssueValue {
   return { issue,...Object.fromEntries(Object.keys(nativeRelations).map(name=>[name,[]])) } as NativeIssueValue;

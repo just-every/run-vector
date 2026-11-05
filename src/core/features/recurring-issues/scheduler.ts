@@ -24,14 +24,19 @@ function automationAudit(db:D1Database,row:SeriesRow,outcome:string,at:string) {
 export async function runRecurringIssues(env:{DB:D1Database},now=new Date()) {
   const raw=env.DB,at=now.toISOString()
   if(!await raw.prepare('SELECT ('+effectsAllowed+') allowed').first<number>('allowed'))return
+  // Rotate failed attempts behind older work; future series cannot fill the due batch.
   const rows=(await raw.prepare(`SELECT s.* FROM recurring_issue_series s JOIN recurring_issue_activations a ON a.series_id=s.id
-    WHERE s.state='enabled' ORDER BY s.next_on,s.id LIMIT 100`).all<SeriesRow>()).results
+    WHERE s.state='enabled' AND s.next_on<=? ORDER BY s.updated_at,s.id LIMIT 100`).bind(addDays(at.slice(0,10),1)).all<SeriesRow>()).results
   for(const row of rows) {
     let due:ReturnType<typeof dueWeek>
     try{due=dueWeek(row,now)}catch{
       // A future civil boundary can cease to exist after timezone rule changes.
       // Leave the series inert and report a symbolic error without guessing a time.
-      await raw.prepare("UPDATE recurring_issue_series SET last_error='calendar_unavailable' WHERE id=? AND version=? AND state='enabled'").bind(row.id,row.version).run()
+      try {
+        await raw.batch([seriesGuard(raw,row),raw.prepare("UPDATE recurring_issue_series SET last_error='calendar_unavailable',updated_at=? WHERE id=?").bind(at,row.id)])
+      }catch(conflict){
+        if(!/administration conflict|malformed JSON/.test(String(conflict)))throw conflict
+      }
       continue
     }
     if(!due)continue

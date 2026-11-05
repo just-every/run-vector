@@ -118,7 +118,7 @@ const recurringTeam: Resolve<string[] | null> = async request => {
 
 export const doors: Door[] = [
   {method:'GET',path:'/recurring-issues',row:null,page:'account'},
-  {method:'GET',path:'/recurring-issues/:id',row:'recurring.manage',teams:recurringTeam},
+  {method:'GET',path:'/recurring-issues/:id',row:null,page:'account'},
   {method:'POST',path:'/recurring-issues',row:'recurring.manage',teams:recurringTeam},
   {method:'PATCH',path:'/recurring-issues/:id',row:'recurring.manage',teams:recurringTeam},
   {method:'GET',path:'/settings/report-exports',row:'reports.export'},

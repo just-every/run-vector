@@ -713,6 +713,10 @@
       "sha256": "d775b7d37759513414737ba7e825b277968a2492483f881e7f1514307df20e7a",
       "executable": false
     },
+    "docs/RECURRING-ISSUES.md": {
+      "sha256": "903980e42baa007d354cb3e1b02a60ff1dbbff701e48c646f90dde0bc01d3e05",
+      "executable": false
+    },
     "docs/retained-verification/ui/1440-app.png": {
       "sha256": "2ed915f0e7da154d5af588cbf763abca616fec96ab5944ebbb68e06de85e6159",
       "executable": false
@@ -4726,11 +4730,11 @@
       "executable": false
     },
     "src/core/features/data/import/native-snapshot.ts": {
-      "sha256": "0d343675219f7af08fd422266f6644addaf9d6333e5c042f7676289e91c57588",
+      "sha256": "470e8803cb51248f705409c622ffa53908a3fb95290a77c4ef907c1a78b8b20f",
       "executable": false
     },
     "src/core/features/data/import/native-targets.ts": {
-      "sha256": "4cabfaa64638e473944ed3ec34f2828d73d8cb9d7797cba5f666934cd98b77f5",
+      "sha256": "9609992f317fbef4becd593bece06d1fbca9c7cd7ed7f0b36750f77d47466241",
       "executable": false
     },
     "src/core/features/data/import/plane.ts": {
@@ -6770,7 +6774,7 @@
       "executable": false
     },
     "src/core/features/recurring-issues/repository.ts": {
-      "sha256": "25bc218a2ab5dc2a0e128d8e8e1e0376b6968a9ecd30449306fc1476e6c5b2fd",
+      "sha256": "e346cd4ae34d62f81f68b86e58b1bed79853d4f2c39ac2ed3e6ffc502cba01f1",
       "executable": false
     },
     "src/core/features/recurring-issues/routes.ts": {
@@ -6778,7 +6782,7 @@
       "executable": false
     },
     "src/core/features/recurring-issues/scheduler.ts": {
-      "sha256": "da25ff13e08dfabcc8f438791fc41b2d33e1f7bf30f3b17e9dc32c70c2394c27",
+      "sha256": "8c38ee7dbbadcbf7c223c5c595e0094d47bedd7a2adf91dd4d5da761ad074326",
       "executable": false
     },
     "src/core/features/recurring-issues/schema.ts": {
@@ -6870,7 +6874,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "2265fa7e147674ea3a5a55e3c31d9aacc0bd6ea0037677206c7b4e6a60faa91d",
+      "sha256": "343cd74aca4a9a34ac4a7d5e020a2145c3e62cd9465740ca0c484344a18f0be8",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -9570,7 +9574,7 @@
       "executable": false
     },
     "tests/worker/recurring-issues.test.ts": {
-      "sha256": "4d72536d07534607abdbc6d1c678b9c7a032f293fef9527c77e53ff2026d2d53",
+      "sha256": "a55c0988ab74f8295e31c391be666213361b282528ef1d8e72f6f3e5ef8c8ab7",
       "executable": false
     },
     "tests/worker/reference-scenario.ts": {

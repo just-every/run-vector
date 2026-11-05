@@ -8,7 +8,7 @@ import { localTimeToInstant } from '../administration/calendar'
 import type { SeriesInput,SeriesRow } from './schema'
 
 export async function readSeriesRow(db:D1Database,actor:string,id:string) {
-  const row=await db.prepare(`SELECT s.* FROM recurring_issue_series s JOIN operators o ON o.workspace_id=s.workspace_id AND o.id=? AND o.removed_at IS NULL WHERE s.id=?`).bind(actor,id).first<SeriesRow>()
+  const row=await db.prepare(`SELECT s.* FROM recurring_issue_series s JOIN teams visible ON visible.id=s.team_id JOIN operators o ON o.workspace_id=s.workspace_id AND o.id=? AND o.removed_at IS NULL WHERE s.id=?`).bind(actor,id).first<SeriesRow>()
   if(!row)throw new SettingsError('not_found','Recurring issue is unavailable.',404)
   await recurringFence(db,actor,row.team_id)
   return row
