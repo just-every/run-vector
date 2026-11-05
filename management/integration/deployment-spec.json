@@ -760,6 +760,12 @@
       "name": "0125_issue_templates.sql",
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "sql": "-- Native templates are portable content. Applying one creates independent issues.\nCREATE TABLE issue_templates (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL,\n  defaults_json TEXT NOT NULL CHECK(json_valid(defaults_json)),\n  subissues_json TEXT NOT NULL CHECK(json_valid(subissues_json)),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE INDEX issue_templates_workspace_idx ON issue_templates(workspace_id,team_id,name,id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0126_attachment_png_dimensions.sql",
+      "sha256": "3fb17a90af7d441924b64ba2615e389a55d9ef0d63e8a247b1f2c26e46723ffa",
+      "sql": "-- Intrinsic PNG dimensions are portable attachment metadata. Historical files retain NULL.\nALTER TABLE issue_files ADD COLUMN image_width INTEGER CHECK(image_width IS NULL OR image_width > 0);\nALTER TABLE issue_files ADD COLUMN image_height INTEGER CHECK(image_height IS NULL OR image_height > 0);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
