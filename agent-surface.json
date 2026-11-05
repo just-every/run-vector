@@ -143,6 +143,18 @@
       "clauses": [
         "INTAKE-007"
       ]
+    },
+    {
+      "name": "vector.comment.delete",
+      "scope": "comments:delete",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "ISSUE-008",
+        "BASE-AGENT-006"
+      ]
     }
   ],
   "resources": [
@@ -565,6 +577,56 @@
           }
         }
       ]
+    },
+    {
+      "id": "delete_comment",
+      "tool": "vector.comment.delete",
+      "args": {
+        "identifier": {
+          "$from": "create",
+          "pointer": "/identifier"
+        },
+        "itemId": {
+          "$from": "comment",
+          "pointer": "/commentId"
+        },
+        "expectedVersion": 0,
+        "expected_revision": 0
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "target": {
+        "kind": "comment",
+        "id": {
+          "$from": "comment",
+          "pointer": "/commentId"
+        }
+      },
+      "inject": {
+        "classes": [
+          "standard"
+        ],
+        "internal": true,
+        "confirmExternal": true,
+        "confirmed": true,
+        "measure": 0
+      },
+      "resource": {
+        "uriTemplate": "vector://comment/{id}",
+        "state": {
+          "id": {
+            "$from": "comment",
+            "pointer": "/commentId"
+          },
+          "body": null
+        }
+      }
     }
   ],
   "verification": {

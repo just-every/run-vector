@@ -178,7 +178,7 @@ export async function changeComment(
     db.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('discussion access denied') END`).bind(issue.id,actor),
     db
       .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at) SELECT ?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM issue_comments WHERE id=? AND issue_id=? AND deleted_at IS NULL)`,
+        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json) SELECT ?,?,?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM issue_comments WHERE id=? AND issue_id=? AND deleted_at IS NULL)`,
       )
       .bind(
         activityId,
@@ -188,6 +188,10 @@ export async function changeComment(
         JSON.stringify({ id }),
         now,
         now,
+        currentAgentActor()?.actor.label ?? null,
+        agentActivity().agentId,
+        agentActivity().agentOperationId,
+        agentActivity().agentApproversJson,
         id,
         issue.id,
       ),

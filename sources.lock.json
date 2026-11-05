@@ -494,7 +494,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "a765b18d548f2dd7c0cc1a7ef63fcd36525c79e68685d6e55eeff4611f1f305c",
+      "sha256": "ddd350ca32708a87051a6c3e26b5e3ab4ef6cbcca6a564539c9aa528357104d8",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -4205,6 +4205,10 @@
       "sha256": "c75b9accb1bf61a3e8ee55a3be48c30e38cbf7db7cb65b8727f9224286e33969",
       "executable": false
     },
+    "src/core/features/agent-door/comment-tools.ts": {
+      "sha256": "aabc02628392073cd255dc7e618e368d4b444eeea92fddc23abb86f375c5108c",
+      "executable": false
+    },
     "src/core/features/agent-door/issue-tools.ts": {
       "sha256": "8ec789b7bca7f5d4ecd2fb4a938ca1d0425590f57403da532de156adaef5ed5a",
       "executable": false
@@ -4214,7 +4218,7 @@
       "executable": false
     },
     "src/core/features/agent-door/native.ts": {
-      "sha256": "cb281ed7c886473318283de294059385e42617380b7242fa95af54b7ca8ec744",
+      "sha256": "357f58aa7222fe4b16e52450ba350013a8819bba6f8b3fd15fa183d760df36ee",
       "executable": false
     },
     "src/core/features/agent-door/people.ts": {
@@ -4226,7 +4230,7 @@
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
-      "sha256": "22ea4fc8cb216decc4279fca91184089d5a8bcfbd13b5544c9ebf4f3ef60baaf",
+      "sha256": "2d93b42218a40c78ea7733f7d207be796dec2aa2b485d708668c15c662a43159",
       "executable": false
     },
     "src/core/features/agent-door/schemas.ts": {
@@ -4930,7 +4934,7 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "86e099f00ad528302496f60fee92c3695fe9339d646c39e642ed3c8699352c41",
+      "sha256": "afd0fa634a201a3c8b4df03aa4ee35cd5389ce2d35ebec1e1e5a95e28145915f",
       "executable": false
     },
     "src/core/features/discussion/revision.ts": {
@@ -8197,6 +8201,10 @@
       "sha256": "41d797cde965cec59a66e98300058305ab67e594bd7e7e5c195512a80051291e",
       "executable": false
     },
+    "tests/e2e/core-agent-destructive-journey.mjs": {
+      "sha256": "a20ca0a1e0ebd6adcc66a09a1c76934dca4307fa393be4c6827b23e25e1df9eb",
+      "executable": false
+    },
     "tests/e2e/core-agent-resource-parity.mjs": {
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
@@ -8322,7 +8330,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "484dbf89c7ff2ce1522bfb1fb06245bae7cbc0b2e7609c3122bf5087ef646d1b",
+      "sha256": "4878b9c3d3c5b0cc63ff783c980f4cb39ce9a7ec4eb96ff4445c5b2b1389cbfb",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8971,6 +8979,10 @@
     },
     "tests/worker/agent-audit-retention.test.ts": {
       "sha256": "e7009a5cd127d8cab6018ff6fb645059479652d0593e93bf41f38fae0793a6f4",
+      "executable": false
+    },
+    "tests/worker/agent-destructive-class.test.ts": {
+      "sha256": "2a598f63045585cd215a66f13056407e0207dbc0806aa3d79eb1404d001f2f59",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {

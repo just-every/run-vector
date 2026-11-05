@@ -6,7 +6,7 @@ import { requireIssueAccess } from '../issues/access';
 import { tokenPredicate } from '../integrations/tokens';
 
 /** The UI's registered role-matrix decision and its transaction fence. */
-export async function nativeDatabase(ctx: ToolContext, method: 'GET'|'POST'|'PATCH', path: string, params: Record<string,string>, body: unknown) {
+export async function nativeDatabase(ctx: ToolContext, method: 'GET'|'POST'|'PATCH'|'DELETE', path: string, params: Record<string,string>, body: unknown) {
   const admitted=await actionAuthority(ctx.db,ctx.person.id,method,path,params,body);
   if(admitted.decision!=='allow') throw new ToolRefusal(admitted.decision==='hidden'?'not_found':'forbidden');
   const state=await ctx.db.prepare('SELECT envelope,local_document,local_revision FROM agent_door_state WHERE id=1').first<{envelope:string|null;local_document:string|null;local_revision:number}>();
