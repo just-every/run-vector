@@ -66,6 +66,7 @@ export async function triageRoutingJourney({ page, runtime, clause, evidence, pe
     await page.keyboard.press("ArrowUp");
     assert.equal((await reordered).status(), 200);
     await expect(rules.getByText(`Revision 3 · saved by ${ownerName}`, { exact: true })).toBeVisible();
+    await settleReads(page);
     await page.reload();
     await expect(region(page).getByRole("button", { name: "Add routing rule", exact: true })).toBeEnabled();
     assert.deepEqual(await ruleNames(region(page)), ["Escalations", "Sentry incidents"], "order persists through reload and hydration");
