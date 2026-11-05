@@ -1,4 +1,5 @@
-import { createAgentDoor, type Trust } from '../../../../vendor/base/agent-door/index.ts';
+import { agentDocumentation } from './docs';
+import { createAgentDoor, type Trust, type AgentDoorOptions } from '../../../../vendor/base/agent-door/index.ts';
 import { createBusinessSettings } from '../../../../vendor/base/business-settings/index.ts';
 import { nativePeople } from './people';
 import { readTools, issueResource, commentResource } from './read-tools';
@@ -6,6 +7,11 @@ import { issueTools } from './issue-tools';
 import { nativeCredentials } from './local-credentials';
 import type { WorkerBindings } from '../../app/bindings';
 
+export const agentName='Vector';
+export const specialist='software delivery coordinator';
+export const limits={requestsPerMinute:600,maxBodyBytes:1048576};
+export const nativeTools=[...readTools,...issueTools];
+export const nativeResources=[issueResource,commentResource];
 export const capabilities=['tools','policy','pause','audit','idempotency','resources'] as const;
 export const notTools=[
   {clauses:['DATA-002','DATA-003'],reason:'import-door' as const},
@@ -29,14 +35,18 @@ export async function businessSettings(env:WorkerBindings) {
   }
   return createBusinessSettings({db:env.DB,trust:config,business:{settings:1,values:['display_name']}});
 }
+export function vectorAgentOptions(env:WorkerBindings):AgentDoorOptions {
+  return {seed:'vector',name:agentName,specialist,limits,db:env.DB,origin:env.APP_ORIGIN,trust:trust(env),capabilities,people:nativePeople(env),tools:nativeTools,resources:nativeResources,notTools,...nativeCredentials(env.DB)};
+}
 export function vectorAgentDoor(env:WorkerBindings) {
-  return createAgentDoor({seed:'vector',name:'Vector',specialist:'software delivery coordinator',db:env.DB,origin:env.APP_ORIGIN,trust:trust(env),capabilities,people:nativePeople(env),tools:[...readTools,...issueTools],resources:[issueResource,commentResource],notTools,...nativeCredentials(env.DB)});
+  return createAgentDoor(vectorAgentOptions(env));
 }
 /** Recognized requests run before cookie-only app admission and SPA routing. */
 export async function agentResponse(env:WorkerBindings,request:Request):Promise<Response|null> {
   const path=new URL(request.url).pathname;
-  if(!['/mcp','/agents','/agent.json','/llms.txt','/rer-business-logo','/rer-business.css'].includes(path) && !path.startsWith('/.well-known/') && !path.startsWith('/api/rer/') && !path.startsWith('/agents/'))return null;
+  if(!['/docs/agents','/mcp','/agents','/agent.json','/llms.txt','/rer-business-logo','/rer-business.css'].includes(path) && !path.startsWith('/.well-known/') && !path.startsWith('/api/rer/') && !path.startsWith('/agents/'))return null;
   try {
+    if(path==='/docs/agents')return await agentDocumentation(vectorAgentOptions(env),request);
     if(path==='/api/rer/business-settings' && !await env.DB.prepare(`SELECT 1 FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
       JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id WHERE o.removed_at IS NULL AND a.status='active'`).first())return Response.json({code:'native_owner_required'},{status:403});
     return await (await businessSettings(env)).handle(request) ?? await vectorAgentDoor(env).handle(request);}
