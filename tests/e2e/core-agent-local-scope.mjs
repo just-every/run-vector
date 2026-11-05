@@ -117,8 +117,15 @@ export async function agentLocalScopeJourney({page,context,base,state,sql,eviden
         }
         const allowed=await rpc(person.write.token,'vector.issue.concurrent_edits',{...args,...forged});
         assert.equal(allowed.response.status,200);assert.equal(allowed.body.error,undefined);assert.equal(allowed.body.result.isError,false);
+        assert.equal(allowed.response.headers.get('www-authenticate'),null);
+        assert.deepEqual(allowed.body.result.structuredContent,{id:issue.id,identifier:issue.identifier,version:native.version+1});
         assert.equal(allowed.body.result._meta['com.runeditrun/decision'].disposition,disposition);
         const after=await raw(person.context,path);assert.equal(after.title,args.change.title);assert.equal(after.version,native.version+1);
+        const reread=await rpc(person.read.token,'vector.issue.activity_history',{identifier:issue.identifier});
+        assert.equal(reread.response.status,200);assert.equal(reread.body.result.isError,false);
+        assert.equal(reread.body.result.structuredContent.title,args.change.title);assert.equal(reread.body.result.structuredContent.version,after.version);
+        const retained=(await raw(person.context,'/api/settings/integrations/tokens')).tokens.find(t=>t.id===person.read.credential.id);
+        assert.deepEqual(JSON.parse(retained.scopes),['issues:read']);
         const row=(await owner('/agents/api/audit')).rows.find(r=>r.agent.id==='vector-token:'+person.write.credential.id&&r.idempotency_key===args.idempotency_key);
         assert.equal(row.sponsor.id,person.id);assert.equal(row.outcome,'done');assert.equal(row.decision,disposition);
         assert.deepEqual(row.scopes,['issues:write']);if(disposition==='review')assert.ok(row.review.id);

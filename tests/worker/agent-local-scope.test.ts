@@ -77,8 +77,15 @@ it('Settings-issued Owner and Member read grants refuse native MCP edits without
       expect(allowed.response.headers.get('www-authenticate')).toBeNull();
       expect(allowed.body.error).toBeUndefined();
       expect(allowed.body.result.isError).toBe(false);
+      expect(allowed.body.result.structuredContent).toEqual({id:issue.id,identifier:issue.identifier,version:native.version+1});
       expect(allowed.body.result._meta['com.runeditrun/decision'].disposition).toBe(disposition);
       expect(await json(await person.call(path))).toMatchObject({title:change.title,version:native.version+1});
+      const reread=await rpc(read.token,'vector.issue.activity_history',{identifier:issue.identifier});
+      expect(reread.response.status).toBe(200);
+      expect(reread.body.result.isError).toBe(false);
+      expect(reread.body.result.structuredContent).toMatchObject({id:issue.id,title:change.title,version:native.version+1});
+      const retained=(await json(await person.call('/settings/integrations/tokens'))).tokens.find((t:any)=>t.id===read.credential.id);
+      expect(JSON.parse(retained.scopes)).toEqual(['issues:read']);
       const row=(await audit()).rows.find((r:any)=>r.agent.id==='vector-token:'+write.credential.id&&r.idempotency_key===args.idempotency_key);
       expect(row).toMatchObject({sponsor:{id:person.id},scopes:['issues:write'],outcome:'done',code:null,decision:disposition,resource:{kind:'issue',id:issue.id}});
       if(disposition==='review')expect(row.review.id).toEqual(expect.any(String));

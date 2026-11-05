@@ -8198,7 +8198,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-local-scope.mjs": {
-      "sha256": "a34f3043681f4ce85261d6b94e52508443bdd809720b3abdee7ea7187690fefd",
+      "sha256": "7ebc542da745b4bdc51fd43efc6769dea148d52b4401f08cd5e66d78bd6c0b5f",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {
@@ -8978,7 +8978,7 @@
       "executable": false
     },
     "tests/worker/agent-local-scope.test.ts": {
-      "sha256": "1c8df3850339673f8ba0967075f4b369f5a8549df15fcd494f027ad2d898d6e4",
+      "sha256": "93f0ff638314d7b262ebe4e9c0350e91d454b5b793d5e38fa77407299a9eea7d",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
