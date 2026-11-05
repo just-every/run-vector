@@ -3,6 +3,7 @@ import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
 import { poll } from "./admin-runtime-support.mjs";
 import { openDisclosures } from "./ui-controls-checks.mjs";
+export { severityFieldJourney } from "./custom-fields-journey.mjs";
 export async function createAdministrationIssue({
   page,
   runtime,

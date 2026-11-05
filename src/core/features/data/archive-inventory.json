@@ -2247,5 +2247,24 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "custom_field_definitions": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "name",
+    "description",
+    "type",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "custom_field_options": [
+    "id",
+    "field_id",
+    "name",
+    "position",
+    "created_at",
+    "updated_at"
   ]
 }

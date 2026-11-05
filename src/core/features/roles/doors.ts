@@ -255,6 +255,8 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/labels/:id/merge', row: 'labels.manage' },
   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
+  { method: 'POST', path: '/settings/teams/:id/custom-fields', row: 'custom-fields.team', teams: team('id') },
+  { method: 'PATCH', path: '/settings/teams/:id/custom-fields/:fieldId', row: 'custom-fields.team', teams: team('id') },
   // Intake and triage
   { method: 'POST', path: '/intake', row: 'intake.create', teams: bodyTeam },
   ...(['accept', 'defer', 'decline', 'return'] as const).map((action): Door => ({ method: 'POST', path: '/issues/:identifier/' + action, row: 'intake.decide', teams: issue })),

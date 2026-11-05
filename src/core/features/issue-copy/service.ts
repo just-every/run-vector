@@ -11,6 +11,7 @@ import { copyIssueSchema, CopyConflict, type CopyIssueInput } from "./schema";
 import { readCopySnapshot, copySnapshotSql } from "./snapshot";
 import { copyDestination, mapCopyValues } from "./mapping";
 import { getIssueDetail } from "../issues/service";
+import { currentFieldValues } from "../custom-fields/validation";
 
 export async function copyIssue(
   source: D1Database,
@@ -97,6 +98,7 @@ export async function copyIssue(
       AND (? IS NULL OR EXISTS(SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE m.id=? AND m.project_id=? AND p.workspace_id=?))
       AND (? IS NULL OR EXISTS(SELECT 1 FROM cycles c JOIN teams t ON t.id=c.team_id WHERE c.id=? AND c.team_id=? AND t.cycles_enabled=1 AND c.closed_at IS NULL))
       AND NOT EXISTS(SELECT value FROM json_each(?) WHERE NOT EXISTS(SELECT 1 FROM labels WHERE id=value AND workspace_id=?))
+      AND ${currentFieldValues("?")}
       THEN 1 ELSE json('copy option changed') END`,
         )
         .bind(
@@ -112,6 +114,8 @@ export async function copyIssue(
           teamId,
           JSON.stringify(mapped.labels),
           original.workspace_id,
+          JSON.stringify(mapped.fieldValues),
+          teamId,
         ),
     );
     writes.push(
@@ -226,10 +230,7 @@ export async function copyIssue(
       identifier: plan.row.identifier,
       status: { from: plan.row.status_id, to: target.status_id },
       labels: plan.mapped.labels.map((id) => ({ from: id, to: id })),
-      customFields: Object.keys(plan.mapped.customFields).map((key) => ({
-        from: key,
-        to: key,
-      })),
+      customFields: plan.mapped.customFieldMappings,
     })),
     droppedValues: allocated.flatMap((plan) => plan.mapped.dropped),
   };

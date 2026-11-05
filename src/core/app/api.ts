@@ -50,6 +50,7 @@ import { drainNotificationMail } from '../features/notifications/mail';
 import { deliverCommittedDirectMessages } from '../features/integrations/outbound';
 import { fileSettlementDatabase } from '../features/auth/mutation-database';
 import { addAdministrationRoutes } from '../features/administration/routes';
+import { addCustomFieldRoutes } from '../features/custom-fields/routes';
 import { addTeamMembershipRoutes } from '../features/team-membership/routes';
 import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
 import { mutationDatabase, isMutationAccessError, RestoreReservationError, AuthorityChangedError, VisibilityChangedError } from "../features/auth/mutation-database";
@@ -396,6 +397,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addViewRoutes(app);
   addPreferenceRoutes(app);
   addAdministrationRoutes(app);
+  addCustomFieldRoutes(app);
   addTriageResponsibilityRoutes(app);
   addTeamMembershipRoutes(app);
   addIssueCopyRoutes(app);

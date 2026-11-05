@@ -59,6 +59,21 @@ activity. Lists accept `start=this_week`, `start=range` with `startFrom` and
 `startTo`, `start=none`, or `start=overdue` (before today), and `sort=start`.
 Week boundaries use the workspace timezone, Monday through Sunday.
 
+## Team custom fields (FIELD-001)
+
+A team's owners, Owners and Admins, or every team member while the team's *Who
+manages team settings* is All team members, define single-select fields in
+Settings → Teams → Fields (`POST /api/settings/teams/TEAM_ID/custom-fields` and
+`PATCH .../custom-fields/FIELD_ID` with `expectedVersion`). A name is unique in
+its team; options keep their ids when renamed and new options are added last.
+`GET /api/v1/metadata` lists each visible team's `customFields` with option ids,
+and an issue's `fields` lists its team's fields. Set a value through
+`customFields` on issue create or update: the field id maps to an option id, and
+`null` clears it. Numbers, unknown options and other teams' fields return 400
+without a change; each actual change is one attributed activity entry with the
+previous and new option ids. Untyped legacy keys are stored as sent. Imports do
+not map source columns onto team fields yet and report them as omitted.
+
 ## Project planning
 
 Project create accepts `name`, `description`, `leadOperatorId`, `startDate`,
@@ -96,8 +111,11 @@ the command palette open the same review form.
 The 201 response contains `issue`, `copies` (source and new identifiers),
 `mappings` (source/destination status, labels and custom-field keys), and
 `droppedValues` (source identifier, field, original value and reason). Every new
-issue starts in the destination's first Backlog status. Labels and custom fields
-are workspace scoped and map unchanged between teams. A cross-team cycle is
+issue starts in the destination's first Backlog status. Labels and untyped
+custom-field keys are workspace scoped and map unchanged between teams. A team
+custom field (FIELD-001) keeps its field and option ids when the copy stays in
+its team; copied into another team, its value is dropped, mapped to `null` and
+reported as `customFields.FIELD_ID`. A cross-team cycle is
 dropped and reported; a same-team open cycle is preserved. A closed or missing
 cycle, or an unavailable project, is also reported when dropped.
 
