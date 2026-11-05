@@ -1,3 +1,4 @@
+import {projectUpdateInput} from '../../src/core/features/project-updates/schema';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -170,6 +171,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    const releasePath=method==='POST'?'/releases':method==='PATCH'?'/releases/:id':'/releases/:id/scope';
    both(method,releasePath,releasePath,method==='POST'?{name:'synthetic-vector-31039',teamId:w.team.id}:method==='PATCH'?{expectedVersion:release.version,description:'synthetic-vector-31040'}:{expectedVersion:release.version,issueIdentifiers:[issue.identifier],projectIds:[project.id]},{id:release.id});
   }
+  native('POST','/projects/:projectId/updates',projectUpdateInput.parse({id:createUlid(new Date()),status:'at-risk',body:'synthetic-vector-31105'}),{projectId:project.id});
   native('POST','/documents',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31102',body:'synthetic-vector-31102'});
   native('PATCH','/documents/:documentId',{expectedVersion:document.version,body:'synthetic-vector-31103'},{documentId:document.id});
   native('POST','/documents/:documentId/comments',{body:'synthetic-vector-31104'},{documentId:document.id});

@@ -24,6 +24,11 @@ CREATE TRIGGER project_update_identity BEFORE INSERT ON project_updates
 WHEN EXISTS(SELECT 1 FROM project_updates old WHERE old.id=NEW.id AND
  (old.project_id IS NOT NEW.project_id OR old.author_operator_id IS NOT NEW.author_operator_id
   OR old.status IS NOT NEW.status OR old.body IS NOT NEW.body))
+ OR EXISTS(SELECT 1 FROM project_activity activity WHERE activity.id=NEW.id AND
+  (activity.project_id IS NOT NEW.project_id OR activity.kind IS NOT 'project.update_posted'
+   OR activity.actor_operator_id IS NOT NEW.author_operator_id
+   OR json_extract(activity.next_value_json,'$.updateId') IS NOT NEW.id
+   OR json_extract(activity.next_value_json,'$.status') IS NOT NEW.status))
 BEGIN
  SELECT RAISE(ABORT,'project_update_conflict');
 END;

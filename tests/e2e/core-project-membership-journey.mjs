@@ -1,3 +1,5 @@
+import { projectUpdatesJourney } from './core-project-updates-journey.mjs';
+export { projectUpdatesJourney } from './core-project-updates-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {initiativesJourney} from './initiatives-journey.mjs';
 import {releasesJourney} from './releases-journey.mjs';
@@ -35,6 +37,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
     });
     assert.equal(minted.status(), 201);
     const { token } = await minted.json();
+    await projectUpdatesJourney(page,context,base,capture,state);
     await contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId:member.operatorId});
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });

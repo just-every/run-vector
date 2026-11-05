@@ -49,7 +49,7 @@ export function ProjectUpdates({project,onChanged}:{project:ProjectDetailData;on
     </form>}
     {project.updates.length===0?<p>No updates yet.</p>:<ol className="project-updates__list">
       {project.updates.map(update=><li key={update.id}><article id={'update-'+update.id} tabIndex={-1} aria-label={'Project update '+updateStatusLabels[update.status]}>
-        <header><h3>Stated status: {updateStatusLabels[update.status]}</h3>
+        <header><div className="project-updates__comparison"><h3>Stated status: {updateStatusLabels[update.status]}</h3><p>Computed health: <strong>{activeHealthLabel(project.health)??'No active health'}</strong></p></div>
           <p>{update.authorName} · <time dateTime={update.createdAt}>{dateTime(update.createdAt)}</time></p></header>
         <SafeMarkdown>{update.body}</SafeMarkdown>
       </article></li>)}

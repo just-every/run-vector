@@ -13,6 +13,8 @@ export function addProjectUpdateRoutes(app:Hono<AppEnvironment>) {
     try {return c.json(await postProjectUpdate(c.env.DB,c.get('operatorId'),project.data,input.data),201);}
     catch(error) {
       if(error instanceof Error&&error.message.includes('project_update_conflict'))throw new IntegrationError(409,'project_update_conflict');
+      if(!await c.env.DB.prepare('SELECT id FROM projects WHERE id=?').bind(project.data).first())
+        throw new IntegrationError(404,'project_not_found');
       throw error;
     }
   });

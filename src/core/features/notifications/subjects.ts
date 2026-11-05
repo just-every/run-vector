@@ -1,5 +1,5 @@
-/** Both subjects use the request's current visibility projections before paging
- * or counting. Document events are Inbox-only until channel integrations ship. */
+/** Every subject uses the request's current visibility projection before paging
+ * or counting. Document and project update events currently qualify Inbox only. */
 export const inboxSubjects=`SELECT n.id,n.event_id eventId,i.identifier,i.title,NULL documentId,NULL projectId,NULL projectUpdateId,n.actor_name actor,
  (SELECT kind FROM issue_activity WHERE id=n.event_id) sourceEventKind,n.causes_json causesJson,n.created_at createdAt,n.read_at readAt,
  s.until_at snoozedUntil,s.until_change snoozeOnChange,COALESCE(s.returned_at,n.created_at) visibleAt,

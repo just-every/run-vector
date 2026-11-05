@@ -10,3 +10,6 @@
 .project-updates__list h3 { margin: 0; font-size: 15px; }
 .project-updates__list header p { font-size: 13px; }
 .project-updates .markdown-body { min-width: 0; }
+
+.project-updates__comparison { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 24px; }
+.project-updates__comparison p { margin: 0; font-size: 14px; }

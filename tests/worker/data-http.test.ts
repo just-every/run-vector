@@ -1,3 +1,4 @@
+import {createUlid} from '../../src/core/shared/ids';
 import {mentionToken} from '../../src/core/features/notifications/mention-token';
 import { auditSchema } from '../../src/core/features/audit/schema';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -34,6 +35,13 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const migrationDigests=inject('migrationDigests') as Record<string,string>;
  const documentResponse=await f.call('/documents','POST',{parentKind:'issue',parentId:f.issue.id,title:'synthetic-vector-portable-mention',body:mentionToken({id:f.peer,name:'synthetic-vector-peer'})});
  expect(documentResponse.status).toBe(201);const portableDocument=await documentResponse.json() as {id:string;version:number;body:string};
+ const projectFollowing=await request('/api/subscriptions','POST',{subjectType:'project',subjectId:f.project.id},peer);expect(projectFollowing.status).toBe(201);
+ const updateInput={id:createUlid(new Date()),status:'at-risk',body:'## synthetic-vector-portable-update\n\nRetain the **exact** project receipt.'};
+ const updateResponse=await f.call('/projects/'+f.project.id+'/updates','POST',updateInput);expect(updateResponse.status).toBe(201);const portableUpdate=await updateResponse.json() as any;
+ const updateTables=['project_updates','project_update_notifications'];
+ const updateHistory=await Promise.all(updateTables.map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+ expect(updateHistory[0]).toContainEqual(expect.objectContaining({id:portableUpdate.id,body:updateInput.body}));
+ expect(updateHistory[1]).toContainEqual(expect.objectContaining({update_id:portableUpdate.id,project_id:f.project.id,recipient_id:f.peer}));
  const documentTables=['document_followers','document_mentions','document_notification_events','document_notifications'];
  const documentHistory=await Promise.all(documentTables.map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
  expect(documentHistory[0]).toContainEqual(expect.objectContaining({document_id:portableDocument.id,operator_id:f.peer}));
@@ -172,6 +180,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
  expect(await Promise.all(documentTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(documentHistory);
+ const restoredUpdateProject=await targetCall('/api/projects/'+f.project.id,'GET',undefined,historical);expect(restoredUpdateProject.status).toBe(200);expect((await restoredUpdateProject.json() as any).updates).toContainEqual(portableUpdate);
+ for(const [index,table] of updateTables.entries())expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results).toEqual(updateHistory[index]);
+ const updateReplay=await targetCall('/api/projects/'+f.project.id+'/updates','POST',updateInput,historical);expect(updateReplay.status).toBe(201);
+ for(const [index,table] of updateTables.entries())expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results).toEqual(updateHistory[index]);
  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);
 
  expect(await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json()).toMatchObject({destinations:expect.arrayContaining([expect.objectContaining({id:f.webhook,...commentSubscriptions,requiresReentry:1})])});
