@@ -8202,7 +8202,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-destructive-journey.mjs": {
-      "sha256": "7f25d81d4f8490e0b198d3bfc74bc03bce936f883fcbbd4626b189f78ec1febe",
+      "sha256": "f5529e86a9a32ccebf42e967ebfa296752eb20bdb595e1e80fe078b3927ca47f",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {
@@ -8746,7 +8746,7 @@
       "executable": false
     },
     "tests/e2e/role-ui-support.mjs": {
-      "sha256": "82cb37278879817e9b5b386d949ee5c7ebcf3aa360fa9282d1df32d990d1f97b",
+      "sha256": "16d08c9b132b98d492ee37d1fc232865789fa20ca60cefca8ff3b7dbaee26525",
       "executable": false
     },
     "tests/e2e/route-fetch.mjs": {

@@ -33,8 +33,24 @@ export function roleScreens(evidence) {
           if (["fixed", "sticky"].includes(getComputedStyle(element).position) && !root.contains(element) && !element.contains(root))
             element.setAttribute("data-capture-hidden", "");
       });
-      await region.screenshot({ path: resolve(folder, `${name}-${width}.png`), style: "[data-capture-hidden] { visibility: hidden !important; }" });
-      await page.evaluate(() => document.querySelectorAll("[data-capture-hidden]").forEach((element) => element.removeAttribute("data-capture-hidden")));
+      // Agent pages require a nonce for styles, just as they do for the axe
+      // script above. Keep capture CSS within that same page policy.
+      await page.evaluate(() => {
+        const style = document.createElement("style");
+        const nonce = document.querySelector("script[nonce]")?.nonce;
+        if (nonce) style.nonce = nonce;
+        style.dataset.roleCaptureStyle = "true";
+        style.textContent = "[data-capture-hidden] { visibility: hidden !important; }";
+        document.head.append(style);
+      });
+      try {
+        await region.screenshot({ path: resolve(folder, `${name}-${width}.png`) });
+      } finally {
+        await page.evaluate(() => {
+          document.querySelectorAll("[data-role-capture-style]").forEach((element) => element.remove());
+          document.querySelectorAll("[data-capture-hidden]").forEach((element) => element.removeAttribute("data-capture-hidden"));
+        });
+      }
     }
   };
 }

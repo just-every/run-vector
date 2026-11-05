@@ -14,7 +14,10 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
   });
   const member=await inviteReader({owner:page,browser:context.browser(),runtime:{base,state,sql},
     name:marker+'-sponsor',email:[marker,'vector.test'].join(String.fromCharCode(64)),role:'member'});
-  const errors=[],external=[];trackRequests(member.page);
+  const errors=[],external=[],ownerErrors=[];trackRequests(member.page);
+  const ownerConsole=message=>{if(message.type()==='error')ownerErrors.push(message.text());};
+  const ownerPageError=error=>ownerErrors.push(error.message);
+  page.on('console',ownerConsole);page.on('pageerror',ownerPageError);
   member.page.on('console',message=>{if(message.type()==='error')errors.push(message.text());});
   member.page.on('requestfailed',request=>errors.push(request.failure()?.errorText));
   await member.context.route('**/*',async route=>{
@@ -146,8 +149,8 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
     await owner(`/api/settings/teams/${team.id}/members/${member.id}`,'PUT',{role:'member'});
     await member.api('/settings/integrations/tokens/'+grant.credential.id,'DELETE');
     const revokedBefore=storage(),revoked=await call(refusedArgs);assert.equal(revoked.status,401);assert.equal(revoked.body.result,undefined);assert.deepEqual(storage(),revokedBefore);
-    assert.deepEqual(member.errors,[]);assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
+    assert.deepEqual(member.errors,[]);assert.deepEqual(errors,[]);assert.deepEqual(ownerErrors,[]);assert.deepEqual(external,[]);
     await writeFile(evidence+'/agent-destructive.json',JSON.stringify({passed:true,receipts,computedPolicyRefusal:true,writeScopeDoesNotDelete:true,privateWithdrawal:true,revokedGrant:true,widths:[1440,390]},null,2));
     record('BASE-AGENT-006','One persisted comment is destructive with count 1 through MCP; native deletion parity, held signed-in approval, retained replies and attributed tombstones, policy refusal and current credential admission are proved. Other classes remain unqualified.');
-  } finally {await member.context.close();}
+  } finally {page.off('console',ownerConsole);page.off('pageerror',ownerPageError);await member.context.close();}
 }
