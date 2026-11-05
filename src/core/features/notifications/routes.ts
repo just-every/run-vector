@@ -1,3 +1,4 @@
+import { readableRemovedOperatorIds } from "./removed-mentions";
 import { channelDefaults, channelPreferences, saveChannelDefaults, saveChannelPreferences } from "./channel-preferences";
 import { channelDefaultsInputSchema, channelPreferencesInputSchema } from "./channel-schema";
 import { visibleDirectoryPerson } from '../roles/visibility-sql';
@@ -224,8 +225,7 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
             .bind(access.workspace_id,c.get("operatorId"))
             .all()
         ).results,
-        removedOperatorIds: (await c.env.DB.prepare("SELECT id FROM operators WHERE workspace_id=? AND removed_at IS NOT NULL")
-          .bind(access.workspace_id).all<{ id: string }>()).results.map(person => person.id),
+        removedOperatorIds: await readableRemovedOperatorIds(c.env.DB, access.workspace_id, access.role === 'guest'),
       };
     }),
   );
