@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "clause": "HOME-001",
+      "passed": true,
+      "detail": "Installed Lobby server-renders its heading and sign-in action for the persisted owner claim; metadata and assets verified."
+    },
+    {
+      "clause": "RENDER-404",
+      "passed": true,
+      "detail": "Unknown documents/assets/dev paths and unsupported host return genuine 404, including navigate requests."
+    },
+    {
+      "clause": "RENDER-SSR",
+      "passed": true,
+      "detail": "Initial private HTML renders bound native identity; changed D1 name appears in the next raw document."
+    },
+    {
+      "clause": "BASE-ACCESS-002",
+      "passed": true,
+      "detail": "Missing, expired and revoked native sessions denied on known/unknown Hono APIs, all private document families and the only generated function; same-wire positive control and raw matrix retained."
+    },
+    {
+      "clause": "CORE-PERSISTENCE",
+      "passed": true,
+      "detail": "Created/updated issue, native session, comment and R2 file survive emitted runtime restart; stale update changes nothing."
+    },
+    {
+      "clause": "BASE-OPS-005",
+      "passed": true,
+      "detail": "Actual emitted scheduled export recovers a persisted file-removal intent; download denies removed bytes, metadata is erased, and repeated local cron produces one deletion audit."
+    },
+    {
+      "clause": "TRIAGE-004",
+      "passed": true,
+      "detail": "request-form-author-1440"
+    },
+    {
+      "clause": "TRIAGE-004",
+      "passed": true,
+      "detail": "request-form-author-390"
+    },
+    {
+      "clause": "TRIAGE-004",
+      "passed": true,
+      "detail": "request-form-submit-1440"
+    },
+    {
+      "clause": "TRIAGE-004",
+      "passed": true,
+      "detail": "request-form-submit-390"
+    },
+    {
+      "clause": "TRIAGE-004",
+      "passed": true,
+      "detail": "request-form-saved-1440"
+    },
+    {
+      "clause": "TRIAGE-004",
+      "passed": true,
+      "detail": "request-form-saved-390"
+    }
+  ]
+}

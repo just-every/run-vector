@@ -1,0 +1,70 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f188",
+  "head": "054db03cc1b5e61e0d7616e51a8bf8a7d31ff863",
+  "recordedAt": "2026-11-05T22:58:59.161864+00:00",
+  "checks": [
+    {
+      "command": "cloud_run timeout 900 pnpm exec vitest run --config vitest.config.ts tests/worker/request-forms.test.ts tests/worker/data-http.test.ts tests/worker/role-matrix.test.ts tests/worker/intake-policy.test.ts tests/worker/data-import-atomic.test.ts tests/worker/manual-order-import.test.ts",
+      "exit": 0,
+      "files": 6,
+      "tests": 12,
+      "log": "WORKER.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "includes": "pnpm typecheck and vite build"
+    },
+    {
+      "command": "cloud_run pnpm exec rer check --profile first-party --json",
+      "exit": 0,
+      "receipt": "FIRST-PARTY-CHECK.json"
+    },
+    {
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 node tests/e2e/core-runtime.mjs request-forms",
+      "exit": 0,
+      "receipt": "SCREEN-RECEIPT.json",
+      "log": "BROWSER.log"
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "exit": 0,
+      "exactHeadCheck": true
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write TRIAGE-004; node scripts/contract-docs.mjs check TRIAGE-004",
+      "exit": 0,
+      "generatedFilesRestored": true,
+      "generatedFilesCommitted": false
+    },
+    {
+      "command": "compare every migration source against origin/main; populated requestFormsUpgrade via mounted Worker journey",
+      "exit": 0,
+      "receipt": "MIGRATION-RECEIPT.json"
+    }
+  ],
+  "statusBefore": "partial",
+  "statusAfter": "partial",
+  "countsBefore": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67,
+    "total": 272
+  },
+  "countsAfter": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67,
+    "total": 272
+  },
+  "acceptanceChanged": false,
+  "assertionsRemovedOrWeakened": false,
+  "permanentTestsAdded": 1,
+  "permanentTestsRemoved": 0,
+  "publicationScan": "Fleet gate pending",
+  "landing": "Not attempted",
+  "runSite": "Candidate fleet gate pending",
+  "independentInterfaceQualification": "Not claimed",
+  "providerReceipts": "None claimed"
+}

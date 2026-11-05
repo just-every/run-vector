@@ -1,0 +1,46 @@
+{
+  "head": "054db03cc1b5e61e0d7616e51a8bf8a7d31ff863",
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 node tests/e2e/core-runtime.mjs request-forms",
+  "exit": 0,
+  "screens": [
+    {
+      "path": "request-form-author-1440.png",
+      "bytes": 203771,
+      "sha256": "3e7b1560c3bc048c60280c0e53ee51d498a34f53b3a34d5347f010898933c39b"
+    },
+    {
+      "path": "request-form-author-390.png",
+      "bytes": 141298,
+      "sha256": "b0bb988a9bacd012268f8ad8116714404deab0f1e9a026b7590d95384144c512"
+    },
+    {
+      "path": "request-form-submit-1440.png",
+      "bytes": 123508,
+      "sha256": "f2e0eaf4fa05bb7b98c7ec2d55e4674d1df75ab72f4cc246735823f5a5511c8d"
+    },
+    {
+      "path": "request-form-submit-390.png",
+      "bytes": 89352,
+      "sha256": "04b955bd3087bde2087b4c2650d7e8d896eff8dbd96e6772f349b5af2bbda195"
+    },
+    {
+      "path": "request-form-saved-1440.png",
+      "bytes": 183660,
+      "sha256": "5dff0ac47a13fe296b001efa047f87eba08882041cf87b064f452afde2e73bf1"
+    },
+    {
+      "path": "request-form-saved-390.png",
+      "bytes": 131263,
+      "sha256": "5fe657ab1fe74457992c196ecb9c3f43a06acd3a73f6198a2fd93fd5402948b8"
+    }
+  ],
+  "flowAssertionWidth": 1440,
+  "screenWidths": [
+    1440,
+    390
+  ],
+  "keyboard": true,
+  "accessibility": "no serious or critical violations in changed regions",
+  "overflow": false,
+  "hydrationErrors": []
+}

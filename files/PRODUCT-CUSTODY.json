@@ -1,0 +1,26 @@
+{
+  "head": "054db03cc1b5e61e0d7616e51a8bf8a7d31ff863",
+  "branch": "cloud/sd-vector-c-f188",
+  "remoteBranchPublished": true,
+  "mainBase": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "mainUpdatedBeforeCandidate": true,
+  "mainMerge": "Already up to date",
+  "cleanCheckout": true,
+  "commits": [
+    {
+      "head": "054db03cc1b5e61e0d7616e51a8bf8a7d31ff863",
+      "author": "Run Edit Run fleet",
+      "committer": "Run Edit Run fleet",
+      "trailers": []
+    },
+    {
+      "head": "3fb5215046aecdc892845bdf5b16f8ca39604c0e",
+      "author": "Run Edit Run fleet",
+      "committer": "Run Edit Run fleet",
+      "trailers": []
+    }
+  ],
+  "publicationScan": "Fleet gate, not run in cloud",
+  "landing": "Not attempted",
+  "runSite": "Fleet gate, not run for candidate"
+}

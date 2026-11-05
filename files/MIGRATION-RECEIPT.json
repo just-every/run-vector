@@ -1,0 +1,7 @@
+{
+  "unchangedAppliedMigrations": 125,
+  "addedMigration": "migrations/core/0126_request_forms.sql",
+  "sha256": "5206365e6247cc70e8abf834b020c5ca3334c199d960609f986d6b2324973a44",
+  "populatedUpgradeJourney": "tests/worker/request-forms.test.ts invoking requestFormsUpgrade",
+  "foreignKeyCheck": "passed in populated upgrade journey"
+}
