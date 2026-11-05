@@ -1,3 +1,4 @@
+import {addDeploymentApi} from './deployments/api';
 import {addIssueTemplateRoutes} from '../issue-templates/routes';
 import {createIssueFromRequest} from '../issue-templates/application';
 import {createTeam} from "../administration/teams";
@@ -127,6 +128,7 @@ export function createIntegrationApi(){
  addMilestoneApi(app);
  addCycleApi(app);
  addLabelApi(app);
+ addDeploymentApi(app);
  addReportExportApi(app);
  addDescriptionHistoryRoutes(app,false);
  return app;

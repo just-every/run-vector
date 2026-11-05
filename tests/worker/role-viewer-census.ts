@@ -155,6 +155,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const plans={native:new Map<string,CensusRequest>(),bearer:new Map<string,CensusRequest>()};
   const bind=(route:string,params:Record<string,string>)=>route.replace(/:([A-Za-z]+)/g,(_,name)=>{expect(params[name],route+' parameter '+name).toBeTruthy();return params[name];});
   const add=(surface:Surface,method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>{const id=method+' '+route;expect(plans[surface].has(id),id+' duplicate fixture').toBe(false);plans[surface].set(id,{path:path??bind(route,params),body});};
+  add('bearer','POST','/deployments',{provider:'cloudflare-workers',repositoryId:github.id,accountId:'synthetic-vector-18064',workerId:'synthetic-vector-18065',deploymentId:'synthetic-vector-18066',sha:'a'.repeat(40),environment:'staging',state:'success',deployedAt:'2026-10-11T12:00:00.000Z'});
   const native=(method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>add('native',method,route,body,params,path);
   const reportExport=await call(owner,'/settings/report-exports','POST',bucketScheduleInput);
   native('POST','/settings/report-exports',bucketScheduleInput);

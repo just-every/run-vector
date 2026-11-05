@@ -2247,5 +2247,23 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "vector_deployment_reports": [
+    "id",
+    "repository_id",
+    "provider",
+    "account_id",
+    "worker_id",
+    "deployment_id",
+    "sha",
+    "environment",
+    "deployed_at",
+    "payload_hash",
+    "reported_by",
+    "received_at"
+  ],
+  "vector_issue_deployments": [
+    "report_id",
+    "issue_id"
   ]
 }

@@ -56,6 +56,8 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
     due_reminder_suppressions:(await db.prepare('SELECT count(*) AS n FROM due_reminder_suppressions WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n'))??0};
   for(const [table,key] of Object.values(nativeRelations))
     counts[table]=(counts[table]??0)+((await db.prepare(`SELECT count(*) AS n FROM "${table}" WHERE "${key}" IN (SELECT value FROM json_each(?))`).bind(inRun).first<number>('n'))??0);
+  const deploymentCount=await db.prepare('SELECT count(*) n FROM vector_issue_deployments WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
+  if(deploymentCount)counts.vector_issue_deployments=deploymentCount;
   const relatedCount=await db.prepare('SELECT count(*) n FROM issue_relations WHERE first_issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
   if(relatedCount)counts.issue_relations=relatedCount;
   const aliasCount=await db.prepare('SELECT count(*) n FROM issue_aliases WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');

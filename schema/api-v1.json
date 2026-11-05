@@ -4969,6 +4969,120 @@
           }
         }
       }
+    },
+    "/deployments": {
+      "post": {
+        "operationId": "reportDeployment",
+        "summary": "Report a successful Cloudflare Workers deployment as the installation Owner",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "deployments:write"
+        ],
+        "x-object": "deployments",
+        "x-operation": "create",
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "provider",
+                  "repositoryId",
+                  "accountId",
+                  "workerId",
+                  "deploymentId",
+                  "sha",
+                  "environment",
+                  "state",
+                  "deployedAt"
+                ],
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "const": "cloudflare-workers"
+                  },
+                  "repositoryId": {
+                    "type": "string",
+                    "pattern": "^[0-7][0-9A-HJKMNP-TV-Z]{25}$"
+                  },
+                  "accountId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9._-]+$"
+                  },
+                  "workerId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9._-]+$"
+                  },
+                  "deploymentId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[A-Za-z0-9._-]+$"
+                  },
+                  "sha": {
+                    "type": "string",
+                    "pattern": "^(?!0{40}$)[a-fA-F0-9]{40}$"
+                  },
+                  "environment": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "state": {
+                    "type": "string",
+                    "const": "success"
+                  },
+                  "deployedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

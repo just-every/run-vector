@@ -1,6 +1,7 @@
 import {tokenScopes} from './feature-scopes';
 
 export const scopeLabels:Record<(typeof tokenScopes)[number],string>={
+ 'deployments:write':'Report deployments as the installation Owner',
  'reports:read':'Read warehouse exports as an Owner or Admin',
  'issue-templates:read':'Read visible issue templates',
  'issue-templates:write':'Manage issue templates your role allows',

@@ -75,6 +75,7 @@ for (const table of [
   "issue_reminders",
   "notification_candidates",
   "vector_github_issue_links",
+  "vector_issue_deployments",
   "vector_import_revisions",
   "issue_aliases",
   "due_reminders",

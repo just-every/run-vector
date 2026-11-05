@@ -174,6 +174,11 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "views.share": { session: async (_who, actor) => () => actor.call("/views", "POST", { name: `Shared view ${unique()}`, isShared: true, layout: "list", query: { team: w.team.id } }) },
     "views.open-shared": { outside: true, session: async (_who, actor, id) => { const shared = await view(owner, true, id); return () => actor.call(`/views/${shared}/duplicate`, "POST", { name: `Copied view ${unique()}` }); } },
     "views.edit-shared": { session: async (who, actor) => { const shared = await view(who === "guest" ? owner : actor, true, w.team.id); return () => actor.call(`/views/${shared}`, "PATCH", { name: `Renamed view ${unique()}` }); } },
+    // Reporting has only a bearer door; the matrix still exercises every role.
+    "deployments.report": { session: async (_who, actor) => {
+      const repository=await json<{id:string}>(owner.call('/settings/integrations/github','POST',{name:'synthetic-vector-18060',repository:'synthetic-vector-18060/source-'+unique()}));
+      return ()=>actor.api('/deployments','POST',{provider:'cloudflare-workers',repositoryId:repository.id,accountId:'synthetic-vector-18061',workerId:'synthetic-vector-18062',deploymentId:'synthetic-vector-18063-'+unique(),sha:'a'.repeat(40),environment:'staging',state:'success',deployedAt:'2026-10-11T12:00:00.000Z'});
+    } },
     "integrations.manage": { session: async (_who, actor) => () => actor.call("/settings/integrations") },
     // Slack is faked at the network edge; a refused request never reaches it.
     "channels.bind-project": { session: async (_who, actor) => {

@@ -639,3 +639,38 @@ return 404; invalid or unavailable properties are refused. Sequence reservations
 may leave gaps after a refusal. Template deletion never deletes created issues.
 
 Apply `migrations/core/0125_issue_templates.sql` after unchanged 0124. Templates are portable content; deleting one retains its created issues. Retain the additive schema on compatible-source rollback.
+
+## Workers deployment reports
+
+An installation Owner can explicitly grant a new token `deployments:write` and
+submit `POST /api/v1/deployments`. Existing credentials gain no scope. The strict
+JSON body contains `provider` (`cloudflare-workers`), `repositoryId` (an enabled
+repository connection in the same workspace), `accountId`, `workerId`,
+`deploymentId`, `sha` (a full Git SHA), `environment`, `state` (`success`) and
+`deployedAt` (the provider time with an offset). Account, worker and deployment
+identifiers contain letters, digits, dots, underscores or hyphens. This is an
+authenticated Owner assertion; Vector does not claim provider verification or
+hosted commissioning. It does not enter the GitHub webhook receiver.
+
+The provider identity and repository bind a durable content fingerprint. An
+identical report returns its original receipt with `reused: true`; changed
+content under that identity returns 409. Only recorded merged PR commits attach
+issues: the reported SHA must equal the merge SHA or reach it through retained
+signed non-forced push proof from that repository. Unknown SHAs, forced pushes,
+missing proof and unmerged links attach nothing. Accepted reports are immutable;
+a report accepted without inclusion is never attached later by replay.
+
+Issue reads retain the provider, account, worker, deployment and repository
+identities, environment and normalized provider time. Staging records history
+without a status move. The team's existing selected production environment and
+status rule apply once per attached issue and report. Current Owner authority,
+bearer scope, repository enablement and restore-effect custody are checked
+again inside the transaction. Other roles cannot report, including for private
+work. Scoped delegation remains unqualified under RELEASE-002.
+
+Apply additive migration `0126_workers_deployments.sql` without changing earlier
+migrations. Keep both deployment tables on compatible-source rollback. Archives
+retain inert reports and issue relationships, exclude API credentials and hold
+effects pending destination review. Native import snapshots include later
+deployment relationships so rollback cannot silently remove them. GitLab,
+CircleCI, Vercel, Netlify and Cloudflare Pages transports remain unqualified.

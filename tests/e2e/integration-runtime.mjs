@@ -1,3 +1,4 @@
+import {exerciseWorkersDeployments} from './integrations/workers-deployments.mjs';
 import {exerciseWarehouseExports} from './warehouse-export-client.mjs';
 import {buildSdk} from '../../sdk/build.mjs';
 import {exerciseSdkIntake} from './integrations/sdk-intake.mjs';
@@ -20,7 +21,7 @@ const proof={passed:false,widths:[],credentialsCaptured:false,liveProvider:false
 try{
  buildSdk();
  await mkdir(resolve('.artifacts/verification'),{recursive:true});
- await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
+ await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,args:["--use-mock-keychain","--password-store=basic",...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?["--no-sandbox"]:[])]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const admin=await(await runtime.req('/api/settings/administration',{headers:{Cookie:cookie}})).json(),team=admin.teams.find(row=>!row.archivedAt);
  await exerciseSdkIntake({runtime,cookie,team});
  await exerciseVideoPlayers({page,runtime,cookie,team,evidence});
@@ -28,6 +29,7 @@ try{
  await exerciseErrorProviders({page,runtime,cookie,team,evidence});
  await exerciseOAuthApps({page,runtime,cookie,evidence});
  await exerciseWarehouseExports({runtime,cookie});
+ await exerciseWorkersDeployments({page,runtime,cookie,team,evidence});
  const aliasPage=await openAuthenticatedPage(browser,cookie,runtime.base);
  try{await exerciseImportAliases({page:aliasPage,runtime,cookie,evidence});}finally{await aliasPage.context().close();}
  // Each viewport exercises native administration with a recent real sign-in;
