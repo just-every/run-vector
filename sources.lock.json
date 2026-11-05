@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "37bf3fe526037153c79c1a6930e307dd67519b164bedcf5a2fedb9da5c2db6d7",
+      "sha256": "7ef0959aaf666df9825cc76095db8b9b99e8e2e5ea2e6c3568e89ec82a604306",
       "executable": false
     },
     "DEMO.md": {
@@ -4602,7 +4602,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "59abbd82cbb4b2dcb966ac2c8fec909e7f5fe5456f5484d0544f51a889c1befa",
+      "sha256": "f84077ba06481f599d74e32e107fa2c29c5b1d1c228f490d5a3d300139591f6e",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -4618,7 +4618,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/imported.ts": {
-      "sha256": "ec285e6843c16e842088de431619640e45409e51458b514a009b95478b71d4cb",
+      "sha256": "d1ea798362156fc9cf12bd35a7673ae8b02ee341356e7e8c1c621940c9cbee2d",
       "executable": false
     },
     "src/core/features/data/erasure/routes.ts": {
@@ -6777,12 +6777,8 @@
       "sha256": "a6c3d7ac2af2dca97591a48cea5a638704316281b857a0c54b9cda25c9280957",
       "executable": false
     },
-    "src/core/features/releases/notes/erasure.ts": {
-      "sha256": "10e15679cbcfdd9cafefb31ff84177a0198204fb10574527234b23bb2fd13b3f",
-      "executable": false
-    },
     "src/core/features/releases/notes/repository.ts": {
-      "sha256": "fc614eaf11f320eebb2492a5517ce25e820de170dfec65b43e9f24b7164cd6a4",
+      "sha256": "5772448f94a5d149e3d1a4998610f6f681ead81f148ed91959cb5e23e1a55803",
       "executable": false
     },
     "src/core/features/releases/notes/routes.ts": {
@@ -9578,7 +9574,7 @@
       "executable": false
     },
     "tests/worker/release-notes.test.ts": {
-      "sha256": "90c6e0d01047497070af942602c9b0bc31b41c85ea01862a92130a55b541474a",
+      "sha256": "c16084e81852e7a17d132d25739fbf3df8c8b37ed16e504ea85e720b69c70304",
       "executable": false
     },
     "tests/worker/releases-scenario.ts": {

@@ -21,7 +21,7 @@ async function context(db:D1Database,actor:string,id:string){
 async function stored(db:D1Database,id:string){
  const row=await db.prepare(`SELECT ${projection} FROM release_note_drafts d JOIN release_note_revisions v
  ON v.release_id=d.release_id AND v.version=d.version WHERE d.release_id=?`).bind(id).first<Stored>();
- if(row?.erasedAt)throw new IntegrationError(410,'release_notes_erased','These release notes were withdrawn by person erasure.');
+ if(row?.erasedAt)throw new IntegrationError(410,'release_notes_erased','These release notes were withdrawn.');
  return row;
 }
 async function visibleSources(db:D1Database,row:Stored,release:Release){
@@ -41,7 +41,7 @@ export async function readReleaseNotes(db:D1Database,actor:string,id:string){
   const latest=await db.prepare(`SELECT version,erased_at AS erasedAt,(${retainedSourcesVisible}) AS allowed
    FROM release_note_drafts WHERE release_id=?`).bind(row.sourcesJson,current.release.workspace_id,current.release.workspace_id,id).first<{version:number;erasedAt:string|null;allowed:number}>();
   if(!latest||!latest.allowed)throw unavailable();
-  if(latest.erasedAt)throw new IntegrationError(410,'release_notes_erased','These release notes were withdrawn by person erasure.');
+  if(latest.erasedAt)throw new IntegrationError(410,'release_notes_erased','These release notes were withdrawn.');
   if(latest.version!==row.version)throw new IntegrationError(409,'stale_release_notes','The notes changed. Reload before reading again.');
  }
  return {draft:row?project(row):null,canEdit:current.canEdit,releaseChanged:!!row&&row.sourceReleaseVersion!==current.release.version};

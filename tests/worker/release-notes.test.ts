@@ -173,14 +173,22 @@ it('native release notes retain six exact completed sources and human revisions 
  await refuse(owner,rollbackDoor,'POST',{confirmed:true},409);
  expect((await json(await owner.call(importedDoor))).draft).toEqual(importedEdit);
  expect((await json(await owner.call('/issues/'+imported[0].identifier))).title).toBe('synthetic-vector-9237');
- const subject={names:[winner.body]};
+ // Native removal retires identity access. DATA-011 preserves other people's
+ // words, including a release owner's explicit mention in their edited notes.
+ const memberIdentity=(await json(await owner.call('/settings'))).operators.find((person:any)=>person.id===w.member.id);
+ const authoredBody=winner.body+' '+memberIdentity.name;
+ const authored=(await json(await owner.call(door,'PATCH',{expectedReleaseVersion:release.version,expectedVersion:winner.version,body:authoredBody}))).draft;
+ const retainedHistory=(await env.DB.prepare('SELECT * FROM release_note_revisions ORDER BY release_id,version').all()).results;
+ expect((await owner.call('/settings/operators/'+w.member.id,'DELETE')).status).toBe(200);
+ const subject={email:memberIdentity.email,names:[memberIdentity.name]};
  const preview=await json(await owner.call('/data/erasure/preview','POST',subject));
- expect(preview.imported.releaseNotes).toBe(1);
- const erased=await json(await owner.call('/data/erasure','POST',{subject,confirmation:preview.confirmation}));
- expect(erased.imported.releaseNotes).toBe(1);
- for(const method of ['GET','POST','PATCH'])await refuse(owner,door,method,method==='GET'?undefined:method==='POST'?{expectedReleaseVersion:release.version}:{expectedReleaseVersion:release.version,expectedVersion:winner.version,body:winner.body},410);
- const withdrawn=await env.DB.prepare('SELECT body,sources_json,erased_at FROM release_note_drafts WHERE release_id=?').bind(release.id).first();
- expect(withdrawn).toMatchObject({body:'',sources_json:'[]',erased_at:expect.any(String)});
- expect((await env.DB.prepare('SELECT body,sources_json FROM release_note_revisions WHERE release_id=? ORDER BY version').bind(release.id).all()).results).toEqual(Array(4).fill({body:'',sources_json:'[]'}));
+ await json(await owner.call('/data/erasure','POST',{subject,confirmation:preview.confirmation}));
+ expect((await json(await owner.call(door))).draft).toEqual(authored);
+ expect((await json(await owner.call(memberDoor))).draft).toEqual(memberDraft);
+ expect((await env.DB.prepare('SELECT * FROM release_note_revisions ORDER BY release_id,version').all()).results).toEqual(retainedHistory);
+ const retired=await env.DB.prepare('SELECT name,email,removed_at FROM operators WHERE id=?').bind(w.member.id).first<{name:string;email:string;removed_at:string|null}>();
+ expect(retired!.removed_at).not.toBeNull();expect(retired!.name).not.toBe(memberIdentity.name);expect(retired!.email).not.toBe(memberIdentity.email);
+ for(const method of ['GET','POST','PATCH'])await refuse(w.member,memberDoor,method,method==='GET'?undefined:method==='POST'?{expectedReleaseVersion:memberRelease.version}:{expectedReleaseVersion:memberRelease.version,expectedVersion:memberDraft.version,body:memberDraft.body},401);
+ await refuse(owner,memberDoor,'POST',{expectedReleaseVersion:memberRelease.version},403);
 
 },120000);

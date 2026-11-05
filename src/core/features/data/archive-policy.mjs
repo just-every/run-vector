@@ -1,5 +1,6 @@
 // Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.
-// Terminal note erasure receipts and redacted revisions prevent delayed-save resurrection.
+// Actor names and mail remain in native identity custody; notes retain opaque references.
+// Human edits and issue-title text follow DATA-011's existing free-text boundary.
 // Restore never generates notes, publishes releases or schedules delivery from that history.
 // Document mentions, followers, Inbox history and consumed revision receipts are portable domain data.
 // Restore retains history without scanning text, scheduling channels or replaying deliveries.
