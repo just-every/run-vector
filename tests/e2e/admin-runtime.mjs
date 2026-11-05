@@ -24,7 +24,7 @@ import {
   assertSignOut,
   exerciseWorkspaceRoles,
 } from "./admin-access-journey.mjs";
-import { triageResponsibilityJourney, createTeamWorkflow, removeUsedStatus, exerciseTeamRoles, teamCreationPermission, teamJoinPermissions, teamCyclesSettings } from "./admin-team-journey.mjs";
+import { triageRoutingJourney, triageResponsibilityJourney, createTeamWorkflow, removeUsedStatus, exerciseTeamRoles, teamCreationPermission, teamJoinPermissions, teamCyclesSettings } from "./admin-team-journey.mjs";
 import { authorLabel, deleteAppliedLabel, memberLabelCreation } from "./admin-label-journey.mjs";
 import {
   authorProject,
@@ -131,6 +131,7 @@ await contract(
         await bootstrapOwner(page, runtime);
         await auditEmptyWorkspace(shared);
         await triageResponsibilityJourney({...shared,evidence});
+        await triageRoutingJourney({...shared,evidence});
         const team = await createTeamWorkflow(shared);
         const label = await authorLabel(shared);
         const project = await authorProject(shared);

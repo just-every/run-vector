@@ -207,6 +207,12 @@ function IssueInspector({
             ) : null}
           </div>
           <h1 id="issue-title">{issue.title}</h1>
+          {issue.routing && (
+            <p className="issue-routing" role="note" aria-label="Triage routing">
+              Routed by <strong>{issue.routing.ruleName}</strong> · revision {issue.routing.revision}
+              {" · Configured by "}{issue.routing.configuredByName ?? "Former member"}
+            </p>
+          )}
           {issue.archivedAt && (
             <p className="issue-archived-notice" role="note">
               Archived {formatInstant(issue.archivedAt)}. It is left out of lists and default search; choosing another status brings it back.

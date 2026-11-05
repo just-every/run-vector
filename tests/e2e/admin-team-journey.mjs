@@ -1,3 +1,4 @@
+export {triageRoutingJourney} from './triage-routing-journey.mjs';
 export {triageResponsibilityJourney} from './triage-responsibility-journey.mjs';
 export { teamCyclesSettings } from './team-cycles-journey.mjs';
 import {inviteReader,readerResponse} from './role-reader-support.mjs';

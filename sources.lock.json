@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "de8e3f035b7d9c528a0c205ec1b63b7f73724daf1b3ff81e1d6f5395835010f7",
+      "sha256": "298ef54998de608bda2de27aaf5dbbeea284b05acaba9acc415b6287f4ba5212",
       "executable": false
     },
     "DEMO.md": {
@@ -2030,7 +2030,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "30d8184e4a6c30c9b88d4309d0539b9e63493d456e7c905833523d57ff5f184c",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -5990,7 +5990,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/data.ts": {
-      "sha256": "ea584c37d5e3de153a99a7ea21e8a5cc65b6044874d3904298d1619503f822d9",
+      "sha256": "b45c165af929dfbb84acdab28165222be34e5ef1e969b4ddc90911ea65fb31a3",
       "executable": false
     },
     "src/core/features/issues/ui/decision-confirmation.tsx": {
@@ -6018,7 +6018,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/detail-context.css": {
-      "sha256": "fb59edddb37eea303a009c96494e8161830e78a90b3e33fac3e5202a4d5ea55a",
+      "sha256": "4cc97a87ee961fd184b350d9fdcebc3aa16f17f6638b3782c31b5dc5ea44cef6",
       "executable": false
     },
     "src/core/features/issues/ui/discussion-client.ts": {
@@ -6058,7 +6058,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "bc62e6077fe3ac617b5038b3d7e92c5fbf773b9e7a75e4ab75a708011c1c03bf",
+      "sha256": "acf8d2e075f1eb688d2a7c81a130877fe3114e67e28ba53ddb96b4d50bb9c369",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -8126,7 +8126,7 @@
       "executable": false
     },
     "tests/e2e/admin-runtime.mjs": {
-      "sha256": "1e45cab918a93ca8cf75d80d3786b9440797286e9ac0bb16a06338275cfc7116",
+      "sha256": "65e3ec9f5090d21dc1846b8f8647c068fd2d18bd7e05fdeedc626fe6c1a95c4a",
       "executable": false
     },
     "tests/e2e/admin-saved-view-fixture.mjs": {
@@ -8134,7 +8134,7 @@
       "executable": false
     },
     "tests/e2e/admin-team-journey.mjs": {
-      "sha256": "e703ea7b8cefa6326addbb713913b9fad0e1b5f676b871382f44a14b49f1650e",
+      "sha256": "badc57f3b627bad3bb05ce7eba9a7a87f4b628b4de5f583f5b7bf6881de974a9",
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
@@ -8831,6 +8831,10 @@
     },
     "tests/e2e/triage-responsibility-journey.mjs": {
       "sha256": "7a55ff00cec306182e7dddd167a73a47f72005d42d1ae87c13af65ecc98b7e6b",
+      "executable": false
+    },
+    "tests/e2e/triage-routing-journey.mjs": {
+      "sha256": "c38ef0ad9ff2a8702ca20860c502d724b49293c4f5128c0f2f9d4a14043727bd",
       "executable": false
     },
     "tests/e2e/ui-administration-form.mjs": {

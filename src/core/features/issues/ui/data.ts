@@ -78,6 +78,15 @@ export const issueDetailSchema = z.object({
   canonical: z.object({identifier:z.string(),title:z.string()}).nullable(),
   duplicates: z.array(z.object({identifier:z.string(),title:z.string()})),
   importedFrom: z.object({source:z.string(),sourceId:z.string(),sourceKey:z.string().optional(),runId:z.string(),unfinished:z.boolean()}).nullable().optional(),
+  routing: z.object({
+    ruleId: z.string(),
+    ruleName: z.string(),
+    revision: z.number().int().positive(),
+    scope: z.enum(["team", "workspace"]),
+    configuredBy: z.string().nullable(),
+    configuredByName: z.string().nullable(),
+    sourceId: z.string(),
+  }).nullable().optional(),
   evidence: z.array(evidenceSchema),
   decisions: z.array(
     z.object({

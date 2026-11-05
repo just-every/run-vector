@@ -1,3 +1,11 @@
+.issue-routing {
+  margin: 0.6rem 0;
+  color: var(--app-muted);
+  font-size: var(--app-text-small);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 46.001rem) {
  .stream-workspace[aria-label="Current"] .stream-layout .issue-back-to-list { display: none; }
 }
