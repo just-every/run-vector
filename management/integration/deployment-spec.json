@@ -760,6 +760,12 @@
       "name": "0125_issue_templates.sql",
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "sql": "-- Native templates are portable content. Applying one creates independent issues.\nCREATE TABLE issue_templates (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL,\n  defaults_json TEXT NOT NULL CHECK(json_valid(defaults_json)),\n  subissues_json TEXT NOT NULL CHECK(json_valid(subissues_json)),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE INDEX issue_templates_workspace_idx ON issue_templates(workspace_id,team_id,name,id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0126_release_notes.sql",
+      "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+      "sql": "-- Historical releases keep unknown ownership; only native creation supplies it.\nALTER TABLE releases ADD COLUMN owner_operator_id TEXT REFERENCES operators(id);\n\nCREATE TABLE release_note_drafts (\n release_id TEXT PRIMARY KEY REFERENCES releases(id) ON DELETE CASCADE,\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n version INTEGER NOT NULL CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n erased_at TEXT\n);\n\nCREATE TABLE release_note_revisions (\n release_id TEXT NOT NULL REFERENCES releases(id) ON DELETE CASCADE,\n version INTEGER NOT NULL CHECK(version>0),\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n created_at TEXT NOT NULL,\n PRIMARY KEY(release_id,version)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
