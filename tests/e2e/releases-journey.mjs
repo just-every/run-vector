@@ -22,7 +22,7 @@ const res=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data
   await navigate(page,base+'/app/settings/developers');
   const panel=page.locator('#integrations');
   await panel.getByLabel('Token name',{exact:true}).fill('synthetic-vector-1750-'+width);
-  await panel.getByLabel('releases:read',{exact:true}).check();await panel.getByLabel('releases:write',{exact:true}).check();
+  await panel.getByLabel('Read releases you can access',{exact:true}).check();await panel.getByLabel('Create and update releases',{exact:true}).check();
   const minted=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/settings/integrations/tokens');
   await panel.getByRole('button',{name:'Create token',exact:true}).click();const mintedResponse=await minted;assert.equal(mintedResponse.status(),201);const {token}=await mintedResponse.json();
   await panel.getByRole('button',{name:'I saved it; close',exact:true}).click();
