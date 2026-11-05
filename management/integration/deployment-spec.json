@@ -760,6 +760,12 @@
       "name": "0125_issue_templates.sql",
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "sql": "-- Native templates are portable content. Applying one creates independent issues.\nCREATE TABLE issue_templates (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL,\n  defaults_json TEXT NOT NULL CHECK(json_valid(defaults_json)),\n  subissues_json TEXT NOT NULL CHECK(json_valid(subissues_json)),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE INDEX issue_templates_workspace_idx ON issue_templates(workspace_id,team_id,name,id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0126_google_signin.sql",
+      "sha256": "a630e42ab6fc80658a727941ad228dc61b74dfa18882a252b59d666ccd43d077",
+      "sql": "-- Installation-only credentials and tests. Portable restores require fresh configuration.\nCREATE TABLE vector_google_configuration (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1), client_id TEXT NOT NULL,\n secret TEXT NOT NULL, transaction_secret TEXT NOT NULL, generation INTEGER NOT NULL,\n enabled INTEGER NOT NULL CHECK(enabled IN(0,1)), tested INTEGER NOT NULL CHECK(tested IN(0,1)),\n test_session_id TEXT NOT NULL\n);\nCREATE TABLE vector_google_sessions (\n session_id TEXT PRIMARY KEY REFERENCES oa_sessions(id) ON DELETE CASCADE, generation INTEGER NOT NULL\n);\n-- Withdrawal or replacement revokes only Google sessions; linked Auth and email stay independent.\nCREATE TRIGGER vector_google_configuration_change AFTER UPDATE OF generation ON vector_google_configuration\n BEGIN\n UPDATE oa_sessions SET revoked_at=COALESCE(revoked_at,CAST((julianday('now')-2440587.5)*86400000 AS INTEGER))\n WHERE id IN(SELECT session_id FROM vector_google_sessions);\n END;\nCREATE TRIGGER vector_google_configuration_delete BEFORE DELETE ON vector_google_configuration\n BEGIN\n UPDATE oa_sessions SET revoked_at=COALESCE(revoked_at,CAST((julianday('now')-2440587.5)*86400000 AS INTEGER))\n WHERE id IN(SELECT session_id FROM vector_google_sessions);\n END;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
