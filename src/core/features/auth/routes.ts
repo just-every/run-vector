@@ -1,3 +1,4 @@
+import { googleResponse } from './google-provider.server'
 import { firstRunState } from '../first-run/repository';
 import { restoredEmailAdmitted } from '../data/restore-authority';
 // Base's bounded form/JSON reader preserves native pre-hydration admission.
@@ -22,6 +23,7 @@ export function createAuthApp() {
     if (path === '/auth/settings/identity' && c.req.method !== 'POST') return c.json({ error: 'not_found' }, 404)
     if (!enabled.has(path) && !path.startsWith('/auth/oidc/')) return c.json({ error: 'not_found' }, 404)
     try {
+      if (/^\/auth\/oidc\/google\/(start|callback|test)$/.test(path)) return await googleResponse(c.env,c.req.raw) ?? c.notFound()
       const auth = baseAuth(c.env)
       if (c.req.method === 'POST' && ['/auth/request', '/auth/magic-link'].includes(path)) {
         requirePost(c.req.raw,{origin:c.env.APP_ORIGIN,local:c.env.MAIL_MODE==='local-outbox'});

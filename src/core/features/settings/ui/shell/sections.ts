@@ -1,6 +1,6 @@
 import { opensSettingsPage, type Role } from '../../../roles/matrix';
 
-export type SectionKey = 'profile' | 'notifications' | 'workspace' | 'people' | 'teams' | 'labels'
+export type SectionKey = 'sign-in' | 'profile' | 'notifications' | 'workspace' | 'people' | 'teams' | 'labels'
   | 'connections' | 'developers' | 'move-in' | 'audit' | 'restore';
 export type SectionGroup = 'You' | 'Workspace' | 'Connect' | 'Data';
 
@@ -9,6 +9,7 @@ export const sections = [
   { key: 'profile', label: 'Profile', group: 'You', path: '/app/settings/profile' },
   { key: 'notifications', label: 'Notifications', group: 'You', path: '/app/settings/notifications' },
   { key: 'workspace', label: 'Workspace', group: 'Workspace', path: '/app/settings/workspace' },
+  { key: 'sign-in', label: 'Sign-in', group: 'Workspace', path: '/app/settings/sign-in' },
   { key: 'people', label: 'People', group: 'Workspace', path: '/app/settings/people' },
   { key: 'teams', label: 'Teams', group: 'Workspace', path: '/app/settings/teams' },
   { key: 'labels', label: 'Labels', group: 'Workspace', path: '/app/settings/labels' },
@@ -29,6 +30,7 @@ export function openSections(role: Role | null, restorePending: boolean): Sectio
   if (role === null) return [];
   const open = (key: SectionKey) => {
     switch (key) {
+      case 'sign-in': return role === 'owner';
       case 'profile': case 'notifications': return true;
       case 'workspace': case 'connections': case 'move-in': case 'audit': return role === 'owner' || role === 'admin';
       case 'people': return opensSettingsPage(role, 'directory');

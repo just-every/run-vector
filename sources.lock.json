@@ -2529,6 +2529,10 @@
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "executable": false
     },
+    "migrations/core/0126_google_signin.sql": {
+      "sha256": "9bc0d9b8f6c71d69b0f71c4b77bff04625ddee45db44eab43c3b12c6e24ccbda",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -3566,7 +3570,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "29bdca1b5e58aad6acd74dd1520e9e29425d8c33b2e056fd7697ead751e3e164",
+      "sha256": "57420a47a6de94ee1025c9d4b3c83d9894aa468ff7934596e76a979f798f0e0d",
       "executable": false
     },
     "src/base/contract-filter.ts": {
@@ -4289,6 +4293,22 @@
       "sha256": "ec93b6cfb540f675372771936ef81c875eeddb2f6ebd58822cac05313470ab90",
       "executable": false
     },
+    "src/core/features/auth/google-admission.ts": {
+      "sha256": "f35a6afecedc2363ea5f8f572b044df72bec774e67c0f4528e7cdc0dd04b5e10",
+      "executable": false
+    },
+    "src/core/features/auth/google-provider.server.ts": {
+      "sha256": "0a50a9b00df579a4ca1eefbbb729aef3ea4a5ea114803f4688e0b5da2bc26ada",
+      "executable": false
+    },
+    "src/core/features/auth/google-schema.ts": {
+      "sha256": "b05bc8d8dbc1e6d5a2f2e800fc3fb8abfb255b820eb5d0d08953eee85adf5541",
+      "executable": false
+    },
+    "src/core/features/auth/google-settings.ts": {
+      "sha256": "92db72d355a399c593c7ffc3e7ccf16e28d28a074df869a4ededb8f132a4cd05",
+      "executable": false
+    },
     "src/core/features/auth/mutation-database.ts": {
       "sha256": "bafb0455ab22aff007cd51bac03e77278db4ca6b3709779a0fd35fb7c2b0e07b",
       "executable": false
@@ -4306,7 +4326,7 @@
       "executable": false
     },
     "src/core/features/auth/providers.server.ts": {
-      "sha256": "dbd095876b59bcf8a5ec2adfc8382580c09690d8f42f8113ee34707af8cd5048",
+      "sha256": "8ce96f9632ebebc875c67492ffd8da52f13a9a4ecf739e7c5ed4280294cb1362",
       "executable": false
     },
     "src/core/features/auth/repository.ts": {
@@ -4314,7 +4334,7 @@
       "executable": false
     },
     "src/core/features/auth/routes.ts": {
-      "sha256": "925b8a8a9fa669d945077debc15c1e18d152451ef9fb669b7dfc7579981d0598",
+      "sha256": "c7714c21a682d20ffe236624c9c150b4a04fe14ae904235d6cf3f6599de4130c",
       "executable": false
     },
     "src/core/features/auth/service.ts": {
@@ -4586,7 +4606,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "867be97b8c6b91d1b80c5bd07aae090d4e0b05f2b82d3dd388bfe49653783666",
+      "sha256": "9c9af40adcb53641967363628807bb1d97bb32830c7d14f26e678f96ca5600f5",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4598,7 +4618,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "7702b91aa47735176b25e4bb30c857f080258a0e359c1d3ad9da2cd699d19f32",
+      "sha256": "5c92818048ff6359d8835ab3e976bc4b4d9a3173ac3ce351d3c50e130a9b1ca3",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -6842,7 +6862,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "185f56e84b3a0e31d1830cedd7109f6ef4741bc5a0445ce946f783a20b8a077f",
+      "sha256": "8ac7ccb858f598125b684c9e84010d97c7f3469ca3c1a8f3d15ba0de1ea65216",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6850,7 +6870,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "9c84a29fe628f3e8aca8eb2994200a50693089887db0999d65e30b7a74161464",
+      "sha256": "4672b6502f40f96db85dacba6734c84016d84cbc60fdccdd12b0637fc25dbde9",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -6970,7 +6990,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "49a2b5ae23c65338002a15956500afdd7f1a09b24aaab0fddcda7dfb86e4eae3",
+      "sha256": "e27cd92f1be101ba11b1cdb3f8933fddff36075616fdbe2fb13809ad3d7fc74c",
       "executable": false
     },
     "src/core/features/settings/schema.ts": {
@@ -7014,7 +7034,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/fields/fields.css": {
-      "sha256": "6a35da4bcdbfd2aadd4e65fb6d8cb617dd1cb606cfd1214f9c93334e964be9e4",
+      "sha256": "d8db624fb781004d7646a51b54dc726429761db8ce59f00feab60aa75b9bb22f",
       "executable": false
     },
     "src/core/features/settings/ui/fields/leave-guard.tsx": {
@@ -7165,6 +7185,10 @@
       "sha256": "80d1e8f6e2a4a843107d0757b3061b65d78de797b51b1d0f623e174b5e0607e5",
       "executable": false
     },
+    "src/core/features/settings/ui/sections/sign-in-section.tsx": {
+      "sha256": "82f27e0eba921228b0fb1d970345fe1aeb0f72184f1cbc117e39db358ffe6944",
+      "executable": false
+    },
     "src/core/features/settings/ui/sections/teams-section.tsx": {
       "sha256": "9c753d4c6ed6e59bfdcb12d90ede9221f5b31c3bd0478ff20f500518322417c6",
       "executable": false
@@ -7222,7 +7246,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/shell/sections.ts": {
-      "sha256": "48729a5c52745a11c2c3b6875975755a96f1fe8c3963f8120f7ca503157ffeb4",
+      "sha256": "2091fff2fdbde8703b34a34265bbf9d23cf2e50f666653e83ea0ce8e05d0709b",
       "executable": false
     },
     "src/core/features/settings/ui/shell/settings-context.tsx": {
@@ -7913,6 +7937,10 @@
       "sha256": "b2281a4cc089c27f1d97f2f692b11aedb0333ba39c5b185a2461a9135b388eba",
       "executable": false
     },
+    "src/routes/app.settings.sign-in.tsx": {
+      "sha256": "585226f4093ace01a4a1ffd6ef6641316c83e22cfc58a281ba8880c2fc383913",
+      "executable": false
+    },
     "src/routes/app.settings.teams.$teamId.$tab.tsx": {
       "sha256": "b66ff7039b21c58c7a12adb1122bbcb1f8101b6a31b64c316abef27fe527d0d7",
       "executable": false
@@ -7978,7 +8006,7 @@
       "executable": false
     },
     "src/routeTree.gen.ts": {
-      "sha256": "99765456940fcf8438e56c2da774b0ff92aa3e61e5ef114ef31bcfb46a4570e2",
+      "sha256": "e7b824a16c2f7f9978a4d07d3140822fba615b3615866eda5d0b3ae0e2a17eef",
       "executable": false
     },
     "src/site/document.tsx": {
@@ -8110,7 +8138,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "0597fa85ec9743fe28c1ed234bd7988a6b36388bac57c66fa94b365e11f08b6d",
+      "sha256": "5ff949b2fd8543fb4fcf4c37585d14cf476a7223cd9d4950ff1cbcf4d4e14441",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
@@ -8479,6 +8507,14 @@
     },
     "tests/e2e/first-run-fixture.mjs": {
       "sha256": "356ef09d18faed5df7021c4452d8504f92eab6133b2e4709d9fc7f1382144ecb",
+      "executable": false
+    },
+    "tests/e2e/google-oidc-edge.ts": {
+      "sha256": "994b9828f1725afbbf062e09c058ac791a2e5ff98e1ba3139c59cd17945a904e",
+      "executable": false
+    },
+    "tests/e2e/google-signin-journey.mjs": {
+      "sha256": "65411917c3563e26d8a28208e6c373d3f2fd4a8c8eb039ecfd89bd39ed953409",
       "executable": false
     },
     "tests/e2e/housekeeping-runtime.mjs": {
@@ -9010,7 +9046,7 @@
       "executable": false
     },
     "tests/worker/base-auth.test.ts": {
-      "sha256": "2be37c2d5175b9d44a928e52527e41c0176e86e379ef1db60f50346935d11e3e",
+      "sha256": "d7cdeb43bdd261a86cc0b595c3ab4ed857bc92de38d645ba6248e8ef690e2410",
       "executable": false
     },
     "tests/worker/base-refresh-upgrade.test.ts": {
@@ -9247,6 +9283,10 @@
     },
     "tests/worker/github-links.test.ts": {
       "sha256": "cae604a23c20f48972af2efc4fcbf0677ac539be4086616c7e64a3638e158081",
+      "executable": false
+    },
+    "tests/worker/google-signin-journey.ts": {
+      "sha256": "30947a64e52c641ceedcb0801bd82167447f46515510a282deb1348d0d9118fe",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {

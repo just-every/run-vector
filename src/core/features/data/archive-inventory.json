@@ -2247,5 +2247,19 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "vector_google_configuration": [
+    "singleton",
+    "client_id",
+    "secret",
+    "transaction_secret",
+    "generation",
+    "enabled",
+    "tested",
+    "test_session_id"
+  ],
+  "vector_google_sessions": [
+    "session_id",
+    "generation"
   ]
 }

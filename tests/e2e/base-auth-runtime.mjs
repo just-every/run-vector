@@ -1,3 +1,4 @@
+import { googleSignInRuntime } from './google-signin-journey.mjs';
 import { finishFirstRun } from './first-run-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
@@ -51,7 +52,7 @@ try {
   await mkdir(evidence,{recursive:true});
   run(['d1','migrations','apply','vector-local','--local','--config','wrangler.jsonc','--persist-to',state]);
   await start();
-  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
+  browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,args:['--use-mock-keychain','--password-store=basic',...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?['--no-sandbox']:[])]});
   const context=await browser.newContext({viewport:{width:1440,height:1000}});
   const page=await context.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
@@ -161,6 +162,7 @@ try {
   assert.deepEqual(errors,[]);
   await stop();
   await managedMailRuntime(browser);
+  await googleSignInRuntime(browser,{state,config,evidence});
   await writeFile(resolve(evidence,'report.json'),JSON.stringify({status:'passed',checks:['rendered sign-in uses Base','GET confirmation does not admit','POST confirmation sets Base cookie','Settings invitation delivered to explicit outbox','invited Admin invites only Members','setup owner protection','responsive settings','removal revokes session and issued invite','restart preserves peer revocation and owner Base session'],scope:'local emitted Worker and headless browser; no remote delivery claimed'},null,2)+'\n');
   console.log('Base authentication runtime: 9 checks passed; '+evidence);
 } finally {

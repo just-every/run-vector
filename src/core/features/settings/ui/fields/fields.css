@@ -16,7 +16,8 @@ legend.field-head { float: none; margin: 0 0 0.4rem; }
 .field input[type="text"],
 .field input[type="time"],
 .field input[type="datetime-local"],
-.field input[type="email"] {
+.field input[type="email"],
+.field input[type="password"] {
   box-sizing: border-box;
   width: 100%;
   min-height: 44px;

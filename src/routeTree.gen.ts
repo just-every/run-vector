@@ -57,6 +57,7 @@ import { Route as AppSettingsMoveInRouteImport } from './routes/app.settings.mov
 import { Route as AppSettingsNotificationsRouteImport } from './routes/app.settings.notifications'
 import { Route as AppSettingsProfileRouteImport } from './routes/app.settings.profile'
 import { Route as AppSettingsRestoreRouteImport } from './routes/app.settings.restore'
+import { Route as AppSettingsSignInRouteImport } from './routes/app.settings.sign-in'
 import { Route as AppSettingsWorkspaceRouteImport } from './routes/app.settings.workspace'
 import { Route as AppSettingsSectionRouteImport } from './routes/app.settings_.$section'
 import { Route as AppSettingsAuditRouteImport } from './routes/app.settings_.audit'
@@ -318,6 +319,11 @@ const AppSettingsRestoreRoute = AppSettingsRestoreRouteImport.update({
   path: '/restore',
   getParentRoute: () => AppSettingsRoute,
 } as any)
+const AppSettingsSignInRoute = AppSettingsSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
 const AppSettingsWorkspaceRoute = AppSettingsWorkspaceRouteImport.update({
   id: '/workspace',
   path: '/workspace',
@@ -460,6 +466,7 @@ export interface FileRoutesByFullPath {
   '/app/settings/notifications': typeof AppSettingsNotificationsRoute
   '/app/settings/profile': typeof AppSettingsProfileRoute
   '/app/settings/restore': typeof AppSettingsRestoreRoute
+  '/app/settings/sign-in': typeof AppSettingsSignInRoute
   '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
   '/app/settings/$section': typeof AppSettingsSectionRoute
   '/app/settings/audit': typeof AppSettingsAuditRoute
@@ -523,6 +530,7 @@ export interface FileRoutesByTo {
   '/app/settings/notifications': typeof AppSettingsNotificationsRoute
   '/app/settings/profile': typeof AppSettingsProfileRoute
   '/app/settings/restore': typeof AppSettingsRestoreRoute
+  '/app/settings/sign-in': typeof AppSettingsSignInRoute
   '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
   '/app/settings/$section': typeof AppSettingsSectionRoute
   '/app/settings/audit': typeof AppSettingsAuditRoute
@@ -592,6 +600,7 @@ export interface FileRoutesById {
   '/app/settings/notifications': typeof AppSettingsNotificationsRoute
   '/app/settings/profile': typeof AppSettingsProfileRoute
   '/app/settings/restore': typeof AppSettingsRestoreRoute
+  '/app/settings/sign-in': typeof AppSettingsSignInRoute
   '/app/settings/workspace': typeof AppSettingsWorkspaceRoute
   '/app/settings_/$section': typeof AppSettingsSectionRoute
   '/app/settings_/audit': typeof AppSettingsAuditRoute
@@ -662,6 +671,7 @@ export interface FileRouteTypes {
     | '/app/settings/notifications'
     | '/app/settings/profile'
     | '/app/settings/restore'
+    | '/app/settings/sign-in'
     | '/app/settings/workspace'
     | '/app/settings/$section'
     | '/app/settings/audit'
@@ -725,6 +735,7 @@ export interface FileRouteTypes {
     | '/app/settings/notifications'
     | '/app/settings/profile'
     | '/app/settings/restore'
+    | '/app/settings/sign-in'
     | '/app/settings/workspace'
     | '/app/settings/$section'
     | '/app/settings/audit'
@@ -793,6 +804,7 @@ export interface FileRouteTypes {
     | '/app/settings/notifications'
     | '/app/settings/profile'
     | '/app/settings/restore'
+    | '/app/settings/sign-in'
     | '/app/settings/workspace'
     | '/app/settings_/$section'
     | '/app/settings_/audit'
@@ -1168,6 +1180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRestoreRouteImport
       parentRoute: typeof AppSettingsRoute
     }
+    '/app/settings/sign-in': {
+      id: '/app/settings/sign-in'
+      path: '/sign-in'
+      fullPath: '/app/settings/sign-in'
+      preLoaderRoute: typeof AppSettingsSignInRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
     '/app/settings/workspace': {
       id: '/app/settings/workspace'
       path: '/workspace'
@@ -1398,6 +1417,7 @@ interface AppSettingsRouteChildren {
   AppSettingsNotificationsRoute: typeof AppSettingsNotificationsRoute
   AppSettingsProfileRoute: typeof AppSettingsProfileRoute
   AppSettingsRestoreRoute: typeof AppSettingsRestoreRoute
+  AppSettingsSignInRoute: typeof AppSettingsSignInRoute
   AppSettingsWorkspaceRoute: typeof AppSettingsWorkspaceRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppSettingsConnectionsKindRoute: typeof AppSettingsConnectionsKindRoute
@@ -1418,6 +1438,7 @@ const AppSettingsRouteChildren: AppSettingsRouteChildren = {
   AppSettingsNotificationsRoute: AppSettingsNotificationsRoute,
   AppSettingsProfileRoute: AppSettingsProfileRoute,
   AppSettingsRestoreRoute: AppSettingsRestoreRoute,
+  AppSettingsSignInRoute: AppSettingsSignInRoute,
   AppSettingsWorkspaceRoute: AppSettingsWorkspaceRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppSettingsConnectionsKindRoute: AppSettingsConnectionsKindRoute,
@@ -1524,3 +1545,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

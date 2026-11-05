@@ -310,6 +310,19 @@
       "adapters": [
         "vector.google-sheets.v1"
       ]
+    },
+    {
+      "id": "google-signin",
+      "required": false,
+      "why": "ROLE-010: an Owner configures and tests an optional Google OAuth client in Settings. Native membership admission remains required.",
+      "data": [
+        "OAuth client credentials at the Google token endpoint",
+        "authorization code and PKCE proof",
+        "verified identity claims"
+      ],
+      "adapters": [
+        "vector.google-oidc.v1"
+      ]
     }
   ],
   "env": [
@@ -416,7 +429,9 @@
       "/auth/oidc/auth/logout",
       "/.well-known/rer-dependencies",
       "/.well-known/rer-link/",
-      "/api/integrations/errors/"
+      "/api/integrations/errors/",
+      "/auth/oidc/google/start",
+      "/auth/oidc/google/callback"
     ]
   },
   "customFields": [

@@ -1,3 +1,4 @@
+import { googleProviders } from './google-provider.server'
 // Base's linked-provider resolver is native ESM without declarations.
 // @ts-expect-error Base dependencies has no declaration for this composition entry.
 import { linkedProviders } from '../../../../vendor/base/dependencies/auth.mjs'
@@ -15,5 +16,7 @@ export async function signInProviderLinks(env: WorkerBindings) {
     clientIp: (request: Request) => config.local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '',
     enabled: async () => !!(await env.DB.prepare('SELECT idp_sign_in FROM oa_auth_settings WHERE singleton=1').first<{ idp_sign_in: number }>())?.idp_sign_in,
   })
-  return (await providers.list()).filter(provider => provider.visible).map(({ id, label, startPath }) => ({ id, label, startPath }))
+  const google=await googleProviders(env)
+  const available=[...await providers.list(),...await google?.list()??[]]
+  return available.filter(provider => provider.visible).map(({ id, label, startPath }) => ({ id, label, startPath }))
 }

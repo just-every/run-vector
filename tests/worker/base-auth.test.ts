@@ -6,7 +6,17 @@ import { beforeAll, expect, inject, it, vi } from 'vitest'
 import { actor, bindings, invite, mailToken, request, signIn } from './base-auth-fixture'
 import { beforeCommit } from './removal-interleaving'
 
-beforeAll(async () => applyD1Migrations(env.DB, inject('migrations')))
+beforeAll(async () => {
+  const migrations=inject('migrations'),boundary=migrations.findIndex(row=>row.name==='0126_google_signin.sql')
+  await applyD1Migrations(env.DB,migrations.slice(0,boundary))
+  expect((await request('/health')).status).toBe(200)
+  const tables=['operators','oa_operators','workspace_settings','teams','workflow_statuses']
+  const records=async()=>(await env.DB.batch(tables.map(t=>env.DB.prepare('SELECT * FROM '+t+' ORDER BY rowid')))).map(r=>r.results)
+  const before=await records()
+  expect(before.every(rows=>rows.length>0)).toBe(true)
+  await applyD1Migrations(env.DB,migrations.slice(boundary))
+  expect(await records()).toEqual(before)
+})
 let ownerCookie: string
 let ownerId: string
 it('[OPS-001 OPS-002 TEAM-002 ROLE-001] configured bootstrap atomically maps one Base operator as the installation Owner and remains idempotent', async () => {
@@ -141,6 +151,7 @@ it('[BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine B
   expect((await request('/auth/signout','POST',{},cookie,remote)).status).toBe(204)
   expect((await request('/api/session','GET',undefined,cookie,remote)).status).toBe(401)
 })
+
 it('[OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner remains, who succeeds them, and the last Owner cannot leave', async () => {
   const successor = await signIn('next@base.test')
   const successorId = await actor(successor)
@@ -154,4 +165,6 @@ it('[OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner r
   expect((await request('/api/session','GET',undefined,ownerCookie)).status).toBe(401)
   expect((await request('/api/settings/operators/'+successorId,'DELETE',undefined,successor)).status).toBe(409)
   expect((await env.DB.prepare("SELECT count(*) n FROM oa_operators WHERE status='active' AND role='owner'").first())?.n).toBe(1)
-})
+  const {googleSignInJourney}=await import('./google-signin-journey')
+  await googleSignInJourney(successor)
+},120000)
