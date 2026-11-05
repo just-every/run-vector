@@ -16,6 +16,18 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const releaseJson=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
+ const releaseMetadata=await releaseJson(await f.call('/metadata'));
+ const releaseDone=releaseMetadata.teams.find((t:any)=>t.id===f.team.id).statuses.find((s:any)=>s.category==='completed');
+ const releaseIssue=await releaseJson(await f.call('/issues','POST',{teamId:f.team.id,statusId:releaseDone.id,title:'synthetic-vector-9228'}),201);
+ let portableRelease=await releaseJson(await f.call('/releases','POST',{name:'synthetic-vector-9229',description:'synthetic-vector-9230'}),201);
+ portableRelease=await releaseJson(await f.call('/releases/'+portableRelease.id+'/scope','PUT',{expectedVersion:portableRelease.version,issueIdentifiers:[releaseIssue.identifier],projectIds:[]}));
+ const releaseNotesDoor='/releases/'+portableRelease.id+'/notes';
+ const generatedReleaseNotes=await releaseJson(await f.call(releaseNotesDoor,'POST',{expectedReleaseVersion:portableRelease.version}),201);
+ const portableReleaseNotes=await releaseJson(await f.call(releaseNotesDoor,'PATCH',{expectedReleaseVersion:portableRelease.version,expectedVersion:1,body:generatedReleaseNotes.draft.body+'synthetic-vector-9231 human revision\n'}));
+ const releaseHistoryTables=['releases','release_issues','release_projects','release_note_drafts','release_note_revisions'];
+ const releaseHistory=await Promise.all(releaseHistoryTables.map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+
  const triagePath='/settings/teams/'+f.team.id+'/triage-rotation';
  expect((await f.call('/settings/teams/'+f.team.id+'/members/'+f.peer,'PUT',{role:'member'})).status).toBe(200);
  expect((await f.call(triagePath,'PUT',{startsLocal:'2026-01-05T09:00',operatorIds:[f.owner,f.peer]})).status).toBe(200);
@@ -171,6 +183,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM team_cycle_schedules WHERE team_id=?').bind(f.team.id).all()).results).toEqual(cycleConfiguration);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ expect(await Promise.all(releaseHistoryTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(releaseHistory);
+ expect(await releaseJson(await targetCall('/api'+releaseNotesDoor,'GET',undefined,historical))).toEqual(portableReleaseNotes);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare("SELECT count(*) n FROM issue_activity WHERE kind='release.published'").first<number>('n')).toBe(0);
+
  expect(await Promise.all(documentTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(documentHistory);
  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);
 

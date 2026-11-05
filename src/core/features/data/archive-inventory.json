@@ -1808,7 +1808,8 @@
     "description",
     "version",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "owner_operator_id"
   ],
   "release_issues": [
     "release_id",
@@ -2247,5 +2248,26 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "release_note_drafts": [
+    "release_id",
+    "owner_operator_id",
+    "body",
+    "sources_json",
+    "source_release_version",
+    "version",
+    "created_at",
+    "updated_at",
+    "erased_at"
+  ],
+  "release_note_revisions": [
+    "release_id",
+    "version",
+    "owner_operator_id",
+    "actor_operator_id",
+    "body",
+    "sources_json",
+    "source_release_version",
+    "created_at"
   ]
 }

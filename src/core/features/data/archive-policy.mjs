@@ -1,3 +1,6 @@
+// Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.
+// Terminal note erasure receipts and redacted revisions prevent delayed-save resurrection.
+// Restore never generates notes, publishes releases or schedules delivery from that history.
 // Document mentions, followers, Inbox history and consumed revision receipts are portable domain data.
 // Restore retains history without scanning text, scheduling channels or replaying deliveries.
 // Report schedules and safe receipts are portable; credentials, active claims

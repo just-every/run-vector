@@ -1,8 +1,9 @@
+import {releaseNotesErasure} from '../../releases/notes/erasure';
 import type { D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import type { JiraReview } from '../import/jira-review';
 import { scrubJson } from './subject';
 
-export type ImportedCounts = { comments: number; reports: number; reportRows: number; outbox: number };
+export type ImportedCounts = { comments: number; reports: number; reportRows: number; outbox: number; releaseNotes: number };
 const ERASED_AUTHOR = 'Erased person';
 
 /** Vector's own copies of imported values, rewritten in the same D1 batch as
@@ -12,6 +13,7 @@ const ERASED_AUTHOR = 'Erased person';
  * index is merged so no deleted term survives in its shadow tables. */
 export async function importedStatements(db: D1Database, values: string[], at: string): Promise<{ statements: D1Sql[]; counts: ImportedCounts }> {
   const list = JSON.stringify(values), wanted = new Set(values);
+ const releaseNotes=await releaseNotesErasure(db,values,at);
   const comments = (await db.prepare('SELECT count(*) AS n FROM issue_comments WHERE lower(trim(imported_author_name)) IN (SELECT value FROM json_each(?))').bind(list).first<{ n: number }>())!.n;
   const statements: D1Sql[] = [{
     sql: `UPDATE issue_comments SET body='',imported_author_name=?,deleted_at=COALESCE(deleted_at,?),updated_at=?
@@ -47,5 +49,5 @@ export async function importedStatements(db: D1Database, values: string[], at: s
   const outbox = (await db.prepare(`SELECT count(*) AS n FROM rer_mail_development_outbox WHERE ${mail}`).bind(list).first<{ n: number }>())!.n;
   statements.push({ sql: `DELETE FROM rer_mail_development_outbox WHERE ${mail}`, params: [list] });
   for (const table of ['search_issues', 'search_projects', 'search_views']) statements.push({ sql: `INSERT INTO ${table}(${table}) VALUES('optimize')`, params: [] });
-  return { statements, counts: { comments, reports, reportRows, outbox } };
+  return { statements:[...statements,...releaseNotes.statements], counts: { comments, reports, reportRows, outbox,releaseNotes:releaseNotes.count } };
 }
