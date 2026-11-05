@@ -35,7 +35,18 @@ export async function proveViewerRoleUpgrade(){
   const columns=(await db.prepare('PRAGMA table_info("'+name+'")').all<{name:string}>()).results.map(c=>'"'+c.name+'"').join(',');
   previousHead.push({name,columns,rows:(await db.prepare('SELECT '+columns+' FROM "'+name+'" ORDER BY '+columns).all()).results});
  }
- await applyD1Migrations(db,migrations.slice(reportBoundary));
+ const recurringBoundary=migrations.findIndex(m=>m.name==='0126_recurring_issues.sql');
+ await applyD1Migrations(db,migrations.slice(reportBoundary,recurringBoundary));
+ // Cross the actual template-bearing head with populated domain and credential rows.
+ const nativeBeforeRecurring=[] as {name:string;columns:string;rows:unknown[]}[];
+ for(const {name} of (await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' ORDER BY name").all<{name:string}>()).results) {
+  const columns=(await db.prepare('PRAGMA table_info("'+name+'")').all<{name:string}>()).results.map(c=>'"'+c.name+'"').join(',');
+  nativeBeforeRecurring.push({name,columns,rows:(await db.prepare('SELECT '+columns+' FROM "'+name+'" ORDER BY '+columns).all()).results});
+ }
+ await applyD1Migrations(db,migrations.slice(recurringBoundary));
+ for(const row of nativeBeforeRecurring)expect((await db.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained at 0125').toEqual(row.rows);
+ for(const table of ['recurring_issue_series','recurring_issue_occurrences','recurring_issue_activations'])
+  expect(await db.prepare('SELECT count(*) n FROM '+table).first('n')).toBe(0);
  for(const row of previousHead)expect((await db.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained across report schedules').toEqual(row.rows);
  for(const row of retained)expect((await db.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained at 0095').toEqual(row.rows);
  expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
