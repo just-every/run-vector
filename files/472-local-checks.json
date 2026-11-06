@@ -1,0 +1,52 @@
+{
+  "head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "local_checks": [
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "includes": "pnpm typecheck and vite build"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:worker tests/worker/due-reminders.test.ts tests/worker/data-http.test.ts",
+      "exit": 0,
+      "files": 2,
+      "tests": 6,
+      "tree": "after main merge; no relevant source or test bytes changed before commit"
+    },
+    {
+      "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-git-settings-proof.mjs",
+      "exit": 0,
+      "widths": [
+        1440,
+        390
+      ],
+      "tree": "final source before commit"
+    },
+    {
+      "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-final-sla-proof.mjs",
+      "exit": 0,
+      "widths": [
+        1440,
+        390
+      ],
+      "tree": "committed candidate"
+    },
+    {
+      "command": "node scripts/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "tree": "committed candidate"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write AUTO-004; node scripts/contract-docs.mjs check AUTO-004",
+      "exit": 0,
+      "views": "restored from main; excluded from product commit"
+    }
+  ],
+  "migration_ledger": "no migration edited by continuation; existing populated upgrade and native archive assertions passed",
+  "assertions_weakened": false,
+  "permanent_tests_added": 0
+}

@@ -1,0 +1,14 @@
+{
+  "head": "86ebe561feea06278ad3b5c8c029933435599c4a",
+  "status": "unobserved",
+  "conclusion": null,
+  "run_id": null,
+  "reason": "Ten-call GitHub budget exhausted after reading the preceding candidate failure",
+  "automatic_entrypoint": "Verify push on the named cloud branch",
+  "last_observed": {
+    "head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+    "run_id": 42174751871,
+    "conclusion": "failure",
+    "failure": "navigation cut off an unfinished comment POST; two settlement awaits added in terminal candidate"
+  }
+}

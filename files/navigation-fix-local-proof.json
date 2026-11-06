@@ -1,0 +1,27 @@
+{
+  "probes": [
+    {
+      "passed": true,
+      "heldMutationResponseMs": 0,
+      "canceled": 0,
+      "base_head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+      "source": "base plus the two reload settlement awaits",
+      "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-webhook-navigation-proof.mjs",
+      "exit": 0
+    },
+    {
+      "passed": true,
+      "heldMutationResponseMs": 5000,
+      "canceled": 0,
+      "base_head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+      "source": "base plus the two reload settlement awaits",
+      "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-webhook-navigation-proof.mjs --hold-response",
+      "exit": 0
+    }
+  ],
+  "changed_test_sha256": "dfe3b32b4bc7ffaefeb9b3db59158e7f9744b1dfd6a6e4e8ae9f5a566867b1ac",
+  "guard_sha256": "ce1b904c3b1fe8fb0543ebb106781258b75dcb428cd9b7280e9beee2955b69f9",
+  "guard_unchanged": true,
+  "assertions_removed": 0,
+  "permanent_tests_added": 0
+}

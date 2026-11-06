@@ -1,0 +1,1 @@
+MECHANICAL lock=node scripts/edition-authoring/cli.mjs lock exit=0; check=node scripts/edition-authoring/cli.mjs check exit=0; views=node scripts/contract-docs.mjs write AUTO-004 and check AUTO-004 exit=0; ledger=none exit=0

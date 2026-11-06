@@ -1,5 +1,5 @@
 {
-  "head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "head": "86ebe561feea06278ad3b5c8c029933435599c4a",
   "local_checks": [
     {
       "command": "npx -y @runeditrun/rer build",
@@ -48,5 +48,11 @@
   ],
   "migration_ledger": "no migration edited by continuation; existing populated upgrade and native archive assertions passed",
   "assertions_weakened": false,
-  "permanent_tests_added": 0
+  "permanent_tests_added": 0,
+  "earlier_candidate_local_checks": "472-local-checks.json",
+  "terminal_checks": "final-navigation-checks.json",
+  "exact_terminal_sla_browser": "candidate-sla-browser.json",
+  "runtime_source_parity": "source-parity.json",
+  "terminal_source_lock_check_exit": 0,
+  "full_terminal_verify": "unobserved"
 }

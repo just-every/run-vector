@@ -1,0 +1,1 @@
+candidate failed-job archive command exit=0

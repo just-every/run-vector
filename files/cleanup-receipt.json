@@ -1,0 +1,17 @@
+{
+  "temporary_archive_copies_removed": [
+    {
+      "directory": "/tmp/vector-retained-aVGi62",
+      "ownership": "all contained test clones pointed at this task product checkout"
+    }
+  ],
+  "product_checkout_preserved": "/home/agent/rer-consolidation/work/sd-vector-c-f193-pc1/run-vector",
+  "recovery_bundle_preserved": "/home/agent/rer-consolidation/work/sd-vector-c-f193-pc1/product-candidate.bundle",
+  "disposable_worktrees_removed": [
+    "main-navigation",
+    "navigation-repro",
+    "candidate-fix",
+    "main-qualification"
+  ],
+  "owned_browsers_and_servers_stopped": true
+}

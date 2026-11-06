@@ -1,0 +1,1 @@
+navigation-fix-normal-proof exit=0

@@ -1,0 +1,18 @@
+{
+  "head": "86ebe561feea06278ad3b5c8c029933435599c4a",
+  "branch": "cloud/sd-vector-c-f193-pc1",
+  "origin": "https://github.com/just-every/run-vector.git",
+  "worktree_clean": true,
+  "product_pushed": true,
+  "remote_head_matches": true,
+  "verified_local_bundle": {
+    "path": "/home/agent/rer-consolidation/work/sd-vector-c-f193-pc1/product-candidate-86ebe561feea.bundle",
+    "head": "86ebe561feea06278ad3b5c8c029933435599c4a",
+    "sha256": "051f37b80154f13d004f966d28ccba5bb30b6bbf67c82541528edf3d8b23e28e",
+    "verified": true,
+    "purpose": "terminal product recovery outside the clone; product push succeeded"
+  },
+  "full_terminal_verify": "unobserved, not claimed green",
+  "publication_scan": "fleet gate, not run in cloud",
+  "landing": "not performed"
+}

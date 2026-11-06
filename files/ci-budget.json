@@ -1,0 +1,58 @@
+{
+  "budget": 10,
+  "calls": [
+    {
+      "number": 1,
+      "purpose": "original completed run failed-job census",
+      "command": "gh api repos/just-every/run-vector/actions/runs/42152182964/jobs"
+    },
+    {
+      "number": 2,
+      "purpose": "one failed-worker log archive read",
+      "command": "gh run view 42152182964 --repo just-every/run-vector --job 127678160790 --log-failed"
+    },
+    {
+      "number": 3,
+      "purpose": "one failed-hosted log archive read",
+      "command": "gh run view 42152182964 --repo just-every/run-vector --job 127678160861 --log-failed"
+    },
+    {
+      "number": 4,
+      "purpose": "exact candidate run discovery",
+      "time": "2026-11-06T06:30:01Z"
+    },
+    {
+      "number": 5,
+      "purpose": "candidate run poll 1",
+      "time": "2026-11-06T06:35:15Z"
+    },
+    {
+      "number": 6,
+      "purpose": "candidate run poll 2",
+      "time": "2026-11-06T06:40:16Z"
+    },
+    {
+      "number": 7,
+      "purpose": "candidate run poll 3",
+      "time": "2026-11-06T06:50:17Z"
+    },
+    {
+      "number": 8,
+      "purpose": "candidate run poll 4",
+      "time": "2026-11-06T07:00:18Z"
+    },
+    {
+      "number": 9,
+      "purpose": "completed candidate failed-job census"
+    },
+    {
+      "number": 10,
+      "purpose": "one completed hosted failed-job archive read",
+      "command": "gh run view 42174751871 --repo just-every/run-vector --job 127750904204 --log-failed"
+    }
+  ],
+  "used": 10,
+  "remaining": 0,
+  "watchers": 1,
+  "minimum_poll_interval_seconds": 300
+}

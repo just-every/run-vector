@@ -1,0 +1,15 @@
+locator.focus: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByRole('region', { name: 'Links', exact: true }).getByRole('button', { name: 'Load Loom player for Loom walkthrough', exact: true })
+
+    at load (/home/agent/rer-consolidation/work/sd-vector-c-f193-pc1/candidate-fix/tests/e2e/video-players-journey.mjs:111:20)
+    at exerciseVideoPlayers (/home/agent/rer-consolidation/work/sd-vector-c-f193-pc1/candidate-fix/tests/e2e/video-players-journey.mjs:124:11)
+    at async file:///home/agent/rer-consolidation/work/sd-vector-c-f193-pc1/candidate-fix/tests/e2e/integration-runtime.mjs:28:2 {
+  log: [
+    "  - waiting for getByRole('region', { name: 'Links', exact: true }).getByRole('button', { name: 'Load Loom player for Loom walkthrough', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.

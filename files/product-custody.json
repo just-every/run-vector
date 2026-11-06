@@ -1,17 +1,17 @@
 {
   "repository": "just-every/run-vector",
   "branch": "cloud/sd-vector-c-f193-pc1",
-  "candidate": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "candidate": "86ebe561feea06278ad3b5c8c029933435599c4a",
   "merged_main": "2f9b4510842708e54c925db8cbcdb3b78c00d35d",
   "preserved_saved_head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
   "status": "pushed",
   "push_exit": 0,
   "push_attempts": 1,
-  "verify_run": 42174751871,
+  "verify_run": null,
   "verify_event": "push",
-  "verify_conclusion": null,
+  "verify_conclusion": "unobserved, API budget exhausted",
   "pr": null,
-  "product_commits_created": 1,
+  "product_commits_created": 2,
   "acceptance_changes": 0,
   "status_rows_retained": 272,
   "counts": {
@@ -26,7 +26,9 @@
   "landing": "fleet gate, not performed",
   "run_site": "fleet gate, not run in cloud",
   "parents": [
-    "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
-    "2f9b4510842708e54c925db8cbcdb3b78c00d35d"
-  ]
+    "4726850fd1e3e488cb82dcb9ea54df13257113c5"
+  ],
+  "previous_candidate": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "previous_verify_run": 42174751871,
+  "previous_verify_conclusion": "failure"
 }

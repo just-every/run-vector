@@ -1,0 +1,20 @@
+{
+  "base_head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "changes": [
+    "await settlement before each webhook-comment journey reload",
+    "regenerated source lock"
+  ],
+  "normal_native_probe_exit": 0,
+  "delayed_real_response_probe_exit": 0,
+  "delayed_response_milliseconds": 5000,
+  "typecheck_exit": 0,
+  "first_party_exit": 0,
+  "views_write_exit": 0,
+  "views_check_exit": 0,
+  "source_lock_check_exit": 0,
+  "navigation_guard_changed": false,
+  "assertions_removed": 0,
+  "broad_integration_exit": 1,
+  "broad_integration_failure": "Loom load control timeout before the changed webhook-comment helper ran",
+  "github_api_budget_remaining": 0
+}

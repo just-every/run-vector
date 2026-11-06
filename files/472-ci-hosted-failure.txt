@@ -1,0 +1,42 @@
+AssertionError [ERR_ASSERTION]: [Vector browser] navigation cut off work admitted before the preceding settle
+2026-11-06T06:37:43.2845585Z + actual - expected
+2026-11-06T06:37:43.2845864Z 
+2026-11-06T06:37:43.2846077Z + [
+2026-11-06T06:37:43.2847559Z +   {
+2026-11-06T06:37:43.2847969Z +     document: 0,
+2026-11-06T06:37:43.2848490Z +     documentEndedAt: 1793947049632,
+2026-11-06T06:37:43.2849170Z +     documentUrl: 'http://127.0.0.1:44891/app/issues/FLW-845',
+2026-11-06T06:37:43.2849752Z +     method: 'POST',
+2026-11-06T06:37:43.2850284Z +     pathname: '/api/issues/FLW-845/comments',
+2026-11-06T06:37:43.2850811Z +     sequence: 12,
+2026-11-06T06:37:43.2851270Z +     settledAt: 1793947048914,
+2026-11-06T06:37:43.2851747Z +     settledSequence: 7,
+2026-11-06T06:37:43.2852450Z +     startedAt: 1793947049246
+2026-11-06T06:37:43.2852905Z +   }
+2026-11-06T06:37:43.2853427Z + ]
+2026-11-06T06:37:43.2853764Z - []
+2026-11-06T06:37:43.2854044Z 
+2026-11-06T06:37:43.2854695Z     at settleReads (file:///home/runner/work/run-vector/run-vector/tests/e2e/collaboration-navigation.mjs:66:10)
+2026-11-06T06:37:43.2855995Z     at async exerciseWebhookComments (file:///home/runner/work/run-vector/run-vector/tests/e2e/integrations/webhook-comments.mjs:36:5)
+2026-11-06T06:37:43.2857178Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/integration-runtime.mjs:29:2 {
+2026-11-06T06:37:43.2857909Z   generatedMessage: false,
+2026-11-06T06:37:43.2858331Z   code: 'ERR_ASSERTION',
+2026-11-06T06:37:43.2858761Z   actual: [
+2026-11-06T06:37:43.2859140Z     {
+2026-11-06T06:37:43.2859509Z       method: 'POST',
+2026-11-06T06:37:43.2860011Z       pathname: '/api/issues/FLW-845/comments',
+2026-11-06T06:37:43.2860679Z       document: 0,
+2026-11-06T06:37:43.2861221Z       documentUrl: 'http://127.0.0.1:44891/app/issues/FLW-845',
+2026-11-06T06:37:43.2861789Z       sequence: 12,
+2026-11-06T06:37:43.2862218Z       startedAt: 1793947049246,
+2026-11-06T06:37:43.2862655Z       settledSequence: 7,
+2026-11-06T06:37:43.2863548Z       settledAt: 1793947048914,
+2026-11-06T06:37:43.2864057Z       documentEndedAt: 1793947049632
+2026-11-06T06:37:43.2864513Z     }
+2026-11-06T06:37:43.2864863Z   ],
+2026-11-06T06:37:43.2865214Z   expected: [],
+2026-11-06T06:37:43.2865653Z   operator: 'deepStrictEqual',
+2026-11-06T06:37:43.2866111Z   diff: 'simple'
+2026-11-06T06:37:43.2866492Z }
+2026-11-06T06:37:43.2866730Z 
+2026-11-06T06:37:43.2866970Z Node.js v22.20.0

@@ -1,0 +1,13 @@
+{
+  "head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "run": 42174751871,
+  "status": "completed",
+  "conclusion": "failure",
+  "failed_job": 127750904204,
+  "failing_test": "exerciseWebhookComments",
+  "failure": "[Vector browser] navigation cut off work admitted before the preceding settle",
+  "pending_write": "POST native issue comments during page reload",
+  "worker_2": "success",
+  "other_shards": "success",
+  "api_budget_used": 10
+}

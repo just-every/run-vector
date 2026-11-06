@@ -1,0 +1,31 @@
+{
+  "failed_ci_head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "failed_ci_run": 42174751871,
+  "failed_job": 127750904204,
+  "failed_job_command": "pnpm verify:ci --shard hosted-artifact",
+  "probes": [
+    {
+      "head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+      "passed": false,
+      "heldMutationResponseMs": 5000,
+      "canceled": 0,
+      "failure": "[Vector browser] navigation cut off work admitted before the preceding settle\n+ actual - expected\n\n+ [\n+   {\n+     document: 0,\n+     documentEndedAt: 1793948889231,\n+     documentUrl: 'http://127.0.0.1:36655/app/issues/FLW-843',\n+     method: 'POST',\n+     pathname: '/api/issues/FLW-843/comments',\n+     sequence: 14,\n+     settledAt: 1793948883685,\n+     settledSequence: 7,\n+     startedAt: 1793948889029\n+   }\n+ ]\n- []\n",
+      "environment": "candidate",
+      "exit": 1,
+      "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-webhook-navigation-proof.mjs --hold-response"
+    },
+    {
+      "head": "2f9b4510842708e54c925db8cbcdb3b78c00d35d",
+      "passed": false,
+      "heldMutationResponseMs": 5000,
+      "canceled": 0,
+      "failure": "[Vector browser] navigation cut off work admitted before the preceding settle\n+ actual - expected\n\n+ [\n+   {\n+     document: 0,\n+     documentEndedAt: 1793948872566,\n+     documentUrl: 'http://127.0.0.1:39883/app/issues/FLW-843',\n+     method: 'POST',\n+     pathname: '/api/issues/FLW-843/comments',\n+     sequence: 12,\n+     settledAt: 1793948866984,\n+     settledSequence: 5,\n+     startedAt: 1793948872367\n+   }\n+ ]\n- []\n",
+      "environment": "main",
+      "exit": 1,
+      "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-webhook-navigation-proof.mjs --hold-response"
+    }
+  ],
+  "guard_unchanged": true,
+  "native_mutation_mocked": false,
+  "description": "Real mounted writes commit; their browser response is delayed 5 seconds so normal 3-second refresh can render the committed reply before POST completion."
+}

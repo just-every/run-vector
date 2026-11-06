@@ -1,0 +1,17 @@
+{
+  "candidate": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-git-settings-proof.mjs",
+  "exit": 0,
+  "screens": [
+    "screens/git-settings/rules-1440.png",
+    "screens/git-settings/rules-390.png"
+  ],
+  "execution": "final source tree before commit; no relevant source or test changed between this pass and candidate commit",
+  "source_sha256": {
+    "src/core/features/settings/ui/fields/fields.css": "dc6fbfad34106af888d8167976e8fff993086ba072c3d757a7d2385da1bda69b",
+    "src/core/features/settings/ui/fields/field-feedback.tsx": "d8cdce791a67120fc89d7e53a81cbae1886789e378c838e9b153b032def6089a",
+    "tests/e2e/integrations/github-chain.mjs": "1ef8cc7d0b97073cca336994cd4783c17e109a67fd0681b6c861b7a54ea75df4",
+    "tests/e2e/role-ui-support.mjs": "82cb37278879817e9b5b386d949ee5c7ebcf3aa360fa9282d1df32d990d1f97b"
+  },
+  "assertions": "existing exerciseGithubChain and roleScreens unchanged"
+}
