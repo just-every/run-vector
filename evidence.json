@@ -1,10 +1,10 @@
 {
   "files": [
     {
-      "blob": "c95711e20ee46d78bd770fc380d12c16de05053c",
-      "bytes": 11947,
+      "blob": "46d83ed4f429dd732d9c92ff0d2b101451d53917",
+      "bytes": 14207,
       "path": "REPORT.md",
-      "sha256": "a89e9a67a20b020db9413e7a71615325bc92e312a6d2de2a9efa4c5bc8045948"
+      "sha256": "c356859562a68644d305cadf0225fbff0bc6dc8000e5e129bebd50d1d9847ee9"
     },
     {
       "blob": "18aa9eeb6c35fc3d7eb237bb7f5b5e0954072755",
@@ -31,10 +31,10 @@
       "sha256": "ce8ca1cf85ac12b39608118b7a67137b37a152426dbcaf637b2ad71f3b449800"
     },
     {
-      "blob": "ec6f3fc6909a2068f1d5118cf129f8227274c043",
-      "bytes": 462,
+      "blob": "c7ce888a68993728bbce2ae92286fc493004f761",
+      "bytes": 968,
       "path": "candidate-ci.jsonl",
-      "sha256": "25688db83806b34bc804a56a603bfe1c19fefa862e23ecb81ca1adf04c82b6a0"
+      "sha256": "060c366b525fc4825084278b5c232174c9bbf0dad7f095a76a355cffa6454533"
     },
     {
       "blob": "7dc651d9ee311012ae82cceee1a21bac4e6637eb",
@@ -49,16 +49,34 @@
       "sha256": "607ff84881b055535fa7811e9e07fd6d6e679c640f55e0889ba1f6aad6caafae"
     },
     {
+      "blob": "49baf22d34e7432c46e160f3ec35ecdfd0dd12af",
+      "bytes": 13284,
+      "path": "core-projects.log",
+      "sha256": "14a58fbb4b4c03845105f1b56617bbfe97923749af27235d54dd2f9b3c957c2b"
+    },
+    {
+      "blob": "f11009d0a4c083a2d9779b0f01a0dd9a9dc26f87",
+      "bytes": 6910,
+      "path": "evidence-transfer-receipt.json",
+      "sha256": "c0fc1096fb731cf59b03f2317647467f5058e109e7000e5f86ec9a5849183a55"
+    },
+    {
+      "blob": "ca8e4fcdce0ef18d11b6ec964e75a28c71b69e14",
+      "bytes": 865,
+      "path": "extra-runtime-receipt.json",
+      "sha256": "1c7d92e64410ac6aba73c00416a65fd70abfec355e072902dab186313ac6a22d"
+    },
+    {
       "blob": "1c9f9af24f5dc3d595c2f4d42418b43fc3c97169",
       "bytes": 71,
       "path": "integration-check.log",
       "sha256": "eff5d2ff49e7728058769b28a6d383839345dd22c6f7ca1093ab356021928c23"
     },
     {
-      "blob": "65e73a7e4c560ac9444be198b57c9664c5ffa78b",
-      "bytes": 3427,
+      "blob": "1e052f116eed5ed9dd4fa6b0f44b594baaccf360",
+      "bytes": 4357,
       "path": "local-receipts.json",
-      "sha256": "7ac17005e447c4382ff65e2c15bb8eb09d29457a03ebb0d8477412d3c6078757"
+      "sha256": "18e8f31d63bd4e1447e732665288199cceb90168f089e4bda9f1f660add649ec"
     },
     {
       "blob": "f9624413245e745bcb66e1373e1a6289693ea93c",

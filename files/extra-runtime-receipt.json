@@ -1,0 +1,21 @@
+{
+  "head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+  "command": "node tests/e2e/core-runtime.mjs projects",
+  "exit": 1,
+  "passed_records": {
+    "HOME-001": 1,
+    "RENDER-404": 1,
+    "RENDER-SSR": 1,
+    "BASE-ACCESS-002": 1,
+    "CORE-PERSISTENCE": 1,
+    "BASE-OPS-005": 1,
+    "VIEW-006": 6,
+    "REPORT-004": 8,
+    "PROJ-014": 16,
+    "PROJ-017": 12,
+    "PROJ-003": 10
+  },
+  "failure": "[Vector browser] reads still pending before navigation: [[\"GET\",\"/api/views\"],[\"GET\",\"/api/refresh\"]]; 2 !== 0",
+  "location": "tests/e2e/initiatives-journey.mjs scopedChannelReasons via collaboration-navigation.mjs settleReads",
+  "scope": "The new recovery journey and existing project membership checks completed; the later unchanged initiative-channel journey failed. No test or source repair was attempted for this additional diagnostic failure."
+}
