@@ -1,0 +1,8 @@
+{
+  "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "command": "pnpm verify:ci --shard core-runtime",
+  "node": "22.20.0",
+  "exit": 0,
+  "log": "/tmp/vector-repair-core.log",
+  "round": 1
+}

@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-11-06T02:42:35.147Z",
+  "sourceCommit": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "note": "Vector CI test suites and build checks.",
+  "passed": true,
+  "checks": [
+    {
+      "command": "node tests/e2e/core-runtime.mjs current",
+      "startedAt": "2026-11-06T02:42:35.171Z",
+      "completedAt": "2026-11-06T03:00:50.766Z",
+      "passed": true
+    }
+  ],
+  "shard": "core-runtime",
+  "reusedBuildSha": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "completedAt": "2026-11-06T03:00:50.779Z"
+}

@@ -6,7 +6,7 @@
   "log": "/tmp/vector-reproduce-core.log",
   "job": 127657898273,
   "test": "core-runtime strict failed-request audit",
-  "failure": "AssertionError: expected failed requests [] but SLA reads end in net::ERR_ABORTED during native navigation",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
   "originalCiFailureReproduced": false,
   "originalCiFailure": "page.waitForFunction: Timeout 30000ms exceeded at core-stream-controls-journey.mjs:47"
 }
