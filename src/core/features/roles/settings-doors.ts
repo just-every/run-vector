@@ -19,6 +19,7 @@ export const settingsFormDoors: Record<string, readonly string[]> = {
   'integrations/ui/webhook-settings.tsx#WebhookSettings': ['POST /settings/integrations/destinations'],
   'integrations/ui/delivery-setup.tsx#DeliverySetup': ['POST /settings/integrations/delivery'],
   'integrations/ui/github-settings.tsx#GithubSettings': ['POST /settings/integrations/github'],
+  'integrations/ui/gitlab-settings.tsx#GitlabSettings': ['POST /settings/integrations/gitlab'],
   'email-intake/ui/team-email-intake.tsx#ActiveTeamEmailIntake': ['PUT /settings/teams/:teamId/email-intake'],
   'email-intake/ui/event-key.tsx#EventWebhookKey': ['PUT /settings/teams/:teamId/email-intake/event-key'],
   'cycles/ui/cycles-panel.tsx#CyclesPanel': ['POST /settings/cycles'],
