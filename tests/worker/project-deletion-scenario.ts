@@ -1,3 +1,4 @@
+import {projectDeletionArchive} from './project-deletion-archive';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {createServerApp} from '../../src/core/app/server';
@@ -18,7 +19,11 @@ export async function projectDeletionScenario(f:Awaited<ReturnType<typeof roleWo
  const initial=await read(await f.call('/projects/'+project.id));
  const remove=async()=>{const response=await f.call('/settings/projects/'+project.id,'DELETE');expect(response.status,await response.clone().text()).toBe(200);return JSON.parse(response.headers.get('x-vector-project-undo')!);};
  const refused=async(call:()=>Promise<Response>,status:number)=>{const before=await snapshot(tables);expect((await call()).status).toBe(status);expect(await snapshot(tables)).toEqual(before);};
+ const viewer=await f.fresh('member');
+ await f.mutate('/settings/operators/'+viewer.id+'/role','PATCH',{role:'viewer'});
  let receipt=await remove();
+ const foreignCookie=await signIn();
+ await refused(()=>request('/api/projects/undo-deletion','POST',{id:receipt.id,version:1},foreignCookie),409);
  for(const surface of ['call','api'] as const){
   expect((await f.people.owner[surface]('/projects/'+project.id)).status).toBe(404);
   expect((await read(await f.people.owner[surface]('/projects?includeArchived=true'))).projects.some((p:any)=>p.id===project.id)).toBe(false);
@@ -29,7 +34,7 @@ export async function projectDeletionScenario(f:Awaited<ReturnType<typeof roleWo
  expect((await read(await f.call('/search?q=synthetic-vector-9615&includeArchived=true'))).documents).toEqual([]);
  expect((await read(await f.call('/settings/administration'))).projects.some((p:any)=>p.id===project.id)).toBe(false);
  for(const issue of issues)expect(await read(await f.call('/issues/'+issue.identifier))).toMatchObject({id:issue.id,title:issue.title,description:issue.description,project:null,milestone:null});
- for(const who of [f.lead,f.member,f.guest])for(const surface of ['call','api'] as const){
+ for(const who of [f.lead,f.member,f.guest,viewer])for(const surface of ['call','api'] as const){
   await refused(()=>who[surface]('/projects/restore','POST',{id:receipt.id,version:1}),403);
   await refused(()=>who[surface]('/projects/recently-deleted'),403);
  }
@@ -79,5 +84,20 @@ export async function projectDeletionScenario(f:Awaited<ReturnType<typeof roleWo
  const concurrent=await Promise.all([f.call('/projects/restore','POST',{id:receipt.id,version:1}),f.call('/projects/restore','POST',{id:receipt.id,version:1})]);
  expect(concurrent.map(r=>r.status).sort()).toEqual([200,409]);
  expect((await read(await f.call('/projects/'+project.id))).activity.filter((a:any)=>a.kind==='project.restored')).toHaveLength(4);
+ // Current private-team visibility is checked from the retained source teams,
+ // even after the issues have been detached or reassigned elsewhere.
+ const hiddenTeam=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-9630',identifierPrefix:'SYNREC',isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-9630')!;
+ const hidden=await create('synthetic-vector-9631');
+ await f.create({teamId:hiddenTeam.id,projectId:hidden.id});
+ const hiddenResponse=await f.call('/settings/projects/'+hidden.id,'DELETE');expect(hiddenResponse.status).toBe(200);
+ const hiddenReceipt=JSON.parse(hiddenResponse.headers.get('x-vector-project-undo')!);
+ expect((await read(await f.admin.call('/projects/recently-deleted'))).projects.some((p:any)=>p.projectId===hidden.id)).toBe(false);
+ await refused(()=>f.admin.call('/projects/restore','POST',{id:hiddenReceipt.id,version:1}),409);
+ await f.mutate('/settings/teams/'+hiddenTeam.id+'/members/'+f.admin.id,'PUT',{role:'member'});
+ expect((await read(await f.admin.call('/projects/recently-deleted'))).projects.some((p:any)=>p.projectId===hidden.id)).toBe(true);
+ await f.mutate('/settings/teams/'+hiddenTeam.id+'/members/'+f.admin.id,'DELETE');
+ await refused(()=>f.admin.api('/projects/restore','POST',{id:hiddenReceipt.id,version:1}),409);
+ await read(await f.call('/projects/restore','POST',{id:hiddenReceipt.id,version:1}));
+ await projectDeletionArchive(f,project.id,doc,issues[3].id);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 }

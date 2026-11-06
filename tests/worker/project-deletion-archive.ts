@@ -1,0 +1,45 @@
+import {env} from 'cloudflare:workers';
+import {applyD1Migrations} from 'cloudflare:test';
+import {expect,inject} from 'vitest';
+import {createVectorArchive} from '../../src/core/features/data/archive-service.mjs';
+import {readArchive} from '@runeditrun/rer/modules/portability';
+import {createServerApp} from '../../src/core/app/server';
+import {bindings} from './base-auth-fixture';
+import type {roleWorkspace} from './role-fixture';
+export async function projectDeletionArchive(f:Awaited<ReturnType<typeof roleWorkspace>>,projectId:string,doc:any,issueId:string) {
+ const deletion=await f.call('/settings/projects/'+projectId,'DELETE');expect(deletion.status).toBe(200);
+ const receipt=JSON.parse(deletion.headers.get('x-vector-project-undo')!);
+ const target=env as unknown as {ARCHIVE_TARGET_DB:D1Database;ARCHIVE_TARGET_FILES:R2Bucket};
+ await applyD1Migrations(target.ARCHIVE_TARGET_DB,inject('migrations'));
+ const source=await createVectorArchive({db:env.DB,files:env.FILES}),destination=await createVectorArchive({db:target.ARCHIVE_TARGET_DB,files:target.ARCHIVE_TARGET_FILES});
+ const job=await source.exports.create();while((await source.exports.advance(job,{maxParts:16})).phase==='building'){}
+ const records:any[]=[];for await(const record of readArchive(await source.exports.download(job)))records.push(record);
+ await source.exports.abort(job);
+ const items=records.filter(row=>row.kind==='part').flatMap(row=>row.items);
+ const rows=(table:string)=>items.filter(item=>item.kind==='row'&&item.table===table).map(item=>item.row);
+ expect(rows('projects')).toContainEqual(expect.objectContaining({id:projectId}));
+ expect(rows('project_deletions')).toContainEqual(expect.objectContaining({id:receipt.id,project_id:projectId,restored_at:null}));
+ expect(rows('project_deletions').some(row=>row.session_hash)).toBe(false);
+ expect(rows('project_deletion_memberships')).toContainEqual(expect.objectContaining({deletion_id:receipt.id,issue_id:issueId}));
+ expect(rows('documents')).toContainEqual(expect.objectContaining({id:doc.id,body:doc.body}));
+ const imported=await destination.imports.create(records[0]);
+ for(const part of records.filter(row=>row.kind==='part'))await destination.imports.uploadPart(imported,part.index,part);
+ await destination.imports.finalize(imported,{contentHash:records.at(-1).contentHash,archiveHash:records.at(-1).archiveHash});
+ const app=createServerApp(),restored={...bindings,DB:target.ARCHIVE_TARGET_DB,FILES:target.ARCHIVE_TARGET_FILES};
+ const call=(path:string,method='GET',body?:unknown,cookie='')=>app.request(restored.APP_ORIGIN+path,{method,headers:{host:new URL(restored.APP_ORIGIN).host,origin:restored.APP_ORIGIN,'content-type':'application/json',cookie},body:body===undefined?undefined:JSON.stringify(body)},restored);
+ expect((await call('/auth/request','POST',{email:bindings.FIRST_OWNER_EMAIL})).status).toBe(202);
+ const mail=await target.ARCHIVE_TARGET_DB.prepare("SELECT json_extract(message,'$.text') body FROM rer_mail_development_outbox ORDER BY sequence DESC LIMIT 1").first<{body:string}>();
+ const token=new URL(mail!.body.match(/https?:\/\/[^\s]+/)![0]).searchParams.get('token');
+ const confirmed=await call('/auth/confirm','POST',{token});expect(confirmed.status).toBe(303);
+ const cookie=confirmed.headers.get('set-cookie')!.split(';')[0];
+ expect((await call('/api/projects/'+projectId,'GET',undefined,cookie)).status).toBe(404);
+ expect((await call('/api/documents/'+doc.id,'GET',undefined,cookie)).status).toBe(404);
+ expect((await call('/api/projects/undo-deletion','POST',{id:receipt.id,version:1},cookie)).status).toBe(409);
+ const recent=await call('/api/projects/recently-deleted','GET',undefined,cookie);expect(recent.status).toBe(200);
+ expect((await recent.json() as any).projects.some((row:any)=>row.projectId===projectId)).toBe(true);
+ const recovered=await call('/api/projects/restore','POST',{id:receipt.id,version:1},cookie);expect(recovered.status,await recovered.clone().text()).toBe(200);
+ expect(await (await call('/api/documents/'+doc.id,'GET',undefined,cookie)).json()).toMatchObject({id:doc.id,body:doc.body});
+ expect(await target.ARCHIVE_TARGET_DB.prepare('SELECT project_id FROM issues WHERE id=?').bind(issueId).first<string>('project_id')).toBe(projectId);
+ expect(await target.ARCHIVE_TARGET_DB.prepare("SELECT count(*) n FROM project_activity WHERE project_id=? AND kind='project.restored'").bind(projectId).first<number>('n')).toBe(5);
+ expect((await target.ARCHIVE_TARGET_DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+}

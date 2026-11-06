@@ -8333,6 +8333,10 @@
       "sha256": "e003b9f6c9946551f8e4ffa842caeb2b5313a0d0c9f4298a3ebe08ca21f6a35c",
       "executable": false
     },
+    "tests/e2e/core-project-deletion-journey.mjs": {
+      "sha256": "68602f7f9ce1b8bfdb47f2ad8ae8746cb75a4faea7151c7d270ff565ef532819",
+      "executable": false
+    },
     "tests/e2e/core-project-fields-journey.mjs": {
       "sha256": "634b1e995c6845980d11056c2747cb56c9f24bcd3f3e5768a001be5443644afe",
       "executable": false
@@ -8342,7 +8346,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "79e86fa4e65a6e0bfcee7d27d7e8d87c1a8529409bc903a8f2c1d60a30632495",
+      "sha256": "3e8fc9555c4c98f7c2c504ca8664f2c8e0843ace86eb37bbe60d5d95ad71a3a8",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
@@ -9537,8 +9541,12 @@
       "sha256": "5aec85a0e5c4477b49ed148df005a74fff97e97e0bb9f003ac7ddb4f87caf2d1",
       "executable": false
     },
+    "tests/worker/project-deletion-archive.ts": {
+      "sha256": "01ff21eb47fe9bdcc831d37adfcc7690b0918b5147c484cd0f9442b23638c772",
+      "executable": false
+    },
     "tests/worker/project-deletion-scenario.ts": {
-      "sha256": "2147d7939e8e7b823c276bf97ba049a78a036cafbec9299101a623c45a61caf1",
+      "sha256": "360cbadd06aa1b4363113d934e5fabe884905d2ef02c74f97c5f49893a64eebf",
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
