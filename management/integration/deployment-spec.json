@@ -768,6 +768,10 @@
   ],
   "durableObjects": [
     {
+      "binding": "LIVE_SYNC",
+      "className": "VectorLiveSync"
+    },
+    {
       "binding": "RESTORE_COORDINATOR",
       "className": "VectorRestoreCoordinator"
     }
@@ -777,6 +781,12 @@
       "tag": "vector-http-restore-v1",
       "newSqliteClasses": [
         "VectorRestoreCoordinator"
+      ]
+    },
+    {
+      "tag": "vector-live-sync-v1",
+      "newSqliteClasses": [
+        "VectorLiveSync"
       ]
     }
   ],
