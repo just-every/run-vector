@@ -11,6 +11,8 @@ import { ProjectCycleHistory } from "./cycle-history";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { administrationSchema } from "../../administration/schema";
 import { ProjectAdministration } from "./project-administration";
+import { ProjectDependencies } from "../../project-dependencies/ui/project-dependencies";
+import { decide } from "../../roles/policy";
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { isMissingResourceError, useApiResource } from "../../../app/api-client";
@@ -45,9 +47,17 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   const record = administration.data?.projects.find(
     (item) => item.id === projectId,
   );
+  const viewer = administration.data?.viewer;
   return (
     <ProjectDetailContent
       project={project.data}
+      dependencies={<ProjectDependencies key={project.data.id} project={project.data}
+        writable={!!viewer && decide({ role: viewer.role, memberInvites: false, teams: new Map() }, { row: "projects.dependencies" }) === "allow"}
+        candidates={(administration.data?.projects ?? []).filter(item => !item.archivedAt).map(({ id, name }) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name))}
+        onChanged={(receipt) => {
+          if (receipt.id === projectId) project.publishReceipt(() => receipt);
+          project.refreshAfterMutation();
+        }} />}
       milestones={<ProjectMilestones writable={!!administration.data && !["guest","viewer"].includes(administration.data.viewer.role)} project={project.data} onChanged={(receipt) => {
         project.publishReceipt(() => receipt);
         project.refreshAfterMutation();
@@ -92,10 +102,12 @@ function ProjectDetailContent({
   project,
   management,
   milestones,
+  dependencies,
 }: {
   project: ProjectDetailData;
   management: ReactNode;
   milestones: ReactNode;
+  dependencies: ReactNode;
 }) {
   const health = activeHealthLabel(project.health);
   const { date } = useDateFormat();
@@ -150,6 +162,7 @@ function ProjectDetailContent({
         />
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
+      {dependencies}
       {milestones}
       <DocumentsSection parentKind="project" parentId={project.id}/>
       {project.healthExplanation ? (

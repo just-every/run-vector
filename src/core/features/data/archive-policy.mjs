@@ -1,3 +1,5 @@
+// Direct project edges and Inbox receipts are portable domain data. Restore
+// retains them without deriving edges from issues or replaying lead notices.
 // Document mentions, followers, Inbox history and consumed revision receipts are portable domain data.
 // Restore retains history without scanning text, scheduling channels or replaying deliveries.
 // Report schedules and safe receipts are portable; credentials, active claims
