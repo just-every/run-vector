@@ -1,0 +1,6 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 integration:sync /home/agent/rer-consolidation/work/sd-vector-c-f195-fix1/run-vector
+> node scripts/sync-integration.mjs --write
+
+Integration deployment spec, setup digest and producer workflow match.

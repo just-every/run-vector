@@ -1,0 +1,3 @@
+{"all_parent_inventory_retained": true, "changed_paths": ["management/integration/deployment-spec.json"], "counts": ["| Published | 98 | 6 | 0 | 104 |", "| Target and push further | 38 | 63 | 67 | 168 |", "| All | 136 | 69 | 67 | 272 |"], "main": "e6010126cf33eeb7e70368b741bf89ba9dae2672", "original": "1a454502b9af6b959adccb8d55010f3dbcbb36f4", "protected_source_diff": [], "sql_bytes_match_both_parents": true, "sync_001_status": "partial", "sync_001_unchanged": true}
+Before: DO bindings=1 DO migrations=1 SQL=125
+After: DO bindings=2 DO migrations=2 SQL=125

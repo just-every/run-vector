@@ -1,0 +1,41 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index dbb0143..c51ff4b 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -767,6 +767,10 @@
+     "nodejs_compat"
+   ],
+   "durableObjects": [
++    {
++      "binding": "LIVE_SYNC",
++      "className": "VectorLiveSync"
++    },
+     {
+       "binding": "RESTORE_COORDINATOR",
+       "className": "VectorRestoreCoordinator"
+@@ -778,6 +782,12 @@
+       "newSqliteClasses": [
+         "VectorRestoreCoordinator"
+       ]
++    },
++    {
++      "tag": "vector-live-sync-v1",
++      "newSqliteClasses": [
++        "VectorLiveSync"
++      ]
+     }
+   ],
+   "publicVariables": {
+diff --git a/sources.lock.json b/sources.lock.json
+index a35214f..45fb10d 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -2030,7 +2030,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
++      "sha256": "b73a9ea12dddb76c4d9b9a3c32ae7da2115e830371b59097d9407db99caa5094",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {

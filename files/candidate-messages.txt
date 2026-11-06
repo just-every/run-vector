@@ -1,0 +1,14 @@
+9e4b16f8d1b9a3c68aacf77f2f73ef074fdb01ce
+Regenerate live-sync deployment inventory
+
+Generate the complete deployment spec from the production Worker so LIVE_SYNC / VectorLiveSync and vector-live-sync-v1 accompany the unchanged restore coordinator and SQL inventory. Retain original f195 commits and SYNC-001 PARTIAL scope. Refresh the source lock last.
+
+1a454502b9af6b959adccb8d55010f3dbcbb36f4
+Wait for recovered native reads before live-sync screen proof
+
+1d8bf8e93672099b28d6b3783141539d827ab785
+Prove repeated live Current decisions and recovered native screens
+
+7e0faa672751201443246e862923b8cf03adf5e3
+Add native live-sync transport and bounded browser proof [skip ci]
+

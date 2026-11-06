@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "install"
+  ],
+  "exit_code": 0,
+  "frozen_dependencies": true,
+  "log": "dependency-install.log",
+  "pnpm_pin": "10.12.4",
+  "rer_pin": "0.2.94"
+}

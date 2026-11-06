@@ -1,0 +1,29 @@
+{
+  "branch": "cloud/sd-vector-c-f195-fix1",
+  "changed_paths": [
+    "management/integration/deployment-spec.json",
+    "sources.lock.json"
+  ],
+  "ci": {
+    "dispatched": false,
+    "new_run_ids": [],
+    "original_blocking_run_id": 42143888765,
+    "queried": false,
+    "reason": "Repair brief explicitly says no CI query is needed and do not wait for CI. Independent original-family re-gate and Mac final gates remain required.",
+    "rerun": false,
+    "waited": false
+  },
+  "fresh_main": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "head": "9e4b16f8d1b9a3c68aacf77f2f73ef074fdb01ce",
+  "main_ancestor": true,
+  "original_ancestor": true,
+  "original_branch": "cloud/sd-vector-c-f195",
+  "original_head": "1a454502b9af6b959adccb8d55010f3dbcbb36f4",
+  "pr": null,
+  "product_push": "success",
+  "protected_source_unchanged": true,
+  "recorded_at": "2026-11-06T02:57:45.307040+00:00",
+  "remote_ref_verified": true,
+  "repository": "just-every/run-vector",
+  "worktree_clean": true
+}
