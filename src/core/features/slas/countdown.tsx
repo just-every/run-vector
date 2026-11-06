@@ -13,6 +13,8 @@ export function SlaCountdown({
   const resource = useApiResource(
     `/api/issues/${identifier}/sla`,
     countdownSchema,
+    undefined,
+    { abortPendingOnDispose: false },
   );
   useEffect(() => {
     resource.reload();

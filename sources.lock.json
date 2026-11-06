@@ -2034,7 +2034,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "f9d703618e7664ff2b11ee081199f5a4ce8313593fb7bdf09fbefbbf9ae3a071",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -6886,7 +6886,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "38e2ee991223528037ce4e26f21a5f1797f057aea88b5051ffadf408b22c9a1d",
+      "sha256": "9c84a29fe628f3e8aca8eb2994200a50693089887db0999d65e30b7a74161464",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -7398,7 +7398,7 @@
       "executable": false
     },
     "src/core/features/slas/countdown.tsx": {
-      "sha256": "03180d340ce59c8b7f763b5abe591f27a9556f09196e50ad3ddf4b44e79a6124",
+      "sha256": "6fade2473e03dc58a198f6a5cfb1a30108eb778d3b03befc9f0e61e4ca353058",
       "executable": false
     },
     "src/core/features/slas/panel.tsx": {
@@ -9694,7 +9694,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "5e81ecdbdacf713a7c0a9d72562aae36c803470efe695ee92ce604d36bec6027",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
