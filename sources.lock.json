@@ -2658,7 +2658,7 @@
       "executable": false
     },
     "scripts/contract-docs.mjs": {
-      "sha256": "17598668017202efe065dae49e102df9dcfe44d983edae50f3db39c1d1865c03",
+      "sha256": "aa4688ff5f04d91b3f12508bd592a6988e3cd2578924c1267d4909b4cb101af8",
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
@@ -8934,7 +8934,7 @@
       "executable": false
     },
     "tests/installer/adapter.test.mjs": {
-      "sha256": "e7586cafee17dcccdcaf1a58deded9bb30125b14fc1cebb61b2e571902380f12",
+      "sha256": "2a116c11a5d71f2f4481b1363804dafd603a2d79872465a112a078dcd81aa1a7",
       "executable": false
     },
     "tests/installer/native-proof.mjs": {
