@@ -2,17 +2,17 @@
   "repository": "just-every/run-vector",
   "branch": "cloud/sd-vector-c-f189-pc1",
   "head": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
-  "custody": "PUSHED",
-  "terminal": false,
+  "custody": "READY",
+  "terminal": true,
   "ci": {
-    "conclusion": null,
+    "conclusion": "success",
     "head_sha": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
     "html_url": "https://github.com/just-every/run-vector/actions/runs/42144126004",
-    "status": "in_progress",
+    "status": "completed",
     "run_id": 42144126004,
     "event": "push",
-    "githubCalls": 8,
-    "observed_at": "2026-11-06T01:49:42Z"
+    "githubCalls": 9,
+    "observed_at": "2026-11-06T01:55:24Z"
   },
   "GITLAB-001": {
     "before": "partial",
@@ -33,5 +33,18 @@
   "localChecks": "All named commands pass; administration was completed in two segments after the original outer timeout.",
   "publicationScan": "fleet gate, not run in cloud",
   "RunSite": "fleet main gate, not claimed",
-  "PR": null
+  "PR": null,
+  "githubCalls": 9,
+  "finishedAt": "2026-11-06T01:56:06.322731+00:00",
+  "blockers": [],
+  "heldRequirements": [
+    "MR opened, approved and merged processing",
+    "branch and commit links",
+    "configured status movement",
+    "approvals and pipelines",
+    "production-environment deployment and real commissioning",
+    "GITLAB-002 and remaining INTEG-001 acceptance",
+    "RELEASE-002 other-provider transports and CI-001 and PUSH-003 duties",
+    "independent interface qualification and gate"
+  ]
 }

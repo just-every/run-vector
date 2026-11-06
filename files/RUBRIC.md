@@ -16,8 +16,8 @@ This continuation preserves GITLAB-001 as PARTIAL. The full clause has one compo
 
 1. Full-clause FAIL by design: no MR processing or production-deployment outcome is claimed. Selected setup cells use the named mounted and rendered journeys.
 2. Selected security paths PASS locally: real seeded accepted cases and refused cases, unchanged storage and outbound-call counts.
-3. Exact final Verify pending until recorded; the Worker files and integration runtime are already in existing push Verify commands. No env flag adds these journeys.
-4. Browser proof will identify its source SHA. A later evidence-only contract change can use a byte-identical source comparison; no earlier proof is silently represented as exact-head execution.
+3. Selected proof PASS: Verify 42144126004, push, completed success on b4e30cadfd39436cc91d918fda009a25f80b5a08. The Worker files and integration runtime run in the existing push Verify commands. No env flag adds these journeys.
+4. PASS: local browser proof identifies source 1504376ee805f68dcc6a68a85b6b429acca567ae; proof-byte-equivalence.json proves runtime and test bytes match final b4e30cadfd39436cc91d918fda009a25f80b5a08, whose recorded Verify passes. Earlier local proof is explicitly qualified.
 5. Existing clause text retains token and signing requirements; broader inherited provider duties remain in its Gap.
 6. PARTIAL Gap remains complete. Contract generation is checked, then generated views are restored for the lander as directed. No DONE provenance is asserted.
 7. PASS: no acceptance sentence, clause ID or parent Status row is removed or narrowed.
