@@ -8026,7 +8026,7 @@
       "executable": false
     },
     "src/routeTree.gen.ts": {
-      "sha256": "21e498dbd600892ae64780bdb5e0940ece6a7a0c44fa0bcda72a8b68d81e30fb",
+      "sha256": "99765456940fcf8438e56c2da774b0ff92aa3e61e5ef114ef31bcfb46a4570e2",
       "executable": false
     },
     "src/site/document.tsx": {
@@ -8526,7 +8526,7 @@
       "executable": false
     },
     "tests/e2e/file-migration-journey.mjs": {
-      "sha256": "317e25f7efc5740301c34ce4af77f4d30408b1118f176fe9d54a8bd5adac92b6",
+      "sha256": "42865f6a2bc8625d170a9eebbea45180b048e3d5178e0e079252727f11e3d8ad",
       "executable": false
     },
     "tests/e2e/first-run-fixture.mjs": {
@@ -9278,7 +9278,7 @@
       "executable": false
     },
     "tests/worker/file-migration.test.ts": {
-      "sha256": "c705218c05b06c59fd67662d2250e74581b2578604a40a00ee239bf7d89a00d0",
+      "sha256": "d35c56bd4ca111651cb8a929ad29fd0fe516866dc7c3916b7f0cebdf889a04cd",
       "executable": false
     },
     "tests/worker/first-run.test.ts": {

@@ -14,6 +14,7 @@ it('[DATA-017] reviewed file runs retain exact missing endpoints and finish only
   const json=async(path:string,method='GET',body?:unknown)=>{const response=await f.call(path,method,body);expect(response.status,await response.clone().text()).toBe(200);return response.json() as Promise<Report>;};
   const created=await f.call('/data/migrations','POST',{source});expect(created.status,await created.clone().text()).toBe(200);
   const migration=await created.json() as {id:string},path='/data/migrations/'+migration.id;
+  const sameSource=await f.call('/data/migrations','POST',{source});expect(sameSource.status).toBe(200);expect((await sameSource.json() as {id:string}).id).toBe(migration.id);
   const value=(id:string,target:string)=>({...f.input([f.row(id,{dependencies:'source:'+target})],source),migrationId:migration.id});
   const firstInput=value('synthetic-vector-1702','synthetic-vector-1799'),firstReview=await f.preview(firstInput);
   expect(firstReview.pending).toEqual([{row:1,sourceId:'synthetic-vector-1702',targetSourceId:'synthetic-vector-1799',kind:'dependencies'}]);
@@ -79,11 +80,20 @@ it('[DATA-017] reviewed file runs retain exact missing endpoints and finish only
   const erasedReport=await json('/data/migrations/'+eraseId);expect(JSON.stringify(erasedReport)).not.toContain(erasedName);expect(erasedReport.pending).toEqual([]);
   const erasedReview=await f.preview(erasedInput);expect(erasedReview.ready).toBe(false);expect(erasedReview.errors.some(row=>row.code==='source_erased')).toBe(true);
   const pendingPerson='Synthetic Vector Absent Person',privacyInput={...f.input([f.row('synthetic-vector-1715',{dependencies:'source:'+pendingPerson})],erasedSource),migrationId:eraseId};
-  await f.publish(privacyInput);
+  const privacyReview=await f.preview(privacyInput);await f.finish(await (await f.apply(privacyInput,privacyReview)).json() as never);
+  const privacyPending=await json('/data/migrations/'+eraseId);
   const removedEndpoint=await f.call('/data/erasure','POST',{subject:{names:[pendingPerson]},confirmation:'erase '+pendingPerson});expect(removedEndpoint.status,await removedEndpoint.clone().text()).toBe(200);
   expect((await json('/data/migrations/'+eraseId)).pending).toEqual([]);
+  const erasedCustody=await snapshot();expect((await f.apply(privacyInput,privacyReview)).status).toBe(200);expect(await snapshot()).toEqual(erasedCustody);
+  expect((await f.call('/data/migrations/'+eraseId+'/finish','POST',{version:privacyPending.migration.version,acceptPending:true,pendingIds:privacyPending.pending.map(row=>row.id)})).status).toBe(409);expect(await snapshot()).toEqual(erasedCustody);
   const rebound={...f.input([f.row('synthetic-vector-1716',{dependencies:'source:'+pendingPerson})],erasedSource),migrationId:eraseId};
   const noResurrection=await f.preview(rebound);expect(noResurrection.ready).toBe(false);expect(noResurrection.errors.some(row=>row.code==='source_erased')).toBe(true);
   const absentEndpoint=await f.preview({...f.input([f.row(pendingPerson)],erasedSource),migrationId:eraseId});expect(absentEndpoint.ready).toBe(false);expect(absentEndpoint.errors.some(row=>row.code==='source_erased')).toBe(true);
+  // Supplying an endpoint is never consent to discard an unbound relation.
+  const suppliedSource='synthetic-vector-supplied',supplied=await f.call('/data/migrations','POST',{source:suppliedSource}),suppliedId=(await supplied.json() as {id:string}).id;
+  await f.publish({...f.input([f.row('synthetic-vector-1720',{dependencies:'source:synthetic-vector-1721'})],suppliedSource),migrationId:suppliedId});
+  await f.publish({...f.input([f.row('synthetic-vector-1721')],suppliedSource),migrationId:suppliedId});
+  const stillPending=await json('/data/migrations/'+suppliedId),unboundBefore=await snapshot();expect(stillPending.pending).toHaveLength(1);
+  const unboundFinish=await f.call('/data/migrations/'+suppliedId+'/finish','POST',{version:stillPending.migration.version,acceptPending:true,pendingIds:stillPending.pending.map(row=>row.id)});expect(unboundFinish.status).toBe(409);expect(await unboundFinish.text()).toContain('migration_binding_required');expect(await snapshot()).toEqual(unboundBefore);
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);

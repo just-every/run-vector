@@ -12,6 +12,7 @@ export async function exerciseFileMigration({page,runtime,team,status,width,evid
   const created=await creation;assert.equal(created.status(),200);const migration=await created.json();
   await page.waitForFunction(id=>document.querySelector('[aria-label="Migration for this file"]')?.value===id,migration.id);
   assert.equal(await panel.getByLabel('Import source name',{exact:true}).inputValue(),source);
+  assert.equal(await panel.getByLabel('Import source name',{exact:true}).evaluate(element=>element.readOnly),true);
   await panel.getByLabel('File format',{exact:true}).selectOption('json');
   const expected=[];
   for(const suffix of ['one','two']) {
@@ -21,6 +22,12 @@ export async function exerciseFileMigration({page,runtime,team,status,width,evid
     const previewResponse=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/data/import/preview'&&response.request().method()==='POST');
     await panel.getByRole('button',{name:'Preview import',exact:true}).click();
     const response=await previewResponse;assert.equal(response.status(),200);const preview=await response.json();assert.equal(preview.ready,true);assert.deepEqual(preview.pending,[{row:1,sourceId,targetSourceId,kind:'dependencies'}]);
+    await panel.getByRole('heading',{name:'Pending migration relations',exact:true}).waitFor();
+    await panel.getByText(sourceId+' → '+targetSourceId+' · dependencies · row 1',{exact:true}).waitFor();
+    if(suffix==='one') {
+      await panel.locator('form .import-file-fields').screenshot({path:join(evidence,'file-migration-file-'+width+'.png')});
+      await panel.locator('[aria-labelledby="import-review-heading"]').screenshot({path:join(evidence,'file-migration-review-'+width+'.png')});
+    }
     const appliedResponse=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/data/import/apply'&&response.request().method()==='POST');
     await panel.getByRole('button',{name:'Apply reviewed run',exact:true}).click();
     const applied=await appliedResponse;assert.equal(applied.status(),200);const run=await applied.json();
