@@ -37,14 +37,24 @@ The application runs on a Cloudflare Worker with TanStack Start, React and Hono,
 
 ## Run it on your computer
 
-You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. One line, the same as on [run-vector.com/run](https://run-vector.com/run), installs rer (the Run Edit Run command), clones Vector and starts it:
+You need Git, on macOS, Linux or Windows with WSL2. The installer brings Node and pnpm. One line, the same as on [run-vector.com/run](https://run-vector.com/run), installs rer (the Run Edit Run command), clones Vector and starts it:
 
 <!-- vector-start -->
 ```sh
-npx -y @runeditrun/rer dev just-every/run-vector
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector
 ```
 
-To start it again later, run `cd run-vector && rer dev`. The line installs the current global rer launcher; inside this checkout, rer runs the exact dependency declared in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
+Have Node 22 or later? You can use `npx -y @runeditrun/rer dev just-every/run-vector` instead.
+
+The installer links `rer` at `$HOME/.local/bin/rer` and does not edit your shell profiles. Before using the later `rer` commands in a new terminal, add that folder to PATH:
+
+```sh
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Run this in each new terminal, or add it to your shell's startup file to keep it. You can also use `"$HOME/.local/bin/rer"` in place of `rer` for any command below, including reset and deploy.
+
+To start Vector again later, run `cd run-vector && rer dev`. The install line installs the current global rer launcher; inside this checkout, rer runs the exact dependency declared in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
 
 Vector has its own release numbers: [tagged Vector releases](https://github.com/just-every/run-vector/tags) are separate from the CLI version. The clone follows `main`. To use a tagged release instead, choose its version tag and run `git checkout <version-tag>` in the checkout before `rer dev`; rer then uses the CLI pin recorded by that release.
 

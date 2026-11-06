@@ -48,6 +48,8 @@ export async function agentAttributionJourney({page,context,base,state,sql,evide
       const issue=await call('vector.issue.creation',{teamId:team.id,title:marker+'-created-'+disposition});
       await call('vector.issue.concurrent_edits',{identifier:issue.identifier,change:{expectedVersion:1,title:marker+'-edited-'+disposition}});
       const comment=await call('vector.issue.comment',{identifier:issue.identifier,body:marker+'-comment-'+disposition});
+      // The sponsor can edit their comment, but its creation stays agent-authored.
+      await member.api('/issues/'+issue.identifier+'/comments/'+comment.commentId,'PATCH',{body:marker+'-human-edit-'+disposition});
       native.push({issue,commentId:comment.commentId,label:name+' for '+person,disposition});
     }
     const human=await member.api('/issues','POST',{teamId:team.id,title:marker+'-human'},201);
@@ -59,6 +61,7 @@ export async function agentAttributionJourney({page,context,base,state,sql,evide
       const detail=await member.api(path),discussion=await member.api(path+'/discussion');
       assert.deepEqual(detail.activity.map(a=>({kind:a.kind,actor:a.actor})),[
         {kind:'issue.created',actor:entry.label},{kind:'issue.updated',actor:entry.label},{kind:'comment.created',actor:entry.label},
+        ...(entry.disposition==='human'?[]:[{kind:'comment.edited',actor:person}]),
       ]);
       assert.equal(discussion.comments.find(c=>c.id===entry.commentId).actor,entry.label);
       await member.page.setViewportSize({width:1440,height:1000});
@@ -72,8 +75,9 @@ export async function agentAttributionJourney({page,context,base,state,sql,evide
       await comment.getByRole('button',{name:'Edit comment',exact:true}).focus();
       assert.ok(await comment.getByRole('button',{name:'Edit comment',exact:true}).evaluate(e=>e===document.activeElement));
       await member.page.locator('.issue-history > summary').click();
-      const activity=member.page.locator('.activity-list > li');assert.equal(await activity.count(),3);
+      const activity=member.page.locator('.activity-list > li');assert.equal(await activity.count(),entry.disposition==='human'?3:4);
       for(let position=0;position<3;position++)assert.ok((await activity.nth(position).innerText()).includes(entry.label));
+      if(entry.disposition!=='human')assert.ok((await activity.nth(3).innerText()).includes(person));
       const timeOrigin=await member.page.evaluate(()=>performance.timeOrigin);
       await inspect(member.page,member.page.locator('main:visible').first(),'agent-attribution-'+entry.disposition);
       assert.equal(await member.page.evaluate(()=>performance.timeOrigin),timeOrigin,'Hydration and viewport changes retain the document');
@@ -90,12 +94,12 @@ export async function agentAttributionJourney({page,context,base,state,sql,evide
     const rows=[];for await(const part of readArchive(new Response(bytes).body))if(part.kind==='part')rows.push(...part.items.filter(item=>item.kind==='row'));
     for(const entry of native){
       const events=rows.filter(item=>item.table==='issue_activity'&&item.row.issue_id===entry.issue.id).map(item=>item.row);
-      assert.equal(events.length,3);
-      assert.deepEqual(events.map(row=>row.kind).sort(),['comment.created','issue.created','issue.updated']);
+      assert.equal(events.length,entry.disposition==='human'?3:4);
+      assert.deepEqual(events.map(row=>row.kind).sort(),['comment.created',...(entry.disposition==='human'?[]:['comment.edited']),'issue.created','issue.updated']);
       for(const event of events){
         assert.equal(event.actor_operator_id,member.id);
-        assert.equal(event.actor_name,entry.disposition==='human'?null:entry.label);
-        if(entry.disposition==='human'){assert.equal(event.agent_id,null);assert.equal(event.agent_operation_id,null);}
+        assert.equal(event.actor_name,entry.disposition==='human'||event.kind==='comment.edited'?null:entry.label);
+        if(entry.disposition==='human'||event.kind==='comment.edited'){assert.equal(event.agent_id,null);assert.equal(event.agent_operation_id,null);}
         else {assert.ok(event.agent_id);assert.ok(event.agent_operation_id);}
       }
       assert.ok(rows.some(item=>item.table==='issue_comments'&&item.row.id===entry.commentId));
@@ -111,7 +115,7 @@ export async function agentAttributionJourney({page,context,base,state,sql,evide
     await navigate(member.page,base+'/');
     assert.deepEqual(errors,[]);assert.deepEqual(member.errors,[]);assert.deepEqual(external,[]);
     await writeFile(evidence+'/agent-native-attribution.json',JSON.stringify({passed:true,modes:native.map(e=>e.disposition),
-      nativeReload:true,ownerDownloadedHistory:true,privateWithdrawal:true,widths:[1440,390]},null,2));
-    record('BASE-AGENT-008','Mounted MCP issue creation, editing and comments retain the saved agent for sponsor label in native activity, comments, reload and Owner downloaded history; a human control remains human.');
+      nativeReload:true,humanEditsRetainAgentAuthor:true,ownerDownloadedHistory:true,privateWithdrawal:true,widths:[1440,390]},null,2));
+    record('BASE-AGENT-008','Mounted MCP issue creation, editing and comments retain the saved agent for sponsor label in native activity, comments after human editing, reload and Owner downloaded history; human edits and a human control remain human.');
   } finally {await member.context.close();}
 }

@@ -354,7 +354,7 @@ function IssueInspector({
                         {activity.actor ?? "System"} ·{" "}
                         {relativeTime(activity.at)}
                       </span>
-                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date).map((change) => (
+                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date, issue.fields).map((change) => (
                         <span className="activity-change" key={change.field}>
                           {change.from === undefined ? `${change.field} edited` : `${change.field}: ${change.from} → ${change.to}`}
                         </span>

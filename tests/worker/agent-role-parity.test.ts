@@ -30,12 +30,13 @@ it('native and MCP issue edits and comments share current role, invited-team and
   const publicIssue=await make(w.team.id),privateIssue=await make(privateTeam.id),outsideIssue=await make(outside.id);
   await json(await w.member.call(`/issues/${publicIssue.identifier}/comments`,'POST',{body:'synthetic-vector-3604'}),201);
   let id=0;
+  const completed=new Map<string,Array<{name:string;args:Record<string,unknown>}>>();
   const rpc=async(person:Person,name:string,args:object)=>{
     await resetLimits();
     const response=await agentRequest('/mcp',{method:'POST',headers:{Origin:origin,
       Authorization:'Bearer '+person.token,'Content-Type':'application/json',Accept:'application/json, text/event-stream',
       'MCP-Protocol-Version':'2025-11-25','Mcp-Method':'tools/call'},
-      body:JSON.stringify({jsonrpc:'2.0',id:++id,method:'tools/call',params:{name,arguments:{...args,idempotency_key:crypto.randomUUID()}}})});
+      body:JSON.stringify({jsonrpc:'2.0',id:++id,method:'tools/call',params:{name,arguments:{idempotency_key:crypto.randomUUID(),...args}}})});
     expect(response.status,await response.clone().text()).toBe(200);
     const body=await response.json() as any;
     expect(body.error).toBeUndefined();
@@ -43,6 +44,7 @@ it('native and MCP issue edits and comments share current role, invited-team and
   };
   const current=async(issue:any)=>json(await owner.call('/issues/'+issue.identifier));
   const compare=async(person:Person,issue:any,code:string|null)=>{
+    const calls:Array<{name:string;args:Record<string,unknown>}>=[];
     for(const verb of ['edit','comment']){
       await resetLimits();
       const before=await snapshot(watched),detail=await current(issue);
@@ -61,20 +63,36 @@ it('native and MCP issue edits and comments share current role, invited-team and
         else expect((await json(await owner.call(path+'/discussion'))).comments).toContainEqual(expect.objectContaining({id:nativeBody.id,body}));
       }
       const beforeAgent=await snapshot(watched),version=(await current(issue)).version;
-      const result=await rpc(person,verb==='edit'?'vector.issue.concurrent_edits':'vector.issue.comment',
-        verb==='edit'?{identifier:issue.identifier,change:{expectedVersion:version,title:title+'-agent'}}:{identifier:issue.identifier,body:body+'-agent'});
+      const name=verb==='edit'?'vector.issue.concurrent_edits':'vector.issue.comment';
+      const args={...(verb==='edit'?{identifier:issue.identifier,change:{expectedVersion:version,title:title+'-agent'}}:{identifier:issue.identifier,body:body+'-agent'}),idempotency_key:crypto.randomUUID()};
+      const result=await rpc(person,name,args);
       expect(result.isError).toBe(Boolean(code));
       if(code){
         expect(result._meta['com.runeditrun/error'].code).toBe(nativeBody.error);
         expect(result.structuredContent).toBeUndefined();
         expect(await snapshot(watched)).toEqual(beforeAgent);
       }else{
+        calls.push({name,args});
         expect(result._meta['com.runeditrun/decision'].disposition).toBe(disposition);
         const state=await current(issue);
         if(verb==='edit')expect(state).toMatchObject({title:title+'-agent',version:version+1});
         else expect((await json(await owner.call(path+'/discussion'))).comments).toContainEqual(expect.objectContaining({id:result.structuredContent.commentId,body:body+'-agent'}));
         expect(state.activity.at(-1).kind).toBe(verb==='edit'?'issue.updated':'comment.created');
       }
+    }
+    if(!code)completed.set(person.id+issue.id,calls);
+  };
+  const replayRefused=async(person:Person,issue:any,code:string)=>{
+    const calls=completed.get(person.id+issue.id);
+    expect(calls).toHaveLength(2);
+    const before=await snapshot(watched);
+    for(const {name,args} of calls!){
+      const result=await rpc(person,name,args);
+      expect(result.isError).toBe(true);
+      expect(result._meta['com.runeditrun/error'].code).toBe(code);
+      expect(result.structuredContent).toBeUndefined();
+      expect(JSON.stringify(result)).not.toContain(String((args.change as any)?.title??args.body));
+      expect(await snapshot(watched)).toEqual(before);
     }
   };
   let disposition='autonomous';
@@ -93,6 +111,7 @@ it('native and MCP issue edits and comments share current role, invited-team and
     await compare(sponsor,publicIssue,null);
     await json(await owner.call(`/settings/operators/${sponsor.id}/role`,'PATCH',{role:'viewer',teamIds:[]}));
     await compare(sponsor,publicIssue,'forbidden');
+    await replayRefused(sponsor,publicIssue,'forbidden');
     const native=await json(await sponsor.call('/issues/'+publicIssue.identifier));
     const read=await rpc(sponsor,'vector.issue.activity_history',{identifier:publicIssue.identifier});
     expect(read.isError).toBe(false);
@@ -103,6 +122,7 @@ it('native and MCP issue edits and comments share current role, invited-team and
       const hiddenTitle=(await current(privateIssue)).title;
       await json(await owner.call(`/settings/teams/${privateTeam.id}/members/${person.id}`,'DELETE'));
       await compare(person,privateIssue,kind==='viewer'?'forbidden':'not_found');
+      if(kind!=='viewer')await replayRefused(person,privateIssue,'not_found');
       const deniedRead=await rpc(person,'vector.issue.activity_history',{identifier:privateIssue.identifier});
       expect(deniedRead.isError).toBe(true);
       expect(deniedRead._meta['com.runeditrun/error'].code).toBe('not_found');
@@ -112,6 +132,15 @@ it('native and MCP issue edits and comments share current role, invited-team and
       else if(kind==='viewer')await json(await owner.call(`/settings/operators/${person.id}/role`,'PATCH',{role:'viewer',teamIds:[privateTeam.id]}));
       else await json(await owner.call(`/settings/teams/${privateTeam.id}/members/${person.id}`,'PUT',{role:kind==='lead'?'owner':'member'}));
     }
+    // Replace the Guest's named-team invitation without replacing its grant.
+    await json(await owner.call(`/settings/operators/${w.guest.id}/role`,'PATCH',{role:'guest',teamIds:[outside.id]}));
+    await compare(w.guest,publicIssue,'not_found');
+    await replayRefused(w.guest,publicIssue,'not_found');
+    await compare(w.guest,outsideIssue,null);
+    await json(await owner.call(`/settings/operators/${w.guest.id}/role`,'PATCH',{role:'guest',teamIds:[w.team.id,privateTeam.id]}));
+    await compare(w.guest,outsideIssue,'not_found');
+    await replayRefused(w.guest,outsideIssue,'not_found');
+    await compare(w.guest,publicIssue,null);
     expect((await json(await owner.call('/issues/'+privateIssue.identifier))).id).toBe(privateIssue.id);
   }
 });

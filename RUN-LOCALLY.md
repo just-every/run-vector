@@ -1,8 +1,13 @@
 # Run it locally
 
-Start Vector with one line, `npx -y @runeditrun/rer dev just-every/run-vector`
-(without Node: `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector`);
-to only set it up, run `npx -y @runeditrun/rer setup just-every/run-vector`.
+Start Vector with one line; Git is required and the installer brings Node and pnpm:
+
+```sh
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector
+```
+
+Have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-vector` is an alternative. To only set it up, use the same installer line with `setup` in place of `dev`. The installer links `rer` at `$HOME/.local/bin/rer`. In a new terminal, run `export PATH="$HOME/.local/bin:$PATH"` before the commands below, or use `"$HOME/.local/bin/rer"` directly. See [the README](README.md#run-it-on-your-computer) to keep that PATH setting.
+
 `rer` runs every verb with the checkout's own pinned copy: a vendored
 `scripts/rer.mjs`, or in package mode the exact `@runeditrun/rer` devDependency in
 `node_modules`. The `OPERATIONS.json` argv and the `package.json` aliases are the
@@ -14,7 +19,7 @@ mode), and `rer` runs them.
 From a runnable edition's root, `rer dev` is the whole launch. It installs
 locked dependencies when they are missing or older than the lockfile. On a
 checkout that is not set up it sets up a local owner
-(`owner@<checkout-name>.test`) and fills the setup answers the seed declares a
+(`owner@run-vector.test` for the default `run-vector` folder) and fills the setup answers the seed declares a
 `localDefault` for in `rer-setup.json`. Then it starts the app and prints the
 `RER_READY` lines. It never prompts and never re-runs setup on a checkout that
 is set up. A required setup answer with no value and no `localDefault` stops it
@@ -49,7 +54,7 @@ with exit 3 and a message naming the field.
 
 ## Install for a real owner
 
-Use Node 22.20.0 and pnpm 10.12.4 for maintained first-party checkouts. To
+The installed `rer` provides the Node and pnpm versions pinned in `package.json`. To
 install with a real owner mailbox, run the verbs yourself from the runnable
 edition's root: install locked dependencies, prepare its local owner, then start
 development:

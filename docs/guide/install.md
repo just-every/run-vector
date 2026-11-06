@@ -6,9 +6,17 @@ Vector runs on macOS, Linux or Windows with WSL2. Git is required; rer brings No
 curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector
 ```
 
-Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-vector` does the same. If the installer prints a line that puts `rer` on your PATH, run that line too. To start it again later, run the same line from the same folder, or `cd run-vector && rer dev`. The line installs the current global rer launcher. This source checkout runs its own exact rer 0.2.62 pin from `package.json`, so the launcher and the CLI used inside Vector can have different versions.
+Have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-vector` does the same. The installer links `rer` at `$HOME/.local/bin/rer` and does not edit shell profiles. Before using the later `rer` commands in a new terminal, run:
 
-Vector’s release numbers are separate from rer’s. [The latest tagged Vector release is v0.3.0](https://github.com/just-every/run-vector/tree/v0.3.0). The one line uses `main`, which includes changes since v0.3.0. To use the tagged release instead, run `git checkout v0.3.0` in the checkout before `rer dev`. That release uses the rer pin in its own `package.json`.
+```sh
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Run this in each new terminal, or add it to your shell's startup file to keep it. You can also use `"$HOME/.local/bin/rer"` in place of `rer` for any command below, including reset and deploy.
+
+To start it again later, run the same line from the same folder, or `cd run-vector && rer dev`. The install line installs the current global rer launcher. This source checkout runs its own rer version pinned in `package.json`, so the launcher and the CLI used inside Vector can have different versions.
+
+Vector’s release numbers are separate from rer’s. The one line uses `main`. To use a [tagged Vector release](https://github.com/just-every/run-vector/tags) instead, choose its version tag and run `git checkout <version-tag>` in the checkout before `rer dev`. That release uses the rer pin in its own `package.json`.
 
 The first `rer dev` installs the Node, pnpm and dependencies Vector pins, makes you the local owner and prints a link that opens Vector signed in. Nothing is sent by email while you run Vector on your computer.
 

@@ -21,6 +21,7 @@ import {
   validateLabels,
 } from "../issues/repository";
 import { IssueMutationError } from "../issues/errors";
+import { admitFieldValues, canonical, currentFieldValues } from "../custom-fields/validation";
 import type { UpdateIssueInput } from "./routes";
 
 /** Only trusted feature services supply activity context; never request JSON. */
@@ -47,26 +48,6 @@ const columns = {
   archivedAt: "archived_at",
   customFields: "custom_fields_json",
 } as const;
-
-// JSON object order and label order do not constitute product changes.
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
-  if (value !== null && typeof value === "object")
-    return (
-      "{" +
-      Object.keys(value)
-        .sort()
-        .map(
-          (key) =>
-            JSON.stringify(key) +
-            ":" +
-            canonical((value as Record<string, unknown>)[key]),
-        )
-        .join(",") +
-      "}"
-    );
-  return JSON.stringify(value);
-}
 
 export async function planIssueUpdate(
   binding: D1Database,
@@ -124,11 +105,15 @@ export async function planIssueUpdate(
     values.milestoneId = null;
     previous.milestoneId = issue.milestoneId;
   }
+  // FIELD-001: the shared typed boundary; retained and untyped legacy values pass unchanged.
+  let fieldValues: Record<string, string> = {};
   if (input.customFields !== undefined) {
     const old = JSON.parse(issue.customFieldsJson);
-    if (canonical(input.customFields) !== canonical(old)) {
-      values.customFields = input.customFields;
+    const admitted = await admitFieldValues(binding, issue.teamId, old, input.customFields);
+    if (canonical(admitted.values) !== canonical(old)) {
+      values.customFields = admitted.values;
       previous.customFields = old;
+      fieldValues = admitted.checked;
     }
   }
   const oldLabels = (
@@ -262,6 +247,8 @@ export async function planIssueUpdate(
       issue.teamId,
     );
   }
+  if (Object.keys(fieldValues).length)
+    guard(currentFieldValues("issues.team_id"), JSON.stringify(fieldValues));
   if (labelsChanged) {
     // Retained historical selections need not pass today's workspace rules.
     const added = nextLabels.filter((id) => !oldLabels.includes(id));

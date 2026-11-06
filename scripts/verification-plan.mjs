@@ -16,7 +16,7 @@ export const ciCommands = [
 // The hosted-artifact shard retains its fresh build/verification boundaries.
 // Keep these public-door flows until they can be rebalanced within their budget;
 // combining the current long shards would exceed the normal job cap.
-export const verificationShards = {
+const verificationGroups = {
   // test:data is its two existing entry points, split without omitting either.
   imports: {
     browser: true, native: true,
@@ -71,6 +71,33 @@ export const verificationShards = {
   'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
   // Authentic historical restores run independently of the worker partitions.
   'archive-upgrade': { native: true, commands: ['test:archive-upgrade'] },
+};
+
+// Pair independent groups by their measured CI cost. Reuse the shared build
+// once per ordinary job; the hosted-artifact producer keeps every fresh build.
+function combineGroups(names, { retainBuilds = false } = {}) {
+  let built = false;
+  return {
+    browser: names.some(name => verificationGroups[name].browser),
+    native: names.some(name => verificationGroups[name].native),
+    commands: names.flatMap(name => verificationGroups[name].commands).filter(command => {
+      if (command !== 'build' || retainBuilds) return true;
+      if (built) return false;
+      built = true;
+      return true;
+    }),
+  };
+}
+
+export const verificationShards = {
+  imports: combineGroups(['worker-1', 'imports']),
+  portability: combineGroups(['worker-3', 'portability']),
+  'core-runtime': verificationGroups['core-runtime'],
+  'core-runtime-planning': verificationGroups['core-runtime-planning'],
+  administration: combineGroups(['administration', 'ownership']),
+  collaboration: combineGroups(['collaboration', 'runtime']),
+  'worker-2': combineGroups(['worker-2', 'development']),
+  'hosted-artifact': combineGroups(['hosted-artifact', 'archive-upgrade'], { retainBuilds: true }),
 };
 
 // The hosted-artifact shard's rer verify remains the public door for the adapter's full
