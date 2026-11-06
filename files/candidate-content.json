@@ -1,0 +1,52 @@
+{
+  "head": "939525d461cfef7418f8563e5b05904179b98938",
+  "clean_tree": true,
+  "files": [
+    {
+      "path": "tests/worker/issue-session-projection.test.ts",
+      "sha256": "79a6589e42f0c5b3e7dcbcf96e08e220fcbf9603b08b2dd777029894145e0085",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "tests/worker/triage-upgrade.ts",
+      "sha256": "b897b6d771777642239f57df5f80e50798c358f0406272984d5a0b9eb6095f3e",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "tests/worker/app-actor-journey.ts",
+      "sha256": "4fa1bb4e8de27a0a72345f2f47724fffcd739c9d8427e4b4cf1cdddd7dc49d84",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "tests/worker/app-actor-archive.ts",
+      "sha256": "2710898f8f6af90bb565171c71c294f6f75b728fc33069794fc671d7cf9a16b3",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "tests/e2e/integrations/app-actors.mjs",
+      "sha256": "57a2bf77e3c8734c75601f73a95f20d269ea59d0ba19f793936749bd278b2cb8",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "src/core/features/app-actors/admission.ts",
+      "sha256": "bdb73c1491e499c5604a672eff1034afd013f39144c672e5b7c711a999cfca4d",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "src/core/features/app-actors/routes.ts",
+      "sha256": "dc03cd5287701d1e42c992621680328b6cf8adbd40fdc682316385807f249b76",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "migrations/core/0126_app_actors.sql",
+      "sha256": "18d46f41ca05ebcd60749bb87ce1d358fcffd12c34eec838ddabdf53f6865f5e",
+      "committed_bytes_match": true
+    },
+    {
+      "path": "management/integration/deployment-spec.json",
+      "sha256": "5bade589b34fe19d91f4b40a85cd5260394b0f4c4e8e449ded56cff1ef853eb3",
+      "committed_bytes_match": true
+    }
+  ],
+  "browser_receipt_head_matches": true
+}

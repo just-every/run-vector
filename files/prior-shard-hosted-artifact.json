@@ -1,0 +1,21 @@
+{
+  "startedAt": "2026-11-06T03:42:55.851Z",
+  "sourceCommit": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "note": "Vector CI test suites and build checks.",
+  "passed": false,
+  "checks": [
+    {
+      "command": "test:public-site",
+      "startedAt": "2026-11-06T03:42:55.862Z",
+      "completedAt": "2026-11-06T03:43:15.520Z",
+      "passed": true
+    },
+    {
+      "command": "verify",
+      "startedAt": "2026-11-06T03:43:15.530Z",
+      "completedAt": "2026-11-06T03:46:12.139Z",
+      "passed": false
+    }
+  ],
+  "shard": "hosted-artifact"
+}

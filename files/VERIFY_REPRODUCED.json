@@ -1,0 +1,26 @@
+[
+  {
+    "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+    "job": 127647613996,
+    "command": "pnpm verify:ci --shard imports",
+    "test": "tests/worker/issue-session-projection.test.ts: stale edit, accept and return projections",
+    "exit": 1,
+    "failure": "AssertionError: expected false to be true at issue-session-projection.test.ts:79 (projected)"
+  },
+  {
+    "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+    "job": 127647614031,
+    "command": "pnpm verify:ci --shard hosted-artifact",
+    "test": "integration:check through rer verify",
+    "exit": 1,
+    "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync"
+  },
+  {
+    "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+    "job": 127647613875,
+    "command": "pnpm verify:ci --shard worker-2",
+    "test": "tests/worker/source-ingest.test.ts: signed native source publication and replay are atomic, source-attributed and restart-safe; triageUpgrade",
+    "exit": 1,
+    "failure": "AssertionError: audit_records: expected historical rows with 13 columns to deeply equal rows with 10 columns; new app_actor_name, app_installer_id and app_installer_name are null; triage-upgrade.ts:87"
+  }
+]

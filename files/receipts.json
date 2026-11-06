@@ -1,0 +1,219 @@
+{
+  "starting_head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "branch": "cloud/sd-vector-c-f192-pc1",
+  "prior_run": 42142856859,
+  "ci_log_reads": [
+    {
+      "job": 127647613875,
+      "command": "gh run view 42142856859 --repo just-every/run-vector --job 127647613875 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "job": 127647613996,
+      "command": "gh run view 42142856859 --repo just-every/run-vector --job 127647613996 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "job": 127647614031,
+      "command": "gh run view 42142856859 --repo just-every/run-vector --job 127647614031 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0
+    }
+  ],
+  "completed_checks": [
+    {
+      "command": "pnpm typecheck",
+      "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:worker tests/worker/issue-session-projection.test.ts tests/worker/source-ingest.test.ts tests/worker/base-auth.test.ts tests/worker/first-run.test.ts tests/worker/integration-api.test.ts tests/worker/data-http.test.ts tests/worker/project-fields-upgrade.test.ts",
+      "exit": 0,
+      "files": 7,
+      "tests": 23,
+      "note": "Exact committed source and test bytes; ran immediately before commit; source lock was regenerated afterward."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm integration:sync",
+      "exit": 0
+    },
+    {
+      "command": "pnpm integration:check",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write ROLE-006",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check ROLE-006",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests": 1,
+      "head": "939525d461cfef7418f8563e5b05904179b98938"
+    }
+  ],
+  "github_budget_used": 6,
+  "github_budget_total": 10,
+  "initial_shards": [
+    {
+      "command": "pnpm verify:ci --shard worker-2",
+      "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "exit": 1
+    },
+    {
+      "command": "pnpm verify:ci --shard imports",
+      "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "exit": 1
+    },
+    {
+      "command": "pnpm verify:ci --shard hosted-artifact",
+      "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "exit": 1
+    }
+  ],
+  "main_comparison": [
+    {
+      "head": "e6010126",
+      "tests": [
+        "first-run",
+        "issue-session-projection",
+        "source-ingest"
+      ],
+      "exit": 1,
+      "detail": "Only first-run failed with setup-created private development settings loaded; session-projection and source-ingest pass."
+    },
+    {
+      "head": "e6010126",
+      "tests": [
+        "base-auth",
+        "first-run"
+      ],
+      "exit": 0,
+      "counts": {
+        "files": 2,
+        "tests": 10
+      },
+      "detail": "After isolating setup-created development settings outside the checkout; no source change."
+    }
+  ],
+  "product_head": "939525d461cfef7418f8563e5b05904179b98938",
+  "product_pushed": true,
+  "ci_run": 42159071007,
+  "ci_event": "push",
+  "ci_status": "in_progress",
+  "ci_conclusion": null,
+  "main_head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "counts_before": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66,
+    "total": 272
+  },
+  "clause_before": "partial",
+  "clause_after": "partial",
+  "test_registration_delta": 0,
+  "assertions_removed": 0,
+  "source_lock_fresh": true,
+  "generated_views_committed": false,
+  "product_pr": null,
+  "browser": {
+    "head": "939525d461cfef7418f8563e5b05904179b98938",
+    "journey": "tests/e2e/integrations/app-actors.mjs exerciseAppActors",
+    "passed": true,
+    "widths": [
+      1440,
+      390
+    ],
+    "credentialsCaptured": false,
+    "liveProvider": false
+  },
+  "screens": [
+    {
+      "path": "screens/roles/app-actor-admin-revoked-1440.png",
+      "bytes": 47948,
+      "sha256": "ad7ba79c73a6144e5a4d10a465c53fc3b8004199a2d9622e1ca8cdb0e1ef151e"
+    },
+    {
+      "path": "screens/roles/app-actor-admin-revoked-390.png",
+      "bytes": 43432,
+      "sha256": "71e7fe556d15452508ab8bf8a23bb2f23cf086ea1669391e2f330bea408f5bc7"
+    },
+    {
+      "path": "screens/roles/app-actor-attributed-issue-1440.png",
+      "bytes": 113357,
+      "sha256": "989c4107790dd45af886ae3d153f196bfa5a23df0106cdbe3d75a15a9d7b1ffc"
+    },
+    {
+      "path": "screens/roles/app-actor-attributed-issue-390.png",
+      "bytes": 105229,
+      "sha256": "29fec647e2bb4f0d42df63f85a52ea864629dfb2ba27960efc0b300306236f5b"
+    },
+    {
+      "path": "screens/roles/app-actor-audit-1440.png",
+      "bytes": 78560,
+      "sha256": "5bd89e5839f9ac2d02aaa5f1406fe66ffbfadba8b39b280c78f20f3ac5c69741"
+    },
+    {
+      "path": "screens/roles/app-actor-audit-390.png",
+      "bytes": 107303,
+      "sha256": "ca89d0ba52fdd02d3f4e6a7e4d67ccbacf2d07b7cf835f0b222cd1ccb8d0a176"
+    },
+    {
+      "path": "screens/roles/app-actor-installed-1440.png",
+      "bytes": 48535,
+      "sha256": "7030c435071917144f89cc9aa39702845a8e97a39cc774c04b3e236b91a7e228"
+    },
+    {
+      "path": "screens/roles/app-actor-installed-390.png",
+      "bytes": 47880,
+      "sha256": "f65c1852b19782d57c603f86086f10d23c5e77aefeda02c317601495c8207238"
+    }
+  ],
+  "mechanical": {
+    "lock": {
+      "write": "pnpm sources:lock",
+      "check": "pnpm sources:check",
+      "exit": 0
+    },
+    "views": {
+      "write": "node scripts/contract-docs.mjs write ROLE-006",
+      "check": "node scripts/contract-docs.mjs check ROLE-006",
+      "exit": 0,
+      "restored_from_main": true
+    },
+    "ledger": {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests": 1,
+      "head": "939525d461cfef7418f8563e5b05904179b98938"
+    }
+  }
+}

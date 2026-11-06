@@ -1,0 +1,34 @@
+
+> vector@0.4.1 test:worker /workspace/vector-main
+> vitest run --config vitest.config.ts tests/worker/first-run.test.ts tests/worker/issue-session-projection.test.ts tests/worker/source-ingest.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/vector-main
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ❯ tests/worker/first-run.test.ts (1 test | 1 failed) 826ms
+   × [SETUP-001] first-run review belongs to the recorded owner, survives restart and refuses revoked-session completion atomically 405ms
+Using secrets defined in .dev.vars
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/first-run.test.ts > [SETUP-001] first-run review belongs to the recorded owner, survives restart and refuses revoked-session completion atomically
+AssertionError: expected null not to be null
+ ❯ mailToken tests/worker/base-auth-fixture.ts:26:19
+
+ ❯ signIn tests/worker/base-auth-fixture.ts:38:18
+ ❯ tests/worker/first-run.test.ts:19:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 6 passed (7)
+   Start at  03:47:26
+   Duration  19.60s (transform 3.18s, setup 0ms, import 12.10s, tests 6.32s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

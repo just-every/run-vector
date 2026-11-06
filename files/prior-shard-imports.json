@@ -1,0 +1,15 @@
+{
+  "startedAt": "2026-11-06T03:42:37.350Z",
+  "sourceCommit": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "note": "Vector CI test suites and build checks.",
+  "passed": false,
+  "checks": [
+    {
+      "command": "test:worker --shard=4/6",
+      "startedAt": "2026-11-06T03:42:37.353Z",
+      "completedAt": "2026-11-06T03:45:52.151Z",
+      "passed": false
+    }
+  ],
+  "shard": "imports"
+}
