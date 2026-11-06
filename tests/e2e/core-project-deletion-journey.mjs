@@ -1,4 +1,5 @@
 import {readFile} from 'node:fs/promises';
+import {expectedUndoConflicts} from './core-undo-properties.mjs';
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 /** Native project recovery using the rendered controls and real retained data. */
@@ -16,6 +17,8 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  const milestone=detail.milestones.find(m=>m.name==='synthetic-vector-9703');
  const first=await api('/issues','POST',{title:'synthetic-vector-9705',description:'synthetic-vector-9706',teamId:team.id,projectId:project.id,milestoneId:milestone.id});
  const second=await api('/issues','POST',{title:'synthetic-vector-9707',description:'synthetic-vector-9708',teamId:team.id,projectId:project.id,milestoneId:milestone.id});
+ const cleared=await api('/issues','POST',{title:'synthetic-vector-9711',teamId:team.id,projectId:project.id,milestoneId:milestone.id});
+ const explicitlyCleared=await api('/issues','POST',{title:'synthetic-vector-9712',teamId:team.id,projectId:project.id,milestoneId:milestone.id});
  const doc=await api('/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-9709',body:'synthetic-vector-9710'});
  const screens=async(label)=>{for(const width of [1440,390]){await page.setViewportSize({width,height:1000});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await capture('PROJ-017',label+'-'+width,page);}await page.setViewportSize({width:1440,height:1000});};
  async function remove(){
@@ -46,8 +49,21 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  receipt=await remove();
  const current=await api('/issues/'+first.identifier);
  await api('/issues/'+first.identifier,'PATCH',{expectedVersion:current.version,projectId:destination.id});
- const undo=await page.request.post(base+'/api/projects/undo-deletion',{headers:{Origin:base},data:{id:receipt.id,version:receipt.version}});
- assert.equal(undo.status(),409);
+ const reassigned=await api('/issues/'+cleared.identifier,'PATCH',{expectedVersion:(await api('/issues/'+cleared.identifier)).version,projectId:destination.id});
+ await api('/issues/'+cleared.identifier,'PATCH',{expectedVersion:reassigned.version,projectId:null});
+ await api('/issues/'+explicitlyCleared.identifier,'PATCH',{expectedVersion:(await api('/issues/'+explicitlyCleared.identifier)).version,projectId:null});
+ const recoveryState=async()=>({recent:await api('/projects/recently-deleted'),issues:await Promise.all([first,second,cleared,explicitlyCleared].map(issue=>api('/issues/'+issue.identifier)))});
+ const beforeRefusal=await recoveryState();
+ const undoUrl=base+'/api/projects/undo-deletion';
+ expectedUndoConflicts.add(undoUrl);
+ try {
+  const pending=page.waitForResponse(r=>r.request().method()==='POST'&&r.url()===undoUrl);
+  await notice.getByRole('button',{name:'Undo project deletion',exact:true}).click();
+  assert.equal((await pending).status(),409);
+  await notice.getByRole('alert').getByText('Nothing changed.',{exact:false}).waitFor();
+  assert.deepEqual(await recoveryState(),beforeRefusal,'stale Undo changes no visible issue, history or recovery entry');
+  await screens('project-stale-undo-refused');
+ } finally { expectedUndoConflicts.delete(undoUrl); }
  assert.equal((await api('/projects/recently-deleted')).projects.find(p=>p.id===receipt.id).projectId,project.id);
  for(const [method,path,data] of [['get','/projects/recently-deleted'],['post','/projects/restore',{id:receipt.id,version:1}]]){
   const refused=await memberContext.request[method](base+'/api'+path,{headers:{Origin:base},...(data?{data}:{})});assert.equal(refused.status(),403);
@@ -63,6 +79,9 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  await page.waitForURL(base+'/app/projects/'+project.id);
  await page.getByRole('heading',{name,exact:true}).waitFor();
  assert.equal((await api('/issues/'+first.identifier)).project.id,destination.id);
+ for(const issue of [cleared,explicitlyCleared]){
+  const current=await api('/issues/'+issue.identifier);assert.equal(current.id,issue.id);assert.equal(current.project,null);assert.equal(current.milestone,null);
+ }
  assert.equal((await api('/issues/'+second.identifier)).project.id,project.id);
  assert.equal((await api('/issues/'+second.identifier)).milestone.id,milestone.id);
  const recoveredMilestones=(await api('/projects/'+project.id)).milestones;
@@ -78,5 +97,6 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  await page.getByText(doc.body,{exact:true}).filter({visible:true}).first().waitFor();
  await screens('project-retained-document');
  console.log('PROBE PROJ-017 reassignment: native deletion, later issue assignment and Settings recovery -> newer project preserved; untouched issue, milestone and document restored with original identities');
- console.log('PROBE PROJ-017 stale Undo: changed membership -> HTTP 409; supported recovery remains available');
+ console.log('PROBE PROJ-017 stale Undo: changed membership -> rendered refusal and HTTP 409 with unchanged issue content, activity and recovery entries');
+ console.log('PROBE PROJ-017 explicit clearing: reassign then clear, and explicit later clear -> both issues remain unassigned after restore');
 }

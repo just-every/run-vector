@@ -66,6 +66,8 @@ export interface Operations {
   "issue_template_get": { input: { path: { "id": string } }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issue_template_update": { input: { path: { "id": string }; body: { "name": string; "teamId"?: (string | null); "defaults"?: Components["IssueTemplateDefaults"]; "subissues"?: ({ "title": string; "description"?: string; "statusId"?: string; "priority"?: "none" | "low" | "medium" | "high" | "urgent"; "labelIds"?: (string)[]; "assigneeOperatorId"?: (string | null); "estimate"?: number | null; "projectId"?: (string | null) })[]; "expectedVersion": number } }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issue_template_delete": { input: { path: { "id": string }; body: { "expectedVersion": number } }; output: { "deleted": boolean; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "projects_recently_deleted": { input: Record<string, never>; output: unknown; errors: { "403": unknown; "409": unknown } };
+  "projects_restore": { input: { body: { "id": string; "version": number } }; output: unknown; errors: { "403": unknown; "409": unknown } };
 }
 export const operations = {
   "schema_get_0": {
@@ -509,5 +511,21 @@ export const operations = {
       "issue-templates:write"
     ],
     "authenticated": true
+  },
+  "projects_recently_deleted": {
+    "method": "GET",
+    "path": "/projects/recently-deleted",
+    "scopes": [
+      "projects:delete"
+    ],
+    "authenticated": false
+  },
+  "projects_restore": {
+    "method": "POST",
+    "path": "/projects/restore",
+    "scopes": [
+      "projects:delete"
+    ],
+    "authenticated": false
   }
 } as const;

@@ -3562,7 +3562,7 @@
       "executable": false
     },
     "sdk/generated.ts": {
-      "sha256": "dc1ed967c6b378587be8a1b7cfea1313c1f172cd04e25b8b0426cf350e5b0a2a",
+      "sha256": "76a8d4b4f71160d3d7602c19bfd29e93d96f438f53817316644fec86e308af18",
       "executable": false
     },
     "sdk/tsconfig.json": {
@@ -8334,7 +8334,7 @@
       "executable": false
     },
     "tests/e2e/core-project-deletion-journey.mjs": {
-      "sha256": "db09d95c805be07006766767f2a593ee6dbaf41ad552e583e0ed0585d6bdea6e",
+      "sha256": "d6a615e35986dc2a7b5c2c79f0c4fb51968a3d13dba53939584316ad4130e495",
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
