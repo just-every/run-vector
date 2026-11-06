@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "migration_files": 127,
+  "ledger_rows": 127,
+  "duplicate_ordinals": 0,
+  "main_ledger_rows_retained_exactly": true,
+  "all_sql_and_digests_match": true
+}

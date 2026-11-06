@@ -1,0 +1,10 @@
+{
+  "command": [
+    "node",
+    "sdk/generate.mjs"
+  ],
+  "observed_exit_code": 0,
+  "observed_stdout": "SDK generated: 56 published operations.\n",
+  "record_source": "Observed successful tool execution before sdk-check; timestamp not separately captured.",
+  "output_file": "sdk/generated.ts"
+}

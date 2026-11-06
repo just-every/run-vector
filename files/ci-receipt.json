@@ -1,0 +1,108 @@
+{
+  "run_id": 42224234085,
+  "head": "edb7d689e8e065679316c3ec455b3a3724df3d5e",
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/just-every/run-vector/actions/runs/42224234085",
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 127913563806,
+      "name": "plan",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127913634163,
+      "name": "build",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090451,
+      "name": "shards (portability, true, true, true)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090471,
+      "name": "shards (core-runtime-planning, true, true, true)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "failure",
+      "id": 127914090497,
+      "name": "shards (collaboration, true, true, true)",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Verify the independent shard"
+        }
+      ]
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090563,
+      "name": "shards (imports, true, true, true)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090590,
+      "name": "shards (worker-2, true, true, true)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090630,
+      "name": "shards (hosted-artifact, true, true, false)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090653,
+      "name": "shards (administration, true, true, true)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "success",
+      "id": 127914090721,
+      "name": "shards (core-runtime, true, true, true)",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "failure",
+      "id": 127925330049,
+      "name": "verify",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Require the complete verification wall"
+        }
+      ]
+    }
+  ],
+  "github_calls": 10,
+  "hosted_artifact": {
+    "job_id": 127914090630,
+    "conclusion": "success"
+  },
+  "blocking_job": {
+    "job_id": 127914090497,
+    "conclusion": "failure",
+    "reason": "Miniflare ERR_ADDRESS_IN_USE at 127.0.0.1:40127 while starting PROJ-012 native template journey at 390; parent collaboration test also fails."
+  },
+  "aggregate_job": 127925330049,
+  "retry_or_dispatch_performed": false
+}

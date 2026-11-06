@@ -1,0 +1,8 @@
+verify	Require the complete verification wall	﻿2026-11-06T13:42:51.9385154Z ##[group]Run test "$PLAN_RESULT" = success
+verify	Require the complete verification wall	2026-11-06T13:42:51.9385697Z [36;1mtest "$PLAN_RESULT" = success[0m
+verify	Require the complete verification wall	2026-11-06T13:42:51.9386253Z [36;1mif [ "$SKIP" = true ]; then exit 0; fi[0m
+verify	Require the complete verification wall	2026-11-06T13:42:51.9386845Z [36;1mfor result in $RESULTS; do test "$result" = success; done[0m
+verify	Require the complete verification wall	2026-11-06T13:42:51.9579742Z shell: /usr/bin/bash -e {0}
+[GitHub runner environment listing omitted from public evidence]
+verify	Require the complete verification wall	2026-11-06T13:42:51.9583011Z ##[endgroup]
+verify	Require the complete verification wall	2026-11-06T13:42:52.0070606Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,30 @@
+{
+  "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+  "commits": [
+    {
+      "head": "edb7d689e8e065679316c3ec455b3a3724df3d5e",
+      "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+      "trailers": ""
+    },
+    {
+      "head": "33ab112458789b64aa59310eade27a442f5270f3",
+      "author": "James Peter <github@zemaj.com>",
+      "committer": "James Peter <github@zemaj.com>",
+      "trailers": "Co-Authored-By: Claude <noreply@anthropic.com>"
+    },
+    {
+      "head": "ede175149e404a3f1c30827e8cb423ddc405e24d",
+      "author": "James Peter <github@zemaj.com>",
+      "committer": "James Peter <github@zemaj.com>",
+      "trailers": "Co-Authored-By: Claude <noreply@anthropic.com>"
+    },
+    {
+      "head": "c89a714e20ceb34e2b9c3a67894fd5934324d8bb",
+      "author": "James Peter <github@zemaj.com>",
+      "committer": "James Peter <github@zemaj.com>",
+      "trailers": "Co-Authored-By: Claude <noreply@anthropic.com>"
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,8 @@
+{"name": "sdk-check", "command": ["node", "sdk/generate.mjs", "--check"], "started": "2026-11-06T13:14:36.903272+00:00", "completed": "2026-11-06T13:14:36.958486+00:00", "exit_code": 0}
+{"name": "typecheck", "command": ["pnpm", "typecheck"], "started": "2026-11-06T13:14:36.983756+00:00", "completed": "2026-11-06T13:14:53.249460+00:00", "exit_code": 0}
+{"name": "migration-ledger", "command": ["node", "--test", "scripts/deployment/tests/migration-head.test.mjs"], "started": "2026-11-06T13:14:53.274392+00:00", "completed": "2026-11-06T13:14:54.084150+00:00", "exit_code": 0}
+{"name": "field-workers", "command": ["pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/custom-fields.test.ts", "tests/worker/custom-fields-upgrade.test.ts", "tests/worker/project-dependencies-upgrade.test.ts"], "started": "2026-11-06T13:14:54.107262+00:00", "completed": "2026-11-06T13:15:57.155421+00:00", "exit_code": 0}
+{"name": "contract-write", "command": ["node", "scripts/contract-docs.mjs", "write", "FIELD-001"], "started": "2026-11-06T13:16:11.502997+00:00", "completed": "2026-11-06T13:16:11.585216+00:00", "exit_code": 0}
+{"name": "contract-check", "command": ["node", "scripts/contract-docs.mjs", "check", "FIELD-001"], "started": "2026-11-06T13:16:11.609350+00:00", "completed": "2026-11-06T13:16:11.690108+00:00", "exit_code": 0}
+{"name": "source-lock", "command": ["pnpm", "sources:lock"], "started": "2026-11-06T13:16:11.728445+00:00", "completed": "2026-11-06T13:16:12.359317+00:00", "exit_code": 0}
+{"name": "source-check", "command": ["pnpm", "sources:check"], "started": "2026-11-06T13:16:12.384681+00:00", "completed": "2026-11-06T13:16:13.025558+00:00", "exit_code": 0}

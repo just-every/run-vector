@@ -1,0 +1,14 @@
+fleet Git: removed 0 credential-bearing GitHub URL rewrite sections
+PUSH attempt=1/5 command=git push --porcelain origin HEAD:refs/heads/cloud/sd-vector-c-f176-opus-1-fix1
+fleet Git: removed 0 credential-bearing GitHub URL rewrite sections
+To https://github.com/just-every/run-vector.git
+*	HEAD:refs/heads/cloud/sd-vector-c-f176-opus-1-fix1	[new branch]
+Done
+remote: 
+remote: Create a pull request for 'cloud/sd-vector-c-f176-opus-1-fix1' on GitHub by visiting:        
+remote:      https://github.com/just-every/run-vector/pull/new/cloud/sd-vector-c-f176-opus-1-fix1        
+remote: 
+remote: GitHub found 24 vulnerabilities on just-every/run-vector's default branch (7 high, 15 moderate, 2 low). To find out more, visit:        
+remote:      https://github.com/just-every/run-vector/security/dependabot        
+remote: 
+PUSH_OK branch=cloud/sd-vector-c-f176-opus-1-fix1

@@ -1,0 +1,5 @@
+| Clauses | Done | Partial | Missing | Total |
+| --- | ---: | ---: | ---: | ---: |
+| Published | 98 | 6 | 0 | 104 |
+| Target and push further | 38 | 63 | 67 | 168 |
+| All | 136 | 69 | 67 | 272 |

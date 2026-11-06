@@ -1,0 +1,15 @@
+{
+  "logs": {
+    "ci-collaboration-failed.log": {
+      "omitted_sections_or_lines": 1,
+      "public_log_bytes": 1822246,
+      "public_log_sha256": "11602a350a0881d1d16a6ce81077b449dc285a5802ec3c33aabdb397fe8572f1"
+    },
+    "ci-aggregate-failed.log": {
+      "omitted_sections_or_lines": 1,
+      "public_log_bytes": 882,
+      "public_log_sha256": "d2a2d126f27cc3c947a8c4975c4ae01b4272068ddaf1880c9f5432a36dc745b7"
+    }
+  },
+  "note": "Failed-job logs were fetched once per job through gh run view --log-failed. Public copies omit runner environment listings and any authentication material; all test diagnostics and failures remain. Original command exits were 0, with no archive transport failure."
+}

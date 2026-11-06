@@ -1,0 +1,31 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f176-opus-1-fix1",
+  "head": "edb7d689e8e065679316c3ec455b3a3724df3d5e",
+  "parents": [
+    "33ab112458789b64aa59310eade27a442f5270f3",
+    "da03cd1ff1b5ddf1e0baf513c33c2efe228ab115"
+  ],
+  "main_merged": "da03cd1ff1b5ddf1e0baf513c33c2efe228ab115",
+  "source_head": "33ab112458789b64aa59310eade27a442f5270f3",
+  "migration": "0127_custom_field_definitions.sql",
+  "migration_sql_sha256": "a35d44097182cdf275ef9c77f8bc4d2b43a50fa400b062831dc6bd1b8c2fc393",
+  "sdk_diff_vs_main": {
+    "insertions": 3,
+    "deletions": 3,
+    "operations": 56,
+    "summary": "Regenerated issue create/get/update customFields input/output and single-select definitions; retains fresh-main project dependency operations."
+  },
+  "preservation_checks": {
+    "all_unrelated_contract_source_exact_main": true,
+    "generated_views_exact_main": true,
+    "verify_workflow_exact_main": true,
+    "main_0126_migration_unchanged": true,
+    "renumbered_field_sql_unchanged": true,
+    "field_behavior_and_browser_tests_unchanged": true,
+    "main_upgrade_assertions_retained": true,
+    "new_test_registrations": 0,
+    "deleted_or_skipped_test_registrations": 0
+  },
+  "recorded_at": "2026-11-06T13:17:36.131704+00:00"
+}

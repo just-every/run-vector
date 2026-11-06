@@ -1,0 +1,2332 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index 2e7377b..c53cb04 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -327,7 +327,7 @@ Local portable archive commands use the landed Base D1/R2 engine. Mapped CSV/JSO
+ 
+ ### Custom fields
+ 
+-- **FIELD-001 — Custom field definitions.** Owners and Admins define workspace custom fields, and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — define fields for that team (role matrix, ROLE-001), each with a name unique in its scope, an optional description and one type: text, number (with optional unit and decimals), single-select, multi-select (options with colors, reorderable, archivable), date, person (a workspace member), URL or checkbox. A field applies to issues, projects or both, can be required for chosen issue types (ISSUE-021) or templates, and can be restricted to chosen teams. An issue or project shows its applicable fields in the detail pane; values are validated by type on every door (browser, `/api/v1`, import, Slack forms, automation), and every change is an activity entry (ISSUE-007) with the previous and new value. Renaming a field or option changes no stored value; archiving an option keeps it on issues that have it but removes it from pickers; deleting a field (Owners and Admins only) removes its values after a confirmation that counts affected issues and is recorded in the audit log. PROJ-001 inherits project custom-field definitions, typed values, validation on every door and per-value project activity before project fields ship. *Acceptance:* a journey that creates a team single-select field "Severity" with three options, sets it on an issue through the browser and through `/api/v1`, finds a number value refused 400 for it, sees one activity entry per change, renames an option and finds the stored value unchanged, and a Member who does not own the team is refused 403 creating a team field under the default permission. *Status:* partial — `src/core/features/issues/repository.ts`, `src/core/features/issues/input.ts` (issues store an untyped key/value custom-field map and its changes reach activity through `src/core/features/issue-edit/plan.ts`; typed definitions, scopes, project fields, validation and the role rule are absent).
++- **FIELD-001 — Custom field definitions.** Owners and Admins define workspace custom fields, and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — define fields for that team (role matrix, ROLE-001), each with a name unique in its scope, an optional description and one type: text, number (with optional unit and decimals), single-select, multi-select (options with colors, reorderable, archivable), date, person (a workspace member), URL or checkbox. A field applies to issues, projects or both, can be required for chosen issue types (ISSUE-021) or templates, and can be restricted to chosen teams. An issue or project shows its applicable fields in the detail pane; values are validated by type on every door (browser, `/api/v1`, import, Slack forms, automation), and every change is an activity entry (ISSUE-007) with the previous and new value. Renaming a field or option changes no stored value; archiving an option keeps it on issues that have it but removes it from pickers; deleting a field (Owners and Admins only) removes its values after a confirmation that counts affected issues and is recorded in the audit log. PROJ-001 inherits project custom-field definitions, typed values, validation on every door and per-value project activity before project fields ship. *Acceptance:* a journey that creates a team single-select field "Severity" with three options, sets it on an issue through the browser and through `/api/v1`, finds a number value refused 400 for it, sees one activity entry per change, renames an option and finds the stored value unchanged, and a Member who does not own the team is refused 403 creating a team field under the default permission. *Status:* partial — `tests/worker/custom-fields.test.ts` (team Severity journey: three stable options, browser-door and /api/v1 values, a number refused 400, one attributed old/new activity per change, an option rename that keeps the stored value, a non-owner Member refused 403 under Team owners only, the typed writers and ISSUE-023 copy mapping, and an archive round-trip); `tests/worker/custom-fields-upgrade.test.ts`; `tests/worker/role-matrix.test.ts`; `tests/e2e/custom-fields-journey.mjs` (severityFieldJourney). Only team single-select fields are built; the other types, workspace and project fields, required-field associations, option colors, reordering and archiving, and field deletion remain open.
+ - **FIELD-002 — Custom fields in views, search, API and imports.** Every custom field is available as a list column, a board card property (VIEW-008), a filter with type-appropriate operators (text contains, number ranges, select is / is not / any of, date ranges, person is me, checkbox), a group-by for single-select, person and checkbox fields, and a sort; it is searchable (SEARCH-004), included in exports (DATA-001, REPORT-005), webhooks (WEBHOOK-002) and the API (API-003) with its definition, and usable in automation conditions and actions (AUTO-002). Imports map source fields onto custom fields with an explicit mapping and create missing select options only after review: GitHub Projects single-select, iteration, number, text and date fields (DATA-012), Jira custom fields of select, multi-select, number, text, date, user and URL types (DATA-013), and Linear custom properties where present (DATA-014); unmappable types and values are reported as omissions (DATA-007). PROJ-001 inherits project custom-field columns, filters, search, API, exports and reviewed import mapping before those project capabilities ship. *Acceptance:* a journey that filters and groups a list by the Severity field of FIELD-001, saves it as a view and finds the expected issues, and a GitHub API fixture whose Projects single-select "Priority" and number "Points" fields import into a single-select and a number custom field with every value matched in the reconciliation report. *Status:* missing.
+ 
+ ### Target: Relations
+@@ -838,7 +838,7 @@ API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27
+ | `ISSUE-026` | Editor formatting and slash commands | target | partial | `tests/markdown-rendering.test.tsx`; `tests/e2e/project-templates-journey.mjs` projectTemplatesJourney (shared template editor slash commands, table row and column editing, rich-paste tables and code, active-content and tracking-image removal, field limits, cancelled and stale controlled drafts, persisted GFM, safe previews and applied project, milestone and issue rendering); `tests/worker/project-template-proof.ts` exerciseProjectTemplates (native GFM application, relative dates, permissions, oversized-description refusal and stale refusal); `src/core/features/markdown/editor/`; `evidence/issue-writing/ISSUE-026/` | Document-specific formatting parity proof, standalone ISSUE-016 issue-template adoption, file and image commands with the upload shortcut, provider previews, native mobile editing and remaining cross-surface rendering, export and notification mail duties remain open; template and document checklist mutation remains held under ISSUE-025; PROJ-012 cadence and issue-template dependencies are unchanged |
+ | `ISSUE-027` | Issue references and backlinks | target | partial | `tests/worker/description-history.test.ts` (referenceScenario through the description/history registration), `tests/worker/role-matrix.test.ts` (ROLE-003 invited-team visibility), `tests/e2e/collaboration-references.mjs` (exerciseReferences), `tests/worker/data-http.test.ts` (portable restore), `tests/e2e/data-roundtrip.mjs`. | Project updates (PROJ-010), documents (PROJ-013), mobile links (MOBILE-001), DATA-018 aliases and historical/provider backlink backfill remain. `tests/e2e/collaboration-references.mjs` (referenceAccessCells at 1440/390 and HTTP) exercises private-source backlinks for Member/Viewer before membership, after addition and after withdrawal. Additional implementation evidence: `tests/worker/project-report.test.ts` (documentReferenceScenario), `tests/e2e/project-documents-journey.mjs` (documentReferenceAccessJourney), and `migrations/core/0112_document_issue_references.sql` cover document-body links and retained backlinks with current source and target visibility, repeated edits, removal and Member/Viewer access withdrawal. Main’s remaining-gap judgment is retained pending independent re-judgment; document-comment producers remain open. |
+ | `ISSUE-028` | Drafts across devices | target | missing |  | No implementation yet |
+-| `FIELD-001` | Custom field definitions | target | partial | `src/core/features/issues/repository.ts`, `src/core/features/issues/input.ts` | Issues store an untyped key/value custom-field map and its changes reach activity through `src/core/features/issue-edit/plan.ts`; typed definitions, scopes, project fields, validation and the role rule are absent |
++| `FIELD-001` | Custom field definitions | target | partial | `tests/worker/custom-fields.test.ts` team Severity journey, with `tests/worker/custom-fields-journey.ts` and `tests/worker/custom-fields-writers.ts`: a team owner creates Severity with three stable option identities; the browser door and /api/v1 set it; a number, another team's field or option and an unknown option are refused 400 with unchanged storage; one attributed old/new activity per actual change and none for a repeated value; an option rename keeps the stored identity, issue versions and history; a non-owner Member is refused 403 under Team owners only, admitted under All team members and refused again on the next request after withdrawal; names are unique within a team only; a private team's fields stay out of a non-member's Settings and /api/v1/metadata; an invited Guest sets the value while a Viewer and an outside Guest are refused; stale and concurrent option changes are refused 409; native and /api/v1 creation, template application and the offered agent tool use the same typed boundary; same-team copies keep the field and option identity and cross-team copies drop and report the value (ISSUE-023); an import's Severity column is reported as an omission and sets nothing; an archive round-trip restores definitions, options and values. `tests/worker/custom-fields-upgrade.test.ts` populated legacy custom-field values cross the definitions upgrade unchanged and still export. `tests/worker/role-matrix.test.ts` registry journey checks the team-field row for every role under both team-setting values with unchanged refused storage, and its Viewer census refuses both Settings doors. `tests/e2e/custom-fields-journey.mjs` severityFieldJourney, reached by `tests/e2e/admin-issue-journey.mjs` and `tests/e2e/admin-runtime.mjs`: the team Settings Fields tab creates Severity, the issue property bar sets it with one attributed history entry, a keyboard rename keeps the stored option, and the renamed value hydrates after reload, with accessibility and overflow checks at 1440 and 390. | Only team single-select fields are built. Text, number (unit and decimals), multi-select, date, person, URL and checkbox types; workspace definitions and their Owner and Admin row; project fields and PROJ-001's inherited duties; restricting workspace fields to chosen teams; required fields for issue types (ISSUE-021) and templates; option colors, reordering and archiving; and counted-confirmation field deletion with its audit entry remain absent. Imports report custom-field columns as omissions until FIELD-002 maps them, and Slack forms and automation (AUTO-002) set no custom-field values yet; they must use the same typed boundary when they do. |
+ | `FIELD-002` | Custom fields in views, search, API and imports | target | missing |  | No implementation yet |
+ | `REL-001` | Dependencies | published | done | `tests/worker/dependencies.test.ts` |  |
+ | `REL-002` | Blocked state | published | done | `tests/worker/dependencies.test.ts` |  |
+diff --git a/docs/API.md b/docs/API.md
+index c1002fa..2b7cafa 100644
+--- a/docs/API.md
++++ b/docs/API.md
+@@ -59,6 +59,21 @@ activity. Lists accept `start=this_week`, `start=range` with `startFrom` and
+ `startTo`, `start=none`, or `start=overdue` (before today), and `sort=start`.
+ Week boundaries use the workspace timezone, Monday through Sunday.
+ 
++## Team custom fields (FIELD-001)
++
++A team's owners, Owners and Admins, or every team member while the team's *Who
++manages team settings* is All team members, define single-select fields in
++Settings → Teams → Fields (`POST /api/settings/teams/TEAM_ID/custom-fields` and
++`PATCH .../custom-fields/FIELD_ID` with `expectedVersion`). A name is unique in
++its team; options keep their ids when renamed and new options are added last.
++`GET /api/v1/metadata` lists each visible team's `customFields` with option ids,
++and an issue's `fields` lists its team's fields. Set a value through
++`customFields` on issue create or update: the field id maps to an option id, and
++`null` clears it. Numbers, unknown options and other teams' fields return 400
++without a change; each actual change is one attributed activity entry with the
++previous and new option ids. Untyped legacy keys are stored as sent. Imports do
++not map source columns onto team fields yet and report them as omitted.
++
+ ## Project planning
+ 
+ Project create accepts `name`, `description`, `leadOperatorId`, `startDate`,
+@@ -96,8 +111,11 @@ the command palette open the same review form.
+ The 201 response contains `issue`, `copies` (source and new identifiers),
+ `mappings` (source/destination status, labels and custom-field keys), and
+ `droppedValues` (source identifier, field, original value and reason). Every new
+-issue starts in the destination's first Backlog status. Labels and custom fields
+-are workspace scoped and map unchanged between teams. A cross-team cycle is
++issue starts in the destination's first Backlog status. Labels and untyped
++custom-field keys are workspace scoped and map unchanged between teams. A team
++custom field (FIELD-001) keeps its field and option ids when the copy stays in
++its team; copied into another team, its value is dropped, mapped to `null` and
++reported as `customFields.FIELD_ID`. A cross-team cycle is
+ dropped and reported; a same-team open cycle is preserved. A closed or missing
+ cycle, or an unavailable project, is also reported when dropped.
+ 
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index 69d7dca..ee253e2 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -766,6 +766,12 @@
+       "name": "0126_project_dependencies.sql",
+       "sha256": "baf72f4db62f57b1d93dce937e81f6576607a03a79411cae72ade11d43def487",
+       "sql": "-- Direct project edges are separate from issue dependencies. SQLite serializes\n-- these triggers with the edge write, including concurrent opposite edges.\nCREATE TABLE project_dependencies (\n id TEXT PRIMARY KEY,\n workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n blocked_project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,\n blocking_project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,\n created_at TEXT NOT NULL,\n UNIQUE(blocked_project_id,blocking_project_id),\n CHECK(blocked_project_id<>blocking_project_id)\n);\nCREATE INDEX project_dependencies_blocking_idx ON project_dependencies(blocking_project_id,blocked_project_id);\nCREATE TRIGGER project_dependency_insert BEFORE INSERT ON project_dependencies BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM projects a JOIN projects b ON b.workspace_id=a.workspace_id\n   WHERE a.id=NEW.blocked_project_id AND b.id=NEW.blocking_project_id AND a.workspace_id=NEW.workspace_id)\n   THEN RAISE(ABORT,'invalid_project_dependency') END;\n SELECT CASE WHEN NEW.blocked_project_id=NEW.blocking_project_id OR EXISTS(\n   WITH RECURSIVE ancestors(id) AS (SELECT NEW.blocking_project_id UNION\n     SELECT d.blocking_project_id FROM project_dependencies d JOIN ancestors a ON d.blocked_project_id=a.id)\n   SELECT 1 FROM ancestors WHERE id=NEW.blocked_project_id)\n   THEN RAISE(ABORT,'project_dependency_cycle') END;\nEND;\n-- Edge identity and direction never mutate. A change is removal and a new edge.\nCREATE TRIGGER project_dependency_immutable BEFORE UPDATE ON project_dependencies BEGIN\n SELECT RAISE(ABORT,'immutable_project_dependency');\nEND;\nCREATE TABLE project_notifications (\n id TEXT PRIMARY KEY,\n event_id TEXT NOT NULL REFERENCES project_activity(id) ON DELETE CASCADE,\n project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,\n related_project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,\n recipient_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n actor_id TEXT REFERENCES operators(id) ON DELETE SET NULL,\n actor_name TEXT,\n created_at TEXT NOT NULL,\n read_at TEXT,\n UNIQUE(event_id,recipient_id)\n);\nCREATE INDEX project_notifications_recipient_order ON project_notifications(recipient_id,created_at DESC,id DESC);\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0127_custom_field_definitions.sql",
++      "sha256": "a35d44097182cdf275ef9c77f8bc4d2b43a50fa400b062831dc6bd1b8c2fc393",
++      "sql": "-- FIELD-001: typed custom-field definitions and their single-select options.\n-- Issue values stay in issues.custom_fields_json, keyed by definition ID with the\n-- option ID as the value. Legacy untyped keys and historical values are retained\n-- unchanged; nothing here rewrites an existing issue.\nCREATE TABLE custom_field_definitions (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),\n  description TEXT NOT NULL DEFAULT '' CHECK(length(description) <= 2000),\n  type TEXT NOT NULL CHECK(type IN ('text','number','single_select','multi_select','date','person','url','checkbox')),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\n-- A name is unique within its team, whatever its letter case.\nCREATE UNIQUE INDEX custom_field_definitions_team_name ON custom_field_definitions(team_id,name COLLATE NOCASE) WHERE team_id IS NOT NULL;\nCREATE TABLE custom_field_options (\n  id TEXT PRIMARY KEY,\n  field_id TEXT NOT NULL REFERENCES custom_field_definitions(id),\n  name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),\n  position INTEGER NOT NULL CHECK(position>=0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE UNIQUE INDEX custom_field_options_name ON custom_field_options(field_id,name COLLATE NOCASE);\nCREATE UNIQUE INDEX custom_field_options_position ON custom_field_options(field_id,position);\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/migrations/core/0127_custom_field_definitions.sql b/migrations/core/0127_custom_field_definitions.sql
+new file mode 100644
+index 0000000..858497d
+--- /dev/null
++++ b/migrations/core/0127_custom_field_definitions.sql
+@@ -0,0 +1,27 @@
++-- FIELD-001: typed custom-field definitions and their single-select options.
++-- Issue values stay in issues.custom_fields_json, keyed by definition ID with the
++-- option ID as the value. Legacy untyped keys and historical values are retained
++-- unchanged; nothing here rewrites an existing issue.
++CREATE TABLE custom_field_definitions (
++  id TEXT PRIMARY KEY,
++  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),
++  team_id TEXT REFERENCES teams(id),
++  name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),
++  description TEXT NOT NULL DEFAULT '' CHECK(length(description) <= 2000),
++  type TEXT NOT NULL CHECK(type IN ('text','number','single_select','multi_select','date','person','url','checkbox')),
++  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),
++  created_at TEXT NOT NULL,
++  updated_at TEXT NOT NULL
++);
++-- A name is unique within its team, whatever its letter case.
++CREATE UNIQUE INDEX custom_field_definitions_team_name ON custom_field_definitions(team_id,name COLLATE NOCASE) WHERE team_id IS NOT NULL;
++CREATE TABLE custom_field_options (
++  id TEXT PRIMARY KEY,
++  field_id TEXT NOT NULL REFERENCES custom_field_definitions(id),
++  name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),
++  position INTEGER NOT NULL CHECK(position>=0),
++  created_at TEXT NOT NULL,
++  updated_at TEXT NOT NULL
++);
++CREATE UNIQUE INDEX custom_field_options_name ON custom_field_options(field_id,name COLLATE NOCASE);
++CREATE UNIQUE INDEX custom_field_options_position ON custom_field_options(field_id,position);
+diff --git a/schema/api-v1.json b/schema/api-v1.json
+index 3511db8..52a4358 100644
+--- a/schema/api-v1.json
++++ b/schema/api-v1.json
+@@ -467,6 +467,11 @@
+                   "templateVersion": {
+                     "type": "integer",
+                     "minimum": 1
++                  },
++                  "customFields": {
++                    "type": "object",
++                    "additionalProperties": true,
++                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back."
+                   }
+                 },
+                 "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue. A template selection needs both templateId and templateVersion. Explicit native fields win; omitted fields receive template defaults."
+@@ -548,6 +553,69 @@
+                       ],
+                       "format": "date",
+                       "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
++                    },
++                    "customFields": {
++                      "type": "object",
++                      "additionalProperties": true,
++                      "description": "Stored custom-field values: a team field's id maps to an option id; other keys are untyped values."
++                    },
++                    "fields": {
++                      "type": "array",
++                      "description": "Custom fields of the issue's current team, each with its stable option ids. Renaming a field or option changes no stored value.",
++                      "items": {
++                        "type": "object",
++                        "required": [
++                          "id",
++                          "teamId",
++                          "name",
++                          "description",
++                          "type",
++                          "version",
++                          "options"
++                        ],
++                        "properties": {
++                          "id": {
++                            "type": "string"
++                          },
++                          "teamId": {
++                            "type": "string"
++                          },
++                          "name": {
++                            "type": "string"
++                          },
++                          "description": {
++                            "type": "string"
++                          },
++                          "type": {
++                            "type": "string",
++                            "enum": [
++                              "single_select"
++                            ]
++                          },
++                          "version": {
++                            "type": "integer",
++                            "minimum": 1
++                          },
++                          "options": {
++                            "type": "array",
++                            "items": {
++                              "type": "object",
++                              "required": [
++                                "id",
++                                "name"
++                              ],
++                              "properties": {
++                                "id": {
++                                  "type": "string"
++                                },
++                                "name": {
++                                  "type": "string"
++                                }
++                              }
++                            }
++                          }
++                        }
++                      }
+                     }
+                   },
+                   "additionalProperties": true,
+@@ -668,6 +736,69 @@
+                       ],
+                       "format": "date",
+                       "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
++                    },
++                    "customFields": {
++                      "type": "object",
++                      "additionalProperties": true,
++                      "description": "Stored custom-field values: a team field's id maps to an option id; other keys are untyped values."
++                    },
++                    "fields": {
++                      "type": "array",
++                      "description": "Custom fields of the issue's current team, each with its stable option ids. Renaming a field or option changes no stored value.",
++                      "items": {
++                        "type": "object",
++                        "required": [
++                          "id",
++                          "teamId",
++                          "name",
++                          "description",
++                          "type",
++                          "version",
++                          "options"
++                        ],
++                        "properties": {
++                          "id": {
++                            "type": "string"
++                          },
++                          "teamId": {
++                            "type": "string"
++                          },
++                          "name": {
++                            "type": "string"
++                          },
++                          "description": {
++                            "type": "string"
++                          },
++                          "type": {
++                            "type": "string",
++                            "enum": [
++                              "single_select"
++                            ]
++                          },
++                          "version": {
++                            "type": "integer",
++                            "minimum": 1
++                          },
++                          "options": {
++                            "type": "array",
++                            "items": {
++                              "type": "object",
++                              "required": [
++                                "id",
++                                "name"
++                              ],
++                              "properties": {
++                                "id": {
++                                  "type": "string"
++                                },
++                                "name": {
++                                  "type": "string"
++                                }
++                              }
++                            }
++                          }
++                        }
++                      }
+                     }
+                   },
+                   "additionalProperties": true,
+@@ -739,6 +870,11 @@
+                     ],
+                     "format": "date",
+                     "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
++                  },
++                  "customFields": {
++                    "type": "object",
++                    "additionalProperties": true,
++                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back."
+                   }
+                 },
+                 "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue."
+diff --git a/sdk/generated.ts b/sdk/generated.ts
+index 53ceac6..615a133 100644
+--- a/sdk/generated.ts
++++ b/sdk/generated.ts
+@@ -15,9 +15,9 @@ export interface Operations {
+   "schema_get_0": { input: Record<string, never>; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+   "metadata_get_1": { input: Record<string, never>; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+   "issues_list_2": { input: { query?: { "cursor"?: string; "limit"?: number; "q"?: string; "scope"?: string; "category"?: string; "status"?: string; "priority"?: string; "assignee"?: string; "team"?: string; "project"?: string; "cycle"?: string; "label"?: string; "due"?: string; "dueFrom"?: string; "dueTo"?: string; "blocked"?: string; "parent"?: string; "orderView"?: string; "sort"?: "newest" | "oldest" | "priority" | "status" | "start" | "due" | "updated" | "manual"; "grouping"?: string; "start"?: "all" | "overdue" | "range" | "none" | "this_week"; "startFrom"?: string; "startTo"?: string } }; output: { "issues"?: ({ "startDate": string | null; "dueDate": string | null; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+-  "issues_create_3": { input: { body: { "startDate"?: string | null; "dueDate"?: string | null; "templateId"?: string; "templateVersion"?: number; [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+-  "issues_get_4": { input: { path: { "identifier": string } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+-  "issues_update_5": { input: { path: { "identifier": string }; body: { "startDate"?: string | null; "dueDate"?: string | null; [key: string]: unknown } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
++  "issues_create_3": { input: { body: { "startDate"?: string | null; "dueDate"?: string | null; "templateId"?: string; "templateVersion"?: number; "customFields"?: { [key: string]: unknown }; [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
++  "issues_get_4": { input: { path: { "identifier": string } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; "customFields"?: { [key: string]: unknown }; "fields"?: ({ "id": string; "teamId": string; "name": string; "description": string; "type": "single_select"; "version": number; "options": ({ "id": string; "name": string; [key: string]: unknown })[]; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
++  "issues_update_5": { input: { path: { "identifier": string }; body: { "startDate"?: string | null; "dueDate"?: string | null; "customFields"?: { [key: string]: unknown }; [key: string]: unknown } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; "customFields"?: { [key: string]: unknown }; "fields"?: ({ "id": string; "teamId": string; "name": string; "description": string; "type": "single_select"; "version": number; "options": ({ "id": string; "name": string; [key: string]: unknown })[]; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+   "issues_copy_6": { input: { path: { "identifier": string }; body: { [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+   "issues_description-restore_7": { input: { path: { "identifier": string }; body: { [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+   "issues_checklist_8": { input: { path: { "identifier": string }; body: { [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+diff --git a/sources.lock.json b/sources.lock.json
+index 82eb015..cb620e9 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -522,7 +522,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "23c7a694b4fc7275dd5027a9414270b0b33328cdf6008aafd09738b2c10d4729",
++      "sha256": "19dab9abdc309d4dc830e486f09a826371c6a2339f0a04315f6f5934f86210da",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -554,7 +554,7 @@
+       "executable": false
+     },
+     "docs/API.md": {
+-      "sha256": "1d774cfaac90b24c5a892f3f6dee256136bb873471915f35472e5b13ebf16ae9",
++      "sha256": "047ee38d341c36cf472af900adafe6413f14bd7343df92aed0dbb89e7404d606",
+       "executable": false
+     },
+     "docs/ARCHIVES.md": {
+@@ -2030,7 +2030,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "db348ad5924e35275b2fd2a060260941ba06c8db04381ecf60f21cb49a77263f",
++      "sha256": "0079ef63ce8588b0fd2cf0d9eb984e88856c5e5cc484d4a8c51c8972cbe5aadb",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {
+@@ -2537,6 +2537,10 @@
+       "sha256": "baf72f4db62f57b1d93dce937e81f6576607a03a79411cae72ade11d43def487",
+       "executable": false
+     },
++    "migrations/core/0127_custom_field_definitions.sql": {
++      "sha256": "a35d44097182cdf275ef9c77f8bc4d2b43a50fa400b062831dc6bd1b8c2fc393",
++      "executable": false
++    },
+     "OPERATIONS.json": {
+       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
+       "executable": false
+@@ -2634,7 +2638,7 @@
+       "executable": false
+     },
+     "schema/api-v1.json": {
+-      "sha256": "223d72c4d15e422cf373d1d507cca2ad7209bd61feecbebbc6cf0745745ba4cf",
++      "sha256": "2f8030b300b5f98193b7b2f520382b19e1311bdf42c603c90f3ce377783d1dfd",
+       "executable": false
+     },
+     "schema/importers.schema.json": {
+@@ -3562,7 +3566,7 @@
+       "executable": false
+     },
+     "sdk/generated.ts": {
+-      "sha256": "b65a76d5c579551b9be5f7ca599969c7f25ef7c36f29343756567aa44bc3c5d4",
++      "sha256": "bdd9322dc00398d065624b9159c23efc8ecf47fadf4b1868ad153e8eb134f5a5",
+       "executable": false
+     },
+     "sdk/tsconfig.json": {
+@@ -3706,7 +3710,7 @@
+       "executable": false
+     },
+     "src/core/app/api.ts": {
+-      "sha256": "fb04ccb4d6cd307e7c04cb7834ca1b179f6a6f2ccf1f0bb972004b27b889bd40",
++      "sha256": "20c10764a2903a104e3753ba00da3ce51009f10b421b7024719396774841503f",
+       "executable": false
+     },
+     "src/core/app/app.css": {
+@@ -4090,7 +4094,7 @@
+       "executable": false
+     },
+     "src/core/app/stream-page-resources.server.ts": {
+-      "sha256": "77ba931637e310786b18acd493cfccf415b6802a9cbded270700dcbf128116c3",
++      "sha256": "2142351c609673de0c0d1327996838ffdaa13f6ead6a55d652de1dad3dd99e59",
+       "executable": false
+     },
+     "src/core/app/theme.ts": {
+@@ -4190,7 +4194,7 @@
+       "executable": false
+     },
+     "src/core/features/administration/read.ts": {
+-      "sha256": "6788ca390425ea29011a9e40c8cd2d879796cb779954714a13c36cd531c93c17",
++      "sha256": "21112427055e2f3c79af042068185080acdff9e141a613b4ca4f7024424bb4a0",
+       "executable": false
+     },
+     "src/core/features/administration/routes.ts": {
+@@ -4198,7 +4202,7 @@
+       "executable": false
+     },
+     "src/core/features/administration/schema.ts": {
+-      "sha256": "5f0330f63f60f880c6585dec80f5172c074a0f3ac228bf68392694972e5a79a2",
++      "sha256": "8b25eab8a89c376ca37a773905070c40cc82666835dbc58e4d33b1ad6521e89a",
+       "executable": false
+     },
+     "src/core/features/administration/teams.ts": {
+@@ -4453,6 +4457,62 @@
+       "sha256": "dcf3b586c5c0a5937eb01a16389ba6035d7ba84d0b6d08dd991eded91f342cec",
+       "executable": false
+     },
++    "src/core/features/custom-fields/authority.ts": {
++      "sha256": "220cc58985defbe247b12ec6fb74a96636a4d916c5e9dee7bf8bf66719aec23c",
++      "executable": false
++    },
++    "src/core/features/custom-fields/copy.ts": {
++      "sha256": "20dca2c4339c5173a14098ef573a82c3ba3eaba379b6d29d0a1bcac501e919a8",
++      "executable": false
++    },
++    "src/core/features/custom-fields/definitions.ts": {
++      "sha256": "84f1c3f843896df6c462746eebfce1af5b3328ba838aa50eacc76415b5cd68f9",
++      "executable": false
++    },
++    "src/core/features/custom-fields/options.ts": {
++      "sha256": "673f42ee805c51b40512e573fbe3d753bf207a9e4d4b391c0d41d242e84e07e4",
++      "executable": false
++    },
++    "src/core/features/custom-fields/read.ts": {
++      "sha256": "eae3429f3f1299d68dc711eb105c022851ea40110db55b260b53b066b368b77a",
++      "executable": false
++    },
++    "src/core/features/custom-fields/routes.ts": {
++      "sha256": "bf5158cc3c07196062c07e1619a1bc769104832e3bb93ef5d15918cfa37e6ae7",
++      "executable": false
++    },
++    "src/core/features/custom-fields/schema.ts": {
++      "sha256": "1926a83f6a8a1ca4d6fcfe0747c1ef07710141cf695ac81c09d3485e9acdc211",
++      "executable": false
++    },
++    "src/core/features/custom-fields/ui/add-field.tsx": {
++      "sha256": "5646974c087a3e5e8b8e2014990f0cec49ecc8116ca02309be7bab27d50c38f5",
++      "executable": false
++    },
++    "src/core/features/custom-fields/ui/field-row.tsx": {
++      "sha256": "b32e72f6441e4cf029197e4bd1e2d82e0da1d312193957d3a5dbea43b9ba3932",
++      "executable": false
++    },
++    "src/core/features/custom-fields/ui/fields.css": {
++      "sha256": "de87814742088b3e328321681b1271954bc8c625b4d15d915cd2c4f56e4df1bb",
++      "executable": false
++    },
++    "src/core/features/custom-fields/ui/issue-field-picker.tsx": {
++      "sha256": "12110409128668ca09db20a09c17481a5154d346302330eb6c153fa7834cecb8",
++      "executable": false
++    },
++    "src/core/features/custom-fields/ui/rename-in-place.tsx": {
++      "sha256": "0f64b8694f8b0f7c2a0f7ead3b89bc9e05067eb771a89d1d6ee73e83e97535b3",
++      "executable": false
++    },
++    "src/core/features/custom-fields/ui/team-fields.tsx": {
++      "sha256": "23cfa4f98bebbb10521705fc2f8b16b966a68a4f77423bad33bb4542b25b4a45",
++      "executable": false
++    },
++    "src/core/features/custom-fields/validation.ts": {
++      "sha256": "c7de354ece6374b68d69bd431f2fc1b44af3513a6a12b0a6251924bcc6018421",
++      "executable": false
++    },
+     "src/core/features/cycle-closure/read.ts": {
+       "sha256": "8a38e9a24c5e2ce77f7f20e416ecbc5f624ce6effa1e9e3502594eeab5baeb41",
+       "executable": false
+@@ -4594,7 +4654,7 @@
+       "executable": false
+     },
+     "src/core/features/data/archive-inventory.json": {
+-      "sha256": "b30237f96d43d1e4b7d74bdcf53b659f2c285d4541dbcdc35cc8aabeb8cc6231",
++      "sha256": "482d0c0dfbf4bdcda321bb021c5f3c4ba5c7b8da2a553f90d93dc14203c254bc",
+       "executable": false
+     },
+     "src/core/features/data/archive-inventory.mjs": {
+@@ -4606,7 +4666,7 @@
+       "executable": false
+     },
+     "src/core/features/data/archive-policy.mjs": {
+-      "sha256": "6984b6868d1adbe65ae5a692b253f5c28aeda1c5aa5b83dcb04c181c10222720",
++      "sha256": "da06f107e35ab017802d29b5c1e6df1341b54d74b5a07ce0dc9759bd6accbbf1",
+       "executable": false
+     },
+     "src/core/features/data/archive-routes.ts": {
+@@ -5694,7 +5754,7 @@
+       "executable": false
+     },
+     "src/core/features/issue-copy/mapping.ts": {
+-      "sha256": "cee3bb4b976db4b6bbb6b1493a175a0c3763ddb2476fd435a9c81960d51a9b92",
++      "sha256": "3add03d608053bdff438ad513deccb9f509233bdeb5c9a01d8b433ab9403da6c",
+       "executable": false
+     },
+     "src/core/features/issue-copy/palette.ts": {
+@@ -5710,7 +5770,7 @@
+       "executable": false
+     },
+     "src/core/features/issue-copy/service.ts": {
+-      "sha256": "116157d7b07cac46c6599c33974f42d96fcf40f7920de682eb120c983df460aa",
++      "sha256": "2387ff39a856bc6da02c0ec8d1adcd8a8ef11eefcde35ee30c08e7c5d16afdcf",
+       "executable": false
+     },
+     "src/core/features/issue-copy/snapshot.ts": {
+@@ -5766,7 +5826,7 @@
+       "executable": false
+     },
+     "src/core/features/issue-edit/plan.ts": {
+-      "sha256": "93af1be35e5836da9502ca767fdac15402d4168db211b24e6cfb32bab6dc252a",
++      "sha256": "70615930f909f4c29b2cfe927c47e157213c5944f8d78c005b7c30520834971b",
+       "executable": false
+     },
+     "src/core/features/issue-edit/repository.ts": {
+@@ -5922,7 +5982,7 @@
+       "executable": false
+     },
+     "src/core/features/issues/create-guard.ts": {
+-      "sha256": "ce05d5fa7f8cbaba2d2238a4de2bc35d9a859d7b03db3d32a8c360b313d75a1a",
++      "sha256": "e6c3bcfb45be3fc0e4e4f15e61db9f5d7a663a1e1f61514d60a7895fdab8529e",
+       "executable": false
+     },
+     "src/core/features/issues/errors.ts": {
+@@ -5966,7 +6026,7 @@
+       "executable": false
+     },
+     "src/core/features/issues/repository.ts": {
+-      "sha256": "19bbcf668dde1ab16e52e0c9e2f944c45be94b64066051a5ff3ec5c0583dd131",
++      "sha256": "c3a64fbc531986d67869c1f5989bd37f4bcdcd025b566658ffae7101d5e3a08f",
+       "executable": false
+     },
+     "src/core/features/issues/routes.ts": {
+@@ -5974,11 +6034,11 @@
+       "executable": false
+     },
+     "src/core/features/issues/service.ts": {
+-      "sha256": "510ceab9e3778c21f5ac2a674ff9fa269749eaa5fcdb171bfecc9f1ff2f07248",
++      "sha256": "4295a1d9d56ad02eb3917793943f81523f5fd8945423f3af0b8c800e2f3a80e6",
+       "executable": false
+     },
+     "src/core/features/issues/ui/activity-changes.ts": {
+-      "sha256": "0d0aa13fb6289ef5c35c0585dec6df17321db972a948d3ca8a134be28e972a47",
++      "sha256": "ccef594851f178a7a544ebfaadad7896d1e65206f215e1c22b3a6dabdc75a77d",
+       "executable": false
+     },
+     "src/core/features/issues/ui/board-actions.css": {
+@@ -5990,7 +6050,7 @@
+       "executable": false
+     },
+     "src/core/features/issues/ui/data.ts": {
+-      "sha256": "ea584c37d5e3de153a99a7ea21e8a5cc65b6044874d3904298d1619503f822d9",
++      "sha256": "df4e0aff44233e862f0cb5ff8022df613c63074dffa73e3db9153024c40fbe1b",
+       "executable": false
+     },
+     "src/core/features/issues/ui/decision-confirmation.tsx": {
+@@ -6058,7 +6118,7 @@
+       "executable": false
+     },
+     "src/core/features/issues/ui/issue-detail.tsx": {
+-      "sha256": "bc62e6077fe3ac617b5038b3d7e92c5fbf773b9e7a75e4ab75a708011c1c03bf",
++      "sha256": "35d8ef47b2b8903aa1251feaa48a6cf80905f6ebd2ead5bfc989e6fb5a6960a1",
+       "executable": false
+     },
+     "src/core/features/issues/ui/issue-editor.css": {
+@@ -6154,7 +6214,7 @@
+       "executable": false
+     },
+     "src/core/features/issues/ui/issue-properties.tsx": {
+-      "sha256": "26e3b9a16088ae00c86087731edc3758ba45e81ff8e7c33bd2d3636ec59c7201",
++      "sha256": "d61e98551c6e4333326a9e723015a72117dbbdd48d0535b36a1d0a7fa81ce6a5",
+       "executable": false
+     },
+     "src/core/features/issues/ui/issue-selection.ts": {
+@@ -6894,7 +6954,7 @@
+       "executable": false
+     },
+     "src/core/features/roles/doors.ts": {
+-      "sha256": "41f7523bf48ac1c827e8a247316d427280888611e47ef47230083d9ff0e4e2ec",
++      "sha256": "6c230ee766ae4d829cb4050428eb83243696e9535118503aa939a990770dff7c",
+       "executable": false
+     },
+     "src/core/features/roles/enforcement.ts": {
+@@ -6902,7 +6962,7 @@
+       "executable": false
+     },
+     "src/core/features/roles/matrix.ts": {
+-      "sha256": "95fc16e4af1c0b2cf844e8da265b4734f137237a9c7464be115a6c7dd783ad6c",
++      "sha256": "9cfb77383c704f4ae7e00bcd69258dee66b0b9f4eb422a508f8571a4462db999",
+       "executable": false
+     },
+     "src/core/features/roles/policy.ts": {
+@@ -6910,7 +6970,7 @@
+       "executable": false
+     },
+     "src/core/features/roles/settings-doors.ts": {
+-      "sha256": "72f9e8323d0b6ce6f28af9ac7f5a86cc0f6ca18d8a9ee2c0397da56ca1690831",
++      "sha256": "b3b94e693ac8c0ff97c620a8ee18a0ee31f483f68357bb1cd7d9910ce7dac57d",
+       "executable": false
+     },
+     "src/core/features/roles/visibility-database.ts": {
+@@ -7290,7 +7350,7 @@
+       "executable": false
+     },
+     "src/core/features/settings/ui/team-access.ts": {
+-      "sha256": "3e4d6af8778f2bcc75a453f4016aa31aa61f82b8c46202fb99d8354ea5cee2a4",
++      "sha256": "7fb4a4739f91e93b8ad9a69d87310bd92d3d5e1c4916458a1353d0457084cb16",
+       "executable": false
+     },
+     "src/core/features/settings/ui/teams/add-status.tsx": {
+@@ -7370,7 +7430,7 @@
+       "executable": false
+     },
+     "src/core/features/settings/ui/teams/team-record.tsx": {
+-      "sha256": "bcbd772cc3d83f15a924c659b7336fbac1be3516294054aac789a48ed0c16180",
++      "sha256": "4b64b6e8f90fbd7e47b755c0fd5a8fa3486f0dd1baa105067a69cd39cfc3a2ec",
+       "executable": false
+     },
+     "src/core/features/settings/ui/teams/team-row-action.tsx": {
+@@ -7382,7 +7442,7 @@
+       "executable": false
+     },
+     "src/core/features/settings/ui/teams/team-tabs.tsx": {
+-      "sha256": "cd419b73023ae40a1ef74afcedfadae7fc92354ab202422a08229318d2eee9c7",
++      "sha256": "ca230f35a1fdb35684fbc390ee29b91b7ebfc41105853941654d9cf6247727ea",
+       "executable": false
+     },
+     "src/core/features/settings/ui/teams/team-who-manages.tsx": {
+@@ -8122,7 +8182,7 @@
+       "executable": false
+     },
+     "tests/e2e/admin-issue-journey.mjs": {
+-      "sha256": "a03ab0971eb7fffefeb0183f407a48db1c9ffab9514af9fc3d859afada37b705",
++      "sha256": "3c313298ffa9f4e41f34423ffd41e94af5d6ec4eb27c964f396053fa426e2080",
+       "executable": false
+     },
+     "tests/e2e/admin-label-journey.mjs": {
+@@ -8142,7 +8202,7 @@
+       "executable": false
+     },
+     "tests/e2e/admin-runtime.mjs": {
+-      "sha256": "1e45cab918a93ca8cf75d80d3786b9440797286e9ac0bb16a06338275cfc7116",
++      "sha256": "aa0f9f7678e778ce03d5bf5bbd7837d824f399054d7250f2126f3c9dac7ade29",
+       "executable": false
+     },
+     "tests/e2e/admin-saved-view-fixture.mjs": {
+@@ -8433,6 +8493,10 @@
+       "sha256": "f50d431c118dcccb07c2b15633d6e18699a664fb524f2062d2cafbe3e39978de",
+       "executable": false
+     },
++    "tests/e2e/custom-fields-journey.mjs": {
++      "sha256": "f3f0725750f4dc7f833103ee6fd79c1bb124175b34a49a09bbea56a178e33108",
++      "executable": false
++    },
+     "tests/e2e/cycle-report-journey.mjs": {
+       "sha256": "56cf68a601e257e448bd2ab9f6425fb322f40810e4dcdfd6d0e0a6f24d513897",
+       "executable": false
+@@ -9137,6 +9201,22 @@
+       "sha256": "2fdf2669e901abd168eecfa6d608ee8ff1ebeb58d91e3b63a3fab3fe77a1da81",
+       "executable": false
+     },
++    "tests/worker/custom-fields-journey.ts": {
++      "sha256": "3355fe30c8206e7dcd780355d90155a37ee0ad6e86d9bd2525b8a5f2c6333cb8",
++      "executable": false
++    },
++    "tests/worker/custom-fields-upgrade.test.ts": {
++      "sha256": "784fc88881bcf7295dfadbc5e5504eb803b8a89fca2b20fb127a8fa4a5c8ed66",
++      "executable": false
++    },
++    "tests/worker/custom-fields-writers.ts": {
++      "sha256": "48989ea4b51f791159f1f00127f00f21e73d7732bbeee0d9cb43273367e085f1",
++      "executable": false
++    },
++    "tests/worker/custom-fields.test.ts": {
++      "sha256": "5d435b50c6ad6bc09161bf80478e0cc4b211bf82ff0481082981957ec50d4ca1",
++      "executable": false
++    },
+     "tests/worker/cycle-closure-fixture.ts": {
+       "sha256": "ffb99cdfb6c2f2feaf0b5b9fc1c9f3b42f8061d4f644b2cc4d88d7a7ce7b0678",
+       "executable": false
+@@ -9558,7 +9638,7 @@
+       "executable": false
+     },
+     "tests/worker/project-dependencies-upgrade.test.ts": {
+-      "sha256": "832f05d52dace5f2b855de912da990cb14d7e05ddac1be379742a4e9700cd19b",
++      "sha256": "23e20d9ae6aff4deff1e7fd457d60814d13ad7bb3f6ddc1cc2c599e5e4ef1eb2",
+       "executable": false
+     },
+     "tests/worker/project-dependencies.test.ts": {
+@@ -9658,7 +9738,7 @@
+       "executable": false
+     },
+     "tests/worker/role-matrix.test.ts": {
+-      "sha256": "466b836ecdc87284b1686090df1ed51919ffef3dd46e4b230d211e70f1607d9f",
++      "sha256": "57a022df81ea0738fe7f59b85ea5b565b7e10031f52c58613327cd88dff1e6e5",
+       "executable": false
+     },
+     "tests/worker/role-private-journey.ts": {
+@@ -9666,11 +9746,11 @@
+       "executable": false
+     },
+     "tests/worker/role-probes.ts": {
+-      "sha256": "cc8b2d9ec0e0a10ef553247f3c60385ff2abb98ad7e98dba7ea83c66325b7cb6",
++      "sha256": "6198e246338c169e62dec50ae7b031f707f7e14a5d55f769469cf6a8fd59aa34",
+       "executable": false
+     },
+     "tests/worker/role-viewer-census.ts": {
+-      "sha256": "ba245e06e7c02a63e17c70e90a5f28bb3238b153e189e305499965a6aa67ceea",
++      "sha256": "97939ed2690c6e29848863950b238ba93878cc8fd01a9d3f5d58a82eb94ce7e2",
+       "executable": false
+     },
+     "tests/worker/role-viewer-journey.ts": {
+diff --git a/src/core/app/api.ts b/src/core/app/api.ts
+index 408bd34..3a82a19 100644
+--- a/src/core/app/api.ts
++++ b/src/core/app/api.ts
+@@ -51,6 +51,7 @@ import { drainNotificationMail } from '../features/notifications/mail';
+ import { deliverCommittedDirectMessages } from '../features/integrations/outbound';
+ import { fileSettlementDatabase } from '../features/auth/mutation-database';
+ import { addAdministrationRoutes } from '../features/administration/routes';
++import { addCustomFieldRoutes } from '../features/custom-fields/routes';
+ import { addTeamMembershipRoutes } from '../features/team-membership/routes';
+ import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
+ import { mutationDatabase, isMutationAccessError, RestoreReservationError, AuthorityChangedError, VisibilityChangedError } from "../features/auth/mutation-database";
+@@ -397,6 +398,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
+   addViewRoutes(app);
+   addPreferenceRoutes(app);
+   addAdministrationRoutes(app);
++  addCustomFieldRoutes(app);
+   addProjectDependencyRoutes(app);
+   addTriageResponsibilityRoutes(app);
+   addTeamMembershipRoutes(app);
+diff --git a/src/core/app/stream-page-resources.server.ts b/src/core/app/stream-page-resources.server.ts
+index 5e8fd31..ed1d6db 100644
+--- a/src/core/app/stream-page-resources.server.ts
++++ b/src/core/app/stream-page-resources.server.ts
+@@ -32,7 +32,7 @@ export async function selectedStreamResources(db: D1Database, snapshot: Workspac
+ 
+   const detail = buildIssueDetail(snapshot, identifier, new Date())
+   if (!detail) return null
+-  const [metadata, actors, parents, duplicates, provenance, related, specification, comments, files, links, subscription, github, admission] = await db.batch([
++  const [metadata, actors, parents, duplicates, provenance, related, specification, fields, comments, files, links, subscription, github, admission] = await db.batch([
+     ...issueDetailReadStatements(db, issue.id),
+     ...discussionReadStatements(db, issue.id, operator.id),
+     subscriptionStatement(db, issue.id, operator.id),
+@@ -51,7 +51,7 @@ export async function selectedStreamResources(db: D1Database, snapshot: Workspac
+   }
+   const base = '/api/issues/' + encodeURIComponent(identifier)
+   return {
+-    [base]: enrichIssueDetail(detail, [metadata, actors, parents, duplicates, provenance, related, specification]),
++    [base]: enrichIssueDetail(detail, [metadata, actors, parents, duplicates, provenance, related, specification, fields]),
+     [base + '/discussion']: discussionProjection([comments, files, links]),
+     [base + '/subscription']: subscriptionFromRow(subscription.results[0] as SubscriptionRow),
+     [base + '/github']: githubIssueFromRows(github.results),
+diff --git a/src/core/features/administration/read.ts b/src/core/features/administration/read.ts
+index 5da7a2d..b05ae92 100644
+--- a/src/core/features/administration/read.ts
++++ b/src/core/features/administration/read.ts
+@@ -10,12 +10,13 @@ import {
+ import { calculateCycleProgress } from "../cycles/progress";
+ import { readCycleReport } from "../cycle-report/read";
+ import { SettingsError } from "./transaction";
++import { teamFieldsStatement, fieldProjection } from "../custom-fields/read";
+ 
+ const cycleColumns =
+   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
+ export async function readAdministration(db: D1Database, actor: string) {
+   const { workspace_id: workspaceId, role } = await settingsActor(db, actor);
+-  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests] =
++  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests, fieldRows] =
+     await Promise.all([
+       db
+         .prepare("SELECT id,name,timezone,member_label_creation AS memberLabelCreation,member_team_creation AS memberTeamCreation FROM workspace_settings WHERE id=?")
+@@ -77,7 +78,9 @@ export async function readAdministration(db: D1Database, actor: string) {
+         WHERE t.workspace_id=? AND (r.requester_id=? OR EXISTS(SELECT 1 FROM operators actor WHERE actor.id=? AND actor.role IN('owner','admin'))
+           OR EXISTS(SELECT 1 FROM team_members own WHERE own.team_id=t.id AND own.operator_id=? AND own.role='owner')) ORDER BY r.created_at,r.requester_id`)
+         .bind(workspaceId,actor,actor,actor).all<{teamId:string;requesterId:string;name:string;state:string}>(),
++      teamFieldsStatement(db, workspaceId).all(),
+     ]);
++  const fields = fieldProjection(fieldRows.results);
+   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
+     throw new SettingsError(
+       "unauthenticated",
+@@ -101,6 +104,7 @@ export async function readAdministration(db: D1Database, actor: string) {
+       autoCycleStarted: Boolean(t.autoCycleStarted),
+       autoCycleCompleted: Boolean(t.autoCycleCompleted),
+       statuses: statuses.results.filter((s) => s.teamId === t.id),
++      customFields: fields.filter((field) => field.teamId === t.id),
+       members: members.results.filter((m) => m.teamId === t.id).map(({ operatorId, role }) => ({ operatorId, role })),
+       departedAssignments: departed.results.filter((d) => d.teamId === t.id).map(({ teamId: _team, ...issue }) => issue),
+     })),
+diff --git a/src/core/features/administration/schema.ts b/src/core/features/administration/schema.ts
+index ecd267e..03b3807 100644
+--- a/src/core/features/administration/schema.ts
++++ b/src/core/features/administration/schema.ts
+@@ -8,6 +8,7 @@ import {
+ import { z } from "zod";
+ import { housekeepingSchema } from "../housekeeping/schema";
+ import { cycleReportSchema } from "../cycle-report/schema.ts";
++import { customFieldSchema } from "../custom-fields/schema";
+ 
+ export const administrationId = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+ export const workflowCategory = z.enum([
+@@ -176,6 +177,7 @@ export const administrationSchema = z.object({
+       autoCycleStarted: z.boolean(),
+       autoCycleCompleted: z.boolean(),
+       statuses: z.array(administrationStatusSchema),
++      customFields: z.array(customFieldSchema),
+       membershipMode: z.enum(["open","invite_only"]),
+       requestsEnabled: z.boolean(),
+       joinRequests: z.array(z.object({requesterId:z.string(),name:z.string(),state:z.enum(["pending","approved","declined"])})),
+diff --git a/src/core/features/custom-fields/authority.ts b/src/core/features/custom-fields/authority.ts
+new file mode 100644
+index 0000000..3110d21
+--- /dev/null
++++ b/src/core/features/custom-fields/authority.ts
+@@ -0,0 +1,14 @@
++import { loadAuthority, authorityFence } from '../roles/authority'
++import { decide, decisionInputs, type Question } from '../roles/policy'
++import { SettingsError } from '../settings/repository'
++
++/** FIELD-001: a team's fields follow the role matrix's "team setting" row
++ * (ROLE-001, ROLE-009), decided on the actor's current record. The returned
++ * fence requires the same role and team permission inside the write. */
++export async function fieldManagementFence(db: D1Database, actor: string, teamId: string) {
++  const authority = await loadAuthority(db, actor, [teamId])
++  const question: Question = { row: 'custom-fields.team', teams: [teamId] }
++  if (!authority || decide(authority, question) !== 'allow')
++    throw new SettingsError('forbidden', 'Your current role cannot change this team’s fields.', 403)
++  return authorityFence(actor, authority, decisionInputs(authority, question))
++}
+diff --git a/src/core/features/custom-fields/copy.ts b/src/core/features/custom-fields/copy.ts
+new file mode 100644
+index 0000000..f240a17
+--- /dev/null
++++ b/src/core/features/custom-fields/copy.ts
+@@ -0,0 +1,30 @@
++import type { DroppedCopyValue } from '../issue-copy/schema'
++import { namedDefinitions, type FieldValues } from './validation'
++
++/** ISSUE-023 for typed team fields: a copy that stays in the field's team keeps the
++ * same definition and option identity; a copy into another team drops the value
++ * and reports it, since that team has no such field. Untyped legacy keys keep
++ * their workspace-wide identity mapping. */
++export async function mapCopiedFieldValues(db: D1Database, identifier: string, values: FieldValues, teamId: string) {
++  const { definitions, options } = await namedDefinitions(db, Object.keys(values))
++  const mapped: FieldValues = {}, checked: Record<string, string> = {}
++  const mappings: { from: string; to: string | null }[] = [], dropped: DroppedCopyValue[] = []
++  for (const [key, value] of Object.entries(values)) {
++    const definition = definitions.find(row => row.id === key)
++    const option = definition && options.find(row => row.field_id === key && row.id === value)
++    if (!definition || (definition.team_id === teamId && option)) {
++      mapped[key] = value
++      if (option) checked[key] = option.id
++      mappings.push({ from: key, to: key })
++      continue
++    }
++    mappings.push({ from: key, to: null })
++    dropped.push({
++      identifier, field: `customFields.${key}`, value,
++      reason: definition.team_id === teamId
++        ? `The original ${definition.name} option is unavailable.`
++        : `The destination team has no ${definition.name} field; ${option ? option.name : 'its value'} stays on the original issue only.`,
++    })
++  }
++  return { values: mapped, checked, mappings, dropped }
++}
+diff --git a/src/core/features/custom-fields/definitions.ts b/src/core/features/custom-fields/definitions.ts
+new file mode 100644
+index 0000000..3aceaa3
+--- /dev/null
++++ b/src/core/features/custom-fields/definitions.ts
+@@ -0,0 +1,69 @@
++import { createUlid } from '../../shared/ids'
++import { administrationContext, audit, commit, guard, SettingsError, type AdministrationContext } from '../administration/transaction'
++import { fieldManagementFence } from './authority'
++import { planOptions } from './options'
++import type { FieldCreateInput, FieldUpdateInput } from './schema'
++
++type Stored = { id: string; name: string; description: string; type: string; version: number }
++const insertOption = 'INSERT INTO custom_field_options(id,field_id,name,position,created_at,updated_at) VALUES(?,?,?,?,?,?)'
++
++/** The team as the reader sees it now: hidden and other-workspace teams are absent. */
++async function activeTeam(ctx: AdministrationContext, teamId: string) {
++  const team = await ctx.db.prepare('SELECT archived_at FROM teams WHERE id=? AND workspace_id=?').bind(teamId, ctx.workspace).first<{ archived_at: string | null }>()
++  if (!team) throw new SettingsError('not_found', 'Team is unavailable.', 404)
++  if (team.archived_at) throw new SettingsError('team_archived', 'Unarchive this team before changing its fields.', 409)
++}
++
++/** A name is unique in its team, whatever its letter case; the unique index decides races. */
++async function availableName(ctx: AdministrationContext, teamId: string, name: string, except: string | null = null) {
++  if (await ctx.db.prepare('SELECT 1 FROM main.custom_field_definitions WHERE team_id=? AND name=? COLLATE NOCASE AND id IS NOT ?').bind(teamId, name, except).first())
++    throw new SettingsError('field_name_taken', `This team already has a field named ${name}.`, 409)
++}
++
++export async function createField(db: D1Database, actor: string, teamId: string, input: FieldCreateInput) {
++  const ctx = await administrationContext(db, actor)
++  const fence = await fieldManagementFence(ctx.db, actor, teamId)
++  await activeTeam(ctx, teamId)
++  await availableName(ctx, teamId, input.name)
++  const id = createUlid(new Date(ctx.at))
++  const options = input.options.map((option, position) => ({ id: createUlid(new Date(ctx.at)), name: option.name, position }))
++  await commit(ctx, [
++    guard(ctx.db, fence.sql, ...fence.values),
++    guard(ctx.db, 'EXISTS(SELECT 1 FROM main.teams WHERE id=? AND workspace_id=? AND archived_at IS NULL)', teamId, ctx.workspace),
++    ctx.db.prepare('INSERT INTO custom_field_definitions(id,workspace_id,team_id,name,description,type,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)')
++      .bind(id, ctx.workspace, teamId, input.name, input.description, input.type, ctx.at, ctx.at),
++    ...options.map(option => ctx.db.prepare(insertOption).bind(option.id, id, option.name, option.position, ctx.at, ctx.at)),
++    ...audit(ctx, 'custom_field.created', id, input.name, null,
++      { teamId, name: input.name, description: input.description, type: input.type, options: options.map(({ id, name }) => ({ id, name })) }),
++  ])
++  return id
++}
++
++/** Renames the field or its options, edits its description or adds options. No stored
++ * issue value changes: values name option identities, never option names. */
++export async function updateField(db: D1Database, actor: string, teamId: string, fieldId: string, input: FieldUpdateInput) {
++  const ctx = await administrationContext(db, actor)
++  const fence = await fieldManagementFence(ctx.db, actor, teamId)
++  await activeTeam(ctx, teamId)
++  const field = await ctx.db.prepare('SELECT id,name,description,type,version FROM custom_field_definitions WHERE id=? AND team_id=?').bind(fieldId, teamId).first<Stored>()
++  if (!field) throw new SettingsError('not_found', 'Field is unavailable.', 404)
++  if (field.version !== input.expectedVersion) throw new SettingsError('stale_field', 'This field changed. Reload it before saving again.', 409)
++  const stored = (await ctx.db.prepare('SELECT id,name,position FROM custom_field_options WHERE field_id=? ORDER BY position,id').bind(fieldId)
++    .all<{ id: string; name: string; position: number }>()).results
++  const options = input.options ? planOptions(stored, input.options) : { renamed: [], added: [] }
++  const name = input.name ?? field.name, description = input.description ?? field.description
++  if (name !== field.name) await availableName(ctx, teamId, name, fieldId)
++  if (name === field.name && description === field.description && !options.renamed.length && !options.added.length) return
++  const added = options.added.map(option => ({ ...option, id: createUlid(new Date(ctx.at)) }))
++  await commit(ctx, [
++    guard(ctx.db, fence.sql, ...fence.values),
++    guard(ctx.db, `EXISTS(SELECT 1 FROM main.custom_field_definitions d JOIN main.teams t ON t.id=d.team_id
++      WHERE d.id=? AND d.team_id=? AND d.version=? AND t.archived_at IS NULL)`, fieldId, teamId, field.version),
++    ctx.db.prepare('UPDATE custom_field_definitions SET name=?,description=?,version=version+1,updated_at=? WHERE id=?').bind(name, description, ctx.at, fieldId),
++    ...options.renamed.map(option => ctx.db.prepare('UPDATE custom_field_options SET name=?,updated_at=? WHERE id=? AND field_id=?').bind(option.to, ctx.at, option.id, fieldId)),
++    ...added.map(option => ctx.db.prepare(insertOption).bind(option.id, fieldId, option.name, option.position, ctx.at, ctx.at)),
++    ...audit(ctx, 'custom_field.updated', fieldId, name,
++      { name: field.name, description: field.description, version: field.version, options: options.renamed.map(({ id, from }) => ({ id, name: from })) },
++      { name, description, version: field.version + 1, options: [...options.renamed.map(({ id, to }) => ({ id, name: to })), ...added.map(({ id, name }) => ({ id, name }))] }),
++  ])
++}
+diff --git a/src/core/features/custom-fields/options.ts b/src/core/features/custom-fields/options.ts
+new file mode 100644
+index 0000000..df6a13b
+--- /dev/null
++++ b/src/core/features/custom-fields/options.ts
+@@ -0,0 +1,17 @@
++import { SettingsError } from '../settings/repository'
++
++type Stored = { id: string; name: string; position: number }
++
++/** Option identity is permanent: existing options keep their id and order, a
++ * rename changes only the name, and new options go last. Removing, archiving and
++ * reordering options are not offered yet. */
++export function planOptions(stored: Stored[], requested: { id?: string; name: string }[]) {
++  const kept = requested.slice(0, stored.length)
++  if (kept.length !== stored.length || kept.some((option, index) => option.id !== stored[index]!.id) || requested.slice(stored.length).some(option => option.id))
++    throw new SettingsError('invalid_request', 'Keep every existing option in its current order and add new options last.', 400)
++  const next = Math.max(-1, ...stored.map(option => option.position)) + 1
++  return {
++    renamed: stored.flatMap((option, index) => kept[index]!.name === option.name ? [] : [{ id: option.id, from: option.name, to: kept[index]!.name }]),
++    added: requested.slice(stored.length).map((option, index) => ({ name: option.name, position: next + index })),
++  }
++}
+diff --git a/src/core/features/custom-fields/read.ts b/src/core/features/custom-fields/read.ts
+new file mode 100644
+index 0000000..00011a2
+--- /dev/null
++++ b/src/core/features/custom-fields/read.ts
+@@ -0,0 +1,28 @@
++import { customFieldSchema, type CustomField } from './schema'
++
++type Row = { id: string; team_id: string; name: string; description: string; type: string; version: number; option_id: string | null; option_name: string | null }
++const columns = 'd.id,d.team_id,d.name,d.description,d.type,d.version,o.id AS option_id,o.name AS option_name'
++const order = 'ORDER BY d.name COLLATE NOCASE,d.id,o.position,o.id'
++
++/** Every visible team's fields. Unqualified tables follow the reader's current
++ * team visibility (ROLE-002, ROLE-003), so a hidden team's fields never appear. */
++export function teamFieldsStatement(db: D1Database, workspaceId: string) {
++  return db.prepare(`SELECT ${columns} FROM custom_field_definitions d JOIN teams t ON t.id=d.team_id
++    LEFT JOIN custom_field_options o ON o.field_id=d.id WHERE t.workspace_id=? ${order}`).bind(workspaceId)
++}
++
++/** The fields that apply to one issue: those of its current team. */
++export function issueFieldsStatement(db: D1Database, issueId: string) {
++  return db.prepare(`SELECT ${columns} FROM issues i JOIN custom_field_definitions d ON d.team_id=i.team_id
++    LEFT JOIN custom_field_options o ON o.field_id=d.id WHERE i.id=? ${order}`).bind(issueId)
++}
++
++export function fieldProjection(rows: readonly unknown[]): CustomField[] {
++  const fields = new Map<string, { id: string; teamId: string; name: string; description: string; type: string; version: number; options: { id: string; name: string }[] }>()
++  for (const row of rows as Row[]) {
++    const field = fields.get(row.id) ?? { id: row.id, teamId: row.team_id, name: row.name, description: row.description, type: row.type, version: row.version, options: [] }
++    if (row.option_id !== null) field.options.push({ id: row.option_id, name: String(row.option_name) })
++    fields.set(row.id, field)
++  }
++  return [...fields.values()].map(field => customFieldSchema.parse(field))
++}
+diff --git a/src/core/features/custom-fields/routes.ts b/src/core/features/custom-fields/routes.ts
+new file mode 100644
+index 0000000..9cbe9da
+--- /dev/null
++++ b/src/core/features/custom-fields/routes.ts
+@@ -0,0 +1,30 @@
++import type { Context, Hono } from 'hono'
++import type { z } from 'zod'
++import type { AppEnvironment } from '../../app/bindings'
++import { readRequestJson } from '../../app/input'
++import { readAdministration } from '../administration/read'
++import { administrationId } from '../administration/schema'
++import { SettingsError } from '../settings/repository'
++import { createField, updateField } from './definitions'
++import { fieldCreateSchema, fieldUpdateSchema } from './schema'
++
++/** A team's fields in Settings (FIELD-001). Each door answers with the refreshed
++ * Settings model, like the team's other configuration doors. */
++export function addCustomFieldRoutes(app: Hono<AppEnvironment>) {
++  const action = <T extends z.ZodType>(schema: T, run: (c: Context<AppEnvironment>, body: z.output<T>) => Promise<unknown>) =>
++    async (c: Context<AppEnvironment>) => {
++      if (Object.values(c.req.param()).some(id => !administrationId.safeParse(id).success)) return c.json({ error: 'invalid_request' }, 400)
++      const parsed = schema.safeParse(await readRequestJson(c.req.raw))
++      if (!parsed.success) return c.json({ error: 'invalid_request', message: parsed.error.issues.map(issue => `${issue.path.join('.') || 'Input'}: ${issue.message}`).join(' '), issues: parsed.error.issues }, 400)
++      try {
++        await run(c, parsed.data)
++        return c.json(await readAdministration(c.env.DB, c.get('operatorId')))
++      } catch (error) {
++        if (error instanceof SettingsError) return c.json({ error: error.code, message: error.message }, error.status)
++        throw error
++      }
++    }
++  app.post('/settings/teams/:id/custom-fields', action(fieldCreateSchema, (c, body) => createField(c.env.DB, c.get('operatorId'), c.req.param('id')!, body)))
++  app.patch('/settings/teams/:id/custom-fields/:fieldId', action(fieldUpdateSchema, (c, body) =>
++    updateField(c.env.DB, c.get('operatorId'), c.req.param('id')!, c.req.param('fieldId')!, body)))
++}
+diff --git a/src/core/features/custom-fields/schema.ts b/src/core/features/custom-fields/schema.ts
+new file mode 100644
+index 0000000..f9b578a
+--- /dev/null
++++ b/src/core/features/custom-fields/schema.ts
+@@ -0,0 +1,42 @@
++import { z } from 'zod'
++
++const id = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)
++const name = z.string().trim().min(1).max(120)
++const description = z.string().trim().max(2000)
++/** FIELD-001 ships team single-select fields first; the other types stay targets. */
++export const fieldTypes = ['single_select'] as const
++const distinct = (options: { name: string }[]) =>
++  new Set(options.map(option => option.name.toLocaleLowerCase())).size === options.length
++const options = <T extends z.ZodType<{ name: string }>>(option: T) =>
++  z.array(option).min(1).max(50).refine(distinct, 'Option names must be unique.')
++
++export const fieldCreateSchema = z.object({
++  name,
++  description: description.default(''),
++  type: z.enum(fieldTypes),
++  options: options(z.object({ name }).strict()),
++}).strict()
++
++/** Existing options are named by id, in their current order; new options have no id and go last. */
++export const fieldUpdateSchema = z.object({
++  expectedVersion: z.number().int().positive(),
++  name: name.optional(),
++  description: description.optional(),
++  options: options(z.object({ id: id.optional(), name }).strict()).optional(),
++}).strict().refine(value => Object.keys(value).length > 1, 'At least one change is required.')
++
++export const fieldOptionSchema = z.object({ id: z.string(), name: z.string() })
++/** One team field as Settings, /api/v1/metadata and the issue detail pane read it. */
++export const customFieldSchema = z.object({
++  id: z.string(),
++  teamId: z.string(),
++  name: z.string(),
++  description: z.string(),
++  type: z.enum(fieldTypes),
++  version: z.number(),
++  options: z.array(fieldOptionSchema),
++})
++
++export type FieldCreateInput = z.output<typeof fieldCreateSchema>
++export type FieldUpdateInput = z.output<typeof fieldUpdateSchema>
++export type CustomField = z.output<typeof customFieldSchema>
+diff --git a/src/core/features/custom-fields/ui/add-field.tsx b/src/core/features/custom-fields/ui/add-field.tsx
+new file mode 100644
+index 0000000..6659fa6
+--- /dev/null
++++ b/src/core/features/custom-fields/ui/add-field.tsx
+@@ -0,0 +1,49 @@
++import { useId, useState, type FormEvent } from 'react';
++import type { Administration } from '../../administration/schema';
++import { useAdministrationCall } from '../../settings/ui/admin/administration';
++
++/** "+ Add field": a short form in place with a name, an optional description,
++ * the type and its options, and an explicit Add field. */
++export function AddField({ team }: { team: Administration['teams'][number] }) {
++  const id = useId();
++  const call = useAdministrationCall();
++  const [open, setOpen] = useState(false);
++  const [name, setName] = useState('');
++  const [description, setDescription] = useState('');
++  const [options, setOptions] = useState(['', '', '']);
++  const [pending, setPending] = useState(false);
++  const [error, setError] = useState('');
++  async function add(event: FormEvent) {
++    event.preventDefault();
++    setPending(true); setError('');
++    try {
++      await call(`/api/settings/teams/${team.id}/custom-fields`, 'POST', {
++        name: name.trim(), description: description.trim(), type: 'single_select',
++        options: options.map(option => option.trim()).filter(Boolean).map(option => ({ name: option })),
++      });
++      setName(''); setDescription(''); setOptions(['', '', '']); setOpen(false);
++    } catch (cause) { setError(cause instanceof Error ? cause.message : 'The field could not be added.'); }
++    finally { setPending(false); }
++  }
++  if (!open) return <button type="button" className="link-button" onClick={() => setOpen(true)}><span aria-hidden="true">+</span> Add field</button>;
++  return <form className="add-status add-field" aria-label={`Add field to ${team.name}`} onSubmit={add}>
++    <div className="add-status-pair">
++      <div className="field"><div className="field-head"><label htmlFor={`${id}-name`}>Name</label></div>
++        <input id={`${id}-name`} type="text" required maxLength={120} value={name} autoComplete="off" autoFocus onChange={event => setName(event.target.value)} /></div>
++      <div className="field"><div className="field-head"><label htmlFor={`${id}-type`}>Type</label></div>
++        <select id={`${id}-type`} value="single_select" onChange={() => undefined}><option value="single_select">Single-select</option></select></div>
++    </div>
++    <div className="field"><div className="field-head"><label htmlFor={`${id}-description`}>Description (optional)</label></div>
++      <input id={`${id}-description`} type="text" maxLength={2000} value={description} autoComplete="off" onChange={event => setDescription(event.target.value)} /></div>
++    <fieldset className="field add-field-options"><legend className="field-head">Options</legend>
++      {options.map((option, index) => <input key={index} type="text" aria-label={`Option ${index + 1}`} maxLength={120} value={option} autoComplete="off"
++        onChange={event => setOptions(current => current.map((value, at) => at === index ? event.target.value : value))} />)}
++      {options.length < 50 && <button type="button" className="link-button" onClick={() => setOptions(current => [...current, ''])}><span aria-hidden="true">+</span> Add option</button>}
++    </fieldset>
++    <div className="confirm-actions">
++      <button type="submit" className="button-ink" disabled={pending}>Add field</button>
++      <button type="button" className="button-text" disabled={pending} onClick={() => setOpen(false)}>Cancel</button>
++    </div>
++    {error && <p className="confirm-error" role="alert">{error}</p>}
++  </form>;
++}
+diff --git a/src/core/features/custom-fields/ui/field-row.tsx b/src/core/features/custom-fields/ui/field-row.tsx
+new file mode 100644
+index 0000000..9a98c0d
+--- /dev/null
++++ b/src/core/features/custom-fields/ui/field-row.tsx
+@@ -0,0 +1,35 @@
++import { useState } from 'react';
++import type { Administration } from '../../administration/schema';
++import { useAdministrationCall } from '../../settings/ui/admin/administration';
++import { RowMenu } from '../../settings/ui/fields/row-menu';
++import type { CustomField } from '../schema';
++import { RenameInPlace } from './rename-in-place';
++
++/** One field: its name, type and description, then its options. A rename keeps
++ * the option's identity, so issues that have it keep it. */
++export function FieldRow({ team, field, editable }: { team: Administration['teams'][number]; field: CustomField; editable: boolean }) {
++  const call = useAdministrationCall();
++  const [renaming, setRenaming] = useState<string | null>(null);
++  const patch = (change: object) => call(`/api/settings/teams/${team.id}/custom-fields/${field.id}`, 'PATCH', { expectedVersion: field.version, ...change });
++  const renameOption = (id: string, name: string) => patch({ options: field.options.map(option => ({ id: option.id, name: option.id === id ? name : option.name })) });
++  return <section className="custom-field" aria-label={`${field.name} field`}>
++    <div className="status-line">
++      {renaming === field.id
++        ? <RenameInPlace label={`Field name ${field.name}`} value={field.name} save={name => patch({ name })} onDone={() => setRenaming(null)} />
++        : <h2 className="group-heading custom-field-name">{field.name}</h2>}
++      <span className="row-meta">Single-select</span>
++      {editable && renaming !== field.id && <RowMenu name={`${field.name} field`} items={[{ label: 'Rename field', onSelect: () => setRenaming(field.id) }]} />}
++    </div>
++    {field.description && <p className="field-hint">{field.description}</p>}
++    <ul className="status-rows" aria-label={`${field.name} options`}>
++      {field.options.map(option => <li key={option.id} className="status-row">
++        <div className="status-line">
++          {renaming === option.id
++            ? <RenameInPlace label={`Option name ${option.name}`} value={option.name} save={name => renameOption(option.id, name)} onDone={() => setRenaming(null)} />
++            : <span className="status-name">{option.name}</span>}
++          {editable && renaming !== option.id && <RowMenu name={option.name} items={[{ label: 'Rename', onSelect: () => setRenaming(option.id) }]} />}
++        </div>
++      </li>)}
++    </ul>
++  </section>;
++}
+diff --git a/src/core/features/custom-fields/ui/fields.css b/src/core/features/custom-fields/ui/fields.css
+new file mode 100644
+index 0000000..daf7697
+--- /dev/null
++++ b/src/core/features/custom-fields/ui/fields.css
+@@ -0,0 +1,7 @@
++/* A team's custom fields, laid out like its workflow statuses. */
++.team-fields { display: grid; gap: 1.5rem; }
++.custom-field { display: grid; gap: 0.25rem; }
++.custom-field-name { flex: 1; overflow-wrap: anywhere; }
++.custom-field .status-rows { margin-left: 1rem; }
++.add-field-options { display: grid; gap: 0.5rem; }
++.add-field-options input[type="text"] { background-color: var(--app-column); }
+diff --git a/src/core/features/custom-fields/ui/issue-field-picker.tsx b/src/core/features/custom-fields/ui/issue-field-picker.tsx
+new file mode 100644
+index 0000000..f881154
+--- /dev/null
++++ b/src/core/features/custom-fields/ui/issue-field-picker.tsx
+@@ -0,0 +1,29 @@
++import type { CustomField } from '../schema';
++
++/** The stored custom-field map, or null when it is not an object. */
++export const fieldValues = (values: unknown) =>
++  values !== null && typeof values === 'object' && !Array.isArray(values) ? values as Record<string, unknown> : null;
++
++/** The whole map with one typed value set, or removed for no value. Other keys,
++ * including legacy untyped ones, are sent back unchanged. */
++export function withFieldValue(values: Record<string, unknown>, fieldId: string, optionId: string) {
++  const next = { ...values };
++  if (optionId) next[fieldId] = optionId;
++  else delete next[fieldId];
++  return next;
++}
++
++/** One applicable single-select field in the issue's property bar. */
++export function IssueFieldPicker({ field, value, disabled, onChange }: {
++  field: Pick<CustomField, 'id' | 'name' | 'options'>; value: unknown; disabled: boolean; onChange: (optionId: string) => void;
++}) {
++  const current = typeof value === 'string' ? value : '';
++  return <label>
++    <span className="issue-property-name">{field.name}</span>
++    <select aria-label={`Issue ${field.name}`} value={current} disabled={disabled} onChange={event => onChange(event.target.value)}>
++      <option value="">No {field.name.toLocaleLowerCase()}</option>
++      {current && !field.options.some(option => option.id === current) ? <option value={current}>Unavailable option</option> : null}
++      {field.options.map(option => <option key={option.id} value={option.id}>{option.name}</option>)}
++    </select>
++  </label>;
++}
+diff --git a/src/core/features/custom-fields/ui/rename-in-place.tsx b/src/core/features/custom-fields/ui/rename-in-place.tsx
+new file mode 100644
+index 0000000..4400e03
+--- /dev/null
++++ b/src/core/features/custom-fields/ui/rename-in-place.tsx
+@@ -0,0 +1,21 @@
++import { useEffect, useRef } from 'react';
++import { FailureLine, SavedMark } from '../../settings/ui/fields/field-feedback';
++import { useAutosave } from '../../settings/ui/fields/use-autosave';
++
++/** Rename in place: stored on blur or Enter; Escape leaves without a change. */
++export function RenameInPlace({ label, value, save, onDone }: { label: string; value: string; save: (next: string) => Promise<unknown>; onDone: () => void }) {
++  const input = useRef<HTMLInputElement>(null);
++  useEffect(() => { input.current?.focus(); input.current?.select(); }, []);
++  const field = useAutosave({ value, label, save: next => save(next.trim()) });
++  async function finish() { if (await field.commit()) onDone(); }
++  return <div className="status-rename">
++    <input ref={input} type="text" aria-label={label} value={field.shown} maxLength={120} required autoComplete="off"
++      onChange={event => field.edit(event.target.value)} onBlur={() => void finish()}
++      onKeyDown={event => {
++        if (event.key === 'Enter') { event.preventDefault(); void finish(); }
++        if (event.key === 'Escape') { event.preventDefault(); onDone(); }
++      }} />
++    <SavedMark state={field.state} />
++    <FailureLine failed={field.failed} reason={field.reason} onRetry={field.retry} />
++  </div>;
++}
+diff --git a/src/core/features/custom-fields/ui/team-fields.tsx b/src/core/features/custom-fields/ui/team-fields.tsx
+new file mode 100644
+index 0000000..196c06f
+--- /dev/null
++++ b/src/core/features/custom-fields/ui/team-fields.tsx
+@@ -0,0 +1,20 @@
++import type { Administration } from '../../administration/schema';
++import { teamAccess } from '../../settings/ui/team-access';
++import { AddField } from './add-field';
++import { FieldRow } from './field-row';
++import './fields.css';
++
++type Team = Administration['teams'][number];
++
++/** A team's custom fields (FIELD-001), each with its type and options. Whoever may
++ * change the team's settings adds fields and renames fields and options in place;
++ * everyone else who opens the team reads them. */
++export function TeamFields({ data, team }: { data: Administration; team: Team }) {
++  const editable = teamAccess(data, team).fields && !team.archivedAt;
++  return <div className="team-fields">
++    {team.customFields.length
++      ? team.customFields.map(field => <FieldRow key={field.id} team={team} field={field} editable={editable} />)
++      : <p className="field-hint">This team has no custom fields yet.</p>}
++    {editable ? <AddField team={team} /> : !team.archivedAt && <p className="field-hint">Only this team’s owners and Admins change its fields.</p>}
++  </div>;
++}
+diff --git a/src/core/features/custom-fields/validation.ts b/src/core/features/custom-fields/validation.ts
+new file mode 100644
+index 0000000..3a76439
+--- /dev/null
++++ b/src/core/features/custom-fields/validation.ts
+@@ -0,0 +1,54 @@
++import { IssueMutationError } from '../issues/errors'
++
++export type FieldValues = Record<string, unknown>
++type Definition = { id: string; team_id: string | null; name: string; type: string }
++
++// JSON object order is not a change.
++export function canonical(value: unknown): string {
++  if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']'
++  if (value !== null && typeof value === 'object')
++    return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical((value as FieldValues)[key])).join(',') + '}'
++  return JSON.stringify(value)
++}
++
++/** The typed values a write keeps, required current again inside its transaction:
++ * each names an option of a field of `team`, a bound `?` or a column such as
++ * `issues.team_id`. Binds the JSON object first, then the team when it is `?`. */
++export const currentFieldValues = (team: string) =>
++  `NOT EXISTS(SELECT 1 FROM json_each(?) entry WHERE NOT EXISTS(SELECT 1 FROM main.custom_field_options o
++    JOIN main.custom_field_definitions d ON d.id=o.field_id WHERE d.id=entry.key AND o.id=entry.value AND d.team_id=${team}))`
++
++/** Definitions named by these keys, whatever the reader may see: a key never
++ * changes meaning with the caller's visibility. */
++export async function namedDefinitions(db: D1Database, keys: string[]) {
++  if (!keys.length) return { definitions: [] as Definition[], options: [] as { id: string; field_id: string; name: string }[] }
++  const definitions = (await db.prepare('SELECT id,team_id,name,type FROM main.custom_field_definitions WHERE id IN (SELECT value FROM json_each(?))')
++    .bind(JSON.stringify(keys)).all<Definition>()).results
++  const options = definitions.length ? (await db.prepare('SELECT id,field_id,name FROM main.custom_field_options WHERE field_id IN (SELECT value FROM json_each(?))')
++    .bind(JSON.stringify(definitions.map(definition => definition.id))).all<{ id: string; field_id: string; name: string }>()).results : []
++  return { definitions, options }
++}
++
++/** FIELD-001's one typed boundary, shared by every issue writer that accepts
++ * custom-field values. A key naming a field definition is typed: a changed value
++ * must be one of that team field's options, and null clears it. Any other key is
++ * a legacy untyped value and passes unchanged, as does a retained typed value
++ * the request leaves as it was. Returns the map to store and the typed values the
++ * write transaction must still find current (see currentFieldValues). */
++export async function admitFieldValues(db: D1Database, teamId: string, previous: FieldValues, next: FieldValues) {
++  const changed = Object.keys(next).filter(key => !Object.hasOwn(previous, key) || canonical(previous[key]) !== canonical(next[key]))
++  const { definitions, options } = await namedDefinitions(db, changed)
++  const values = { ...next }, checked: Record<string, string> = {}
++  for (const definition of definitions) {
++    const value = next[definition.id]
++    if (definition.team_id !== teamId)
++      throw new IssueMutationError('invalid_option', `Custom field ${definition.id} is not a field of this issue's team.`)
++    if (definition.type !== 'single_select')
++      throw new IssueMutationError('invalid_option', `${definition.name} values cannot be set yet.`)
++    if (value === null) { delete values[definition.id]; continue }
++    if (typeof value !== 'string' || !options.some(option => option.field_id === definition.id && option.id === value))
++      throw new IssueMutationError('invalid_option', `${definition.name} accepts only one of its options.`)
++    checked[definition.id] = value
++  }
++  return { values, checked }
++}
+diff --git a/src/core/features/data/archive-inventory.json b/src/core/features/data/archive-inventory.json
+index 0750d4d..921ba60 100644
+--- a/src/core/features/data/archive-inventory.json
++++ b/src/core/features/data/archive-inventory.json
+@@ -2265,5 +2265,24 @@
+     "actor_name",
+     "created_at",
+     "read_at"
++  ],
++  "custom_field_definitions": [
++    "id",
++    "workspace_id",
++    "team_id",
++    "name",
++    "description",
++    "type",
++    "version",
++    "created_at",
++    "updated_at"
++  ],
++  "custom_field_options": [
++    "id",
++    "field_id",
++    "name",
++    "position",
++    "created_at",
++    "updated_at"
+   ]
+ }
+diff --git a/src/core/features/data/archive-policy.mjs b/src/core/features/data/archive-policy.mjs
+index 579f56f..014e3e2 100644
+--- a/src/core/features/data/archive-policy.mjs
++++ b/src/core/features/data/archive-policy.mjs
+@@ -5,6 +5,7 @@
+ // Report schedules and safe receipts are portable; credentials, active claims
+ // and digest checkpoints remain installation state, so restore never replays exports.
+ // Issue templates are portable content; created issues survive template deletion.
++// Custom field definitions and options are portable team configuration; issue values stay in issues.custom_fields_json.
+ // Document issue references retain live and removed backlinks as portable domain data.
+ // Webhook event selections and team filters are portable configuration. Restored
+ // event history remains held and destination secrets still require re-entry.
+diff --git a/src/core/features/issue-copy/mapping.ts b/src/core/features/issue-copy/mapping.ts
+index a6b0021..e5a54dc 100644
+--- a/src/core/features/issue-copy/mapping.ts
++++ b/src/core/features/issue-copy/mapping.ts
+@@ -1,10 +1,12 @@
+ import type { CopySource } from "./snapshot";
+ import type { DroppedCopyValue } from "./schema";
+ import { IssueMutationError } from "../issues/errors";
++import { mapCopiedFieldValues } from "../custom-fields/copy";
+ 
+ /** Native moves and copies share workspace team/status eligibility. Labels and
+- * custom fields currently have workspace scope, so their destination mapping
+- * is identity; team statuses and cycles cannot carry their old team IDs. */
++ * untyped custom-field keys have workspace scope, so their destination mapping
++ * is identity; team statuses, cycles and typed team fields (FIELD-001) cannot
++ * carry their old team's identity into another team. */
+ export async function copyDestination(
+   db: D1Database,
+   teamId: string,
+@@ -71,15 +73,21 @@ export async function mapCopyValues(
+     drop("milestoneId", milestoneId, "The original milestone is unavailable for the copied project.");
+     milestoneId = null;
+   }
++  const fields = await mapCopiedFieldValues(
++    db,
++    source.identifier,
++    JSON.parse(source.custom_fields_json) as Record<string, unknown>,
++    teamId,
++  );
++  dropped.push(...fields.dropped);
+   return {
+     labels,
+     milestoneId,
+     cycleId,
+     projectId,
+-    customFields: JSON.parse(source.custom_fields_json) as Record<
+-      string,
+-      unknown
+-    >,
++    customFields: fields.values,
++    fieldValues: fields.checked,
++    customFieldMappings: fields.mappings,
+     dropped,
+   };
+ }
+diff --git a/src/core/features/issue-copy/service.ts b/src/core/features/issue-copy/service.ts
+index 8a37de6..49f573f 100644
+--- a/src/core/features/issue-copy/service.ts
++++ b/src/core/features/issue-copy/service.ts
+@@ -11,6 +11,7 @@ import { copyIssueSchema, CopyConflict, type CopyIssueInput } from "./schema";
+ import { readCopySnapshot, copySnapshotSql } from "./snapshot";
+ import { copyDestination, mapCopyValues } from "./mapping";
+ import { getIssueDetail } from "../issues/service";
++import { currentFieldValues } from "../custom-fields/validation";
+ 
+ export async function copyIssue(
+   source: D1Database,
+@@ -97,6 +98,7 @@ export async function copyIssue(
+       AND (? IS NULL OR EXISTS(SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE m.id=? AND m.project_id=? AND p.workspace_id=?))
+       AND (? IS NULL OR EXISTS(SELECT 1 FROM cycles c JOIN teams t ON t.id=c.team_id WHERE c.id=? AND c.team_id=? AND t.cycles_enabled=1 AND c.closed_at IS NULL))
+       AND NOT EXISTS(SELECT value FROM json_each(?) WHERE NOT EXISTS(SELECT 1 FROM labels WHERE id=value AND workspace_id=?))
++      AND ${currentFieldValues("?")}
+       THEN 1 ELSE json('copy option changed') END`,
+         )
+         .bind(
+@@ -112,6 +114,8 @@ export async function copyIssue(
+           teamId,
+           JSON.stringify(mapped.labels),
+           original.workspace_id,
++          JSON.stringify(mapped.fieldValues),
++          teamId,
+         ),
+     );
+     writes.push(
+@@ -226,10 +230,7 @@ export async function copyIssue(
+       identifier: plan.row.identifier,
+       status: { from: plan.row.status_id, to: target.status_id },
+       labels: plan.mapped.labels.map((id) => ({ from: id, to: id })),
+-      customFields: Object.keys(plan.mapped.customFields).map((key) => ({
+-        from: key,
+-        to: key,
+-      })),
++      customFields: plan.mapped.customFieldMappings,
+     })),
+     droppedValues: allocated.flatMap((plan) => plan.mapped.dropped),
+   };
+diff --git a/src/core/features/issue-edit/plan.ts b/src/core/features/issue-edit/plan.ts
+index a81babc..37a92bb 100644
+--- a/src/core/features/issue-edit/plan.ts
++++ b/src/core/features/issue-edit/plan.ts
+@@ -21,6 +21,7 @@ import {
+   validateLabels,
+ } from "../issues/repository";
+ import { IssueMutationError } from "../issues/errors";
++import { admitFieldValues, canonical, currentFieldValues } from "../custom-fields/validation";
+ import type { UpdateIssueInput } from "./routes";
+ 
+ /** Only trusted feature services supply activity context; never request JSON. */
+@@ -48,26 +49,6 @@ const columns = {
+   customFields: "custom_fields_json",
+ } as const;
+ 
+-// JSON object order and label order do not constitute product changes.
+-function canonical(value: unknown): string {
+-  if (Array.isArray(value)) return "[" + value.map(canonical).join(",") + "]";
+-  if (value !== null && typeof value === "object")
+-    return (
+-      "{" +
+-      Object.keys(value)
+-        .sort()
+-        .map(
+-          (key) =>
+-            JSON.stringify(key) +
+-            ":" +
+-            canonical((value as Record<string, unknown>)[key]),
+-        )
+-        .join(",") +
+-      "}"
+-    );
+-  return JSON.stringify(value);
+-}
+-
+ export async function planIssueUpdate(
+   binding: D1Database,
+   identifier: string,
+@@ -124,11 +105,15 @@ export async function planIssueUpdate(
+     values.milestoneId = null;
+     previous.milestoneId = issue.milestoneId;
+   }
++  // FIELD-001: the shared typed boundary; retained and untyped legacy values pass unchanged.
++  let fieldValues: Record<string, string> = {};
+   if (input.customFields !== undefined) {
+     const old = JSON.parse(issue.customFieldsJson);
+-    if (canonical(input.customFields) !== canonical(old)) {
+-      values.customFields = input.customFields;
++    const admitted = await admitFieldValues(binding, issue.teamId, old, input.customFields);
++    if (canonical(admitted.values) !== canonical(old)) {
++      values.customFields = admitted.values;
+       previous.customFields = old;
++      fieldValues = admitted.checked;
+     }
+   }
+   const oldLabels = (
+@@ -262,6 +247,8 @@ export async function planIssueUpdate(
+       issue.teamId,
+     );
+   }
++  if (Object.keys(fieldValues).length)
++    guard(currentFieldValues("issues.team_id"), JSON.stringify(fieldValues));
+   if (labelsChanged) {
+     // Retained historical selections need not pass today's workspace rules.
+     const added = nextLabels.filter((id) => !oldLabels.includes(id));
+diff --git a/src/core/features/issues/create-guard.ts b/src/core/features/issues/create-guard.ts
+index 5d5cc70..b94c19b 100644
+--- a/src/core/features/issues/create-guard.ts
++++ b/src/core/features/issues/create-guard.ts
+@@ -1,6 +1,7 @@
+ import type { CreateIssueInput } from "./input";
+ import { IssueMutationError } from "./errors";
+ import { isMutationAccessError } from "../auth/mutation-database";
++import { currentFieldValues } from "../custom-fields/validation";
+ 
+ export function creationGuard(
+   db: D1Database,
+@@ -8,7 +9,7 @@ export function creationGuard(
+   workspace: string,
+   teamId: string,
+   statusId: string,
+-  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null },
++  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null; fieldValues?: Record<string, string> },
+   category: string,
+   allocatedPrefix: string,
+ ) {
+@@ -50,6 +51,11 @@ export function creationGuard(
+     );
+     values.push(id, workspace);
+   }
++  // FIELD-001: typed values admitted before the write must still be this team's options.
++  if (input.fieldValues && Object.keys(input.fieldValues).length) {
++    conditions.push(currentFieldValues("?"));
++    values.push(JSON.stringify(input.fieldValues), teamId);
++  }
+   return db
+     .prepare(
+       `SELECT CASE WHEN ${conditions.join(" AND ")} THEN 1 ELSE json('creation option unavailable') END`,
+diff --git a/src/core/features/issues/repository.ts b/src/core/features/issues/repository.ts
+index d48d01b..bd7f931 100644
+--- a/src/core/features/issues/repository.ts
++++ b/src/core/features/issues/repository.ts
+@@ -24,6 +24,7 @@ import {
+   workflowStatuses,
+ } from '../../platform/db/schema'
+ import { IssueMutationError } from './errors'
++import { admitFieldValues } from '../custom-fields/validation'
+ import type { AcceptIssueInput, CreateIssueInput, DeclineIssueInput, DeferIssueInput } from './input'
+ 
+ type Database = ReturnType<typeof drizzle>
+@@ -79,6 +80,8 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
+     throw new IssueMutationError('invalid_option', 'New issues must use a non-Intake, non-Duplicate status.')
+   }
+   await validateIssueOptions(db, team.workspaceId, team.id, request.input)
++  // FIELD-001: one typed boundary for every creating door; untyped legacy keys pass unchanged.
++  const fields = await admitFieldValues(binding, team.id, {}, request.input.customFields)
+ 
+   const allocation = await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)
+   const sequenceNumber = allocation.sequence
+@@ -103,7 +106,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
+     estimate: request.input.estimate,
+     expectedOutcome: request.input.expectedOutcome,
+     customerImpact: request.input.customerImpact,
+-    customFieldsJson: JSON.stringify(request.input.customFields),
++    customFieldsJson: JSON.stringify(fields.values),
+     deferredUntil: null,
+     version: 1,
+     completedAt: status.category === 'completed' ? now : null,
+@@ -133,7 +136,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
+     dueDate: request.input.dueDate,
+       expectedOutcome: request.input.expectedOutcome,
+       customerImpact: request.input.customerImpact,
+-      customFields: request.input.customFields,
++      customFields: fields.values,
+     },
+     now,
+   })
+@@ -142,7 +145,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
+   const labelWrites = request.input.labelIds.length === 0
+     ? []
+     : [db.insert(issueLabels).values(request.input.labelIds.map((labelId) => ({ issueId, labelId, createdAt: now })))]
+-  const writes = [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
++  const writes = [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, { ...request.input, fieldValues: fields.checked }, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
+       const { sql, params } = query.toSQL()
+       return binding.prepare(sql).bind(...params)
+     }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...(request.commitStatements?.(binding,identifier) ?? [])]
+diff --git a/src/core/features/issues/service.ts b/src/core/features/issues/service.ts
+index 12f4c1e..22ee6a1 100644
+--- a/src/core/features/issues/service.ts
++++ b/src/core/features/issues/service.ts
+@@ -10,6 +10,7 @@ import { parentRelationsStatement, parentRelationsProjection, type ParentRelatio
+ import { evidenceMetadataStatement, type EvidenceMetadata } from "../operator-intake/repository";
+ import { categoryByStatus, projectHealthForIssue } from "../projects";
+ import { loadWorkspaceSnapshot, type WorkspaceSnapshot } from "../streams";
++import { issueFieldsStatement, fieldProjection } from "../custom-fields/read";
+ 
+ export async function getIssueDetail(
+   binding: D1Database,
+@@ -42,12 +43,13 @@ export function issueDetailReadStatements(binding: D1Database, issueId: string)
+     importedFromStatement(binding, issueId),
+     relatedIssuesStatement(binding, issueId),
+     issueSpecificationStatement(binding, issueId),
++    issueFieldsStatement(binding, issueId),
+   ] as const;
+ }
+ 
+ export function enrichIssueDetail(
+   detail: NonNullable<ReturnType<typeof buildIssueDetail>>,
+-  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult, relatedResult, specificationResult]: readonly D1Result[],
++  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult, relatedResult, specificationResult, fieldResult]: readonly D1Result[],
+ ) {
+   const metadataRows = metadataResult.results as EvidenceMetadata[];
+   const actorRows = actorResult.results as Array<{ id: string; actor_name: string }>;
+@@ -81,7 +83,7 @@ export function enrichIssueDetail(
+     ...row,
+     actor: actors.get(row.id) ?? row.actor,
+   }));
+-  return { ...detail, specification:(specificationResult.results[0] as SpecificationRow|undefined)??null, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
++  return { ...detail, fields: fieldProjection(fieldResult.results), specification:(specificationResult.results[0] as SpecificationRow|undefined)??null, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
+ }
+ 
+ export function buildIssueDetail(
+diff --git a/src/core/features/issues/ui/activity-changes.ts b/src/core/features/issues/ui/activity-changes.ts
+index 5c1fd4c..c3759ec 100644
+--- a/src/core/features/issues/ui/activity-changes.ts
++++ b/src/core/features/issues/ui/activity-changes.ts
+@@ -36,18 +36,35 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
+ const record = (value: unknown): Record<string, unknown> =>
+   typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+ 
+-export function activityChanges(kind: string, previousValue: unknown, nextValue: unknown, options: StreamOptions | null, formatDate: (value: string) => string): Change[] {
++/** A typed team field (FIELD-001) whose stored values are option identities. */
++type TypedField = { id: string; name: string; options: Named[] };
++/** Each typed field that changed reads "Severity: Minor → Critical", by the
++ * option's current name; any other custom-field key is only said to be edited. */
++function customFieldChanges(previous: unknown, next: unknown, fields: TypedField[]): Change[] {
++  const before = record(previous), after = record(next);
++  const typed = fields.filter((field) => before[field.id] !== after[field.id]).map((field) => ({
++    field: field.name,
++    from: name(field.options, before[field.id], "None", "a removed option"),
++    to: name(field.options, after[field.id], "None", "a removed option"),
++  }));
++  const untyped = [...new Set([...Object.keys(before), ...Object.keys(after)])]
++    .some((key) => !fields.some((field) => field.id === key) && JSON.stringify(before[key]) !== JSON.stringify(after[key]));
++  return untyped ? [...typed, { field: FIELDS.customFields!.label }] : typed;
++}
++
++export function activityChanges(kind: string, previousValue: unknown, nextValue: unknown, options: StreamOptions | null, formatDate: (value: string) => string, fields: TypedField[] = []): Change[] {
+   // A created or imported issue's values are the issue itself, not a change.
+   if (kind === "issue.created" || kind === "issue.imported") return [];
+   const before = record(previousValue), after = record(nextValue);
+   return Object.keys(FIELDS)
+     .filter((key) => key in after || key in before)
+-    .map((key) => {
++    .flatMap((key): Change[] => {
++      if (key === "customFields") return customFieldChanges(before[key], after[key], fields);
+       const field = FIELDS[key]!;
+       const show = (key === "dueDate" || key === "startDate") ? (value: unknown) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value) ? formatDate(value.slice(0, 10)) : "Not set" : field.show;
+-      return show
++      return [show
+         ? { field: field.label, from: show(before[key], options), to: show(after[key], options) }
+-        : { field: field.label };
++        : { field: field.label }];
+     })
+     .filter((change) => change.from === undefined || change.from !== change.to);
+ }
+diff --git a/src/core/features/issues/ui/data.ts b/src/core/features/issues/ui/data.ts
+index 0bb0747..cf858d5 100644
+--- a/src/core/features/issues/ui/data.ts
++++ b/src/core/features/issues/ui/data.ts
+@@ -44,6 +44,8 @@ export const issueDetailSchema = z.object({
+   expectedOutcome: z.string().nullable(),
+   customerImpact: z.string().nullable(),
+   customFields: z.unknown(),
++  /** FIELD-001: the typed fields of the issue's team, with their options. */
++  fields: z.array(z.object({ id: z.string(), name: z.string(), options: z.array(z.object({ id: z.string(), name: z.string() })) })),
+   team: z.object({
+     id: z.string(),
+     name: z.string(),
+diff --git a/src/core/features/issues/ui/issue-detail.tsx b/src/core/features/issues/ui/issue-detail.tsx
+index bfcbd98..0fd2634 100644
+--- a/src/core/features/issues/ui/issue-detail.tsx
++++ b/src/core/features/issues/ui/issue-detail.tsx
+@@ -354,7 +354,7 @@ function IssueInspector({
+                         {activity.actor ?? "System"} ·{" "}
+                         {relativeTime(activity.at)}
+                       </span>
+-                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date).map((change) => (
++                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date, issue.fields).map((change) => (
+                         <span className="activity-change" key={change.field}>
+                           {change.from === undefined ? `${change.field} edited` : `${change.field}: ${change.from} → ${change.to}`}
+                         </span>
+diff --git a/src/core/features/issues/ui/issue-properties.tsx b/src/core/features/issues/ui/issue-properties.tsx
+index 6c8014c..13684a9 100644
+--- a/src/core/features/issues/ui/issue-properties.tsx
++++ b/src/core/features/issues/ui/issue-properties.tsx
+@@ -4,6 +4,7 @@ import { ApiError, fetchJson } from "../../../app/api-client";
+ import { useHydrated } from "../../../app/initial-resources";
+ import type { StreamOptions } from "../../streams/ui/data";
+ import { issueDetailSchema, type IssueDetailData } from "./data";
++import { IssueFieldPicker, fieldValues, withFieldValue } from "../../custom-fields/ui/issue-field-picker";
+ 
+ export function IssueProperties({
+   issue: suppliedIssue,
+@@ -26,7 +27,8 @@ export function IssueProperties({
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState("");
+   const [conflict, setConflict] = useState(false);
+-  async function change(field: string, value: string) {
++  const change = (field: string, value: string) => save({ [field]: value || null });
++  async function save(body: Record<string, unknown>) {
+     if (busy || conflict) return;
+     setBusy(true);
+     setError("");
+@@ -39,7 +41,7 @@ export function IssueProperties({
+           headers: { "content-type": "application/json" },
+           body: JSON.stringify({
+             expectedVersion: issue.version,
+-            [field]: value || null,
++            ...body,
+           }),
+         },
+       );
+@@ -76,6 +78,7 @@ export function IssueProperties({
+       setBusy(false);
+     }
+   }
++  const values = fieldValues(issue.customFields);
+   const statuses =
+     options?.statuses.filter(
+       (s) =>
+@@ -182,6 +185,15 @@ export function IssueProperties({
+       {picker("Milestone", "milestoneId", issue.milestoneId ?? "",
+         options?.milestones.filter(item => item.projectId === issue.project?.id) ?? [],
+         "No milestone", !issue.project)}
++      {issue.fields.map((field) => (
++        <IssueFieldPicker
++          key={field.id}
++          field={field}
++          value={values?.[field.id]}
++          disabled={!writable || !hydrated || busy || conflict || !values}
++          onChange={(optionId) => values && void save({ customFields: withFieldValue(values, field.id, optionId) })}
++        />
++      ))}
+       {error ? (
+         <p role="alert">
+           {error}{" "}
+diff --git a/src/core/features/roles/doors.ts b/src/core/features/roles/doors.ts
+index b3cc93c..87c3dab 100644
+--- a/src/core/features/roles/doors.ts
++++ b/src/core/features/roles/doors.ts
+@@ -255,6 +255,8 @@ export const doors: Door[] = [
+   { method: 'POST', path: '/settings/labels/:id/merge', row: 'labels.manage' },
+   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
+   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
++  { method: 'POST', path: '/settings/teams/:id/custom-fields', row: 'custom-fields.team', teams: team('id') },
++  { method: 'PATCH', path: '/settings/teams/:id/custom-fields/:fieldId', row: 'custom-fields.team', teams: team('id') },
+   // Intake and triage
+   { method: 'POST', path: '/intake', row: 'intake.create', teams: bodyTeam },
+   ...(['accept', 'defer', 'decline', 'return'] as const).map((action): Door => ({ method: 'POST', path: '/issues/:identifier/' + action, row: 'intake.decide', teams: issue })),
+diff --git a/src/core/features/roles/matrix.ts b/src/core/features/roles/matrix.ts
+index 43e5491..fba8141 100644
+--- a/src/core/features/roles/matrix.ts
++++ b/src/core/features/roles/matrix.ts
+@@ -58,6 +58,7 @@ export const matrix = {
+   'issues.delete-permanent': row('Permanently delete an issue before retention ends (ISSUE-010)', 'yes', 'yes', 'no', 'no'),
+   'labels.create': row('Create and apply labels (ISSUE-014)', 'yes', 'yes', 'yes', 'no'),
+   'labels.manage': row('Rename, recolor, merge or delete a workspace label (ISSUE-014)', 'yes', 'yes', 'no', 'no'),
++  'custom-fields.team': row("Define or change a team's custom fields (FIELD-001)", 'yes', 'yes', 'team-setting', 'no'),
+   'intake.create': row('Create an intake item by hand or submit a request form (INTAKE-001, TRIAGE-004)', 'yes', 'yes', 'yes', 'invited-teams'),
+   'intake.decide': row('Accept, defer, end a deferral or decline an intake item (INTAKE-005, INTAKE-006, INTAKE-007)', 'yes', 'yes', 'teams', 'no'),
+   'sources.manage': row('Register, rotate or revoke a signal source and its signing secret (INTAKE-011)', 'yes', 'yes', 'no', 'no'),
+diff --git a/src/core/features/roles/settings-doors.ts b/src/core/features/roles/settings-doors.ts
+index a3b0dab..cacb91a 100644
+--- a/src/core/features/roles/settings-doors.ts
++++ b/src/core/features/roles/settings-doors.ts
+@@ -5,6 +5,7 @@
+ export const settingsFormDoors: Record<string, readonly string[]> = {
+   'triage-responsibility/panel.tsx#TeamTriageRotation': ['PUT /settings/teams/:id/triage-rotation'],
+   'issue-templates/controls.tsx#IssueTemplateSettings': ['POST /issue-templates'],
++  'custom-fields/ui/add-field.tsx#AddField': ['POST /settings/teams/:id/custom-fields'],
+   'integrations/ui/channel-settings.tsx#ChannelSettings': [
+     'POST /settings/integrations/slack', 'POST /settings/integrations/slack/signing-secret',
+     'POST /settings/integrations/channels/allowed', 'POST /settings/integrations/channels',
+diff --git a/src/core/features/settings/ui/team-access.ts b/src/core/features/settings/ui/team-access.ts
+index f179c7d..c4b2317 100644
+--- a/src/core/features/settings/ui/team-access.ts
++++ b/src/core/features/settings/ui/team-access.ts
+@@ -23,6 +23,7 @@ export function teamAccess(data: Administration, team: Team) {
+     settings: may("teams.settings"),
+     archive: may("teams.archive"),
+     workflow: may("teams.workflow"),
++    fields: may("custom-fields.team"),
+     members: may("teams.members"),
+     permissions: may("teams.permissions"),
+     planning: may("cycles.manage"),
+diff --git a/src/core/features/settings/ui/teams/team-record.tsx b/src/core/features/settings/ui/teams/team-record.tsx
+index cdf58ad..54ad679 100644
+--- a/src/core/features/settings/ui/teams/team-record.tsx
++++ b/src/core/features/settings/ui/teams/team-record.tsx
+@@ -7,12 +7,13 @@ import { TeamPeople } from './team-people';
+ import { TeamPlanning } from './team-planning';
+ import { TeamTabs, teamTabs, type TeamTab } from './team-tabs';
+ import { TeamWorkflow } from './team-workflow';
++import { TeamFields } from '../../../custom-fields/ui/team-fields';
+ import { useAdministration } from '../admin/administration';
+ 
+ const back = { label: 'Teams', to: '/app/settings/teams' } as const;
+ 
+ /**
+- * One team in the pane, under "Teams › name": a meta line and five tabs, each at its own path. Automation is for whoever
++ * One team in the pane, under "Teams › name": a meta line and six tabs, each at its own path. Automation is for whoever
+  * may change the team's settings (Owners, Admins, and a Member the team's permission admits) and is absent for everyone
+  * else, never greyed; an unknown team or tab gets one plain line.
+  */
+@@ -32,6 +33,7 @@ export function TeamRecord({ teamId, tab }: { teamId: string; tab?: string }) {
+     <div className="team-tab-body">
+       {current === 'details' && <TeamDetails data={data} team={team} />}
+       {current === 'workflow' && <TeamWorkflow data={data} team={team} />}
++      {current === 'fields' && <TeamFields data={data} team={team} />}
+       {current === 'people' && <TeamPeople data={data} team={team} />}
+       {current === 'planning' && <TeamPlanning data={data} team={team} />}
+       {current === 'automation' && <TeamAutomation data={data} team={team} />}
+diff --git a/src/core/features/settings/ui/teams/team-tabs.tsx b/src/core/features/settings/ui/teams/team-tabs.tsx
+index ddbced7..b4c9121 100644
+--- a/src/core/features/settings/ui/teams/team-tabs.tsx
++++ b/src/core/features/settings/ui/teams/team-tabs.tsx
+@@ -1,8 +1,8 @@
+ import { Link } from '@tanstack/react-router';
+ 
+-export const teamTabs = ['details', 'workflow', 'people', 'planning', 'automation'] as const;
++export const teamTabs = ['details', 'workflow', 'fields', 'people', 'planning', 'automation'] as const;
+ export type TeamTab = typeof teamTabs[number];
+-const labels: Record<TeamTab, string> = { details: 'Details', workflow: 'Workflow', people: 'People', planning: 'Planning', automation: 'Automation' };
++const labels: Record<TeamTab, string> = { details: 'Details', workflow: 'Workflow', fields: 'Fields', people: 'People', planning: 'Planning', automation: 'Automation' };
+ 
+ /** The team's tabs, each at its own path; the current one is an inside tint. At a phone width the strip scrolls inside itself. */
+ export function TeamTabs({ teamId, current, tabs }: { teamId: string; current: TeamTab; tabs: readonly TeamTab[] }) {
+diff --git a/tests/e2e/admin-issue-journey.mjs b/tests/e2e/admin-issue-journey.mjs
+index 455f81b..4417f24 100644
+--- a/tests/e2e/admin-issue-journey.mjs
++++ b/tests/e2e/admin-issue-journey.mjs
+@@ -3,6 +3,7 @@ import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
+ import assert from "node:assert/strict";
+ import { poll } from "./admin-runtime-support.mjs";
+ import { openDisclosures } from "./ui-controls-checks.mjs";
++export { severityFieldJourney } from "./custom-fields-journey.mjs";
+ export async function createAdministrationIssue({
+   page,
+   runtime,
+diff --git a/tests/e2e/admin-runtime.mjs b/tests/e2e/admin-runtime.mjs
+index 3f426f4..16c8cfc 100644
+--- a/tests/e2e/admin-runtime.mjs
++++ b/tests/e2e/admin-runtime.mjs
+@@ -35,6 +35,7 @@ import {
+ import {
+   createAdministrationIssue,
+   exerciseCycleCommitments,
++  severityFieldJourney,
+ } from "./admin-issue-journey.mjs";
+ import { exerciseCycleList } from "./admin-cycle-list-journey.mjs";
+ import { archiveRestoreTeam } from "./admin-archive-team-journey.mjs";
+@@ -160,6 +161,8 @@ await contract(
+           cycles,
+         });
+         await exerciseCycleList({ ...shared, issue, cycles });
++        await severityFieldJourney({ ...shared, team, issue, evidence });
++        await page.setViewportSize(viewport);
+         await removeUsedStatus({ ...shared, team, issue });
+         await deleteAppliedLabel({ ...shared, label, issue });
+         await archiveProject({ ...shared, project, issue });
+diff --git a/tests/e2e/custom-fields-journey.mjs b/tests/e2e/custom-fields-journey.mjs
+new file mode 100644
+index 0000000..6208fbc
+--- /dev/null
++++ b/tests/e2e/custom-fields-journey.mjs
+@@ -0,0 +1,115 @@
++import assert from "node:assert/strict";
++import { createRequire } from "node:module";
++import { readFile } from "node:fs/promises";
++import { resolve } from "node:path";
++import { beforePrivateNavigation, settleReads } from "./collaboration-navigation.mjs";
++import { poll } from "./admin-runtime-support.mjs";
++const require = createRequire(import.meta.url);
++
++/** Serious/critical axe findings inside `selector`, and horizontal overflow at both widths. */
++async function inspect(page, selector, name, evidence) {
++  await settleReads(page);
++  const source = await readFile(require.resolve("axe-core/axe.min.js"), "utf8");
++  await page.evaluate((code) => {
++    const script = document.createElement("script");
++    const nonce = document.querySelector("script[nonce]")?.nonce;
++    if (nonce) script.nonce = nonce;
++    script.textContent = code;
++    document.head.append(script);
++  }, source);
++  const findings = await page.evaluate(async (scope) => (await window.axe.run(scope)).violations
++    .filter((violation) => ["serious", "critical"].includes(violation.impact))
++    .map((violation) => ({ id: violation.id, targets: violation.nodes.map((node) => node.target) })), selector);
++  assert.deepEqual(findings, [], name + ": no serious or critical accessibility findings");
++  for (const width of [1440, 390]) {
++    await page.setViewportSize({ width, height: 1000 });
++    const geometry = await page.evaluate(() => ({ width: innerWidth, document: document.documentElement.scrollWidth }));
++    assert.ok(geometry.document <= geometry.width, `${name} at ${width}: no horizontal overflow`);
++    await page.screenshot({ path: resolve(evidence, `field-001-${name}-${width}.png`), fullPage: true });
++  }
++  await page.setViewportSize({ width: 1440, height: 1000 });
++}
++
++/** FIELD-001 through the browser: a team owner defines Severity in team Settings,
++ * sets it on an issue from the property bar and renames an option by keyboard;
++ * the stored value keeps its option identity and the history names it. */
++export async function severityFieldJourney({ page, runtime, capture, clause, team, issue, evidence }) {
++  const { base, sql } = runtime;
++  const fields = base + `/app/settings/teams/${team.id}/fields`, detail = base + "/app/issues/" + issue.identifier;
++  await clause("FIELD-001", "team Severity field defined in Settings, set from the issue and renamed without moving its stored value", async () => {
++    await page.setViewportSize({ width: 1440, height: 1000 });
++    await beforePrivateNavigation(page, fields);
++    await page.goto(fields);
++    await page.getByRole("link", { name: "Fields", exact: true }).and(page.locator('[aria-current="page"]')).waitFor();
++    await page.getByRole("button", { name: "Add field", exact: true }).click();
++    const teamName = sql(`SELECT name FROM teams WHERE id='${team.id}'`)[0].name;
++    const form = page.getByRole("form", { name: `Add field to ${teamName}`, exact: true });
++    await form.getByLabel("Name", { exact: true }).fill("Severity");
++    await form.getByLabel("Description (optional)", { exact: true }).fill("How badly the problem hurts");
++    for (const [index, name] of ["Minor", "Major", "Critical"].entries())
++      await form.getByLabel(`Option ${index + 1}`, { exact: true }).fill(name);
++    const created = page.waitForResponse((response) => new URL(response.url()).pathname === `/api/settings/teams/${team.id}/custom-fields` && response.request().method() === "POST");
++    await form.getByRole("button", { name: "Add field", exact: true }).click();
++    assert.equal((await created).status(), 200);
++    const [field] = await poll(() => sql(`SELECT * FROM custom_field_definitions WHERE team_id='${team.id}' AND name='Severity'`), (rows) => rows.length === 1, "Severity definition");
++    const options = sql(`SELECT * FROM custom_field_options WHERE field_id='${field.id}' ORDER BY position`);
++    assert.deepEqual(options.map((option) => option.name), ["Minor", "Major", "Critical"]);
++    const major = options[1].id;
++    await page.getByRole("list", { name: "Severity options", exact: true }).getByText("Critical", { exact: true }).waitFor();
++    await capture("field-001-settings-created");
++    await inspect(page, ".team-fields", "settings-fields", evidence);
++
++    // The issue's property bar offers the team's field; one change is one attributed entry.
++    await beforePrivateNavigation(page, detail);
++    await page.goto(detail);
++    await page.getByRole("heading", { name: issue.title, exact: true }).waitFor();
++    const picker = page.locator(".issue-property-bar").getByLabel("Issue Severity", { exact: true });
++    await page.waitForFunction(() => document.querySelector('.issue-property-bar select[aria-label="Issue Severity"]')?.disabled === false);
++    const before = sql(`SELECT * FROM issues WHERE id='${issue.id}'`)[0];
++    await picker.focus();
++    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("aria-label")), "Issue Severity", "the field takes keyboard focus");
++    await picker.selectOption(major);
++    const [stored] = await poll(() => sql(`SELECT * FROM issues WHERE id='${issue.id}'`),
++      (rows) => JSON.parse(rows[0].custom_fields_json)[field.id] === major && rows[0].version === before.version + 1, "browser Severity value");
++    assert.deepEqual({ ...JSON.parse(stored.custom_fields_json), [field.id]: undefined }, { ...JSON.parse(before.custom_fields_json), [field.id]: undefined }, "other custom-field keys unchanged");
++    const history = sql(`SELECT * FROM issue_activity WHERE issue_id='${issue.id}' AND kind='issue.updated' ORDER BY rowid`).filter((row) => row.next_value_json.includes(field.id));
++    assert.equal(history.length, 1, "one activity entry for one change");
++    assert.ok(history[0].actor_operator_id, "the entry is attributed");
++    assert.equal(JSON.parse(history[0].previous_value_json).customFields[field.id], undefined);
++    assert.equal(JSON.parse(history[0].next_value_json).customFields[field.id], major);
++    await page.locator("details.issue-history > summary").click();
++    await page.getByText("Severity: None → Major", { exact: true }).waitFor();
++    await capture("field-001-issue-set");
++
++    // Rename by keyboard: the option keeps its identity, so the issue does not change.
++    await beforePrivateNavigation(page, fields);
++    await page.goto(fields);
++    const trigger = page.getByRole("button", { name: "Actions for Major", exact: true });
++    await trigger.focus();
++    await page.keyboard.press("Enter");
++    await page.getByRole("menuitem", { name: "Rename", exact: true }).waitFor();
++    assert.equal(await page.evaluate(() => document.activeElement?.textContent), "Rename", "the menu opens on its first action");
++    await page.keyboard.press("Enter");
++    await page.getByRole("textbox", { name: "Option name Major", exact: true }).waitFor();
++    await page.keyboard.type("Serious");
++    const renamed = page.waitForResponse((response) => new URL(response.url()).pathname === `/api/settings/teams/${team.id}/custom-fields/${field.id}` && response.request().method() === "PATCH");
++    await page.keyboard.press("Enter");
++    assert.equal((await renamed).status(), 200);
++    await page.getByRole("list", { name: "Severity options", exact: true }).getByText("Serious", { exact: true }).waitFor();
++    assert.deepEqual(sql(`SELECT id,name FROM custom_field_options WHERE field_id='${field.id}' ORDER BY position`).map((row) => [row.id, row.name]),
++      options.map((option) => [option.id, option.id === major ? "Serious" : option.name]));
++    assert.deepEqual(sql(`SELECT * FROM issues WHERE id='${issue.id}'`)[0], stored, "the rename leaves the issue as it was");
++
++    // A document reload hydrates the renamed option in place, with the same stored identity.
++    await beforePrivateNavigation(page, detail);
++    await page.goto(detail);
++    await page.reload();
++    await page.waitForFunction(() => document.querySelector('.issue-property-bar select[aria-label="Issue Severity"]')?.disabled === false);
++    assert.equal(await picker.inputValue(), major);
++    assert.equal(await picker.locator("option:checked").textContent(), "Serious");
++    await page.locator("details.issue-history > summary").click();
++    await page.getByText("Severity: None → Serious", { exact: true }).waitFor();
++    await capture("field-001-issue-renamed");
++    await inspect(page, ".issue-property-bar", "issue-properties", evidence);
++  });
++}
+diff --git a/tests/worker/custom-fields-journey.ts b/tests/worker/custom-fields-journey.ts
+new file mode 100644
+index 0000000..0160083
+--- /dev/null
++++ b/tests/worker/custom-fields-journey.ts
+@@ -0,0 +1,131 @@
++import { env } from 'cloudflare:workers'
++import { expect } from 'vitest'
++import { invite, request } from './base-auth-fixture'
++import { resetLimits, type roleWorkspace } from './role-fixture'
++
++type Workspace = Awaited<ReturnType<typeof roleWorkspace>>
++type Send = (path: string, method?: string, body?: unknown) => Promise<Response>
++export type Severity = { id: string; version: number; options: { id: string; name: string }[] }
++
++export const json = async (response: Response | Promise<Response>, status = 200): Promise<any> => {
++  const settled = await response
++  expect(settled.status, await settled.clone().text()).toBe(status)
++  return settled.json()
++}
++/** Every stored row except request counters: a refusal must leave all of it as it was. */
++export async function stored() {
++  const tables = (await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits','integration_token_usage') ORDER BY name")
++    .all<{ name: string }>()).results.map(row => row.name)
++  const results = await env.DB.batch(tables.map(name => env.DB.prepare('SELECT * FROM "' + name + '"')))
++  return Object.fromEntries(tables.map((name, index) => [name, results[index]!.results.map(row => JSON.stringify(row)).sort()]))
++}
++/** The request is refused with `status` and writes nothing. */
++export async function refused(send: () => Promise<Response>, status: number, label: string) {
++  await resetLimits()
++  const before = await stored(), response = await send()
++  expect(response.status, label + ': ' + await response.clone().text()).toBe(status)
++  expect(await stored(), label + ' wrote nothing').toEqual(before)
++  return response
++}
++const severityInput = (name = 'Severity') => ({ name, description: 'How badly the problem hurts', type: 'single_select', options: [{ name: 'Minor' }, { name: 'Major' }, { name: 'Critical' }] })
++const fieldsOf = (state: any, team: string) => state.teams.find((row: any) => row.id === team).customFields as Severity[] & { name: string }[]
++export const severityOf = (state: any, team: string, name = 'Severity') => fieldsOf(state, team).find((row: any) => row.name === name) as Severity
++const optionId = (field: Severity, name: string) => field.options.find(option => option.name === name)!.id
++const updates = async (issueId: string) => (await env.DB.prepare("SELECT actor_operator_id AS actor,previous_value_json AS previous,next_value_json AS next FROM issue_activity WHERE issue_id=? AND kind='issue.updated' ORDER BY rowid")
++  .bind(issueId).all<{ actor: string; previous: string; next: string }>()).results.map(row => ({ actor: row.actor, previous: JSON.parse(row.previous), next: JSON.parse(row.next) }))
++const storedFields = async (issueId: string) => JSON.parse((await env.DB.prepare('SELECT custom_fields_json AS v FROM issues WHERE id=?').bind(issueId).first<string>('v'))!)
++
++/** Who may define a team field: team owners, or every member while the team lets all
++ * members manage its settings; never a Guest or Viewer; hidden teams stay hidden. */
++export async function severityDefinitions(w: Workspace) {
++  const { owner, admin, lead, member, guest } = w.people, team = w.team.id
++  const viewer = { cookie: await invite('synthetic-vector-field-viewer@vector.test', owner.cookie, 'viewer') }
++  const viewerCall: Send = (path, method = 'GET', body) => request('/api' + path, method, body, viewer.cookie)
++  const other = (await w.mutate('/settings/teams', 'POST', { name: 'synthetic-vector-field-other', identifierPrefix: 'FLDOTH' })).teams.find(row => row.name === 'synthetic-vector-field-other')!.id
++  const hidden = (await w.mutate('/settings/teams', 'POST', { name: 'synthetic-vector-field-hidden', identifierPrefix: 'FLDHID', isPrivate: true })).teams.find(row => row.name === 'synthetic-vector-field-hidden')!.id
++  const create = (send: Send, teamId = team, input: object = severityInput()) => send(`/settings/teams/${teamId}/custom-fields`, 'POST', input)
++  // Default "Team owners only": a Member who does not own the team is refused 403 and nothing is written.
++  expect((await w.state()).teams.find(row => row.id === team)!.settingsPermission).toBe('team_owners')
++  for (const [label, send] of [['member', member.call], ['guest', guest.call], ['viewer', viewerCall]] as const)
++    await refused(() => create(send), 403, label + ' defines a team field')
++  const severity = severityOf(await json(create(lead.call)), team)
++  expect(severity.options.map(option => option.name)).toEqual(['Minor', 'Major', 'Critical'])
++  expect(new Set(severity.options.map(option => option.id)).size).toBe(3)
++  // A name is unique in its team only, whatever its case.
++  await refused(() => create(admin.call, team, severityInput('severity')), 409, 'duplicate team field name')
++  const foreign = severityOf(await json(create(owner.call, other)), other)
++  expect(foreign.id).not.toBe(severity.id)
++  // Both values of the team's permission, effective on the member's next request.
++  expect((await owner.call(`/settings/teams/${team}/permissions`, 'PUT', { settings: 'all_members', planning: 'all_members' })).status).toBe(200)
++  expect(severityOf(await json(create(member.call, team, severityInput('Impact'))), team, 'Impact').options).toHaveLength(3)
++  await refused(() => create(guest.call, team, severityInput('Guest field')), 403, 'guest under all members')
++  expect((await owner.call(`/settings/teams/${team}/permissions`, 'PUT', { settings: 'team_owners', planning: 'all_members' })).status).toBe(200)
++  await refused(() => create(member.call, team, severityInput('Withdrawn')), 403, 'member after the permission returns to team owners')
++  // A private team the member does not belong to is refused like any team they do not
++  // manage, and its fields never appear in their Settings or /api/v1 metadata.
++  await json(create(owner.call, hidden, severityInput('Hidden severity')))
++  await refused(() => create(member.call, hidden, severityInput('Probe')), 403, 'member on a private team')
++  for (const read of [member.call('/settings/administration'), member.api('/metadata')]) {
++    const state = await json(read)
++    expect(JSON.stringify(state)).not.toContain('Hidden severity')
++    expect(severityOf(state, team).options).toEqual(severity.options)
++  }
++  return { severity, foreign, other, hidden, viewerCall }
++}
++
++/** Values through the browser door and /api/v1, with typed refusals, one attributed
++ * old/new activity per actual change, and a rename that keeps stored identity. */
++export async function severityValues(w: Workspace, fields: Awaited<ReturnType<typeof severityDefinitions>>) {
++  const { owner, admin, lead, member, guest } = w.people, { severity, foreign, other, viewerCall } = fields
++  const legacy = { department: 'Platform', nested: [3, null, { preserve: true }] }
++  const issue = await json(owner.call('/issues', 'POST', { title: 'synthetic-vector-severity-issue', teamId: w.team.id, customFields: legacy }), 201)
++  expect(issue.fields.map((field: any) => field.id)).toContain(severity.id)
++  const major = optionId(severity, 'Major'), critical = optionId(severity, 'Critical')
++  let version = issue.version
++  const patch = (send: Send, value: unknown, expectedVersion = version) =>
++    send('/issues/' + issue.identifier, 'PATCH', { expectedVersion, customFields: { ...legacy, [severity.id]: value } })
++  // Browser door (native session), then /api/v1 (bearer).
++  version = (await json(patch(owner.call, major))).version
++  const viaApi = await json(patch(member.api, critical))
++  expect(viaApi.customFields).toEqual({ ...legacy, [severity.id]: critical })
++  version = viaApi.version
++  // The same value again is no change: no activity and no new version.
++  expect((await json(patch(member.api, critical))).version).toBe(version)
++  // Typed refusals change nothing: a number, another team's option or field, an unknown option.
++  await refused(() => patch(member.api, 3), 400, 'number through /api/v1')
++  await refused(() => patch(owner.call, 3), 400, 'number through the browser door')
++  await refused(() => patch(owner.call, foreign.options[0]!.id), 400, 'another team field option')
++  await refused(() => owner.call('/issues/' + issue.identifier, 'PATCH', { expectedVersion: version, customFields: { ...legacy, [severity.id]: critical, [foreign.id]: foreign.options[0]!.id } }), 400, 'another team field')
++  await refused(() => patch(owner.call, 'synthetic-vector-unknown-option'), 400, 'unknown option')
++  await refused(() => patch(owner.call, major, version - 1), 409, 'stale version')
++  // Role rule for values: an invited Guest may set it, a Viewer may not, a Guest outside the team sees nothing.
++  version = (await json(patch(guest.call, major))).version
++  await refused(() => patch(viewerCall, critical), 403, 'viewer value')
++  const elsewhere = await json(owner.call('/issues', 'POST', { title: 'synthetic-vector-severity-elsewhere', teamId: other }), 201)
++  await refused(() => guest.call('/issues/' + elsewhere.identifier, 'PATCH', { expectedVersion: elsewhere.version, customFields: { [foreign.id]: foreign.options[0]!.id } }), 404, 'guest outside the team')
++  // null clears the typed value; legacy keys stay exactly as they were.
++  version = (await json(patch(admin.api, null))).version
++  expect(await storedFields(issue.id)).toEqual(legacy)
++  version = (await json(patch(lead.call, critical))).version
++  const history = (await updates(issue.id)).filter(row => 'customFields' in row.next)
++  expect(history.map(row => [row.actor, row.previous.customFields[severity.id] ?? null, row.next.customFields[severity.id] ?? null])).toEqual([
++    [owner.id, null, major], [member.id, major, critical], [guest.id, critical, major], [admin.id, major, null], [lead.id, null, critical]])
++  expect(history.every(row => row.previous.customFields.department === 'Platform' && row.next.customFields.department === 'Platform')).toBe(true)
++  // Renaming an option keeps its identity: stored values, versions and history do not move.
++  const before = await stored()
++  const renamed = severityOf(await json(lead.call(`/settings/teams/${w.team.id}/custom-fields/${severity.id}`, 'PATCH', {
++    expectedVersion: severity.version, options: severity.options.map(option => ({ id: option.id, name: option.name === 'Critical' ? 'Blocker' : option.name })) })), w.team.id)
++  expect(renamed.options.find(option => option.id === critical)!.name).toBe('Blocker')
++  const after = await stored()
++  for (const table of ['issues', 'issue_activity', 'team_issue_sequences']) expect(after[table], table + ' unchanged by a rename').toEqual(before[table])
++  const read = await json(member.api('/issues/' + issue.identifier))
++  expect(read.customFields[severity.id]).toBe(critical)
++  expect(read.fields.find((field: any) => field.id === severity.id).options.find((option: any) => option.id === critical).name).toBe('Blocker')
++  // A concurrent option change made from the old version is refused whole; a value
++  // chosen before the rename still names the same option afterwards.
++  await refused(() => admin.call(`/settings/teams/${w.team.id}/custom-fields/${severity.id}`, 'PATCH', {
++    expectedVersion: severity.version, options: [...severity.options, { name: 'Trivial' }] }), 409, 'option change from a stale field version')
++  version = (await json(patch(member.call, major))).version
++  expect((await storedFields(issue.id))[severity.id]).toBe(major)
++  return { issue: { ...issue, version }, legacy, renamed }
++}
+diff --git a/tests/worker/custom-fields-upgrade.test.ts b/tests/worker/custom-fields-upgrade.test.ts
+new file mode 100644
+index 0000000..f7fd23d
+--- /dev/null
++++ b/tests/worker/custom-fields-upgrade.test.ts
+@@ -0,0 +1,13 @@
++import { env } from 'cloudflare:workers'
++import { it } from 'vitest'
++import { provePopulatedUpgrade } from './populated-upgrade'
++
++it('[FIELD-001 DATA-005] a populated installation with legacy custom-field values crosses the typed-definition upgrade unchanged and still exports', async () => {
++  await provePopulatedUpgrade('0127_custom_field_definitions.sql', {
++    until: '0127_custom_field_definitions.sql', removed: [],
++    added: ['table custom_field_definitions', 'index custom_field_definitions_team_name', 'table custom_field_options', 'index custom_field_options_name', 'index custom_field_options_position'],
++  }, ['issues'], async () => {
++    await env.DB.prepare('UPDATE issues SET custom_fields_json=? WHERE id=(SELECT id FROM issues ORDER BY id LIMIT 1)')
++      .bind(JSON.stringify({ severity: 'legacy free text', nested: [3, null, { preserve: true }] })).run()
++  })
++}, 180_000)
+diff --git a/tests/worker/custom-fields-writers.ts b/tests/worker/custom-fields-writers.ts
+new file mode 100644
+index 0000000..8c10028
+--- /dev/null
++++ b/tests/worker/custom-fields-writers.ts
+@@ -0,0 +1,92 @@
++import { env } from 'cloudflare:workers'
++import { Buffer } from 'node:buffer'
++import { expect } from 'vitest'
++import { agentRequest, agentToolClient } from './agent-resource-journey'
++import { origin } from './base-auth-fixture'
++import { json, refused, type Severity } from './custom-fields-journey'
++import { destination, finalBody, freshTarget, httpExport, stageArchive, targetCall } from './http-archive-fixture'
++import { resetLimits, type roleWorkspace } from './role-fixture'
++
++type Workspace = Awaited<ReturnType<typeof roleWorkspace>>
++type Issue = { id: string; identifier: string; version: number }
++const fieldsOf = async (db: D1Database, issueId: string) => JSON.parse(String(await db.prepare('SELECT custom_fields_json AS v FROM issues WHERE id=?').bind(issueId).first('v')))
++const issueRows = async () => (await env.DB.batch(['issues', 'issue_activity', 'team_issue_sequences'].map(name => env.DB.prepare('SELECT * FROM ' + name + ' ORDER BY rowid')))).map(result => result.results)
++
++/** Creation, template application, the offered agent tool, copies and imports all
++ * pass through the same typed boundary or report what they cannot carry. */
++export async function severityWriters(w: Workspace, severity: Severity, other: string, issue: Issue, legacy: Record<string, unknown>) {
++  const { owner, member } = w.people, minor = severity.options[0]!.id
++  const create = (send: typeof owner.call, teamId: string, value: unknown) =>
++    send('/issues', 'POST', { title: 'synthetic-vector-severity-created', teamId, customFields: { [severity.id]: value } })
++  await refused(() => create(owner.call, w.team.id, 2), 400, 'number at native creation')
++  await refused(() => create(member.api, w.team.id, 2), 400, 'number at /api/v1 creation')
++  await refused(() => create(owner.call, other, minor), 400, 'another team field at creation')
++  const created = await json(create(member.api, w.team.id, minor), 201)
++  expect(created.customFields).toEqual({ [severity.id]: minor })
++  // An issue template applied with a typed value.
++  const template = await json(owner.call('/issue-templates', 'POST', { name: 'synthetic-vector-severity-template', teamId: w.team.id, defaults: { priority: 'high' } }), 201)
++  const apply = (value: unknown) => member.call('/issues', 'POST', { teamId: w.team.id, templateId: template.id, templateVersion: template.version,
++    title: 'synthetic-vector-severity-template-issue', customFields: { [severity.id]: value } })
++  await refused(() => apply(4), 400, 'number in template application')
++  expect(await json(apply(minor), 201)).toMatchObject({ priority: 'high', customFields: { [severity.id]: minor } })
++  // The offered agent tool edits through the member's native authority.
++  await resetLimits()
++  await json(agentRequest('/agents/api/policy', { method: 'PUT', headers: { Origin: origin, Cookie: owner.cookie, 'Content-Type': 'application/json' },
++    body: JSON.stringify({ document: { schema: 'rer-agent-policy/1', catalogue: 'rer-agent-classes/1', reviewers: ['person:' + owner.id],
++      rules: [{ id: 'standard', class: 'standard', do: 'autonomous' }, { id: 'rest', class: '*', do: 'blocked' }], spend: { none: true } } }) }))
++  const grant = await json(member.call('/settings/integrations/tokens', 'POST', { name: 'synthetic-vector-severity-agent', scopes: ['issues:write'] }), 201)
++  const tool = agentToolClient(grant.token)
++  const edit = (value: unknown) => tool('vector.issue.concurrent_edits', { identifier: created.identifier, change: { expectedVersion: created.version, customFields: { [severity.id]: value } },
++    expected_revision: created.version, idempotency_key: crypto.randomUUID() })
++  const unchanged = await issueRows()
++  expect(JSON.stringify((await edit(6)).body)).toContain('invalid_option')
++  expect(await issueRows(), 'agent refusal wrote no issue change').toEqual(unchanged)
++  const major = severity.options[1]!.id
++  expect((await edit(major)).status).toBe(200)
++  expect((await fieldsOf(env.DB, created.id))[severity.id]).toBe(major)
++  expect(await env.DB.prepare("SELECT count(*) AS n FROM issue_activity WHERE issue_id=? AND kind='issue.updated' AND actor_operator_id=? AND agent_operation_id IS NOT NULL")
++    .bind(created.id, member.id).first('n')).toBe(1)
++  // Copies: the same team keeps identity; another team drops the value and reports it.
++  await resetLimits()
++  const source = await fieldsOf(env.DB, issue.id)
++  const same = await json(owner.call('/issues/' + issue.identifier + '/copy', 'POST', { expectedVersion: issue.version }), 201)
++  expect(same.issue.customFields).toEqual(source)
++  expect(same.mappings[0].customFields).toContainEqual({ from: severity.id, to: severity.id })
++  expect(same.droppedValues).toEqual([])
++  const cross = await json(owner.call('/issues/' + issue.identifier + '/copy', 'POST', { expectedVersion: issue.version, teamId: other }), 201)
++  expect(cross.issue.customFields).toEqual(legacy)
++  expect(cross.mappings[0].customFields).toEqual(expect.arrayContaining([{ from: severity.id, to: null }, { from: 'department', to: 'department' }]))
++  expect(cross.droppedValues).toEqual([{ identifier: issue.identifier, field: 'customFields.' + severity.id, value: source[severity.id], reason: expect.stringContaining('Severity') }])
++  // Imports have no typed mapping yet: a Severity column is reported and nothing is set.
++  const team = (await w.state()).teams.find(row => row.id === w.team.id)!
++  const rows = [{ id: 'synthetic-vector-sev-1', title: 'synthetic-vector-severity-imported', team: team.name, status: team.statuses.find(row => row.category === 'backlog')!.name,
++    priority: 'high', created: '2026-09-01T01:02:03.000Z', updated: '2026-09-02T04:05:06.000Z', severity: 'Critical' }]
++  const input = { format: 'json', source: 'synthetic-vector-severity', name: 'issues.json', base64: Buffer.from(JSON.stringify(rows)).toString('base64'),
++    mapping: { sourceId: 'id', title: 'title', team: 'team', status: 'status', priority: 'priority', createdAt: 'created', updatedAt: 'updated' } }
++  const review = await json(owner.call('/data/import/preview', 'POST', input))
++  expect(review.errors).toEqual([])
++  expect(review.omissions).toContainEqual(expect.objectContaining({ field: 'severity', code: 'unmapped_column' }))
++  let run = await json(owner.call('/data/import/apply', 'POST', { input: { ...input, effectiveAt: review.effectiveAt }, reviewedFingerprint: review.fingerprint, operationKey: 'review:' + review.fingerprint, acknowledgeOmissions: true }))
++  for (let attempt = 0; !['completed', 'rolled_back', 'undone'].includes(run.state); attempt++) {
++    expect(attempt).toBeLessThan(50)
++    run = await json(owner.call('/data/import/runs/' + run.id + '/resume', 'POST', {}))
++  }
++  expect(run.state).toBe('completed')
++  expect(JSON.parse(String(await env.DB.prepare("SELECT custom_fields_json AS v FROM issues WHERE title='synthetic-vector-severity-imported'").first('v')))).toEqual({})
++  return created
++}
++
++/** Definitions, options and issue values survive a native archive round-trip unchanged. */
++export async function severityArchive(w: Workspace, issueIds: string[]) {
++  await resetLimits()
++  const records = await httpExport(w.people.owner.call), cookie = await freshTarget()
++  const job = await stageArchive(records, cookie)
++  const finalized = await targetCall('/api/portability/imports/' + job + '/finalize', 'POST', finalBody(records), cookie)
++  expect(finalized.status, await finalized.clone().text()).toBe(200)
++  for (const table of ['custom_field_definitions', 'custom_field_options']) {
++    const rows = async (db: D1Database) => (await db.prepare('SELECT * FROM ' + table + ' ORDER BY id').all()).results
++    expect((await rows(env.DB)).length, table).toBeGreaterThan(0)
++    expect(await rows(destination.ARCHIVE_TARGET_DB), table + ' restored').toEqual(await rows(env.DB))
++  }
++  for (const id of issueIds) expect(await fieldsOf(destination.ARCHIVE_TARGET_DB, id)).toEqual(await fieldsOf(env.DB, id))
++}
+diff --git a/tests/worker/custom-fields.test.ts b/tests/worker/custom-fields.test.ts
+new file mode 100644
+index 0000000..250d2a9
+--- /dev/null
++++ b/tests/worker/custom-fields.test.ts
+@@ -0,0 +1,12 @@
++import { it } from 'vitest'
++import { severityDefinitions, severityValues } from './custom-fields-journey'
++import { severityArchive, severityWriters } from './custom-fields-writers'
++import { roleWorkspace } from './role-fixture'
++
++it('[FIELD-001 ISSUE-023 ROLE-001 ROLE-009] a team Severity field is defined by its team owners, set through the browser door, /api/v1, templates and the agent tool, refuses other values, renames without moving stored identity, copies by destination and survives an archive round-trip', async () => {
++  const w = await roleWorkspace()
++  const fields = await severityDefinitions(w)
++  const values = await severityValues(w, fields)
++  const created = await severityWriters(w, fields.severity, fields.other, values.issue, values.legacy)
++  await severityArchive(w, [values.issue.id, created.id])
++}, 240_000)
+diff --git a/tests/worker/project-dependencies-upgrade.test.ts b/tests/worker/project-dependencies-upgrade.test.ts
+index b7ae9dc..3f2b2bd 100644
+--- a/tests/worker/project-dependencies-upgrade.test.ts
++++ b/tests/worker/project-dependencies-upgrade.test.ts
+@@ -4,6 +4,7 @@ import { provePopulatedUpgrade } from './populated-upgrade';
+ 
+ it('populated project dependency upgrade preserves project and issue identities without manufacturing historical links or notices',async()=>{
+   await provePopulatedUpgrade('0126_project_dependencies.sql',{
++    until:'0126_project_dependencies.sql',
+     added:['table project_dependencies','index project_dependencies_blocking_idx','trigger project_dependency_insert','trigger project_dependency_immutable','table project_notifications','index project_notifications_recipient_order'],
+     changed:[],removed:[],
+   },['projects','issues']);
+diff --git a/tests/worker/role-matrix.test.ts b/tests/worker/role-matrix.test.ts
+index 2adf7fe..3b7b224 100644
+--- a/tests/worker/role-matrix.test.ts
++++ b/tests/worker/role-matrix.test.ts
+@@ -233,7 +233,7 @@ function promised(cell: string, who: Kind, c: Context) {
+   throw new Error("The journey cannot read this cell yet: " + cell);
+ }
+ const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
+-const watched = ["issue_templates","documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
++const watched = ["custom_field_definitions","custom_field_options","issue_templates","documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
+   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
+   "project_milestones", "saved_views", "issue_reactions", "issue_aliases", "issue_alias_prefixes", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
+   "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_initiative_destination_approvals", "vector_initiative_scoped_bindings", "vector_initiative_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
+diff --git a/tests/worker/role-probes.ts b/tests/worker/role-probes.ts
+index ea8f1ff..bfac22c 100644
+--- a/tests/worker/role-probes.ts
++++ b/tests/worker/role-probes.ts
+@@ -100,6 +100,9 @@ export function probes(w: Workspace): Record<RowId, Probe> {
+     "teams.join": { session: async (_who, actor) => { const id = await team(`Directory team ${unique()}`, "DIR"); return () => actor.call(`/teams/${id}/join`, "POST", {}); } },
+     "teams.settings": { permission: "settings", session: async (_who, actor, id) => { const value = unique() % 2 === 0; return () => actor.call(`/settings/teams/${id}`, "PATCH", { autoCycleStarted: value, cyclesEnabled: true }); } },
+     "teams.workflow": { permission: "settings", session: async (_who, actor, id) => { const status = await backlog(id), name = `Backlog ${unique()}`; return () => actor.call(`/settings/teams/${id}/statuses/${status}`, "PATCH", { name }); } },
++    // FIELD-001: defining a team field is a team setting, checked under both permission values.
++    "custom-fields.team": { permission: "settings", session: async (_who, actor, id) => { const name = `synthetic-vector-field-${unique()}`;
++      return () => actor.call(`/settings/teams/${id}/custom-fields`, "POST", { name, type: "single_select", options: [{ name: "Minor" }, { name: "Major" }, { name: "Critical" }] }); } },
+     // Checked under both settings values: All team members never lets a member archive.
+     "teams.archive": { permission: "settings", session: async (_who, actor, id) => async () => {
+       const response = await actor.call(`/settings/teams/${id}`, "PATCH", { archived: true });
+diff --git a/tests/worker/role-viewer-census.ts b/tests/worker/role-viewer-census.ts
+index 47b6d9c..b70512d 100644
+--- a/tests/worker/role-viewer-census.ts
++++ b/tests/worker/role-viewer-census.ts
+@@ -199,6 +199,10 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
+   native('PUT','/settings/teams/:id/permissions',{settings:'team_owners',planning:'all_members'},tp);native('PATCH','/settings/teams/:id',{name:'synthetic-vector-31045'},tp);
+   const housekeeping={closeAfterDays:30,archiveAfterDays:60,exemptBugs:true};native('PUT','/settings/teams/:id/housekeeping',housekeeping,tp);native('POST','/settings/teams/:id/housekeeping/preview',housekeeping,tp);
+   native('PUT','/settings/teams/:teamId/email-intake',{...email.settings,enabled:false},teamId);native('PUT','/settings/teams/:teamId/email-intake/event-key',{key:eventKey},teamId);native('PATCH','/teams/:teamId/subissue-rule',{expectedVersion:children.rule.version,enabled:true},teamId);
++  const fieldTeam=(await call(owner,'/settings/teams/'+w.team.id+'/custom-fields','POST',{name:'synthetic-vector-31130',type:'single_select',options:[{name:'synthetic-vector-31131'}]})).teams.find((row:any)=>row.id===w.team.id);
++  const teamField=fieldTeam.customFields.find((row:any)=>row.name==='synthetic-vector-31130');
++  native('POST','/settings/teams/:id/custom-fields',{name:'synthetic-vector-31132',type:'single_select',options:[{name:'synthetic-vector-31133'}]},tp);
++  native('PATCH','/settings/teams/:id/custom-fields/:fieldId',{expectedVersion:teamField.version,name:'synthetic-vector-31134'},{...tp,fieldId:teamField.id});
+   native('POST','/settings/teams/:id/statuses',{name:'synthetic-vector-31046',category:'started'},tp);native('PUT','/settings/teams/:id/statuses/order',{statusIds:workflow.map((row:any)=>row.id)},tp);native('PATCH','/settings/teams/:id/statuses/:statusId',{name:'synthetic-vector-31047'},{...tp,statusId:workflowStatus.id});native('DELETE','/settings/teams/:id/statuses/:statusId',{destinationStatusId:w.team.statuses.find(row=>row.category==='unstarted')!.id},{...tp,statusId:workflowStatus.id});
+   both('POST','/issues','/issues',{title:'synthetic-vector-31048',teamId:w.team.id,projectId:project.id,labelIds:[label.id]});both('PATCH','/issues/:identifier','/issues/:identifier',{expectedVersion:current.version,title:'synthetic-vector-31049',labelIds:[otherLabel.id]},ip);
+   for(const method of ['POST','DELETE'] as const){const target=method==='POST'?newRelatedNow:relatedNow;native(method,'/issues/:identifier/dependencies',dependencyInputSchema.parse({expectedVersion:current.version,relatedIdentifier:target.identifier,relatedVersion:target.version,direction:'related'}),ip);}
