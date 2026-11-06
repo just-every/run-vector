@@ -1,9 +1,12 @@
 // PNG intrinsic dimensions travel with the attachment and its original bytes.
+// Direct project edges and Inbox receipts are portable domain data. Restore
+// retains them without deriving edges from issues or replaying lead notices.
 // Document mentions, followers, Inbox history and consumed revision receipts are portable domain data.
 // Restore retains history without scanning text, scheduling channels or replaying deliveries.
 // Report schedules and safe receipts are portable; credentials, active claims
 // and digest checkpoints remain installation state, so restore never replays exports.
 // Issue templates are portable content; created issues survive template deletion.
+// Custom field definitions and options are portable team configuration; issue values stay in issues.custom_fields_json.
 // Document issue references retain live and removed backlinks as portable domain data.
 // Webhook event selections and team filters are portable configuration. Restored
 // event history remains held and destination secrets still require re-entry.

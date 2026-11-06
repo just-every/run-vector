@@ -44,6 +44,8 @@ export const issueDetailSchema = z.object({
   expectedOutcome: z.string().nullable(),
   customerImpact: z.string().nullable(),
   customFields: z.unknown(),
+  /** FIELD-001: the typed fields of the issue's team, with their options. */
+  fields: z.array(z.object({ id: z.string(), name: z.string(), options: z.array(z.object({ id: z.string(), name: z.string() })) })),
   team: z.object({
     id: z.string(),
     name: z.string(),

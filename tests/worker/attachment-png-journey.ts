@@ -13,7 +13,7 @@ export async function uploadPng(identifier: string, cookie: string) {
 
 export async function attachmentPngUpgrade() {
   const db = env.ARCHIVE_TARGET_DB, migrations = inject('migrations');
-  const boundary = migrations.findIndex(row => row.name === '0126_attachment_png_dimensions.sql');
+  const boundary = migrations.findIndex(row => row.name === '0128_attachment_png_dimensions.sql');
   await applyD1Migrations(db, migrations.slice(0, boundary));
   await insertHistoricalSample(db, new Date('2026-10-01T00:00:00Z'));
   const issue = (await db.prepare('SELECT id FROM issues LIMIT 1').first<{id: string}>())!;

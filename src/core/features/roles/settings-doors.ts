@@ -5,6 +5,7 @@
 export const settingsFormDoors: Record<string, readonly string[]> = {
   'triage-responsibility/panel.tsx#TeamTriageRotation': ['PUT /settings/teams/:id/triage-rotation'],
   'issue-templates/controls.tsx#IssueTemplateSettings': ['POST /issue-templates'],
+  'custom-fields/ui/add-field.tsx#AddField': ['POST /settings/teams/:id/custom-fields'],
   'integrations/ui/channel-settings.tsx#ChannelSettings': [
     'POST /settings/integrations/slack', 'POST /settings/integrations/slack/signing-secret',
     'POST /settings/integrations/channels/allowed', 'POST /settings/integrations/channels',

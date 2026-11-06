@@ -2,6 +2,10 @@ import { workspaceDate } from "../issues/browse-access";
 import type { Fact, InsightIssue, InsightQuery, InsightReport, InsightRow } from "./schema";
 const day = 86_400_000;
 const terminal = new Set(["completed", "canceled", "duplicate"]);
+/** Current delivery semantics shared by Insights and project uncertainty. */
+export function deliveredAt(f: { category: string; completedAt: string | null }) {
+  return f.category === "completed" ? f.completedAt : null;
+}
 /** Monday buckets use the workspace's civil date, including across DST. */
 export function weekOf(at: string, timezone: string) {
   const date = new Date(workspaceDate(new Date(at), timezone) + "T12:00:00Z");
@@ -52,7 +56,7 @@ export function buildInsights(facts: Fact[], query: InsightQuery, timezone: stri
       .sort((a, b) => Date.parse(a.at) - Date.parse(b.at) || a.id.localeCompare(b.id));
     // Only currently completed issues count as delivery. Reopening withdraws delivery
     // until the next completion; the original Started transition is retained.
-    const completed = f.category === "completed" ? f.completedAt : null;
+    const completed = deliveredAt(f);
     const started = transitions.find(t => t.nextCategory === "started");
     const bug = f.labels.some(l => l.name.toLocaleLowerCase("en-US") === "bug");
     if (query.metric === "flow") { add(f, f.createdAt, "Created"); if (completed) add(f, completed, "Completed"); }

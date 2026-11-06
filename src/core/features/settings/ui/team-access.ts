@@ -23,6 +23,7 @@ export function teamAccess(data: Administration, team: Team) {
     settings: may("teams.settings"),
     archive: may("teams.archive"),
     workflow: may("teams.workflow"),
+    fields: may("custom-fields.team"),
     members: may("teams.members"),
     permissions: may("teams.permissions"),
     planning: may("cycles.manage"),

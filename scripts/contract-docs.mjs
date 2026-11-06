@@ -39,7 +39,7 @@ for(const id of ids){
  const marker='<!-- contract-docs:'+id+' -->';
  const generated=`- **${id} — ${clause.title}** (${clause.status}). Requirement: ${escape(requirement)} Acceptance: ${escape(points)} Evidence: ${evidence}${gap?' Gap: '+gap:''} ${marker}`;
  const acceptanceLines=nextAcceptance.split('\n'),index=acceptanceLines.findIndex(line=>line.startsWith('- **'+id+' — '));
- if(index<0){if(!id.startsWith('BASE-AGENT-'))throw Error('No legacy acceptance entry for '+id);acceptanceLines.push(generated);}else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\n');
+ if(index<0)acceptanceLines.push(generated);else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\n');
  const claim=`| ${id} | ${clause.status} | ${escape(requirement)}${gap?' Gap: '+escape(gap):''} | ${evidence} |`;
  const claimLines=nextClaims.split('\n'),claimIndex=claimLines.findIndex(line=>line.startsWith('| '+id+' |'));
  if(claimIndex>=0)claimLines[claimIndex]=claim;else{while(claimLines.at(-1)==='')claimLines.pop();claimLines.push(claim,'');}

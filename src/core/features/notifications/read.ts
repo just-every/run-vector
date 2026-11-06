@@ -14,7 +14,7 @@ export async function unreadCount(db: D1Database, actor: string) {
     .prepare(
       `SELECT count(*) n FROM (${inboxSubjects}) WHERE readAt IS NULL AND snoozed=0`,
     )
-    .bind(actor,actor)
+    .bind(actor,actor,actor)
     .first<number>("n"))!;
 }
 export async function inbox(
@@ -28,13 +28,13 @@ export async function inbox(
   const rows = (
     await db
       .prepare(
-        `SELECT id,eventId,identifier,title,documentId,actor,sourceEventKind,causesJson,createdAt,readAt,snoozedUntil,snoozeOnChange,visibleAt
+        `SELECT id,eventId,identifier,title,documentId,projectId,actor,sourceEventKind,causesJson,createdAt,readAt,snoozedUntil,snoozeOnChange,visibleAt
      FROM (${inboxSubjects}) WHERE snoozed=${snoozed ? 1 : 0}
      ${cursor ? "AND (visibleAt<? OR (visibleAt=? AND id<?))" : ""}
      ORDER BY visibleAt DESC,id DESC LIMIT ?`,
       )
       .bind(
-        actor,actor,
+        actor,actor,actor,
         ...(cursor ? [cursor.at, cursor.at, cursor.id] : []),
         limit + 1,
       )
