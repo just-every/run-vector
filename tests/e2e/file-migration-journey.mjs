@@ -24,6 +24,7 @@ export async function exerciseFileMigration({page,runtime,team,status,width,evid
     const appliedResponse=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/data/import/apply'&&response.request().method()==='POST');
     await panel.getByRole('button',{name:'Apply reviewed run',exact:true}).click();
     const applied=await appliedResponse;assert.equal(applied.status(),200);const run=await applied.json();
+    await page.waitForFunction(()=>!document.querySelector('#data input[type="file"]')?.disabled);
     await migrations.getByText(new RegExp(suffix==='one'?'1 reviewed runs':'2 reviewed runs')).waitFor();
     await migrations.getByRole('button',{name:'Finish migration',exact:true}).waitFor();
     expected.push({sourceId,targetSourceId,runId:run.id});

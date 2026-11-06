@@ -278,3 +278,41 @@ tab or carriage return) with an apostrophe before normal CSV quoting. The JSON
 report and downloaded originals retain their exact source values.
 
 Imported issue identifiers remain available through [imported aliases](IMPORTED-ALIASES.md), with Owner prefix controls and native identifier precedence.
+
+## Reviewed file migrations
+
+In Settings → Move in, start a file migration with a stable source workspace
+name, then select it for each file. Each file uses the existing preview, loss
+review and staged apply. A migration's report groups its reviewed runs and
+preserves their reconciliation reports and CSV mappings.
+
+For a mapped file, prefix an absent issue reference with `source:`. It remains
+a durable pending relation with its exact source ID, endpoint ID, kind, physical
+row and run ID. Explicit `native:` references retain ordinary refusal. Outside
+a selected migration, missing references still refuse the run. Linear API-file
+relations can also be retained as pending; attachment bytes and direct provider
+access are unchanged.
+
+Review the current migration report before checking its acceptance box and
+choosing Finish migration. Only a current Owner or Admin may finish. The server
+requires the report's version and the exact pending reference IDs, refuses a
+changed list or unfinished run without changes, and records the accepted list
+as omissions once. Reloading or repeating that acceptance retains the same
+receipt. No issue or relationship is changed by finishing. New files cannot be
+added to a finished migration.
+
+The authenticated routes are `POST /api/data/migrations` with `{source}`,
+`GET /api/data/migrations`, `GET /api/data/migrations/:id`, the corresponding
+`report.csv` download, and `POST /api/data/migrations/:id/finish` with
+`{version, acceptPending: true, pendingIds}`. Add `migrationId` to the ordinary
+file preview and apply input. A migration uses one source name and belongs to
+one workspace; it is shared only among that workspace's Owners and Admins.
+
+This file slice does not qualify the remaining DATA-017 migration engine:
+complete cross-run late binding, shared dictionaries, changed-record imports,
+whole-migration rollback and the named 50,000-issue GraphQL fixture remain owed.
+If a pending endpoint has been supplied but not bound, finishing refuses rather
+than reporting that supplied endpoint as absent. Per-run rollback and native
+edit protections remain in force. Migration custody and accepted omissions
+are archived; personal-data erasure removes matching source references and
+invalidates the current review version.

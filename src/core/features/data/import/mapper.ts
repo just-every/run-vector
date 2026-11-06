@@ -114,7 +114,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     if(!row.value)continue;
     const id=String(row.value.issue.id),needs:string[]=[];
     const reference=(field:'parent'|'dependencies'|'duplicateOf',value:string)=>{
-      if(defer(row,field,value,isLinear(input.format)||isProfile(input.format)||input.format==='jira-csv'))return;
+      if(defer(row,field,value,isLinear(input.format)||isProfile(input.format)||input.format==='jira-csv'||!existing.some(target=>target.id===value||target.identifier===value)))return;
       try{const target=selected(value);if(target.id===id)throw Error('An issue cannot reference itself.');needs.push(target.id);return target;}
       catch(error){errors.push({row:row.record.location.row!,field,code:'invalid_issue_reference',message:error instanceof Error?error.message:'Invalid reference.'});}
     };
@@ -154,7 +154,8 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   mapRelated(rows,order,errors,effectiveAt,(row,value)=>defer(row,'related',value,true));
   if(pending.length) {
     const wanted=pending.map(item=>sourceIdentity(actor.workspace,input.source,'issue',item.targetSourceId));
-    const tombstones=(await db.prepare('SELECT identity FROM ik_d1_erased_sources WHERE destination=? AND identity IN (SELECT value FROM json_each(?))').bind(actor.workspace,JSON.stringify(wanted)).all<{identity:string}>()).results;
+    const tombstones=(await db.prepare(`SELECT identity FROM ik_d1_erased_sources WHERE destination=? AND identity IN (SELECT value FROM json_each(?))
+      UNION SELECT source_identity AS identity FROM vector_migration_erased_sources WHERE workspace_id=? AND source_identity IN (SELECT value FROM json_each(?))`).bind(actor.workspace,JSON.stringify(wanted),actor.workspace,JSON.stringify(wanted)).all<{identity:string}>()).results;
     if(tombstones.length)errors.push({row:0,code:'source_erased',message:'A pending endpoint was erased. It cannot be reintroduced by a migration.'});
   }
   await mapManualOrder(db,actor.workspace,input,rows,errors);
@@ -174,6 +175,7 @@ async function retainedSources(db:D1Database,destination:string,identities:strin
   for(let start=0;start<identities.length;start+=1000) {
     const chunk=JSON.stringify(identities.slice(start,start+1000));
     for(const row of (await db.prepare('SELECT identity FROM ik_d1_erased_sources WHERE destination=? AND identity IN (SELECT value FROM json_each(?))').bind(destination,chunk).all<{identity:string}>()).results)erased.add(row.identity);
+    for(const row of (await db.prepare('SELECT source_identity AS identity FROM vector_migration_erased_sources WHERE workspace_id=? AND source_identity IN (SELECT value FROM json_each(?))').bind(destination,chunk).all<{identity:string}>()).results)erased.add(row.identity);
     for(const row of (await db.prepare(`SELECT p.job_id,s.identity,s.source_hash,s.mapping_version,p.target_id,p.record_json,p.ordinal FROM ik_sources s
       JOIN ik_provenance p ON p.source_identity=s.identity AND p.job_id=s.job_id AND p.reversed=0 WHERE s.identity IN (SELECT value FROM json_each(?))`).bind(chunk).all<Prior>()).results)priors.set(row.identity,row);
   }

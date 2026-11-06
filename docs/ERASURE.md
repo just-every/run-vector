@@ -13,7 +13,7 @@ All three need a signed-in operator session and a same-origin request.
 
 | Route | What it does |
 | --- | --- |
-| `POST /api/data/erasure/preview` | Body `{ "email"?: string, "names"?: string[] }` (an exact email and/or up to five exact display names). Returns counts only (imported comments, reports, report rows, development mail) and the confirmation text. Refuses `409 operator_active` when the email or a name belongs to a current operator or open invitation. |
+| `POST /api/data/erasure/preview` | Body `{ "email"?: string, "names"?: string[] }` (an exact email and/or up to five exact display names). Returns counts only (imported comments, reports, report rows, development mail, migration references and migration source names) and the confirmation text. Refuses `409 operator_active` when the email or a name belongs to a current operator or open invitation. |
 | `POST /api/data/erasure` | Body `{ "subject": {...}, "confirmation": "erase <email or first name>" }`. Erases in one D1 batch and returns the journal entry (records erased, jobs and streams retired, rows per store) and Vector's counts. A wrong confirmation is `400 confirmation_mismatch`; an import that changed while erasing is `409 erasure_conflict` with nothing written. |
 | `GET /api/data/erasure/journal` | The append-only erasure journal: receipt ids, times and counts, never an erased value. |
 
@@ -41,6 +41,10 @@ All of it commits in one D1 batch, or none of it does.
   held a value and list those rows as erased. Development mail that names them is
   dropped. The search indexes are optimised so no deleted term survives in their
   shadow tables.
+- **File migrations.** Matching source IDs and pending endpoint IDs are removed
+  from migration custody in the same transaction. Matching migration source
+  names are retired to opaque names. The migration version advances, so an old
+  pending-list acceptance cannot finish the changed migration.
 - **Archives.** An archive made before the erasure is refused on restore
   (`400 erasure_epoch`) when a later archive's journal is supplied
   (`rer import --journal LATER_ARCHIVE`, or `laterJournal` on HTTP finalize). An

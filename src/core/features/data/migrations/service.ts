@@ -36,13 +36,18 @@ export async function finishMigration(db:D1Database,actor:ImportActor,id:string,
   // needs cross-run binding must be resolved, never silently declared omitted.
   const identities=report.pending.map(row=>sourceIdentity(actor.workspace,'vector-import:'+migration.source,'issue',row.targetSourceId));
   if(identities.length&&await db.prepare('SELECT 1 FROM ik_sources WHERE identity IN (SELECT value FROM json_each(?)) LIMIT 1').bind(JSON.stringify(identities)).first())throw new ImportError(409,'migration_binding_required');
-  await migrationBatch(db,actor,[
+  try { await migrationBatch(db,actor,[
     migrationGuard("EXISTS(SELECT 1 FROM vector_file_migrations WHERE id=? AND workspace_id=? AND state='open' AND version=?)",[id,actor.workspace,input.version]),
     migrationGuard("NOT EXISTS(SELECT 1 FROM vector_migration_runs m JOIN ik_jobs j ON j.id=m.job_id WHERE m.migration_id=? AND j.state<>'completed')",[id]),
     migrationGuard("NOT EXISTS(SELECT 1 FROM ik_sources WHERE identity IN (SELECT value FROM json_each(?)))",[JSON.stringify(identities)]),
     {sql:"UPDATE vector_migration_references SET state='omitted' WHERE migration_id=? AND state='pending'",params:[id]},
     {sql:"UPDATE vector_file_migrations SET state='finished',version=version+1,accepted_version=?,accepted_fingerprint=?,finished_by=?,finished_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id=?",params:[input.version,fingerprint,actor.id,id]},
     auditStatement({workspace:actor.workspace,actor:actor.id,action:'migration.finished',subject:id}),
-  ]);
+  ]); } catch(error) {
+    const current=await readMigration(db,actor,id);
+    if(current.state==='finished'&&current.accepted_fingerprint===fingerprint)return migrationReport(db,actor,id);
+    if(current.version!==input.version)throw new ImportError(409,'migration_pending_changed');
+    throw error;
+  }
   return migrationReport(db,actor,id);
 }

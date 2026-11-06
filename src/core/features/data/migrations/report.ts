@@ -14,7 +14,8 @@ export async function migrationReport(db:D1Database,actor:ImportActor,id:string)
   const reports=[];
   for(const run of runs) {
     const input=JSON.parse(run.report_json) as ReportInput;
-    reports.push({runId:run.id,input,report:await buildReport(db,run,input)});
+    const report=await buildReport(db,run,input);report.run.source=migration.source;
+    reports.push({runId:run.id,input,report});
   }
   // Version changes include run progress and erasure. Do not return a private
   // pre-erasure report or a finish token read across two different lists.

@@ -28,6 +28,11 @@ CREATE TABLE vector_migration_references (
   state TEXT NOT NULL DEFAULT 'pending' CHECK(state IN ('pending','omitted'))
 );
 CREATE INDEX vector_migration_references_migration ON vector_migration_references(migration_id,state);
+CREATE TABLE vector_migration_erased_sources (
+  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),
+  source_identity TEXT NOT NULL,
+  PRIMARY KEY(workspace_id,source_identity)
+);
 CREATE TRIGGER vector_migration_run_progress AFTER UPDATE OF state,checkpoint ON ik_jobs
 WHEN NEW.state<>OLD.state OR NEW.checkpoint<>OLD.checkpoint
 BEGIN
