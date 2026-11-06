@@ -4810,7 +4810,7 @@
       "executable": false
     },
     "src/core/features/data/migrations/model.ts": {
-      "sha256": "8abc58acb9d861a57e5035fdfcd8a57b94017ab22409c6dbe93e56ba30dfdbe1",
+      "sha256": "0a57ebedab902879570215bc7c94f5b245ec0caad5e91b269ba1f33e74b5b1b9",
       "executable": false
     },
     "src/core/features/data/migrations/pending.ts": {
@@ -4818,7 +4818,7 @@
       "executable": false
     },
     "src/core/features/data/migrations/report.ts": {
-      "sha256": "daf0bbb9f26ff5cfba7df9f852e398a626c924062cb25aab63c6beabebc10fd5",
+      "sha256": "1e34c2148a4a7cf1e0e0f79cbb7058c409ea72df62ac2d55f2263fc52e40b2b1",
       "executable": false
     },
     "src/core/features/data/migrations/routes.ts": {
@@ -4826,7 +4826,7 @@
       "executable": false
     },
     "src/core/features/data/migrations/service.ts": {
-      "sha256": "f859b0738be43ee17276d6318052c91cf5932692b6cf0903f532d17fb1532e2d",
+      "sha256": "08638c54a41f37d67ea2ec98af3bd80fe6b887e21089d4980640b8ce24dcf076",
       "executable": false
     },
     "src/core/features/data/restore-authority.ts": {
@@ -9278,7 +9278,7 @@
       "executable": false
     },
     "tests/worker/file-migration.test.ts": {
-      "sha256": "d35c56bd4ca111651cb8a929ad29fd0fe516866dc7c3916b7f0cebdf889a04cd",
+      "sha256": "11d4456c0f3ecfd89206917d338426ae84ca2d5524bd2146acdef20b908f49d1",
       "executable": false
     },
     "tests/worker/first-run.test.ts": {

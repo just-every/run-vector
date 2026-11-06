@@ -3,13 +3,17 @@ import { canonicalJson,sha256 } from '../../../../../vendor/base/import-kit/src/
 import { sourceIdentity } from '../../../../../vendor/base/import-kit/src/provenance/identity';
 import type { ImportActor } from '../import/authority';
 import { ImportError } from '../import/types';
-import { readMigration,requireMigrationAuthority,migrationBatch,migrationGuard } from './model';
+import { readMigration,requireMigrationAuthority,canReadMigration,migrationBatch,migrationGuard } from './model';
 import { migrationReport } from './report';
 import { auditStatement } from '../../audit/producer';
 
 export async function listMigrations(db:D1Database,actor:ImportActor) {
   await requireMigrationAuthority(db,actor);
-  return (await db.prepare('SELECT id,source,state,version,finished_at AS finishedAt FROM vector_file_migrations WHERE workspace_id=? ORDER BY rowid DESC').bind(actor.workspace).all()).results;
+  const rows=(await db.prepare('SELECT id,source,state,version,finished_at AS finishedAt FROM vector_file_migrations WHERE workspace_id=? ORDER BY rowid DESC').bind(actor.workspace).all<{id:string;source:string;state:string;version:number;finishedAt:string|null}>()).results;
+  const visible=[];
+  for(const row of rows)if(await canReadMigration(db,actor,row.id))visible.push(row);
+  await requireMigrationAuthority(db,actor);
+  return visible;
 }
 export async function createMigration(db:D1Database,actor:ImportActor,source:string) {
   await requireMigrationAuthority(db,actor);

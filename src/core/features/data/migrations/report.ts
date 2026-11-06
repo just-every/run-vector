@@ -20,6 +20,7 @@ export async function migrationReport(db:D1Database,actor:ImportActor,id:string)
   // Version changes include run progress and erasure. Do not return a private
   // pre-erasure report or a finish token read across two different lists.
   await migrationBatch(db,actor,[migrationGuard('EXISTS(SELECT 1 FROM vector_file_migrations WHERE id=? AND version=?)',[id,migration.version])]);
+  await readMigration(db,actor,id);
   return {
     migration:{id,source:migration.source,state:migration.state,version:migration.version,finishedAt:migration.finished_at},
     runs:runs.map(({report_json:_report,namespace:_namespace,...run})=>run),
