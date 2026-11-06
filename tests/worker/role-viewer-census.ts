@@ -1,3 +1,4 @@
+import {installActorSchema,actorStateSchema} from '../../src/core/features/app-actors/routes';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -156,6 +157,10 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const bind=(route:string,params:Record<string,string>)=>route.replace(/:([A-Za-z]+)/g,(_,name)=>{expect(params[name],route+' parameter '+name).toBeTruthy();return params[name];});
   const add=(surface:Surface,method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>{const id=method+' '+route;expect(plans[surface].has(id),id+' duplicate fixture').toBe(false);plans[surface].set(id,{path:path??bind(route,params),body});};
   const native=(method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>add('native',method,route,body,params,path);
+  const actorInput={name:'synthetic-vector-19261',teamId:w.team.id,scopes:['issues:read']};
+  const installedActor=await call(owner,'/settings/app-actors','POST',actorInput);
+  native('POST','/settings/app-actors',actorInput);
+  native('PATCH','/settings/app-actors/:id',{state:'paused'},{id:installedActor.id});
   const reportExport=await call(owner,'/settings/report-exports','POST',bucketScheduleInput);
   native('POST','/settings/report-exports',bucketScheduleInput);
   native('PATCH','/settings/report-exports/:id',{expectedVersion:1,enabled:true,consent:true},{id:reportExport.id});
@@ -248,6 +253,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'POST /settings/labels':administrationInput.labelCreateSchema,
    'PATCH /settings/labels/:id':administrationInput.labelUpdateSchema,
    'POST /settings/labels/:id/merge':administrationInput.labelMergeSchema,
+   'POST /settings/app-actors':installActorSchema,
+   'PATCH /settings/app-actors/:id':actorStateSchema,
    'POST /settings/projects':administrationInput.projectCreateSchema,
    'PATCH /settings/projects/:id':administrationInput.projectUpdateSchema,
    'POST /settings/projects/:id/milestones':administrationInput.projectMilestoneCreateSchema,

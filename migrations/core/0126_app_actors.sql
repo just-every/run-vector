@@ -28,8 +28,8 @@ WHEN NEW.app_actor_id IS NOT NULL BEGIN
  SELECT 'app-agent:'||NEW.id,NULL,NEW.kind,i.id,i.id,NEW.created_at,NEW.updated_at,t.workspace_id,'agent','app-agent:'||NEW.app_actor_id,NEW.actor_name,NEW.app_installer_id,NEW.app_installer_name
  FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=NEW.issue_id;
 END;
--- Existing member erasure is irreversible. Neither saved names nor a retained
--- installation may restore that person's authority or personal display name.
+-- Native member erasure also revokes installed credentials and clears saved
+-- installer names, without removing the agent's safe historical identity.
 CREATE TRIGGER vector_app_actor_installer_erased AFTER UPDATE OF removed_at ON operators
 WHEN OLD.removed_at IS NULL AND NEW.removed_at IS NOT NULL BEGIN
  DELETE FROM vector_app_actor_credentials WHERE actor_id IN(SELECT id FROM vector_app_actors WHERE installer_id=NEW.id);

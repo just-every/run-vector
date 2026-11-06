@@ -639,3 +639,7 @@ return 404; invalid or unavailable properties are refused. Sequence reservations
 may leave gaps after a refusal. Template deletion never deletes created issues.
 
 Apply `migrations/core/0125_issue_templates.sql` after unchanged 0124. Templates are portable content; deleting one retains its created issues. Retain the additive schema on compatible-source rollback.
+
+## Native installed agents
+
+Settings → Developers also installs a separate native agent credential with explicit issue reads and optional version-checked title changes in one team. See [Native installed agents](APP-ACTORS.md) for its restricted operations, immediate pause and revocation, installer ceiling and archive custody. Personal tokens and OAuth grants keep their existing semantics.

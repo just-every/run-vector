@@ -74,6 +74,28 @@ export async function appActorJourney(f:Awaited<ReturnType<typeof setupIntegrati
  expect((await f.app.request(origin+'/api/settings/app-actors/'+active.id,{method:'PATCH',headers:{Authorization:'Bearer '+personal.token,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({state:'revoked'})},bindings)).status).toBe(401);
  expect((await f.app.request(origin+'/api/settings/app-actors/'+active.id,{method:'PATCH',headers:{Cookie:adminCookie,Origin:'https://synthetic-vector-19215.example.test','Content-Type':'application/json'},body:JSON.stringify({state:'revoked'})},bindings)).status).toBe(403);
  expect((await f.app.request(origin+'/api/session',{headers:{Authorization:'Bearer '+active.token}},bindings)).status).toBe(401);expect(await storage()).toEqual(retained);
+ // Issuance must publish neither the identity nor the credential if the
+ // installer's native session or current role changes within its transaction.
+ for(const [trigger,expected] of [
+  ["UPDATE oa_sessions SET revoked_at=1 WHERE operator_id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=(SELECT installer_id FROM vector_app_actors WHERE id=NEW.actor_id))",409],
+  ["UPDATE operators SET role='viewer' WHERE id=(SELECT installer_id FROM vector_app_actors WHERE id=NEW.actor_id)",409],
+ ] as const){
+  retained=await storage();
+  await env.DB.prepare('CREATE TRIGGER deny_app_install AFTER INSERT ON vector_app_actor_credentials BEGIN '+trigger+'; END').run();
+  const refused=await manage(adminCookie,'','POST',{name:'synthetic-vector-19220',teamId:team.id,scopes:['issues:read']});
+  expect(refused.status,await refused.clone().text()).toBe(expected);expect(await storage()).toEqual(retained);
+  await env.DB.prepare('DROP TRIGGER deny_app_install').run();
+ }
+ // An ended native session and a foreign workspace record grant no management
+ // or issue authority, even with a retained credential in hand.
+ const endedCookie=await invite(['synthetic-vector-19221','vector.test'].join('@'),f.cookie,'admin');
+ expect((await request('/auth/signout','POST',{},endedCookie)).status).toBe(204);
+ retained=await storage();expect((await manage(endedCookie,'/'+active.id,'PATCH',{state:'revoked'})).status).toBe(401);expect(await storage()).toEqual(retained);
+ const workspace=await env.DB.prepare('SELECT workspace_id FROM vector_app_actors WHERE id=?').bind(active.id).first<string>('workspace_id');
+ await env.DB.prepare('UPDATE vector_app_actors SET workspace_id=? WHERE id=?').bind('synthetic-vector-19222',active.id).run();
+ retained=await storage();expect((await f.api(active.token,path)).status).toBe(401);expect((await patch(active.token,changed.version,'synthetic-vector-19223')).status).toBe(401);
+ expect((await manage(f.cookie,'/'+active.id,'PATCH',{state:'revoked'})).status).toBe(404);expect(await storage()).toEqual(retained);
+ await env.DB.prepare('UPDATE vector_app_actors SET workspace_id=? WHERE id=?').bind(workspace,active.id).run();
  // A native Admin pause that wins before commit aborts the complete edit batch.
  const race=await install(adminCookie),raceBefore=await storage();
  const fenced=beforeBatch(async()=>{expect((await manage(adminCookie,'/'+race.id,'PATCH',{state:'paused'})).status).toBe(200);});
@@ -101,6 +123,11 @@ export async function appActorJourney(f:Awaited<ReturnType<typeof setupIntegrati
  expect((await f.api(atomic.token,path)).status).toBe(401);expect(await storage()).toEqual(retained);
  expect((await nativeRead()).activity).toContainEqual(expect.objectContaining({id:activity.id,actor:'synthetic-vector-19203 · installed by Erased person'}));
  expect((await (await f.call('/settings/audit?kind=agent&subject='+issue.id)).json() as any).entries[0].actorName).toBe('synthetic-vector-19203 · installed by Erased person');
+ const humanBefore=await nativeRead();
+ expect((await f.call(path,'PATCH',{expectedVersion:humanBefore.version,title:'synthetic-vector-19224'})).status).toBe(200);
+ const humanAfter=await nativeRead(),personName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.owner).first<string>('name');
+ expect(humanAfter.activity).toContainEqual(expect.objectContaining({actor:personName,nextValue:expect.objectContaining({title:'synthetic-vector-19224'})}));
+ expect(humanAfter.activity).toContainEqual(expect.objectContaining({id:activity.id,actor:'synthetic-vector-19203 · installed by Erased person'}));
  expect((await f.call('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:false})).status).toBe(200);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
  console.info('PROBE ROLE-006 native actor: install -> versioned title edit -> own activity and audit with installer; pause and revoke -> next call refused; stale, scope, private, role, session and commit races leave product state unchanged; restart retains history; installer erasure cannot restore access.');

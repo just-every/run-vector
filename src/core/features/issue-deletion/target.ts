@@ -37,9 +37,9 @@ export function deletionTargets(operation: ErasureOperation): D1TargetAdapter {
       // Read every full relation in one SQLite transaction, using the same
       // bounded parts as the commit guard. The growing activity and audit
       // inventories must not exceed D1's per-statement SQL byte limit.
-      const results = await db.batch<{value:string}>(snapshotParts.map(part => db.prepare(
+      const results = await db.batch(snapshotParts.map(part => db.prepare(
         `${part.context} SELECT ${part.current} value FROM c,b WHERE EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=c.id AND t.workspace_id=c.workspace)`,
-      ).bind(...context(undefined))));
+      ).bind(...context(undefined)))) as {results:{value:string}[]}[];
       if (!results[0].results[0]) return undefined;
       before = Object.fromEntries(snapshotParts.map((part,index) => [part.name,JSON.parse(results[index].results[0].value)])) as ErasureSnapshot;
       after = await erasedSnapshot(db, before, operation);

@@ -18,7 +18,9 @@ export async function seedAppActorArchive(call:Call,teamId:string) {
 export async function restoredAppActorArchive(saved:Awaited<ReturnType<typeof seedAppActorArchive>>,cookie:string,records:unknown[]) {
  const text=JSON.stringify(records);
  expect(text.includes(saved.actor.token)).toBe(false);
- expect(text.includes('vector_app_actor_credentials')).toBe(false);
+ const manifest=records.find((record:any)=>record.kind==='manifest') as any;
+ expect(manifest.tables.some((table:any)=>table.name==='vector_app_actor_credentials')).toBe(false);
+ expect(records.flatMap((record:any)=>record.kind==='part'?record.items:[]).some((item:any)=>item.kind==='row'&&item.table==='vector_app_actor_credentials')).toBe(false);
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM vector_app_actor_credentials').first('n')).toBe(0);
  for(const [index,table] of saved.tables.entries()){
   const rows=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' WHERE '+(table==='vector_app_actors'?'id=?':table==='issue_activity'?'app_actor_id=?':"actor_reference='app-agent:'||?")+' ORDER BY rowid').bind(saved.actor.id).all()).results;

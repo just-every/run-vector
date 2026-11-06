@@ -5,7 +5,7 @@ import { OneTimeSecret } from '../integrations/ui/one-time-secret';
 import '../integrations/ui/integrations.css';
 
 const inventory=z.object({actors:z.array(z.object({id:z.string(),name:z.string(),installerName:z.string().nullable(),teamId:z.string(),scopes:z.array(z.string()),state:z.enum(['active','paused','revoked']),requiresReentry:z.number()}))});
-export function AppActorsPanel({teams}:{teams:{id:string;name:string;archivedAt:string|null}[]}) {
+export function AppActorsPanel({teams}:{teams:{id:string;name:string;archivedAt:string|null;canRead:boolean}[]}) {
  const data=useApiResource('/api/settings/app-actors',inventory);
  const [name,setName]=useState(''),[teamId,setTeamId]=useState(''),[write,setWrite]=useState(false),[secret,setSecret]=useState<string|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const act=async(run:()=>Promise<void>)=>{setBusy(true);setError('');try{await run();data.reload();}catch(cause){setError(cause instanceof Error?cause.message:'The agent change could not be saved.');}finally{setBusy(false);}};
@@ -22,7 +22,7 @@ export function AppActorsPanel({teams}:{teams:{id:string;name:string;archivedAt:
   {secret&&<OneTimeSecret value={{token:secret}} onClose={()=>setSecret(null)}/>}
   <form onSubmit={install}><fieldset disabled={busy}><legend>Install a native agent</legend>
    <label>Agent name<input required maxLength={100} value={name} onChange={event=>setName(event.target.value)}/></label>
-   <label>Agent team<select required value={teamId} onChange={event=>setTeamId(event.target.value)}><option value="">Choose a team</option>{teams.filter(team=>!team.archivedAt).map(team=><option key={team.id} value={team.id}>{team.name}</option>)}</select></label>
+   <label htmlFor="app-actor-team">Agent team</label><select id="app-actor-team" required value={teamId} onChange={event=>setTeamId(event.target.value)}><option value="">Choose a team</option>{teams.filter(team=>!team.archivedAt&&team.canRead).map(team=><option key={team.id} value={team.id}>{team.name}</option>)}</select>
    <p>Permission: read issues in this team.</p>
    <label><input type="checkbox" checked={write} onChange={event=>setWrite(event.target.checked)}/>Allow issue title changes</label>
    <button type="submit">Install agent</button>
