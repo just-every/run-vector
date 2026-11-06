@@ -1,0 +1,52 @@
+{
+  "files": [
+    {
+      "blob": "ecf175836acf4247fae48b791798a5c5832e8fcf",
+      "bytes": 1827,
+      "path": "PLAN.md",
+      "sha256": "21eef40dd810a404faabbe4b31255141509285275f584aad97aa6409cedbd1f0"
+    },
+    {
+      "blob": "1b2e0583114f5bc4861cbfae3e3389c922b83782",
+      "bytes": 14570,
+      "path": "REPORT.md",
+      "sha256": "0f65d671c5fcf0d4088092a0bfaf23fa4f75d05b0d6316e4f42a2f7ce39711fe"
+    },
+    {
+      "blob": "7fc8732ff930c2be74c882db57d41a54e7bc4c56",
+      "bytes": 12886,
+      "path": "ownership.json",
+      "sha256": "4547535c51677171a357ceec895c5c69bb2d17d7a0c1df56435fd4aa23170019"
+    },
+    {
+      "blob": "d158cf67d8c635a9c744cdd426f974de0cf92754",
+      "bytes": 60173,
+      "path": "source-read-receipt.json",
+      "sha256": "e9e5b7aa413e1e9af1ddee9357926dbae55cb3f00e273c31b05ac750baf7a04c"
+    },
+    {
+      "blob": "f12e9fea11314cae372552f8483a72e00a1cdb44",
+      "bytes": 3572,
+      "path": "vector-generator-2dfb04b9ed1f.json",
+      "sha256": "74d9cb2c37e6362f6aade5eb36a2a8661c428561f60140259d9fd0697f545bec"
+    },
+    {
+      "blob": "f7c9945ea8006fcdaff4dd6be05ad98739233c50",
+      "bytes": 4222,
+      "path": "vector-generator-57d4bd0d84ea.json",
+      "sha256": "e5095b4d22b94af299a51749a1b609abf32ae23f014edd70fbab2b4fb6988bae"
+    },
+    {
+      "blob": "79a47d520248784e671315695b3d2db100564a4d",
+      "bytes": 768,
+      "path": "vector-generator-history.json",
+      "sha256": "f3b1f680008d1b9fc675b0ef27e26299f07b034403d8d598f9e4d7e78bf32aad"
+    }
+  ],
+  "product_branch": "cloud/gr-vector-generator-ownership-1",
+  "product_head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "ref": "refs/heads/evidence/gr-vector-generator-ownership-1",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "gr-vector-generator-ownership-1"
+}

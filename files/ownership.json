@@ -1,0 +1,287 @@
+{
+  "blockers": [],
+  "checks": {
+    "all_product_worktrees_and_indexes_unchanged": true,
+    "auto007_present_on_main": false,
+    "ci_runs": [],
+    "clause_status_changes": [],
+    "declared_view_check": {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "receipt_kind": "actual terminal output transcribed from the single completed check; no write executed",
+      "stderr": "",
+      "stdout": "Contract views checked for BASE-AGENT-001, BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-004, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-010, BASE-AGENT-011, BASE-AGENT-012, BASE-AGENT-013, DATA-018, ERROR-001, ISSUE-008, ISSUE-025, ISSUE-027, OPS-001, PROJ-014, ROLE-008, VIEW-009\n"
+    },
+    "github_rest_source_read_calls": 3,
+    "parser_counts_after": {
+      "done": 136,
+      "missing": 67,
+      "partial": 69,
+      "total": 272
+    },
+    "parser_counts_before": {
+      "done": 136,
+      "missing": 67,
+      "partial": 69,
+      "total": 272
+    },
+    "provider_calls": 0,
+    "published_clauses": 104,
+    "target_clauses": 168
+  },
+  "classification": {
+    "base_parser": "exact byte copy, declared origin and independently verified equality to current Base",
+    "derived_legacy_copy_of_base_generator": "not established; no copy or origin mapping declares this helper as Base source",
+    "exact_copy_of_current_base_generator": false,
+    "historical_authorship_limit": "Vector path history proves introduction and local modification; no claim about unseen prehistory or conceptual inspiration",
+    "vector_generator": "edition-owned incremental legacy-view adapter; independently maintained in Vector"
+  },
+  "holds": {
+    "incumbent_ui": "unchanged",
+    "privacy": "two-FIX DEFER/reopen=false unchanged",
+    "rejected_candidate": "original rejected candidate holds unchanged",
+    "release_0_2_100": "independent immutable main binding; no mutation",
+    "source_gate_release": "all holds unchanged"
+  },
+  "next_custodian": "SD, through GR relay; SD may launch its existing prepared narrow brief once",
+  "observed_utc": "2026-11-06T03:09:08.041309+00:00",
+  "provenance": {
+    "base_agent_extension_blob": "c994b97893bc00ca09af4c742090820272555bb3",
+    "base_agent_extension_commit": "2dfb04b9ed1f21915da117b058563f37ef1d52b2",
+    "history_receipts": [
+      "vector-generator-history.json",
+      "vector-generator-57d4bd0d84ea.json",
+      "vector-generator-2dfb04b9ed1f.json"
+    ],
+    "introduction_blob": "8cb0d16d30d5519846f18f1c2b3bf80082799f56",
+    "introduction_commit": "57d4bd0d84ea61978d9ed9d028061fce28ef339c"
+  },
+  "repositories": {
+    "just-every/run-vector": {
+      "advertised_main": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "branch": "cloud/gr-vector-generator-ownership-1",
+      "files": {
+        "ACCEPTANCE.md": {
+          "bytes": 201588,
+          "git_blob": "b4fc816119bde8b44c35331ad3933f46b7951010",
+          "sha256": "cebdfcce65b1a5625786d6321b3eef6c0ef2ed15c22522bf7ade7d1642a5e98c"
+        },
+        "AGENTS.md": {
+          "bytes": 8054,
+          "git_blob": "40fa8cd6544b836b49413fd1100463711d5395f1",
+          "sha256": "5c49954ec527f3d0c5454b1d2bb0cc7855b3df56c1bd43847e9444a0d2b18cc4"
+        },
+        "CONTRACT.md": {
+          "bytes": 495499,
+          "git_blob": "f80ba483847c586e572ba0f21d010f82c36ab55e",
+          "sha256": "ce01bebe92fdcafb08da1adcec2e59b86a56ea2fb15c6511c9edd22f6d735494"
+        },
+        "base-copies.json": {
+          "bytes": 288794,
+          "git_blob": "0f236cff0c338056b1c2ff03de3b98283d48f768",
+          "sha256": "aa3eb2c922f8f4ca8f30cde3d3ca69d1bab15d5e79ef7bd7233e927044d3b082"
+        },
+        "docs/BASE-ADOPTION.md": {
+          "bytes": 6997,
+          "git_blob": "04360cf526be04fa7e54241b2041fe5e7185581d",
+          "sha256": "0b50968002fd5646832e7dea97bfd6d2933904e9a726cfa187f86e47cc81391d"
+        },
+        "docs/CLAIMS.md": {
+          "bytes": 48952,
+          "git_blob": "77449f8812b9b90c0e7141f51302e41bcd75648c",
+          "sha256": "258df9bf5d6d850e1719081611d44e912567a7c3850eaeba0d323ad1891e0439"
+        },
+        "edition.json": {
+          "bytes": 11647,
+          "git_blob": "1f41525c6e129a5ea6240d2b2e16ae61d33d617e",
+          "sha256": "89309beaf124fb7d8ffcfdc5f7d91ab7addf81b7abd4361d72e935a3d677e0a0"
+        },
+        "package.json": {
+          "bytes": 5008,
+          "git_blob": "5d231204ab51e9cf7874b3e2d94b29af8666e704",
+          "sha256": "117d3eb8eca5741a61377872219037986b03d174438bbf7ce4910feb87c4cc07"
+        },
+        "scripts/contract-docs.mjs": {
+          "bytes": 4642,
+          "git_blob": "c994b97893bc00ca09af4c742090820272555bb3",
+          "sha256": "17598668017202efe065dae49e102df9dcfe44d983edae50f3db39c1d1865c03"
+        },
+        "scripts/edition-authoring/base-copies.mjs": {
+          "bytes": 39800,
+          "git_blob": "22a9c2ebc1a82d0616b9e0abd160e901f91de5e4",
+          "sha256": "4cac17e531310ab14df07139156c2b4fae5f7ab03097c7f8374c09a3d050dc8b"
+        },
+        "scripts/edition-authoring/cli.mjs": {
+          "bytes": 4988,
+          "git_blob": "7da7208dabe8f3942a9f1bc9c5360bf94d8ce3fd",
+          "sha256": "d4302ecd51794bbf9d92ea08c23fc1447f043088952c53689418c03e8750bb7f"
+        },
+        "scripts/edition-authoring/files.mjs": {
+          "bytes": 9156,
+          "git_blob": "5dd002982a1860f6b117d991c04ef2a341fc04ba",
+          "sha256": "cd8ca780ed1f49977b183f025433227c12f844ff845b89a3a4a1d2d66f14e3e7"
+        },
+        "scripts/edition-authoring/lock.mjs": {
+          "bytes": 2754,
+          "git_blob": "3a5fb42535027830cdb2f4d39bbf295c4cc77d27",
+          "sha256": "c95f09ff1e0d7f457cc15a333d96d0c12c81337e2b37f7f10ddf2d10b60e72f2"
+        },
+        "sources.lock.json": {
+          "bytes": 521785,
+          "git_blob": "03ed60b477fd48ad7d2316cd62b165c1c104cc5b",
+          "sha256": "f485f25b12a005b870f120c80353b6066b1496e28c4da955ae0c7730fb655d25"
+        },
+        "src/base/seed-contract.d.mts": {
+          "bytes": 2974,
+          "git_blob": "b75c1afa24b3e13dc6feaec8fe9480293ed69980",
+          "sha256": "89a49eeec744b201f66b3c5d599dad839174e28d3c463944823de25ecfae738d"
+        },
+        "src/base/seed-contract.mjs": {
+          "bytes": 19462,
+          "git_blob": "c832594a274e1a0718228573df57bda415003bdc",
+          "sha256": "7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4"
+        }
+      },
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "index_tree": "112eeafb5eae00d4f776f00e578d9658eff239d2",
+      "product_commits": 0,
+      "status_porcelain": "",
+      "tree": "112eeafb5eae00d4f776f00e578d9658eff239d2"
+    },
+    "runeditrun/base": {
+      "advertised_main": "601a56e0a5e8e21507003b902949e12723036148",
+      "branch": "cloud/gr-vector-generator-ownership-1",
+      "files": {
+        "AGENTS.md": {
+          "bytes": 7691,
+          "git_blob": "5de24e6eee7c88a575ee2cbcc765e449588c751d",
+          "sha256": "6b1aade2a918ad351affa1fe878942425740c863ba9a8c2785f9eeacd0c8433a"
+        },
+        "README.md": {
+          "bytes": 14867,
+          "git_blob": "c75dc00fc02514f9afea815937208a110fc27a2d",
+          "sha256": "5b6b5ec5fcd0fe007a2e6271edb9620c0d5768ff1b7f71a6fac20dceedd97780"
+        },
+        "default-seed/scripts/base-cli/foundation/runtime/contract-docs.mjs": {
+          "bytes": 66403,
+          "git_blob": "7c6ab9f2acb1a23d4e952758906efcf0b1a5c95c",
+          "sha256": "0c4e8fc36eb2e327c8744c59f3d8be2bba2070794558a4e6cbdf68e210637b96"
+        },
+        "edition-authoring/README.md": {
+          "bytes": 32815,
+          "git_blob": "039c201a95f6680ae194d7423d831c88efb3b683",
+          "sha256": "260a65cb71882aaac144478eda7088444a39c60aba7bcf0bf668d6e08b4afe4a"
+        },
+        "foundation/contract-docs.test.mjs": {
+          "bytes": 24400,
+          "git_blob": "d8d1f3bc14e5021a5994fa8a6050fd69ec2850c4",
+          "sha256": "8e04bf41027250e07d0af2f581b4aca77ea695799b04f87cb8128b2b964997f0"
+        },
+        "foundation/initialize.mjs": {
+          "bytes": 12519,
+          "git_blob": "b76fabba660acbe3e883a3c7d1188e4e78a4a8a4",
+          "sha256": "0653a8c930690a9ff8fb89146b6124d9f5a5d863472b3d6c886aee2aba672eb9"
+        },
+        "foundation/runtime/contract-anchor.mjs": {
+          "bytes": 3916,
+          "git_blob": "ed449309966ba963b0a42057590b1ea71454d381",
+          "sha256": "b63993a57cff119f3f1d4407963d2623abe18733fffb0f04de12f43bc503821d"
+        },
+        "foundation/runtime/contract-docs.mjs": {
+          "bytes": 66403,
+          "git_blob": "7c6ab9f2acb1a23d4e952758906efcf0b1a5c95c",
+          "sha256": "0c4e8fc36eb2e327c8744c59f3d8be2bba2070794558a4e6cbdf68e210637b96"
+        },
+        "foundation/runtime/contract-prose-patterns.mjs": {
+          "bytes": 1086,
+          "git_blob": "8c6f63efece1956f68056b7dbf45e18a5a54cbb4",
+          "sha256": "5519a7439e28f7c2635a0170749c43ccdc96eaccc0c313f55a2294d0665c8ba4"
+        },
+        "foundation/runtime/contract-prose.mjs": {
+          "bytes": 4712,
+          "git_blob": "eccc84bb3484f03739f20494221d89b4fc819a6a",
+          "sha256": "7f606da0b4ac6f259fdaaa2a263250c1b6a20d5c906104c5a961271d23e818e0"
+        },
+        "foundation/runtime/seed-contract.mjs": {
+          "bytes": 19462,
+          "git_blob": "c832594a274e1a0718228573df57bda415003bdc",
+          "sha256": "7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4"
+        },
+        "foundation/template/AGENTS.md": {
+          "bytes": 9800,
+          "git_blob": "364089b407fa1044163b1397210254a50ec5ac19",
+          "sha256": "79d764d92e661e567f2bba38addd411de31cd63a85efc6509ac9526acb01093d"
+        }
+      },
+      "head": "601a56e0a5e8e21507003b902949e12723036148",
+      "index_tree": "d237a77ae5e490fdea89d6909894500f695665f3",
+      "product_commits": 0,
+      "status_porcelain": "",
+      "tree": "d237a77ae5e490fdea89d6909894500f695665f3"
+    }
+  },
+  "result": "Done",
+  "routing": "edition-owned repair by SD",
+  "schema": 1,
+  "selection": {
+    "generator_base_copy_records": [],
+    "generator_base_current_exact_blob_paths": [],
+    "generator_source_lock": {
+      "executable": false,
+      "sha256": "17598668017202efe065dae49e102df9dcfe44d983edae50f3db39c1d1865c03"
+    },
+    "lock_toolchain": {
+      "id": "runeditrun/edition-authoring",
+      "sha256": "abf7237e9313adfc739e3b9d77cfde98253aba5094193a22a77abd2866bd511a",
+      "version": "1.1.0"
+    },
+    "parent": null,
+    "parser_copy_records": [
+      {
+        "files": {
+          "src/base/seed-contract.mjs": "7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4"
+        },
+        "modes": {
+          "src/base/seed-contract.mjs": "100644"
+        },
+        "originFiles": [
+          "foundation/runtime/seed-contract.mjs"
+        ],
+        "originPath": "foundation/runtime/seed-contract.mjs",
+        "path": "src/base/seed-contract.mjs",
+        "revision": "e881e6f66ce7cd737d17dbeb945995aab83c30d8"
+      }
+    ],
+    "parser_equals_current_base": true,
+    "parser_source_lock": {
+      "executable": false,
+      "sha256": "7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4"
+    },
+    "recipe_id": "just-every/vector-projects",
+    "rer_package_pin": "0.2.94"
+  },
+  "smallest_next_change": {
+    "base_adoption_required": false,
+    "dependency_or_pin_change_required": false,
+    "generated_view_custody": "Restore origin/main ACCEPTANCE.md and docs/CLAIMS.md; do not commit generated views. Follow the fleet lander source-lock and view-restoration rules.",
+    "intent": "Allow an explicitly requested, parser-validated ordinary additive clause to create its missing generated acceptance entry; preserve existing-entry replacement and untouched narratives. Retain the existing Base parser and generated claim handling. Do not broaden default selection to every clause or assign status.",
+    "location": "line 42 missing-acceptance-entry branch; preserve line 21 explicit/default selection distinction",
+    "lock": [
+      "stage intentional product/source files",
+      "pnpm sources:lock",
+      "pnpm sources:check"
+    ],
+    "path": "scripts/contract-docs.mjs",
+    "regeneration": [
+      "node scripts/contract-docs.mjs write <TOUCHED_IDS>",
+      "node scripts/contract-docs.mjs check <TOUCHED_IDS>"
+    ],
+    "required_behavior_proof": "Existing write/check entrypoint against an isolated temporary fixture: ordinary additive clause without legacy entry, summary parity, deterministic repeat, stale check refusal, unknown/malformed clause refusal, original definitions/Status/Gap/Evidence and untouched narratives preserved. Do not add pin/hash/wording tests."
+  },
+  "tag": "gr-vector-generator-ownership-1"
+}

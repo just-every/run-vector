@@ -1,0 +1,1243 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "601a56e0a5e8e21507003b902949e12723036148\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "d237a77ae5e490fdea89d6909894500f695665f3\n"
+    },
+    {
+      "argv": [
+        "git",
+        "write-tree"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "d237a77ae5e490fdea89d6909894500f695665f3\n"
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/main"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "601a56e0a5e8e21507003b902949e12723036148\trefs/heads/main\n"
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "cloud/gr-vector-generator-ownership-1\n"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "log",
+        "origin/main..HEAD",
+        "--format=%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:AGENTS.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "5de24e6eee7c88a575ee2cbcc765e449588c751d\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:README.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "c75dc00fc02514f9afea815937208a110fc27a2d\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/initialize.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "b76fabba660acbe3e883a3c7d1188e4e78a4a8a4\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/runtime/contract-docs.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "7c6ab9f2acb1a23d4e952758906efcf0b1a5c95c\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/runtime/seed-contract.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "c832594a274e1a0718228573df57bda415003bdc\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/runtime/contract-anchor.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "ed449309966ba963b0a42057590b1ea71454d381\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/runtime/contract-prose.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "eccc84bb3484f03739f20494221d89b4fc819a6a\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/runtime/contract-prose-patterns.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "8c6f63efece1956f68056b7dbf45e18a5a54cbb4\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/contract-docs.test.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "d8d1f3bc14e5021a5994fa8a6050fd69ec2850c4\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:foundation/template/AGENTS.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "364089b407fa1044163b1397210254a50ec5ac19\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:edition-authoring/README.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "039c201a95f6680ae194d7423d831c88efb3b683\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:default-seed/scripts/base-cli/foundation/runtime/contract-docs.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "7c6ab9f2acb1a23d4e952758906efcf0b1a5c95c\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "e6010126cf33eeb7e70368b741bf89ba9dae2672\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD^{tree}"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "112eeafb5eae00d4f776f00e578d9658eff239d2\n"
+    },
+    {
+      "argv": [
+        "git",
+        "write-tree"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "112eeafb5eae00d4f776f00e578d9658eff239d2\n"
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "origin",
+        "refs/heads/main"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "e6010126cf33eeb7e70368b741bf89ba9dae2672\trefs/heads/main\n"
+    },
+    {
+      "argv": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "cloud/gr-vector-generator-ownership-1\n"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "log",
+        "origin/main..HEAD",
+        "--format=%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:AGENTS.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "40fa8cd6544b836b49413fd1100463711d5395f1\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:CONTRACT.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "f80ba483847c586e572ba0f21d010f82c36ab55e\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:ACCEPTANCE.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "b4fc816119bde8b44c35331ad3933f46b7951010\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:docs/CLAIMS.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "77449f8812b9b90c0e7141f51302e41bcd75648c\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:scripts/contract-docs.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "c994b97893bc00ca09af4c742090820272555bb3\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:src/base/seed-contract.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "c832594a274e1a0718228573df57bda415003bdc\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:src/base/seed-contract.d.mts"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "b75c1afa24b3e13dc6feaec8fe9480293ed69980\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:edition.json"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "1f41525c6e129a5ea6240d2b2e16ae61d33d617e\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:sources.lock.json"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "03ed60b477fd48ad7d2316cd62b165c1c104cc5b\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:base-copies.json"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "0f236cff0c338056b1c2ff03de3b98283d48f768\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:package.json"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "5d231204ab51e9cf7874b3e2d94b29af8666e704\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:docs/BASE-ADOPTION.md"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "04360cf526be04fa7e54241b2041fe5e7185581d\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:scripts/edition-authoring/cli.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "7da7208dabe8f3942a9f1bc9c5360bf94d8ce3fd\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:scripts/edition-authoring/lock.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "3a5fb42535027830cdb2f4d39bbf295c4cc77d27\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:scripts/edition-authoring/files.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "5dd002982a1860f6b117d991c04ef2a341fc04ba\n"
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD:scripts/edition-authoring/base-copies.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "22a9c2ebc1a82d0616b9e0abd160e901f91de5e4\n"
+    },
+    {
+      "argv": [
+        "git",
+        "ls-tree",
+        "-r",
+        "HEAD"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/base",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "[full tree read locally; retained matching paths only]\n"
+    }
+  ],
+  "not_run": [
+    "generator write on product files",
+    "source lock write/check",
+    "tests/suites",
+    "setup/build/browser",
+    "publication scans",
+    "provider APIs",
+    "product commit/push",
+    "CI/PR",
+    "release/deployment"
+  ],
+  "notes": [
+    "Only source metadata and existing declared read-only check were used.",
+    "Two shell heredoc delimiter errors occurred during helper setup/read assembly, were corrected, and caused no product edits. Evidence entrypoint syntax was checked.",
+    "Node observed v24.19.0, pnpm 10.12.4; cloud shim declared Vector node pin 22.20.0. This bounded read does not qualify a production runtime.",
+    "No helper agents, repositories beyond the two declared repositories, or product dependencies were created for the investigation."
+  ],
+  "observed_utc": "2026-11-06T03:09:08.041309+00:00",
+  "parser_read": {
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import fs from \"node:fs\"; import {parseContract} from \"./src/base/seed-contract.mjs\"; const p=parseContract(fs.readFileSync(\"CONTRACT.md\",\"utf8\")); console.log(JSON.stringify({counts:p.counts,published:p.clauses.filter(c=>c.kind===\"published\").length,target:p.clauses.filter(c=>c.kind!==\"published\").length,auto007:p.clauses.some(c=>c.id===\"AUTO-007\")}));"
+    ],
+    "exit_code": 0,
+    "stdout": "{\"counts\":{\"done\":136,\"partial\":69,\"missing\":67,\"total\":272},\"published\":104,\"target\":168,\"auto007\":false}\n"
+  },
+  "schema": 1,
+  "source_reads": [
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "AGENTS.md",
+      "ranges": [
+        {
+          "end": 29,
+          "lines": [
+            "21: Vector is a self-hosted issue tracker. Read README.md, CONTRACT.md, BASELINE.md, HANDOVER.md and the actual package scripts. TanStack Start and Hono share one Cloudflare Worker, D1 records and private R2 files. Every private route and generated server function independently checks its session, Origin and ownership. Keep server secrets out of browser modules and evidence.",
+            "22: ",
+            "23: Keep files small, remove dead code and preserve owner customizations. No application mocks, silent failures or semantic fallbacks. Synthetic fixtures belong in tests. Recorded Base selections remain exact at the declared pin; product adapters are explicitly identified.",
+            "24: ",
+            "25: ## Verification and recovery",
+            "26: ",
+            "27: Test the owner-visible flows you changed through public doors, plus typecheck. Keep the suite small. No pin tests or tests of copy, hashes, versions, lists or wording. Prove one-off corrections in external evidence. Delete obsolete tests and report them; never weaken assertions to hide a failure. Push CI shards the full verification wall and development journey. Release tags and nightly run the slow installer and README clone journeys.",
+            "28: ",
+            "29: Stage changes before `pnpm sources:lock`, then run `pnpm sources:check`. Preserve applied migrations and data; upgrades are forward-only. Validate matching source and D1/R2 backups in isolated resources before changing traffic. Keep terminal delivery ledgers and additive schema on compatible-source rollback."
+          ],
+          "start": 21
+        },
+        {
+          "end": 52,
+          "lines": [
+            "41: ## Lander-Regenerate",
+            "42: ",
+            "43: After editing clause definitions and Status rows in CONTRACT.md, synchronize only the touched clause IDs and the summary counts, then check them:",
+            "44: ",
+            "45: ```sh",
+            "46: node scripts/contract-docs.mjs write CLAUSE...",
+            "47: node scripts/contract-docs.mjs check CLAUSE...",
+            "48: ```",
+            "49: ",
+            "50: Replace `CLAUSE...` with one or more actual clause IDs. The check also runs the Base contract parser. Untouched clause narratives remain intact.",
+            "51: ",
+            "52: Lander-Regenerate: node scripts/contract-docs.mjs write"
+          ],
+          "start": 41
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "scripts/contract-docs.mjs",
+      "ranges": [
+        {
+          "end": 53,
+          "lines": [
+            "1: import {readFileSync,writeFileSync} from 'node:fs';",
+            "2: import {parseContract} from '../src/base/seed-contract.mjs';",
+            "3: ",
+            "4: // Incremental adoption of the legacy views: only named clauses are regenerated.",
+            "5: // Their requirements, acceptance, evidence and gaps all come from CONTRACT.md.",
+            "6: const [command,...requested]=process.argv.slice(2);",
+            "7: if(!['write','check'].includes(command))throw Error('Use contract-docs.mjs write|check followed by the touched clause IDs.');",
+            "8: const read=file=>readFileSync(file,'utf8');",
+            "9: const original=read('CONTRACT.md'),lines=original.split('\\n');",
+            "10: const summary=lines.findIndex(line=>line==='| Clauses | Done | Partial | Missing | Total |');",
+            "11: if(summary<0)throw Error('The contract needs its Status summary table.');",
+            "12: let end=summary+2;while(lines[end]?.startsWith('|'))end++;",
+            "13: const withoutSummary=[...lines.slice(0,summary),...lines.slice(end)].join('\\n');",
+            "14: const parsed=parseContract(withoutSummary);",
+            "15: const tally=clauses=>['done','partial','missing'].map(status=>clauses.filter(clause=>clause.status===status).length).concat(clauses.length);",
+            "16: const rows=[['Published',parsed.clauses.filter(clause=>clause.kind==='published')],['Target and push further',parsed.clauses.filter(clause=>clause.kind!=='published')],['All',parsed.clauses]];",
+            "17: lines.splice(summary+2,end-summary-2,...rows.map(([label,clauses])=>'| '+[label,...tally(clauses)].join(' | ')+' |'));",
+            "18: const contract=lines.join('\\n').replace(/Accepted DONE is \\d+ of \\d+/g,'Accepted DONE is '+parsed.counts.done+' of '+parsed.counts.total);parseContract(contract);",
+            "19: const acceptance=read('ACCEPTANCE.md'),claims=read('docs/CLAIMS.md');",
+            "20: const inherited=[...acceptance.matchAll(/<!-- contract-docs:([A-Z][A-Z0-9-]+) -->/g)].map(match=>match[1]);",
+            "21: const ids=[...new Set(requested.length?requested:[...inherited,...parsed.clauses.filter(c=>c.id.startsWith('BASE-AGENT-')).map(c=>c.id)])].sort();",
+            "22: if(!ids.length)throw Error('Name the touched clauses for initial view generation.');",
+            "23: const acceptanceLines=acceptance.split('\\n');",
+            "24: const acceptanceSummary=acceptanceLines.findIndex(line=>line==='| Clauses | Done | Partial | Missing | Total |');",
+            "25: if(acceptanceSummary<0)throw Error('The acceptance view needs its Status summary table.');",
+            "26: let acceptanceEnd=acceptanceSummary+2;while(acceptanceLines[acceptanceEnd]?.startsWith('|'))acceptanceEnd++;",
+            "27: acceptanceLines.splice(acceptanceSummary+2,acceptanceEnd-acceptanceSummary-2,...rows.map(([label,clauses])=>'| '+[label,...tally(clauses)].join(' | ')+' |'));",
+            "28: let nextAcceptance=acceptanceLines.join('\\n'),nextClaims=claims;",
+            "29: const escape=value=>value.replaceAll('|','\\\\|').replaceAll('\\n',' ');",
+            "30: for(const id of ids){",
+            "31:  const clause=parsed.clauses.find(clause=>clause.id===id);if(!clause)throw Error('No contract clause '+id);",
+            "32:  const source=clause.text.split(/\\*Status:\\*/)[0].trim();",
+            "33:  const acceptanceMark=source.includes('*Acceptance:*')?'*Acceptance:*':'**Acceptance.**';",
+            "34:  const acceptanceIndex=source.indexOf(acceptanceMark);if(acceptanceIndex<0)throw Error(id+' has no acceptance text.');",
+            "35:  const requirement=source.slice(0,acceptanceIndex).trim(),points=source.slice(acceptanceIndex+acceptanceMark.length).trim();",
+            "36:  const row=withoutSummary.split('\\n')[clause.row-1];",
+            "37:  const cells=row.split(/(?<!\\\\)\\|/).slice(1,-1).map(cell=>cell.trim());",
+            "38:  const evidence=cells[4],gap=cells[5];",
+            "39:  const marker='<!-- contract-docs:'+id+' -->';",
+            "40:  const generated=`- **${id} \u2014 ${clause.title}** (${clause.status}). Requirement: ${escape(requirement)} Acceptance: ${escape(points)} Evidence: ${evidence}${gap?' Gap: '+gap:''} ${marker}`;",
+            "41:  const acceptanceLines=nextAcceptance.split('\\n'),index=acceptanceLines.findIndex(line=>line.startsWith('- **'+id+' \u2014 '));",
+            "42:  if(index<0){if(!id.startsWith('BASE-AGENT-'))throw Error('No legacy acceptance entry for '+id);acceptanceLines.push(generated);}else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\\n');",
+            "43:  const claim=`| ${id} | ${clause.status} | ${escape(requirement)}${gap?' Gap: '+escape(gap):''} | ${evidence} |`;",
+            "44:  const claimLines=nextClaims.split('\\n'),claimIndex=claimLines.findIndex(line=>line.startsWith('| '+id+' |'));",
+            "45:  if(claimIndex>=0)claimLines[claimIndex]=claim;else{while(claimLines.at(-1)==='')claimLines.pop();claimLines.push(claim,'');}",
+            "46:  nextClaims=claimLines.join('\\n');",
+            "47: }",
+            "48: const outputs={'CONTRACT.md':contract,'ACCEPTANCE.md':nextAcceptance,'docs/CLAIMS.md':nextClaims};",
+            "49: for(const [file,text] of Object.entries(outputs)){",
+            "50:  if(command==='write')writeFileSync(file,text);",
+            "51:  else if(read(file)!==text)throw Error(file+' differs from CONTRACT.md; run the documented generator.');",
+            "52: }",
+            "53: console.log('Contract views '+(command==='write'?'generated':'checked')+' for '+ids.join(', '));"
+          ],
+          "start": 1
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "edition.json",
+      "ranges": [
+        {
+          "end": 25,
+          "lines": [
+            "1: {",
+            "2:   \"schemaVersion\": 1,",
+            "3:   \"id\": \"just-every/vector-projects\",",
+            "4:   \"toolchain\": {",
+            "5:     \"id\": \"runeditrun/edition-authoring\",",
+            "6:     \"version\": \"1.1.0\"",
+            "7:   },",
+            "8:   \"parent\": null,",
+            "9:   \"components\": [",
+            "10:     {",
+            "11:       \"id\": \"just-every/vector-projects\",",
+            "12:       \"role\": \"edition\",",
+            "13:       \"source\": {",
+            "14:         \"kind\": \"local\",",
+            "15:         \"paths\": [",
+            "16:           \"src\",",
+            "17:           \"sdk\",",
+            "18:           \"migrations\",",
+            "19:           \"tests\",",
+            "20:           \"sample-data\",",
+            "21:           \"package.json\",",
+            "22:           \"pnpm-lock.yaml\"",
+            "23:         ]",
+            "24:       }",
+            "25:     },"
+          ],
+          "start": 1
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "base-copies.json",
+      "ranges": [
+        {
+          "end": 1310,
+          "lines": [
+            "1297:     {",
+            "1298:       \"path\": \"src/base/seed-contract.mjs\",",
+            "1299:       \"originPath\": \"foundation/runtime/seed-contract.mjs\",",
+            "1300:       \"revision\": \"e881e6f66ce7cd737d17dbeb945995aab83c30d8\",",
+            "1301:       \"files\": {",
+            "1302:         \"src/base/seed-contract.mjs\": \"7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4\"",
+            "1303:       },",
+            "1304:       \"modes\": {",
+            "1305:         \"src/base/seed-contract.mjs\": \"100644\"",
+            "1306:       },",
+            "1307:       \"originFiles\": [",
+            "1308:         \"foundation/runtime/seed-contract.mjs\"",
+            "1309:       ]",
+            "1310:     },"
+          ],
+          "start": 1297
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "sources.lock.json",
+      "ranges": [
+        {
+          "end": 2664,
+          "lines": [
+            "2658:       \"executable\": false",
+            "2659:     },",
+            "2660:     \"scripts/contract-docs.mjs\": {",
+            "2661:       \"sha256\": \"17598668017202efe065dae49e102df9dcfe44d983edae50f3db39c1d1865c03\",",
+            "2662:       \"executable\": false",
+            "2663:     },",
+            "2664:     \"scripts/data/archive-upgrade-plan.mjs\": {"
+          ],
+          "start": 2658
+        },
+        {
+          "end": 3672,
+          "lines": [
+            "3666:       \"executable\": false",
+            "3667:     },",
+            "3668:     \"src/base/seed-contract.mjs\": {",
+            "3669:       \"sha256\": \"7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4\",",
+            "3670:       \"executable\": false",
+            "3671:     },",
+            "3672:     \"src/base/select-style.ts\": {"
+          ],
+          "start": 3666
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "package.json",
+      "ranges": [
+        {
+          "end": 22,
+          "lines": [
+            "18:     \"test:runtime\": \"node tests/e2e/core-runtime.mjs\",",
+            "19:     \"test:dev\": \"node tests/e2e/dev-runtime.mjs\",",
+            "20:     \"sources:check\": \"node scripts/edition-authoring/cli.mjs check\",",
+            "21:     \"sources:lock\": \"node scripts/edition-authoring/cli.mjs lock\",",
+            "22:     \"setup\": \"rer setup\","
+          ],
+          "start": 18
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "scripts/edition-authoring/cli.mjs",
+      "ranges": [
+        {
+          "end": 42,
+          "lines": [
+            "1: #!/usr/bin/env node",
+            "2: import fs from 'node:fs';",
+            "3: import path from 'node:path';",
+            "4: import {release, verifyReceipt} from './release.mjs';",
+            "5: import {changes, extract, compare} from './updates.mjs';",
+            "6: import {manifest} from './manifest.mjs';",
+            "7: import {snapshot, source, merge} from './sources.mjs';",
+            "8: import {options, adaptCopy, recordCopy, refreshCopies, verifyCopies} from './base-copies.mjs';",
+            "9: import {json, tracked, writeTree, fresh} from './files.mjs';",
+            "10: ",
+            "11: import {resolveSources} from './lock.mjs';",
+            "12: import {adoptEdition} from './adopt.mjs';",
+            "13: ",
+            "14: const root = process.cwd();",
+            "15: const resolve = (retain = false, diagnostics = false) => resolveSources(root, retain, diagnostics);",
+            "16: function check() {",
+            "17:   const expected = JSON.parse(fs.readFileSync(path.join(root, 'sources.lock.json'), 'utf8'));",
+            "18:   const actual = resolve();",
+            "19:   if (json(expected) !== json(actual)) throw Error('Stale lock or source/tool integrity mismatch; run changes to inspect intentional edits before lock');",
+            "20:   return actual;",
+            "21: }",
+            "22: function materialize(destination) {",
+            "23:   const output = fresh(destination, root);",
+            "24:   const recipe = manifest(root);",
+            "25:   const files = tracked(root);",
+            "26:   for (const component of recipe.components) {",
+            "27:     if (component.source.kind === 'git') merge(files, component.source.destination, source(root, component.source, true));",
+            "28:   }",
+            "29:   fs.mkdirSync(output, {recursive: true});",
+            "30:   writeTree(output, files);",
+            "31:   return {output, development: true};",
+            "32: }",
+            "33: function promote(id) {",
+            "34:   const recipe = manifest(root);",
+            "35:   const component = recipe.components.find(c => c.id === id);",
+            "36:   if (!component || component.source.kind !== 'git') throw Error('Select a Git component');",
+            "37:   const selected = component.source;",
+            "38:   const destinationExisted = fs.existsSync(path.join(root, selected.destination));",
+            "39:   const files = source(root, selected, true);",
+            "40:   snapshot(root, selected, true);",
+            "41:   merge(tracked(root), selected.destination, files);",
+            "42:   const retained = Object.fromEntries(Object.entries(files).map(([name, value]) => [selected.destination + '/' + name, value]));"
+          ],
+          "start": 1
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "scripts/edition-authoring/lock.mjs",
+      "ranges": [
+        {
+          "end": 90,
+          "lines": [
+            "1: import fs from 'node:fs';",
+            "2: import path from 'node:path';",
+            "3: import {fileURLToPath} from 'node:url';",
+            "4: import {manifest, VERSION} from './manifest.mjs';",
+            "5: import {snapshot, merge} from './sources.mjs';",
+            "6: import {hash, json, tracked, toolFiles} from './files.mjs';",
+            "7: ",
+            "8: function toolsIdentity() {",
+            "9:   const dir = path.dirname(fileURLToPath(import.meta.url));",
+            "10:   const names = toolFiles(dir);",
+            "11:   const bytes = names.map(p => p + '\\0' + fs.readFileSync(path.join(dir, p), 'utf8')).join('\\0');",
+            "12:   return {id: 'runeditrun/edition-authoring', version: VERSION, sha256: hash(bytes)};",
+            "13: }",
+            "14: function includes(files, selected) {",
+            "15:   return Object.keys(files).some(p => p === selected || p.startsWith(selected + '/'));",
+            "16: }",
+            "17: export function resolveSources(root, retain = false, diagnostics = false, additionalFiles = {}) {",
+            "18:   const recipe = manifest(root);",
+            "19:   const files = Object.assign(tracked(root, diagnostics), additionalFiles);",
+            "20:   // The recipe is input even before initial adoption has staged it.",
+            "21:   files['edition.json'] ??= {data: fs.readFileSync(path.join(root, 'edition.json')).toString('base64'), executable: false};",
+            "22:   const components = [];",
+            "23:   for (const component of recipe.components) {",
+            "24:     const selected = component.source;",
+            "25:     if (selected.workspace) throw Error('Retain workspace edits by promotion or commit and exact revision selection before locking/release');",
+            "26:     const reference = selected.kind === 'git' ? selected : selected.origin;",
+            "27:     const baseline = reference ? snapshot(root, reference, retain) : null;",
+            "28:     if (selected.kind === 'git') merge(files, selected.destination, baseline.files);",
+            "29:     else for (const name of selected.paths) {",
+            "30:       if (!diagnostics && !includes(files, name)) throw Error(`Local source missing or untracked: ${name}`);",
+            "31:     }",
+            "32:     for (const mapping of selected.mappings || []) {",
+            "33:       if ((!diagnostics && !includes(files, mapping.path)) || !baseline || !includes(baseline.files, mapping.originPath)) {",
+            "34:         throw Error('Mapping names missing local or retained origin source');",
+            "35:       }",
+            "36:     }",
+            "37:     components.push({id: component.id, source: selected, baseline: baseline ? {key: baseline.key, digest: baseline.digest, sha256: hash(json(baseline))} : null});",
+            "38:   }",
+            "39:   const parent = recipe.parent ? snapshot(root, {...recipe.parent, excludeSnapshots: true}, retain) : null;",
+            "40:   const identities = Object.entries(files).sort(([a], [b]) => a.localeCompare(b)).map(([name, value]) => [name, {",
+            "41:     sha256: hash(Buffer.from(value.data, 'base64')), executable: value.executable,",
+            "42:   }]);",
+            "43:   return {",
+            "44:     schemaVersion: 1, parent: parent ? {key: parent.key, digest: parent.digest, sha256: hash(json(parent))} : null,",
+            "45:     edition: recipe.id, manifest: hash(json(recipe)), toolchain: toolsIdentity(),",
+            "46:     components, files: Object.fromEntries(identities),",
+            "47:   };",
+            "48: }"
+          ],
+          "start": 1
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "path": "scripts/edition-authoring/files.mjs",
+      "ranges": [
+        {
+          "end": 85,
+          "lines": [
+            "1: import fs from 'node:fs';",
+            "2: import path from 'node:path';",
+            "3: import crypto from 'node:crypto';",
+            "4: import {execFileSync} from 'node:child_process';",
+            "5: import {offlineRepository} from './offline-git.mjs';",
+            "6: export const hash = value => crypto.createHash('sha256').update(value).digest('hex');",
+            "7: export const json = value => JSON.stringify(value, null, 2) + '\\n';",
+            "8: const environment = {...process.env, GIT_NO_REPLACE_OBJECTS: '1'};",
+            "9: export function git(root, ...args) {",
+            "10:   return execFileSync('git', ['-C', root, ...args], {env: environment, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']}).trim();",
+            "11: }",
+            "12: // Raw Git output, for committed source bytes. The limit fails explicitly rather than truncating.",
+            "13: function output(root, args, input, env = environment) {",
+            "14:   try {",
+            "15:     return execFileSync('git', ['-C', root, ...args], {env, input, maxBuffer: 64 * 1024 * 1024, stdio: [input === undefined ? 'ignore' : 'pipe', 'pipe', 'pipe']});",
+            "16:   } catch (error) {",
+            "17:     if (error.code === 'ENOBUFS') throw Error('Git source output exceeds the 64 MiB acquisition limit');",
+            "18:     throw error;",
+            "19:   }",
+            "20: }",
+            "21: export const raw = (root, ...args) => output(root, args);",
+            "22: export const batch = (root, input, ...args) => output(root, args, input);",
+            "23: // Scope offline object access to this repository reader, never global state.",
+            "24: export function gitReader(root, offline = false) {",
+            "25:   const repository = offline ? offlineRepository(root) : {root, env: environment, close() {}};",
+            "26:   const read = (args, input) => {",
+            "27:     try { return output(repository.root, args, input, repository.env); }",
+            "28:     catch (error) {",
+            "29:       if (offline && typeof error.status === 'number') throw Error('Cannot read required Base objects offline. Run git -C <base-checkout> fsck to diagnose missing or corrupt local objects. If objects are missing locally, run rer refresh-base --ref <commit> --base <base-checkout> without --offline while online to acquire them, then retry offline. Repair corrupt objects before retrying. No copy record was changed.');",
+            "30:       throw error;",
+            "31:     }",
+            "32:   };",
+            "33:   return {git: (...args) => read(args).toString('utf8').trim(), raw: (...args) => read(args), batch: (input, ...args) => read(args, input), close: repository.close};",
+            "34: }",
+            "35: export function safe(name) {",
+            "36:   if (typeof name !== 'string' || !name || name.includes('\\\\') || /[\\x00-\\x1f\\x7f]/.test(name) || path.posix.isAbsolute(name) || name.split('/').some(p => !p || p === '.' || p === '..' || p === '.git')) {",
+            "37:     throw Error(`Unsafe path: ${name}`);",
+            "38:   }",
+            "39:   return name;",
+            "40: }",
+            "41: // One physical spelling/type check for refresh writes and dependencies. Cache",
+            "42: // directory entries only for one read-only planning pass; removals take priority.",
+            "43: export function freedEntries(root) {",
+            "44:   const removed = new Set();",
+            "45:   const identity = (name, stat) => stat.nlink > 1 ? name : `${stat.dev}:${stat.ino}`;",
+            "46:   return {",
+            "47:     add: (name, stat) => removed.add(identity(name, stat)),",
+            "48:     has(relative, stat, parent) {",
+            "49:       if (stat.isFile()) return removed.has(identity(relative, stat));",
+            "50:       if (!parent || !stat.isDirectory() || !removed.size) return false;",
+            "51:       let found = false;",
+            "52:       const empty = directory => fs.readdirSync(directory).every(name => {",
+            "53:         const absolute = path.join(directory, name), child = fs.lstatSync(absolute);",
+            "54:         if (child.isDirectory()) return empty(absolute);",
+            "55:         const freed = child.isFile() && removed.has(identity(path.relative(root, absolute), child));",
+            "56:         found ||= freed;",
+            "57:         return freed;",
+            "58:       });",
+            "59:       return empty(path.join(root, relative)) && found;",
+            "60:     },",
+            "61:   };",
+            "62: }",
+            "63: export function physicalEntry(root, name, {cache = new Map(), freed = () => false} = {}) {",
+            "64:   let parent = root, parentStat = fs.lstatSync(root);",
+            "65:   const parts = safe(name).split('/');",
+            "66:   for (const [i, part] of parts.entries()) {",
+            "67:     const target = path.join(parent, part), relative = parts.slice(0, i + 1).join('/');",
+            "68:     let stat;",
+            "69:     try { stat = fs.lstatSync(target); }",
+            "70:     catch (error) { if (error.code !== 'ENOENT' && error.code !== 'ENOTDIR') throw error; }",
+            "71:     if (!stat || freed(relative, stat, i < parts.length - 1)) return {absent: true, parent, parentStat};",
+            "72:     if (!cache.has(parent)) cache.set(parent, fs.readdirSync(parent));",
+            "73:     const entries = cache.get(parent);",
+            "74:     if (!entries.includes(part)) {",
+            "75:       const physical = entries.find(entry => {",
+            "76:         const other = fs.lstatSync(path.join(parent, entry));",
+            "77:         return other.dev === stat.dev && other.ino === stat.ino;",
+            "78:       });",
+            "79:       return {kind: 'alias', path: relative, physical: path.relative(root, path.join(parent, physical ?? part))};",
+            "80:     }",
+            "81:     if (stat.isSymbolicLink()) return {kind: 'symlink', path: relative};",
+            "82:     if (i < parts.length - 1 && !stat.isDirectory()) return {kind: 'non-directory parent', path: relative};",
+            "83:     if (i === parts.length - 1) return stat.isFile() ? {stat, target, parent, parentStat} : {kind: 'non-regular', path: relative};",
+            "84:     parent = target; parentStat = stat;",
+            "85:   }"
+          ],
+          "start": 1
+        }
+      ],
+      "repository": "just-every/run-vector"
+    },
+    {
+      "head": "601a56e0a5e8e21507003b902949e12723036148",
+      "path": "AGENTS.md",
+      "ranges": [
+        {
+          "end": 145,
+          "lines": [
+            "118: The reference prerender preview uses explicit IPv4 loopback so its listener and",
+            "119: fetch URL agree in Linux containers.",
+            "120: ",
+            "121: Publication checks use system Git and Gitleaks 8.30.1. On macOS or Linux,",
+            "122: run `bash scripts/install-gitleaks.sh` for the checksum-pinned release binary",
+            "123: in `~/.local/bin`; Linux bootstrap uses the same installer in `/usr/local/bin`.",
+            "124: No Git source build or special ref-backend version is required.",
+            "125: ",
+            "126: Read README.md and the relevant implementation guide. Base maintains a",
+            "127: useful complete starting path and reusable source and tools for editions; a",
+            "128: technical foundation is not a finished product. Current editions own their source,",
+            "129: selected graph, integration and releases. Use edition-authoring/README.md for that",
+            "130: protocol, and follow the composition and publisher guides for their committed-source",
+            "131: workflows. These authoring tools do not regenerate existing edition-owned products.",
+            "132: Beacon and HappyToHelp are edition-owned; do not regenerate them from family source.",
+            "133: ",
+            "134: Base is an optional convenience path. RER can manage software authored",
+            "135: independently of Base, the maintained seed stack, onboarding, launcher or",
+            "136: exporter. An agent may adapt the software, runtime and provider targets to the",
+            "137: product, provided it declares the supported effects and verifies the applicable",
+            "138: guarantees. No universal hosted compatibility is implied by using RER or this",
+            "139: repository.",
+            "140: ",
+            "141: Choose boundaries that reduce total implementation, adaptation and maintenance",
+            "142: work. Shared implementations may be substantial and optional, and may live in any",
+            "143: appropriate repository. Deep source, schema, UI and infrastructure changes are",
+            "144: normal. Hooks and configuration do not constrain owners. Agents choose any",
+            "145: integration method, preserving recorded owner requirements, applicable guarantees,"
+          ],
+          "start": 118
+        }
+      ],
+      "repository": "runeditrun/base"
+    },
+    {
+      "head": "601a56e0a5e8e21507003b902949e12723036148",
+      "path": "edition-authoring/README.md",
+      "ranges": [
+        {
+          "end": 47,
+          "lines": [
+            "40: Local `paths` identify files or directories already owned and edited in this",
+            "41: edition; do not list overlapping paths. All other tracked edition files remain",
+            "42: authoritative and ship, including integration, requirements, migration history,",
+            "43: intent and build configuration. `origin` records a comparison baseline, never a",
+            "44: claim that edited local source equals upstream. `parent`, when present, is",
+            "45: `{repository, revision}`. There may be at most one foundation. Semantic",
+            "46: compatibility, route/resource conflicts and migration transitions require product",
+            "47: tests; unique paths alone do not establish compatibility."
+          ],
+          "start": 40
+        },
+        {
+          "end": 68,
+          "lines": [
+            "59: Commands, run at the edition root:",
+            "60: ",
+            "61: - `node scripts/edition-authoring/cli.mjs inspect`: validate and describe selections.",
+            "62: - `... lock`: resolve exact source bytes and retain comparison snapshots under",
+            "63:   `.edition/sources/`; writes `sources.lock.json`. Commit both with the recipe.",
+            "64: - `... check`: verify recipe, tool version, retained baselines and selected bytes",
+            "65:   match the lock. Re-lock after intentional edits; no command silently updates pins.",
+            "66: - `... changes`: report added, removed and modified effective file identities,",
+            "67:   manifest/selection metadata and tool changes since the lock. It does not write",
+            "68:   or accept a new lock. Stage new files to include them in authoring inputs."
+          ],
+          "start": 59
+        }
+      ],
+      "repository": "runeditrun/base"
+    },
+    {
+      "head": "601a56e0a5e8e21507003b902949e12723036148",
+      "path": "foundation/runtime/contract-docs.mjs",
+      "ranges": [
+        {
+          "end": 120,
+          "lines": [
+            "94: function entries(text, parsed) {",
+            "95:   const lines = linesOf(text), headings = outline(text)",
+            "96:   const published = section(text, 'Published clauses').split(/^### /m)[0]",
+            "97:   return [...parsed.clauses].sort((a, b) => a.line - b.line).map(clause => {",
+            "98:     if (!lines[clause.line - 1].startsWith('#### ')) throw Error(`CONTRACT.md:${clause.line}: ${clause.id} needs a level-four clause heading; run convert.`)",
+            "99:     const end = headings.find(item => item.start >= clause.line)?.start ?? lines.length",
+            "100:     let body = block(lines.slice(clause.line, end).join('\\n'))",
+            "101:     const metaText = clause.kind === 'published' ? published.split('\\n').find(line => line.startsWith(`- \\`${clause.id}\\`:`)) : body.split('\\n')[0]",
+            "102:     const meta = metaLine(metaText ?? '')",
+            "103:     if (!['Core', 'Agent surface', 'Later'].includes(meta.Tier)) throw Error(`CONTRACT.md:${clause.line}: ${clause.id} needs a Tier in its ${clause.kind === 'published' ? 'Published clauses list' : 'meta line'}.`)",
+            "104:     if (clause.kind !== 'published') body = block(body.slice(body.indexOf('\\n') + 1))",
+            "105:     if (!body.startsWith('**Requirement.**')) throw Error(`CONTRACT.md:${clause.line}: ${clause.id} body must start **Requirement.**.`)",
+            "106:     const row = cells(lines[clause.row - 1])",
+            "107:     return { ...clause, meta, body, evidenceCell: row[4], gapCell: row[5] }",
+            "108:   })",
+            "109: }",
+            "110: function seedName(text) {",
+            "111:   return /^#\\s+(.+?)\\s*$/m.exec(text)?.[1].replace(/\\s+target product contract$/i, '').replace(/\\s+contract$/i, '') ?? 'Seed'",
+            "112: }",
+            "113: function generatedFiles(text) {",
+            "114:   const initial = parseContract(withoutSummary(text)), rewritten = withSummary(text, initial)",
+            "115:   const parsed = parseContract(rewritten), clauses = entries(rewritten, parsed), seed = seedName(text)",
+            "116:   const target = section(text, 'Product target')",
+            "117:   const journey = target.split('\\n').find(line => /^The primary journey:/.test(line))",
+            "118:   if (!journey) throw Error('CONTRACT.md: Product target needs \"The primary journey:\".')",
+            "119:   const register = section(text, 'Field proof register')",
+            "120:   if (!register) throw Error('CONTRACT.md needs a Field proof register section.')"
+          ],
+          "start": 94
+        },
+        {
+          "end": 139,
+          "lines": [
+            "128:   for (const tier of ['Core', 'Agent surface', 'Later']) {",
+            "129:     acceptance.push(`## ${tier}`)",
+            "130:     const selected = clauses.filter(clause => clause.meta.Tier === tier)",
+            "131:     if (!selected.length) acceptance.push('None.')",
+            "132:     let area",
+            "133:     for (const clause of selected) {",
+            "134:       if (clause.area !== area) { area = clause.area; acceptance.push(`### ${area}`) }",
+            "135:       acceptance.push(`#### ${clause.id} \u2014 ${clause.title}`)",
+            "136:       const info = [tier, clause.kind, `**${clause.status}**`]",
+            "137:       for (const field of ['From', 'Cites', 'Rules', 'Register']) if (clause.meta[field]) info.push(`${field} ${clause.meta[field].split(/\\s*,\\s*/).join(', ')}`)",
+            "138:       acceptance.push(info.join(' \u00b7 '), clause.body, `**Evidence.** ${clause.evidenceCell || 'None.'}\\n**Gap.** ${clause.gapCell || 'None.'}`)",
+            "139:     }"
+          ],
+          "start": 128
+        },
+        {
+          "end": 191,
+          "lines": [
+            "173: function generate(check = false) {",
+            "174:   const text = read('CONTRACT.md')",
+            "175:   if (text === undefined) throw Error('CONTRACT.md does not exist.')",
+            "176:   const coverage = read(covMapPath)",
+            "177:   if (coverage !== undefined) {",
+            "178:     let original",
+            "179:     try { original = anchoredSnapshot(JSON.parse(coverage).old?.commit) }",
+            "180:     catch (error) { throw Error(`${covMapPath}: original SHA is unavailable: ${error.message}`) }",
+            "181:     validateOriginalClaims(original)",
+            "182:   }",
+            "183:   const files = generatedFiles(text), changed = Object.entries(files).filter(([name, contents]) => read(name) !== contents)",
+            "184:   const provenance = readClaimSource(text)",
+            "185:   if (provenance) for (const { name, original } of [{ name: 'docs/contract/ID-MAP.json', original: map => map.old }, { name: 'docs/contract/COVERAGE.json', original: map => map.old?.commit }]) {",
+            "186:     const source = read(name)",
+            "187:     if (source === undefined || original(JSON.parse(source)) !== provenance.old) throw Error(`${name}: original SHA must equal contract-claim-source old ${provenance.old}.`)",
+            "188:   }",
+            "189:   if (check && changed.length) throw Error(changed.map(([name]) => `${name}: generated content differs; run contract-docs write.`).join('\\n'))",
+            "190:   if (!check) for (const [name, contents] of changed) put(name, contents)",
+            "191:   console.log(check ? 'Contract documents are current.' : `Wrote ${changed.length} contract documents.`)"
+          ],
+          "start": 173
+        },
+        {
+          "end": 958,
+          "lines": [
+            "943: const usage = 'Usage: contract-docs.mjs write|check|check-prose|anchor --old <ref>|id-map --old <ref>|coverage init|check --old <ref>|coverage rebase --from <ref> --onto <ref>|convert --old <ref> [--old-acceptance <ref>] [--claim-map <file>]';",
+            "944: function main(args) {",
+            "945:   const [command, ...rest] = args",
+            "946:   const option = (name, description = 'Git reference') => {",
+            "947:     const index = rest.indexOf(name)",
+            "948:     if (index < 0 || !rest[index + 1] || rest[index + 1].startsWith('--')) throw Error(`Provide ${name} and its ${description}.`)",
+            "949:     if (rest.lastIndexOf(name) !== index) throw Error(`Provide ${name} only once.`)",
+            "950:     return rest[index + 1]",
+            "951:   }",
+            "952:   if (command === 'write' && !rest.length) generate()",
+            "953:   else if (command === 'check' && !rest.length) { checkProse(); generate(true) }",
+            "954:   else if (command === 'check-prose' && !rest.length) checkProse()",
+            "955:   else if (command === '--help' && !rest.length) console.log(usage)",
+            "956:   else if (command === 'anchor') {",
+            "957:     const old = snapshot(option('--old'))",
+            "958:     const expected = read(covMapPath) === undefined ? undefined : covReadMap().old?.commit"
+          ],
+          "start": 943
+        }
+      ],
+      "repository": "runeditrun/base"
+    },
+    {
+      "head": "601a56e0a5e8e21507003b902949e12723036148",
+      "path": "foundation/contract-docs.test.mjs",
+      "ranges": [
+        {
+          "end": 38,
+          "lines": [
+            "14: const git = (root, ...args) => execFileSync('git', ['-c', 'user.name=Base test', '-c', 'user.email=base-test@example.invalid', ...args], { cwd: root, encoding: 'utf8' }).trim()",
+            "15: const cli = (root, ...args) => {",
+            "16:   const result = spawnSync(process.execPath, ['src/base/contract-docs.mjs', ...args], { cwd: root, encoding: 'utf8' })",
+            "17:   assert.ifError(result.error)",
+            "18:   return { ...result, output: result.stdout + result.stderr }",
+            "19: }",
+            "20: const succeeds = (root, ...args) => {",
+            "21:   const result = cli(root, ...args)",
+            "22:   assert.equal(result.status, 0, `${args.join(' ')}\\n${result.output}`)",
+            "23:   return result",
+            "24: }",
+            "25: const refuses = (root, path, ...args) => {",
+            "26:   const result = cli(root, ...args)",
+            "27:   assert.notEqual(result.status, 0, `${args.join(' ')} unexpectedly passed`)",
+            "28:   assert.ok(result.output.includes(path), `${path} was not named:\\n${result.output}`)",
+            "29: }",
+            "30: ",
+            "31: async function installation(fixture) {",
+            "32:   const root = await mkdtemp(join(tmpdir(), 'contract-docs-'))",
+            "33:   await cp(join(fixtures, fixture), root, { recursive: true })",
+            "34:   await mkdir(join(root, 'src/base'), { recursive: true })",
+            "35:   await Promise.all(['contract-docs.mjs', 'contract-anchor.mjs', 'contract-prose.mjs', 'contract-prose-patterns.mjs', 'seed-contract.mjs'].map(file =>",
+            "36:     cp(join(import.meta.dirname, 'runtime', file), join(root, 'src/base', file))))",
+            "37:   git(root, 'init', '-q')",
+            "38:   git(root, 'add', '.')"
+          ],
+          "start": 14
+        },
+        {
+          "end": 325,
+          "lines": [
+            "301: test('contract docs convert handwritten contracts and keep generated documents and migration maps accountable', async () => {",
+            "302:   const roots = await Promise.all(['standard', 'legacy', 'legacy', 'legacy'].map(installation))",
+            "303:   try {",
+            "304:     const results = await Promise.allSettled([",
+            "305:       nonProductJourney(),",
+            "306:       (async () => {",
+            "307:         const root = roots[0]",
+            "308:         const original = parseContract(await read(root, 'CONTRACT.md'))",
+            "309:         await generatedJourney(root)",
+            "310:         assert.deepEqual(parseContract(await read(root, 'CONTRACT.md')), original)",
+            "311:         git(root, 'add', '.')",
+            "312:         git(root, 'commit', '-qm', 'Generated documents')",
+            "313:         succeeds(root, 'write')",
+            "314:         assert.equal(git(root, 'status', '--porcelain'), '', 'a second write leaves the committed checkout clean')",
+            "315:         const acceptance = await read(root, 'ACCEPTANCE.md')",
+            "316:         for (const clause of original.clauses) {",
+            "317:           assert.ok(acceptance.includes(`#### ${clause.id} \u2014 ${clause.title}`), clause.id)",
+            "318:           assert.ok(acceptance.includes(clause.gap || '**Gap.** None.'), clause.id)",
+            "319:         }",
+            "320:         const source = await read(root, 'CONTRACT.md')",
+            "321:         const requirement = '**Requirement.** A visitor reads the studio\\'s published entries.'",
+            "322:         const revised = `${requirement} Titles remain searchable.`",
+            "323:         await edit(root, 'CONTRACT.md', source.replace(requirement, revised))",
+            "324:         refuses(root, 'ACCEPTANCE.md', 'check')",
+            "325:         succeeds(root, 'write')"
+          ],
+          "start": 301
+        }
+      ],
+      "repository": "runeditrun/base"
+    },
+    {
+      "head": "601a56e0a5e8e21507003b902949e12723036148",
+      "path": "foundation/initialize.mjs",
+      "ranges": [
+        {
+          "end": 17,
+          "lines": [
+            "14:   const revision = commit(baseRepo, ref)",
+            "15:   const files = select(baseRepo, revision, 'foundation/template')",
+            "16:   const cliFiles = sourceRoots.flatMap(path => select(baseRepo, revision, path, { includeTests: false }))",
+            "17:   const runtime = [...select(baseRepo, revision, 'foundation/runtime'), ...select(baseRepo, revision, 'onboarding', { includeTests: false }), ...select(baseRepo, revision, 'modules/operator-auth', { includeTests: false }), ...select(baseRepo, revision, 'modules/mail', { includeTests: false }), ...cliFiles]"
+          ],
+          "start": 14
+        },
+        {
+          "end": 52,
+          "lines": [
+            "47:     await json(`compositions/${edition}.json`, { schemaVersion: 2, base: 'base', family, edition, modules, source: `editions/${edition}`, copies: [",
+            "48:       { component: family, repository: 'family', source: 'core', target: `src/family/${family}` },",
+            "49:       { component: 'base', repository: 'base', source: 'foundation/runtime', target: 'src/base' },",
+            "50:       { component: 'base', repository: 'base', source: 'LICENSE', target: 'LICENSE' },",
+            "51:       { component: 'base', repository: 'base', source: 'onboarding', target: 'scripts/base-onboarding' },",
+            "52:       ...sourceRoots.map(source => ({ component: source.startsWith('modules/') ? source.split('/')[1] : 'base', repository: 'base', source, target: `scripts/base-cli/${source}` })),"
+          ],
+          "start": 47
+        }
+      ],
+      "repository": "runeditrun/base"
+    }
+  ],
+  "tag": "gr-vector-generator-ownership-1",
+  "view_check": {
+    "argv": [
+      "node",
+      "scripts/contract-docs.mjs",
+      "check"
+    ],
+    "cwd": "/home/agent/rer-consolidation/work/gr-vector-generator-ownership-1/scratch/run-vector",
+    "exit_code": 0,
+    "receipt_kind": "actual terminal output transcribed from the single completed check; no write executed",
+    "stderr": "",
+    "stdout": "Contract views checked for BASE-AGENT-001, BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-004, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-010, BASE-AGENT-011, BASE-AGENT-012, BASE-AGENT-013, DATA-018, ERROR-001, ISSUE-008, ISSUE-025, ISSUE-027, OPS-001, PROJ-014, ROLE-008, VIEW-009\n"
+  }
+}
