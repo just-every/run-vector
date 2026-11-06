@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "command": "projectMembershipJourney with recoveryOnly=true",
+  "screens": [
+    {
+      "clause": "PROJ-017",
+      "name": "project-retained-deletion-1440",
+      "width": 1440
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-retained-deletion-390",
+      "width": 390
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-restored-undo-1440",
+      "width": 1440
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-restored-undo-390",
+      "width": 390
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-stale-undo-refused-1440",
+      "width": 1440
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-stale-undo-refused-390",
+      "width": 390
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-recently-deleted-after-reload-1440",
+      "width": 1440
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-recently-deleted-after-reload-390",
+      "width": 390
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-restored-membership-1440",
+      "width": 1440
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-restored-membership-390",
+      "width": 390
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-retained-document-1440",
+      "width": 1440
+    },
+    {
+      "clause": "PROJ-017",
+      "name": "project-retained-document-390",
+      "width": 390
+    }
+  ],
+  "unexpectedErrors": [],
+  "classified": [
+    "Rendered stale Undo refusal"
+  ],
+  "head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+  "production_build": "Final rer build completed before this exact-HEAD probe",
+  "point_probes": [
+    "retained native content",
+    "newer issue membership",
+    "reassign then clear",
+    "explicit clear",
+    "visible unchanged stale Undo refusal",
+    "real ten-second expiry",
+    "Settings restore after reload"
+  ]
+}

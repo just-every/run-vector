@@ -1,0 +1,101 @@
+{
+  "head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+  "branch": "cloud/sd-vector-c-f196",
+  "repository": "just-every/run-vector",
+  "files": {
+    "src/core/features/project-deletion/repository.ts": "6079267417d357282d1135a1b2e02fdcd6b36f9cd4424129c0ab809bfe3be77a",
+    "src/core/features/project-deletion/routes.ts": "803b3cc74fe88ae77be7396819416b2faeab8a6a640687a6b3fe4ebc08106177",
+    "src/core/features/project-deletion/ui.tsx": "e196c776b3811734c04dc940359b1457a51e5aa49f1d486da5d36aa8949b1df1",
+    "tests/worker/project-deletion-scenario.ts": "95d0bfe778b5b9b55c64fbd9541283d7b53f96967d1b998a35824177533fa481",
+    "tests/worker/project-deletion-archive.ts": "01ff21eb47fe9bdcc831d37adfcc7690b0918b5147c484cd0f9442b23638c772",
+    "tests/e2e/core-project-deletion-journey.mjs": "5580f6e8bd8ad6a51e9cbb7436c5f32ee42a06881d1251b55e20cbdd129114bf",
+    "sdk/generated.ts": "76a8d4b4f71160d3d7602c19bfd29e93d96f438f53817316644fec86e308af18",
+    "CONTRACT.md": "ed5dc908281a1a414275eecfed04d4fb06086a233f9d024c1dc6c85bdb796266",
+    "sources.lock.json": "00f9d57a2f31e5a73fdaf27434612094134ee779135830d4d8a1c3db0030dfd9"
+  },
+  "local_checks": [
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node sdk/generate.mjs --check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/sync-integration.mjs --check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write PROJ-017 PROJ-003",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check PROJ-017 PROJ-003",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    }
+  ],
+  "worker_comparison": {
+    "candidate_initial": {
+      "exit": 1,
+      "total": 9,
+      "passed": 5,
+      "timeouts": 4
+    },
+    "main_baseline": {
+      "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "exit": 1,
+      "total": 6,
+      "passed": 3,
+      "timeouts": 3
+    },
+    "classification": "The same three role-matrix timeout tests fail on unchanged main on this VM. No product assertions were changed to repair those timeouts. The focused recovery test passes with a command-only 180-second fixture timeout; committed timeout configuration remains unchanged."
+  },
+  "exact_sha_probes": {
+    "head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+    "browser": {
+      "exit": 0,
+      "screens": 12,
+      "widths": [
+        1440,
+        390
+      ],
+      "unexpected_errors": 0
+    },
+    "worker": {
+      "command": "pnpm test:worker tests/worker/project-membership.test.ts --testTimeout=180000",
+      "exit": 0,
+      "total": 2,
+      "passed": 2,
+      "tests_duration_ms": 29290
+    },
+    "worker_default": {
+      "command": "pnpm test:worker tests/worker/project-membership.test.ts",
+      "exit": 0,
+      "total": 2,
+      "passed": 2,
+      "tests_duration_ms": 29270,
+      "timeout_configuration": "unchanged repository default"
+    }
+  },
+  "ci": {
+    "conclusion": null,
+    "head_sha": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42155096593",
+    "status": "in_progress",
+    "observed_at": "2026-11-06T03:17:51.556604+00:00",
+    "id": 42155096593
+  }
+}

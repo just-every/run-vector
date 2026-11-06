@@ -1,0 +1,21 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f196",
+  "head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+  "remote_head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+  "product_push": "success",
+  "clean_worktree": true,
+  "identity_check": "All six candidate commits, including every parent, have fleet authors and committers and no co-author trailers",
+  "status_rows": 272,
+  "before": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67
+  },
+  "after": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66
+  },
+  "generated_views_committed": false
+}

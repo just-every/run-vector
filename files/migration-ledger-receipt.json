@@ -1,0 +1,7 @@
+{
+  "command": "scripts/data/ledger.mjs through its IPC door",
+  "exit": 0,
+  "result": {
+    "platform": false
+  }
+}

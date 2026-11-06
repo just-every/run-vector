@@ -1,0 +1,63 @@
+
+> vector@0.4.1 test:integrations /home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector
+> node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/integration-runtime.mjs && node tests/e2e/integrations/outbound-loopback.mjs
+
+(node:1556) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/errors:983
+  const err = new Error(message);
+              ^
+
+Error: Command failed: /home/agent/.rer/node/node-v22.20.0-linux-x64/bin/node /home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector/sdk/generate.mjs --check
+file:///home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector/sdk/generate.mjs:78
+  if (await readFile(target, 'utf8').catch(() => '') !== output) throw Error('SDK is stale; run node sdk/generate.mjs');
+                                                                       ^
+
+Error: SDK is stale; run node sdk/generate.mjs
+    at file:///home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector/sdk/generate.mjs:78:72
+
+Node.js v22.20.0
+
+    at genericNodeError (node:internal/errors:983:15)
+    at wrappedFn (node:internal/errors:537:14)
+    at checkExecSyncError (node:child_process:916:11)
+    at execFileSync (node:child_process:952:15)
+    at buildSdk (file:///home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector/sdk/build.mjs:8:3)
+    at file:///home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector/tests/e2e/integration-runtime.mjs:21:2
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    Buffer(0) [Uint8Array] [],
+    Buffer(450) [Uint8Array] [
+      102, 105, 108, 101,  58,  47,  47,  47, 104, 111, 109, 101,
+       47,  97, 103, 101, 110, 116,  47, 114, 101, 114,  45,  99,
+      111, 110, 115, 111, 108, 105, 100,  97, 116, 105, 111, 110,
+       47, 119, 111, 114, 107,  47, 115, 100,  45, 118, 101,  99,
+      116, 111, 114,  45,  99,  45, 102,  49,  57,  54,  47, 114,
+      117, 110,  45, 118, 101,  99, 116, 111, 114,  47, 115, 100,
+      107,  47, 103, 101, 110, 101, 114,  97, 116, 101,  46, 109,
+      106, 115,  58,  55,  56,  10,  32,  32, 105, 102,  32,  40,
+       97, 119,  97, 105,
+      ... 350 more items
+    ]
+  ],
+  pid: 1586,
+  stdout: Buffer(0) [Uint8Array] [],
+  stderr: Buffer(450) [Uint8Array] [
+    102, 105, 108, 101,  58,  47,  47,  47, 104, 111, 109, 101,
+     47,  97, 103, 101, 110, 116,  47, 114, 101, 114,  45,  99,
+    111, 110, 115, 111, 108, 105, 100,  97, 116, 105, 111, 110,
+     47, 119, 111, 114, 107,  47, 115, 100,  45, 118, 101,  99,
+    116, 111, 114,  45,  99,  45, 102,  49,  57,  54,  47, 114,
+    117, 110,  45, 118, 101,  99, 116, 111, 114,  47, 115, 100,
+    107,  47, 103, 101, 110, 101, 114,  97, 116, 101,  46, 109,
+    106, 115,  58,  55,  56,  10,  32,  32, 105, 102,  32,  40,
+     97, 119,  97, 105,
+    ... 350 more items
+  ]
+}
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,23 @@
+{
+  "head": "922e374a1f3f1f52cce2895bb404b75d792f578b",
+  "lock": {
+    "command": "pnpm sources:lock then pnpm sources:check",
+    "exit": 0
+  },
+  "views": {
+    "command": "node scripts/contract-docs.mjs write PROJ-017 PROJ-003 then node scripts/contract-docs.mjs check PROJ-017 PROJ-003",
+    "exit": 0,
+    "generated_files_restored_from_main": [
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ]
+  },
+  "ledger": {
+    "command": "node scripts/sync-integration.mjs --check and scripts/data/ledger.mjs IPC door",
+    "exit": 0
+  },
+  "first_party": {
+    "command": "npx -y @runeditrun/rer check --profile first-party",
+    "exit": 0
+  }
+}

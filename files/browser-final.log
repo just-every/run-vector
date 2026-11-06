@@ -1,0 +1,10 @@
+(node:4525) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE PROJ-017 expired Undo: real ten-second expiry -> control removed, HTTP 409 and unchanged issue and recovery state; Recently deleted restore remains usable
+PROBE PROJ-017 reassignment: native deletion, later issue assignment and Settings recovery -> newer project preserved; untouched issue, milestone and document restored with original identities
+PROBE PROJ-017 stale Undo: changed membership -> rendered refusal and HTTP 409 with unchanged issue content, activity and recovery entries
+PROBE PROJ-017 explicit clearing: reassign then clear, and explicit later clear -> both issues remain unassigned after restore
+{"passed":true,"screens":12,"evidence":"/home/agent/rer-consolidation/work/sd-vector-c-f196/run-vector/.artifacts/project-recovery-proof"}

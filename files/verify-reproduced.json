@@ -1,0 +1,9 @@
+{
+  "head": "6c9d7e07498d1c190052ff287b45c4640535586b",
+  "job": 127670485680,
+  "run": 42149847875,
+  "command": "pnpm test:integrations",
+  "test": "sdk/generate.mjs --check",
+  "exit": 1,
+  "failure": "Error: SDK is stale; run node sdk/generate.mjs"
+}
