@@ -4630,7 +4630,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/subject.ts": {
-      "sha256": "3d583ec4cf5a7f8850cffe38093a012755e8c3b5095bf4959b74362cc3c2a24a",
+      "sha256": "e0f88bf39abbb932d47e7a3c3ccfc4c176b416639249305ff8bc6c0f3b1c37a9",
       "executable": false
     },
     "src/core/features/data/http-restore.ts": {
@@ -9310,7 +9310,7 @@
       "executable": false
     },
     "tests/worker/imported-person-erasure.test.ts": {
-      "sha256": "12b46cf5f1733b50a8e11b3a84c7b6993a57cf8434a1908672f1856e9c193eb6",
+      "sha256": "5a64a7fc0ccf8d839f52427880ee3ddb84576e3adb5a904cdf3927757c6d3f73",
       "executable": false
     },
     "tests/worker/initiatives-scenario.ts": {
