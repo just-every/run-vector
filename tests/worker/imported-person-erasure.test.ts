@@ -38,6 +38,15 @@ async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWor
   ], 'synthetic-vector-erasure-control');
   let control = await f.createRun(controls, await f.preview(controls));
   while (control.progress.unfinished) control = await f.resume(control);
+  const controlReport = await f.call('/data/import/runs/' + control.id + '/report');expect(controlReport.status).toBe(200);
+  const controlIds = (await controlReport.json() as { mapping: { identifier: string }[] }).mapping.map(row => row.identifier);
+  const controlIssue = async () => {
+    const response = await f.call('/issues/' + controlIds[1]);expect(response.status).toBe(200);
+    return response.json() as Promise<{ version: number; title: string; dependencies: { identifier: string }[] }>;
+  };
+  const beforeControl = await controlIssue(), editedTitle = 'Keep this native edit and dependency';
+  expect(beforeControl.dependencies.map(row => row.identifier)).toEqual([controlIds[0]]);
+  expect((await f.call('/issues/' + controlIds[1], 'PATCH', { expectedVersion: beforeControl.version, title: editedTitle })).status).toBe(200);
   const pendingInput = input([
     row(person, 'Unpublished personal endpoint'),
     row('SYNTHETIC-PENDING-ARRAY', 'Unpublished array link', ['source:' + person]),
@@ -69,9 +78,13 @@ async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWor
   expect(archived.entries.every(entry => entry.erased)).toBe(true);
   expect(decoded(control.id).entries.every(entry => !entry.erased)).toBe(true);
   expect(JSON.stringify(decoded(control.id))).toContain('source:' + similar);
+  const afterControl = await controlIssue();expect(afterControl.title).toBe(editedTitle);
+  expect(afterControl.dependencies).toEqual(beforeControl.dependencies);
   expect(decoded(pending.id).entries.filter(entry => !entry.erased).map(entry => entry.source.sourceId)).toEqual(['SYNTHETIC-PENDING-CONTROL']);
   const originals = await f.call('/data/import/runs/' + run.id + '/originals');expect(originals.status).toBe(200);
-  expect(await originals.text()).not.toContain(original.base64);
+  const retainedOriginals = await originals.json() as { original: { status: string; reason?: string } }[];
+  expect(retainedOriginals.length).toBeGreaterThan(0);
+  expect(retainedOriginals.every(row => row.original.status === 'unavailable' && row.original.reason === 'unavailable-after-erasure')).toBe(true);
   while (pending.progress.unfinished) pending = await f.resume(pending);
   expect(pending.state).toBe('completed');
   const report = await f.call('/data/import/runs/' + pending.id + '/report');expect(report.status).toBe(200);
