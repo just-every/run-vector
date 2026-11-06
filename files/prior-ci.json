@@ -1,0 +1,10 @@
+{
+  "conclusion": "failure",
+  "created_at": "2026-11-05T22:55:14Z",
+  "event": "push",
+  "head_sha": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42125490314",
+  "id": 42125490314,
+  "name": "Verify",
+  "status": "completed"
+}

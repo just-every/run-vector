@@ -1,0 +1,30 @@
+[
+  {
+    "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+    "job": 127588990690,
+    "command": "pnpm verify:ci --shard administration",
+    "test": "[OPS-003] empty workspace administration through real mobile browser",
+    "exit": 1,
+    "failure": "integrations/ui/bitbucket-settings.tsx#BitbucketSettings form 1 names an unregistered door undefined",
+    "node": "22.20.0"
+  },
+  {
+    "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+    "job": 127588990707,
+    "command": "pnpm verify:ci --shard hosted-artifact",
+    "test": "integration:check",
+    "exit": 1,
+    "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+    "node": "22.20.0"
+  },
+  {
+    "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+    "job": 127588990797,
+    "command": "pnpm verify:ci --shard worker-2",
+    "test": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+    "exit": 1,
+    "failure": "native fixture coverage from src/core/features/roles/doors.ts: missing DELETE, POST and credential re-entry Bitbucket door fixtures",
+    "node": "22.20.0",
+    "retryResult": "17 files and 32 tests passed; only the role-matrix fixture census failed. The archive-recovery timeout did not recur."
+  }
+]

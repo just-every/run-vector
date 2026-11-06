@@ -1,89 +1,122 @@
 {
-  "tag": "sd-vector-c-f187",
-  "repository": "just-every/run-vector",
-  "branch": "cloud/sd-vector-c-f187",
-  "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
-  "base": "7c811313e446ae19630f387f2ac927dafba3dbe5",
-  "clause": "BITBUCKET-001",
-  "before": "missing",
   "after": "partial",
-  "countsBefore": {
-    "done": 136,
-    "partial": 69,
-    "missing": 67,
-    "total": 272
-  },
-  "countsAfter": {
-    "done": 136,
-    "partial": 70,
-    "missing": 66,
-    "total": 272
-  },
-  "ci": {
-    "conclusion": null,
-    "created_at": "2026-11-05T22:55:14Z",
-    "event": "push",
-    "head_sha": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
-    "html_url": "https://github.com/just-every/run-vector/actions/runs/42125490314",
-    "id": 42125490314,
-    "name": "Verify",
-    "status": "in_progress"
-  },
-  "pr": null,
-  "productPushed": true,
-  "checks": {
-    "worker": {
-      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/bitbucket-links.test.ts tests/worker/bitbucket-upgrade.test.ts tests/worker/github-links.test.ts",
+  "assertionsRemoved": false,
+  "base": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "before": "missing",
+  "blocker": {
+    "candidateShardRetry": "Archive test passed; only the role-matrix fixture coverage assertion failed.",
+    "failedHead": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+    "failure": "Test timed out in 180000ms.",
+    "job": 127588990797,
+    "mainProbe": {
+      "candidateShardRetryArchivePassed": true,
+      "ciFailure": "Test timed out in 180000ms.",
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/data-http-audit-recovery.test.ts",
       "exit": 0,
-      "tests": 3,
-      "files": 3,
-      "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7"
+      "head": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+      "node": "22.20.0",
+      "runner": "same cloud VM as the candidate reproduction",
+      "testDurationMs": 142670,
+      "testOrTimeoutChanged": false,
+      "testsPassed": 1,
+      "timeoutReproduced": false,
+      "timezone": "UTC",
+      "totalDurationSeconds": 153.79
     },
+    "rule": "If it does not reproduce, stop BLOCKED with that output; do not guess a fix.",
+    "run": 42125490314,
+    "test": "tests/worker/data-http-audit-recovery.test.ts:7",
+    "timeoutReproduced": false
+  },
+  "branch": "cloud/sd-vector-c-f187",
+  "candidateRunSite": "Mac fleet gate",
+  "checks": {
     "browser": {
-      "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
-      "passed": true,
       "assertionWidth": 1440,
+      "credentialsCaptured": false,
+      "head": "19d9203c5932803b9fe7b1621181008195d72e78",
+      "liveProvider": false,
+      "passed": true,
       "screenWidths": [
         1440,
         390
-      ],
-      "liveProvider": false,
-      "credentialsCaptured": false
-    },
-    "typecheck": {
-      "command": "pnpm typecheck",
-      "exit": 0
+      ]
     },
     "build": {
       "command": "cloud_run npx -y @runeditrun/rer build",
       "exit": 0,
-      "relevantProductBytesUnchangedSinceBuild": true
+      "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+      "laterChanges": "Form-census registry, Viewer probes and generated deployment declaration; final touched runtime proof and typecheck pass."
     },
     "firstParty": {
       "command": "cloud_run npx -y @runeditrun/rer check --profile first-party",
       "exit": 0
     },
-    "views": {
-      "write": "node scripts/contract-docs.mjs write BITBUCKET-001",
-      "check": "node scripts/contract-docs.mjs check BITBUCKET-001",
+    "integrationDeclaration": {
+      "check": "pnpm integration:check",
       "exit": 0,
-      "generatedFilesRestored": true,
-      "generatedFilesCommitted": false
-    },
-    "lock": {
-      "write": "pnpm sources:lock",
-      "check": "pnpm sources:check",
-      "exit": 0
+      "write": "pnpm integration:sync"
     },
     "ledger": {
-      "command": "matchMigrationLedger over all native migration names and content digests; populated upgrade and tracked-ledger HTTP restore in the Worker journey",
+      "command": "node $HOME/rer-consolidation/work/sd-vector-c-f187/packet/migration-ledger-check.mjs; populated upgrade and tracked-ledger HTTP restore in the Worker journey",
       "exit": 0,
       "migrationFiles": 126
+    },
+    "lock": {
+      "check": "pnpm sources:check",
+      "exit": 0,
+      "write": "pnpm sources:lock"
+    },
+    "node": "22.20.0",
+    "roleDoorCensus": {
+      "command": "assertRoleDoorCoverage from tests/e2e/role-door-coverage.mjs",
+      "exit": 0
+    },
+    "typecheck": {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    "views": {
+      "check": "node scripts/contract-docs.mjs check BITBUCKET-001",
+      "exit": 0,
+      "generatedFilesCommitted": false,
+      "generatedFilesRestored": true,
+      "write": "node scripts/contract-docs.mjs write BITBUCKET-001"
+    },
+    "worker": {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/bitbucket-links.test.ts tests/worker/bitbucket-upgrade.test.ts tests/worker/github-links.test.ts tests/worker/role-matrix.test.ts",
+      "exit": 0,
+      "files": 4,
+      "head": "19d9203c5932803b9fe7b1621181008195d72e78",
+      "tests": 9
     }
   },
-  "publicationScan": "Mac fleet gate, not run in cloud",
-  "landing": "not performed",
-  "candidateRunSite": "Mac fleet gate",
+  "ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "19d9203c5932803b9fe7b1621181008195d72e78",
+    "html_url": null,
+    "id": null,
+    "name": "Verify",
+    "reason": "The ten-call GitHub budget was exhausted while observing and diagnosing the previous candidate.",
+    "status": "unobserved"
+  },
+  "clause": "BITBUCKET-001",
+  "countsAfter": {
+    "done": 136,
+    "missing": 66,
+    "partial": 70,
+    "total": 272
+  },
+  "countsBefore": {
+    "done": 136,
+    "missing": 67,
+    "partial": 69,
+    "total": 272
+  },
+  "githubCalls": 10,
+  "handoff": "BLOCKED",
+  "head": "19d9203c5932803b9fe7b1621181008195d72e78",
   "held": [
     "branches",
     "commits",
@@ -93,7 +126,26 @@
     "supplied Claude Opus interface qualification and independent gate",
     "scoped delegation and broader provider boundaries"
   ],
-  "assertionsRemoved": false,
-  "testRegistrationsAdded": 2,
-  "parentStatusRowsRetained": 272
+  "landing": "not performed",
+  "parentStatusRowsRetained": 272,
+  "pr": null,
+  "priorCi": {
+    "conclusion": "failure",
+    "created_at": "2026-11-05T22:55:14Z",
+    "event": "push",
+    "head_sha": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42125490314",
+    "id": 42125490314,
+    "name": "Verify",
+    "status": "completed"
+  },
+  "productPushReceipt": "repair-push.txt",
+  "productPushed": true,
+  "publicationScan": "Mac fleet gate, not run in cloud",
+  "repairCommit": "19d9203c5932803b9fe7b1621181008195d72e78",
+  "repairRounds": 1,
+  "repository": "just-every/run-vector",
+  "reproductions": "verify-reproduced.json",
+  "tag": "sd-vector-c-f187",
+  "testRegistrationsAdded": 2
 }

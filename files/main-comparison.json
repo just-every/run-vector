@@ -1,0 +1,15 @@
+{
+  "head": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/data-http-audit-recovery.test.ts",
+  "node": "22.20.0",
+  "timezone": "UTC",
+  "runner": "same cloud VM as the candidate reproduction",
+  "exit": 0,
+  "testsPassed": 1,
+  "testDurationMs": 142670,
+  "totalDurationSeconds": 153.79,
+  "candidateShardRetryArchivePassed": true,
+  "ciFailure": "Test timed out in 180000ms.",
+  "timeoutReproduced": false,
+  "testOrTimeoutChanged": false
+}
