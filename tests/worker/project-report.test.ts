@@ -5,10 +5,11 @@ import { scheduled } from "../../src/core/app/scheduled";
 import { bindings } from "./base-auth-fixture";
 import { setupAdministration } from "./administration-fixture";
 import { projectDetailSchema } from "../../src/core/features/projects/ui/data";
+import { projectForecastJourney } from "./project-forecast-scenario";
 
 afterEach(() => vi.useRealTimers());
 
-it("[REPORT-002] a project's scope and completion by day follow adds, moves, deletions and reopenings and project a completion date by the stated rule", async () => {
+it("[REPORT-002 PUSH-007] a project's scope and completion by day follow adds, moves, deletions and reopenings and project a completion date by the stated rule", { timeout: 60_000 }, async () => {
   const f = await setupAdministration();
   vi.useFakeTimers({ toFake: ["Date"] });
   const at = (date: string) => vi.setSystemTime(new Date(date));
@@ -97,6 +98,8 @@ it("[REPORT-002] a project's scope and completion by day follow adds, moves, del
     await patch(first.identifier, { statusId: status("completed") });
     await patch(canceled.identifier, { statusId: status("canceled") });
   }
+  vi.useRealTimers();
+  await projectForecastJourney();
 });
 
 it('[PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives',async()=>{await documentJourney();});

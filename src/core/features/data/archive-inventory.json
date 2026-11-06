@@ -2248,6 +2248,24 @@
     "created_at",
     "updated_at"
   ],
+  "project_dependencies": [
+    "id",
+    "workspace_id",
+    "blocked_project_id",
+    "blocking_project_id",
+    "created_at"
+  ],
+  "project_notifications": [
+    "id",
+    "event_id",
+    "project_id",
+    "related_project_id",
+    "recipient_id",
+    "actor_id",
+    "actor_name",
+    "created_at",
+    "read_at"
+  ],
   "custom_field_definitions": [
     "id",
     "workspace_id",

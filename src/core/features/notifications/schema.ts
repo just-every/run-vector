@@ -26,6 +26,7 @@ export type InboxItem = {
   eventId: string;
   identifier: string;
   documentId?: string | null;
+  projectId?: string | null;
   title: string;
   actor: string | null;
   causes: NotificationKind[];
