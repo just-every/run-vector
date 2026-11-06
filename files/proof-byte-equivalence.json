@@ -1,0 +1,18 @@
+{
+  "proofHead": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "candidateHead": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
+  "command": "git diff --exit-code <proof-head> <candidate-head> -- <listed proof paths>",
+  "paths": [
+    "src/core/features/integrations/gitlab",
+    "src/core/features/integrations/ui/gitlab-settings.tsx",
+    "src/core/features/roles",
+    "tests/worker/gitlab-setup.test.ts",
+    "tests/worker/gitlab-upgrade.test.ts",
+    "tests/e2e/gitlab-setup-journey.mjs",
+    "tests/e2e/integration-runtime.mjs",
+    "management/integration/deployment-spec.json",
+    "migrations/core/0126_gitlab_setup.sql"
+  ],
+  "exit": 0,
+  "meaning": "The final candidate changes only contract evidence and its source lock; the tested runtime, tests, authority registry and deployment metadata are byte-identical."
+}

@@ -1,0 +1,15 @@
+{
+  "head": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
+  "branch": "cloud/sd-vector-c-f189-pc1",
+  "repository": "just-every/run-vector",
+  "preservedSavedHead": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "repairProofHead": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "mainMerged": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "changesSinceRepairProof": [
+    "CONTRACT.md",
+    "sources.lock.json"
+  ],
+  "runtimeAndTestBytesUnchanged": true,
+  "generatedViewsCommitted": false,
+  "PR": null
+}

@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "command": "node scripts/contract-docs.mjs write GITLAB-001",
+      "exit": 0,
+      "log": "final-contract-write.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check GITLAB-001",
+      "exit": 0,
+      "log": "final-contract-check.log"
+    },
+    {
+      "command": "node scripts/edition-authoring/cli.mjs lock",
+      "exit": 0,
+      "log": "final-lock.log"
+    },
+    {
+      "command": "node scripts/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "log": "final-lock-check.log"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "log": "final-first-party.log"
+    }
+  ],
+  "viewsRestoredFrom": "origin/main",
+  "ledger": "none: no migration changed; integration freshness and historical native/platform restore remain exercised by the hosted-artifact shard"
+}

@@ -1,0 +1,13 @@
+{
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "job": "127589212030",
+  "command": "pnpm verify:ci --shard administration",
+  "environment": {
+    "TZ": "UTC",
+    "VECTOR_VERIFY_PREBUILT_SHA": "dc2688516daa1c31503a405c9327277d056d4ab0",
+    "VITEST_MAX_WORKERS": "1"
+  },
+  "exit": 1,
+  "test": "[OPS-003] empty workspace administration through real mobile browser",
+  "failure": "integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined"
+}

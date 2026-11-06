@@ -1,0 +1,51 @@
+{
+  "head": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
+  "priorEntryHead": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "priorOverallExit": 124,
+  "reason": "The full administration shard exceeded its outer 20-minute command limit after the 78-check administration browser journey and intake command passed. Resume the unfinished theme command and remaining commands from the unchanged verification plan.",
+  "alreadyPassed": [
+    {
+      "command": "test:admin",
+      "startedAt": "2026-11-06T01:24:20.445Z",
+      "completedAt": "2026-11-06T01:42:11.794Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/current-intake-runtime.mjs",
+      "startedAt": "2026-11-06T01:42:11.812Z",
+      "completedAt": "2026-11-06T01:43:43.051Z",
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "command": "node tests/e2e/theme-runtime.mjs",
+      "startedAt": "2026-11-06T01:45:30.376Z",
+      "completedAt": "2026-11-06T01:47:44.304Z",
+      "exit": 0,
+      "signal": null
+    },
+    {
+      "command": "node tests/e2e/housekeeping-runtime.mjs",
+      "startedAt": "2026-11-06T01:47:44.305Z",
+      "completedAt": "2026-11-06T01:49:32.771Z",
+      "exit": 0,
+      "signal": null
+    },
+    {
+      "command": "test:wave-b",
+      "startedAt": "2026-11-06T01:49:32.771Z",
+      "completedAt": "2026-11-06T01:50:54.370Z",
+      "exit": 0,
+      "signal": null
+    },
+    {
+      "command": "test:base-auth",
+      "startedAt": "2026-11-06T01:50:54.371Z",
+      "completedAt": "2026-11-06T01:51:57.134Z",
+      "exit": 0,
+      "signal": null
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,12 @@
+{
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "job": "127589212069",
+  "command": "pnpm verify:ci --shard hosted-artifact",
+  "environment": {
+    "TZ": "UTC",
+    "VITEST_MAX_WORKERS": "1"
+  },
+  "exit": 1,
+  "test": "integration:check",
+  "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync"
+}

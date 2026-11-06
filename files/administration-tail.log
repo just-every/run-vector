@@ -1,0 +1,41 @@
+RESUME node tests/e2e/theme-runtime.mjs
+(node:28030) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[VIEW-011] dark first paint, per-member Light across reload and a second browser, live System, AA text and control contrast in both themes at 1440/390
+RESUME node tests/e2e/housekeeping-runtime.mjs
+(node:29200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[AUTO-003] preview, save, scheduled close and archive with reader-visible reasons and follower notifications, archived page, lists and search at 1440/390
+RESUME test:wave-b
+
+> vector@0.4.1 test:wave-b /home/agent/rer-consolidation/work/sd-vector-c-f189-pc1/run-vector
+> node tests/e2e/wave-b-runtime.mjs
+
+(node:30380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Wave B: signed owner claim, second refusal, editor and CSP at 1440/390 passed.
+RESUME test:base-auth
+
+> vector@0.4.1 test:base-auth /home/agent/rer-consolidation/work/sd-vector-c-f189-pc1/run-vector
+> node tests/e2e/base-auth-runtime.mjs
+
+(node:31438) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+Emitted Worker relay: exact POST envelope + bearer + JSON; redirect=manual; Auto-Submitted accepted; sign-in confirmed.
+Emitted Worker relay: invitation sent; 429 queued for Retry-After=120; early Cron withheld; due Cron accepted attempt 2.
+Emitted Worker relay: 302 refused without following; 401 retires the link and returns the public mail problem.
+Emitted Worker browser: login_hint prefilled without submitting; blank/invalid hints ignored; plain 401 mail problem at 1440 and 390.
+Base authentication runtime: 9 checks passed; /home/agent/rer-consolidation/work/sd-vector-c-f189-pc1/run-vector/.wrangler/base-auth-evidence
+Administration remaining commands passed without changing any verification command or assertion.

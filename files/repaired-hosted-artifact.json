@@ -1,0 +1,5 @@
+{
+  "head": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
+  "command": "pnpm verify:ci --shard hosted-artifact",
+  "exit": 0
+}

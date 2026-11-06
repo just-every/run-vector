@@ -1,0 +1,29 @@
+{
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "branch": "cloud/sd-vector-c-f189-pc1",
+  "counts": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66
+  },
+  "rows": 272,
+  "GITLAB-001": "partial",
+  "previousVerify": 42125559127,
+  "previousFailedJobs": [
+    127589212030,
+    127589212069,
+    127599215538
+  ],
+  "failedLogCommands": [
+    {
+      "command": "gh run view 42125559127 --repo just-every/run-vector --job 127589212030 --log-failed",
+      "exit": 0,
+      "bytes": 0
+    },
+    {
+      "command": "gh run view 42125559127 --repo just-every/run-vector --job 127589212069 --log-failed",
+      "exit": 0,
+      "bytes": 0
+    }
+  ]
+}

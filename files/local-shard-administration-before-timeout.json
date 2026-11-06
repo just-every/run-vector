@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-11-06T01:24:20.427Z",
+  "sourceCommit": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "note": "Vector CI test suites and build checks.",
+  "passed": false,
+  "checks": [
+    {
+      "command": "test:admin",
+      "startedAt": "2026-11-06T01:24:20.445Z",
+      "completedAt": "2026-11-06T01:42:11.794Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/current-intake-runtime.mjs",
+      "startedAt": "2026-11-06T01:42:11.812Z",
+      "completedAt": "2026-11-06T01:43:43.051Z",
+      "passed": true
+    }
+  ],
+  "shard": "administration",
+  "reusedBuildSha": "1504376ee805f68dcc6a68a85b6b429acca567ae"
+}

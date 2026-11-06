@@ -1,0 +1,58 @@
+{
+  "savedHead": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "repairRound": 1,
+  "changes": [
+    {
+      "path": "src/core/features/roles/settings-doors.ts",
+      "effect": "Registers the already implemented GitLab discovery form in the independent permission census."
+    },
+    {
+      "path": "management/integration/deployment-spec.json",
+      "effect": "Includes unchanged forward migration 0126 in the artifact producer contract."
+    }
+  ],
+  "preserved": {
+    "savedAncestry": true,
+    "mainForecastWork": true,
+    "allStatusRows": 272,
+    "assertionsRemoved": 0,
+    "testsAdded": 0,
+    "workflowEdited": false,
+    "basePinChanged": false
+  },
+  "localChecks": [
+    {
+      "command": "pnpm test:worker tests/worker/gitlab-setup.test.ts tests/worker/gitlab-upgrade.test.ts",
+      "exit": 0,
+      "files": 2,
+      "tests": 2
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "assertRoleDoorCoverage() through the native app and Settings module graph",
+      "exit": 0,
+      "routes": 363,
+      "forms": 26
+    },
+    {
+      "command": "pnpm integration:sync && pnpm integration:check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write GITLAB-001 && node scripts/contract-docs.mjs check GITLAB-001",
+      "exit": 0,
+      "generatedViewsCommitted": false
+    },
+    {
+      "command": "pnpm sources:lock && pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    }
+  ]
+}

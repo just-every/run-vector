@@ -1,0 +1,20 @@
+[
+  {
+    "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+    "job": "127589212030",
+    "command": "pnpm verify:ci --shard administration",
+    "test": "[OPS-003] empty workspace administration through real mobile browser",
+    "exit": 1,
+    "failure": "integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined",
+    "repair": "Register the real GitLab Settings form with its already mounted management POST door."
+  },
+  {
+    "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+    "job": "127589212069",
+    "command": "pnpm verify:ci --shard hosted-artifact",
+    "test": "integration:check",
+    "exit": 1,
+    "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+    "repair": "Run the existing integration generator to include unchanged forward migration 0126 in the deployment specification."
+  }
+]

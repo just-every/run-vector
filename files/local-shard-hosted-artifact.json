@@ -1,0 +1,58 @@
+{
+  "startedAt": "2026-11-06T01:17:34.265Z",
+  "sourceCommit": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "note": "Vector CI test suites and build checks.",
+  "passed": true,
+  "checks": [
+    {
+      "command": "test:public-site",
+      "startedAt": "2026-11-06T01:17:34.269Z",
+      "completedAt": "2026-11-06T01:17:55.784Z",
+      "passed": true
+    },
+    {
+      "command": "verify",
+      "startedAt": "2026-11-06T01:17:55.792Z",
+      "completedAt": "2026-11-06T01:20:08.433Z",
+      "passed": true
+    },
+    {
+      "command": "build",
+      "startedAt": "2026-11-06T01:20:08.451Z",
+      "completedAt": "2026-11-06T01:20:42.652Z",
+      "passed": true
+    },
+    {
+      "command": "test:access",
+      "startedAt": "2026-11-06T01:20:42.659Z",
+      "completedAt": "2026-11-06T01:21:40.875Z",
+      "passed": true
+    },
+    {
+      "command": "test:mutation-refresh",
+      "startedAt": "2026-11-06T01:21:40.880Z",
+      "completedAt": "2026-11-06T01:22:31.411Z",
+      "passed": true
+    },
+    {
+      "command": "build",
+      "startedAt": "2026-11-06T01:22:31.411Z",
+      "completedAt": "2026-11-06T01:23:02.641Z",
+      "passed": true
+    },
+    {
+      "command": "test:integrations",
+      "startedAt": "2026-11-06T01:23:02.641Z",
+      "completedAt": "2026-11-06T01:33:52.718Z",
+      "passed": true
+    },
+    {
+      "command": "test:archive-upgrade",
+      "startedAt": "2026-11-06T01:33:52.722Z",
+      "completedAt": "2026-11-06T01:40:42.833Z",
+      "passed": true
+    }
+  ],
+  "shard": "hosted-artifact",
+  "completedAt": "2026-11-06T01:40:42.839Z"
+}

@@ -1,0 +1,24 @@
+{
+  "head": "1504376ee805f68dcc6a68a85b6b429acca567ae",
+  "entry": "tests/e2e/integration-runtime.mjs",
+  "journey": "exerciseGitlabSetup",
+  "passed": true,
+  "assertionWidth": 1440,
+  "screens": [
+    {
+      "width": 1440,
+      "path": "screens/setup-1440.png",
+      "bytes": 147565,
+      "sha256": "5795d1cdef7489afcb81bcee264b1cefb1450f8f303116dcc9918123eb6a4319"
+    },
+    {
+      "width": 390,
+      "path": "screens/setup-390.png",
+      "bytes": 146703,
+      "sha256": "81ec0df0b363e951162ba9c610a5f23d1a28c11f2fb70cb1ae7ceafbe00bfb39"
+    }
+  ],
+  "liveProvider": false,
+  "credentialValuesRecorded": false,
+  "observed": "Native Settings registered both origins, exact selected hook paths and callbacks, unique secret hashes, retained unknown outcome, removal and credential re-entry."
+}

@@ -1,0 +1,37 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f189-pc1",
+  "head": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
+  "custody": "PUSHED",
+  "terminal": false,
+  "ci": {
+    "conclusion": null,
+    "head_sha": "b4e30cadfd39436cc91d918fda009a25f80b5a08",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42144126004",
+    "status": "in_progress",
+    "run_id": 42144126004,
+    "event": "push",
+    "githubCalls": 8,
+    "observed_at": "2026-11-06T01:49:42Z"
+  },
+  "GITLAB-001": {
+    "before": "partial",
+    "after": "partial",
+    "acceptanceChanged": false
+  },
+  "countsBefore": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66
+  },
+  "countsAfter": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66
+  },
+  "statusRows": 272,
+  "localChecks": "All named commands pass; administration was completed in two segments after the original outer timeout.",
+  "publicationScan": "fleet gate, not run in cloud",
+  "RunSite": "fleet main gate, not claimed",
+  "PR": null
+}
