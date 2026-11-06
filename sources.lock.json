@@ -554,7 +554,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "047ee38d341c36cf472af900adafe6413f14bd7343df92aed0dbb89e7404d606",
+      "sha256": "b43e78246131215c03610a528dd2e4210f75fb6f7e3027a8b82b49641e4458d9",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -9442,7 +9442,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "0baece5bae87f2b6069a2a31244f5e9b965bc4c4e0f2d10b8ff6845ffa21599b",
+      "sha256": "aadffbcdd9fb5cf938e18ffe2964b1b8b17f043838bd0b4c11d00b39661a25af",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {
