@@ -527,6 +527,14 @@
     {
       "source": "docs/PROJECT-FORECASTS.md",
       "reason": "Native project forecast method, capacity assumptions and current numerical acceptance boundaries for maintainers and API consumers."
+    },
+    {
+      "source": "RULINGS.md",
+      "reason": "Dated contract rulings and retained review holds for maintainers and reviewers."
+    },
+    {
+      "source": "docs/contract/AUTO-007-rubric.md",
+      "reason": "Frozen future-build privacy requirements for contract reviewers; not passing evidence or an installed application guide."
     }
   ]
 }
