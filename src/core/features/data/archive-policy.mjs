@@ -1,3 +1,4 @@
+// SLA targets, clock snapshots, terminal stops and occurrence receipts are portable domain state.
 // Document mentions, followers, Inbox history and consumed revision receipts are portable domain data.
 // Restore retains history without scanning text, scheduling channels or replaying deliveries.
 // Report schedules and safe receipts are portable; credentials, active claims

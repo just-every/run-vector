@@ -3,6 +3,7 @@
  * Keys are source modules and their enclosing component; values follow form order.
  * Controls that save as they change (Profile, Workspace, a person's role, a team's details, workflow, people, planning and Git rules, a label's name, colour and projects switch) are not forms: they call their PATCH/PUT door directly. */
 export const settingsFormDoors: Record<string, readonly string[]> = {
+  'slas/panel.tsx#TeamSla': ['PUT /settings/teams/:id/sla'],
   'triage-responsibility/panel.tsx#TeamTriageRotation': ['PUT /settings/teams/:id/triage-rotation'],
   'issue-templates/controls.tsx#IssueTemplateSettings': ['POST /issue-templates'],
   'integrations/ui/channel-settings.tsx#ChannelSettings': [
