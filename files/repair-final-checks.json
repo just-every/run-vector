@@ -1,0 +1,14 @@
+{
+  "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node tests/e2e/role-door-coverage.mjs assertRoleDoorCoverage",
+      "exit": 0
+    }
+  ],
+  "recorded": "2026-11-06T02:45:32.087412+00:00"
+}

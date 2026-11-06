@@ -1,0 +1,7 @@
+{
+  "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "node": "22.20.0",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/due-reminders.test.ts",
+  "exit": 0,
+  "recorded": "2026-11-06T02:48:12.023855+00:00"
+}

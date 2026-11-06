@@ -1,0 +1,62 @@
+Your application is built
+{"version":1,"verb":"build","event":"result","ok":true,"exitCode":0}
+
+> vector@0.4.1 integration:check [REDACTED]
+> node scripts/sync-integration.mjs --check
+
+file://[REDACTED]/scripts/sync-integration.mjs:26
+      throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+            ^
+
+Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+    at integrationRecipe (file://[REDACTED]/scripts/sync-integration.mjs:26:13)
+    at async file://[REDACTED]/scripts/sync-integration.mjs:34:3
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+Verifying application: exit 1, signal none.
+Command: pnpm
+Last output (up to 40 lines):
+dist/server/assets/app.new-issue-BljY7AH3.js                             43.04 kB │ gzip:   8.13 kB
+dist/server/assets/app.projects._projectId-CB-QSvil.js                   43.94 kB │ gzip:   9.08 kB
+dist/server/assets/app.insights-lAG33dth.js                              49.77 kB │ gzip:   8.38 kB
+dist/server/assets/router-CDG5y3qL.js                                    51.31 kB │ gzip:  11.61 kB
+dist/server/assets/pages-Dw-__ozA.js                                     59.02 kB │ gzip:  17.37 kB
+dist/server/assets/issues-browser-DtoX0GeZ.js                            65.05 kB │ gzip:  14.00 kB
+dist/server/assets/app-t15tw5UR.js                                       66.24 kB │ gzip:  16.83 kB
+dist/server/assets/app.settings.move-in-CCUz7mWg.js                      67.88 kB │ gzip:  14.79 kB
+dist/server/assets/teams-section-SE3gi5p2.js                             98.55 kB │ gzip:  19.52 kB
+dist/server/assets/manifest-BKYyqAQi.js                                 109.82 kB │ gzip:  26.70 kB
+dist/server/assets/with-administration-DAtTFsrO.js                      121.52 kB │ gzip:  22.99 kB
+dist/server/assets/mail-TS0VgfGt.js                                     140.32 kB │ gzip:  35.41 kB
+dist/server/assets/anchors-BnEpFSuo.js                                  165.29 kB │ gzip:  34.61 kB
+dist/server/assets/schemas-C5k3y04u.js                                  196.56 kB │ gzip:  42.75 kB
+dist/server/assets/issue-keyboard-focus-BSQkbpbl.js                     232.45 kB │ gzip:  44.40 kB
+dist/server/assets/mention-markdown-bb5ws-qu.js                         240.86 kB │ gzip:  53.33 kB
+dist/server/assets/base.server-C-6UqrLd.js                              267.44 kB │ gzip:  66.02 kB
+dist/server/assets/undo-snapshot-CSlK8W-f.js                            429.18 kB │ gzip: 108.47 kB
+dist/server/index.js                                                  1,266.02 kB │ gzip: 273.85 kB
+dist/server/assets/markdown-Cz9k86IB.js                               1,548.38 kB │ gzip: 409.56 kB
+dist/server/assets/api-CCeZ9OWQ.js                                    1,670.78 kB │ gzip: 386.57 kB
+
+✓ built in 2.05s
+Your application is built
+{"version":1,"verb":"build","event":"result","ok":true,"exitCode":0}
+
+> vector@0.4.1 integration:check [REDACTED]
+> node scripts/sync-integration.mjs --check
+
+file://[REDACTED]/scripts/sync-integration.mjs:26
+      throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+            ^
+
+Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.
+Log: [REDACTED]/.seed/installer/commands-16530/install.log
+verify: failed (exit 1)
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

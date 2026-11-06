@@ -1,0 +1,7 @@
+{
+  "parentHead": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts",
+  "exit": 0,
+  "treeState": "uncommitted first repair, exact source patch preserved by following product commit",
+  "log": "/tmp/vector-repair-role.log"
+}

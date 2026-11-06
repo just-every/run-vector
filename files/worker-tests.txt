@@ -1,0 +1,22 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector-sd-vector-c-f193
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+exception = kj/async-io-unix.c++:1535: disconnected: connect(): Connection refused
+stack: /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@56a84f2 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@56a86d5 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a392a8 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@569e310 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@569ead0 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@318f140 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a269e0 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a277b0 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5899989 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5899e03 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a0ed10 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a1a120 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3193130 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@24274b0 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3485510 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@30b4650
+uncaught exception; source = Uncaught (in promise); stack = Error: Network connection lost.
+uncaught exception; exception = workerd/jsg/_virtual_includes/iterator/workerd/jsg/value.h:1477: disconnected: jsg.Error: Network connection lost.
+stack: /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3418800 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@341949c /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a392a8 /workspace/run-vector-sd-vector-c-f193/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3183d0e
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  5 passed (5)
+      Tests  11 passed (11)
+   Start at  01:39:29
+   Duration  136.94s (transform 3.38s, setup 0ms, import 21.02s, tests 113.67s, environment 0ms)
+

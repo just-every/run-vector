@@ -1,0 +1,6 @@
+{
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "command": "pnpm integration:check",
+  "exit": 0,
+  "log": "/tmp/vector-main-integration.log"
+}

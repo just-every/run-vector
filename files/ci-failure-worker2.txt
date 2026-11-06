@@ -1,0 +1,73 @@
+2026-11-06T01:57:39.1661585Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+2026-11-06T01:57:39.1661925Z 
+2026-11-06T01:57:39.1668353Z  FAIL  tests/worker/role-matrix.test.ts > [ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing
+2026-11-06T01:57:39.1673647Z AssertionError: teams.settings names a CONTRACT.md role-matrix row: expected undefined to be defined
+2026-11-06T01:57:39.1675378Z  ❯ tests/worker/role-matrix.test.ts:259:65
+2026-11-06T01:57:39.1870067Z 
+2026-11-06T01:57:39.1870131Z 
+2026-11-06T01:57:39.1872306Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+2026-11-06T01:57:39.1872572Z 
+2026-11-06T01:57:39.1874265Z  FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+2026-11-06T01:57:39.1876507Z AssertionError: native fixture coverage from src/core/features/roles/doors.ts: expected [ 'ALL /portability/*', …(166) ] to deeply equal [ 'ALL /portability/*', …(167) ]
+2026-11-06T01:57:39.1877309Z 
+2026-11-06T01:57:39.1877643Z - Expected
+2026-11-06T01:57:39.1877973Z + Received
+2026-11-06T01:57:39.1878119Z 
+2026-11-06T01:57:39.1878548Z @@ -158,11 +158,10 @@
+2026-11-06T01:57:39.1879011Z     "PUT /settings/teams/:id/housekeeping",
+2026-11-06T01:57:39.1879792Z     "PUT /settings/teams/:id/members/:operatorId",
+2026-11-06T01:57:39.1880551Z     "PUT /settings/teams/:id/membership",
+2026-11-06T01:57:39.1881282Z     "PUT /settings/teams/:id/permissions",
+2026-11-06T01:57:39.1881996Z     "PUT /settings/teams/:id/privacy",
+2026-11-06T01:57:39.1882717Z -   "PUT /settings/teams/:id/sla",
+2026-11-06T01:57:39.1883664Z     "PUT /settings/teams/:id/statuses/order",
+2026-11-06T01:57:39.1884483Z     "PUT /settings/teams/:id/triage-rotation",
+2026-11-06T01:57:39.1885273Z     "PUT /settings/teams/:teamId/email-intake",
+2026-11-06T01:57:39.1886090Z     "PUT /settings/teams/:teamId/email-intake/event-key",
+2026-11-06T01:57:39.1886830Z     "PUT /settings/teams/creation",
+2026-11-06T01:57:39.1887156Z 
+2026-11-06T01:57:39.1887752Z  ❯ prepareViewerCensus tests/worker/role-viewer-census.ts:269:244
+2026-11-06T01:57:39.1962988Z 
+2026-11-06T01:57:39.1964254Z  ❯ viewerVisibilityJourney tests/worker/role-viewer-journey.ts:40:15
+2026-11-06T01:57:39.1965365Z  ❯ tests/worker/role-matrix.test.ts:527:3
+2026-11-06T01:57:39.1965933Z 
+2026-11-06T01:57:39.1966284Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+2026-11-06T01:57:39.1966633Z 
+2026-11-06T01:57:39.1968555Z 
+2026-11-06T01:57:39.1974727Z  Test Files  1 failed | 17 passed (18)
+2026-11-06T01:57:39.1976894Z       Tests  2 failed | 30 passed (32)
+2026-11-06T01:57:39.1977927Z    Start at  01:47:55
+2026-11-06T01:57:39.1979326Z    Duration  584.13s (transform 4.84s, setup 0ms, import 61.88s, tests 512.96s, environment 3ms)
+2026-11-06T01:57:39.1980191Z 
+2026-11-06T01:57:39.1993160Z 
+2026-11-06T01:57:39.1998723Z ##[error]AssertionError: teams.settings names a CONTRACT.md role-matrix row: expected undefined to be defined
+ ❯ tests/worker/role-matrix.test.ts:259:65
+
+
+2026-11-06T01:57:39.2000798Z 
+2026-11-06T01:57:39.2012372Z ##[error]AssertionError: native fixture coverage from src/core/features/roles/doors.ts: expected [ 'ALL /portability/*', …(166) ] to deeply equal [ 'ALL /portability/*', …(167) ]
+
+- Expected
++ Received
+
+@@ -158,11 +158,10 @@
+    "PUT /settings/teams/:id/housekeeping",
+    "PUT /settings/teams/:id/members/:operatorId",
+    "PUT /settings/teams/:id/membership",
+    "PUT /settings/teams/:id/permissions",
+    "PUT /settings/teams/:id/privacy",
+-   "PUT /settings/teams/:id/sla",
+    "PUT /settings/teams/:id/statuses/order",
+    "PUT /settings/teams/:id/triage-rotation",
+    "PUT /settings/teams/:teamId/email-intake",
+    "PUT /settings/teams/:teamId/email-intake/event-key",
+    "PUT /settings/teams/creation",
+
+ ❯ prepareViewerCensus tests/worker/role-viewer-census.ts:269:244
+ ❯ viewerVisibilityJourney tests/worker/role-viewer-journey.ts:40:15
+ ❯ tests/worker/role-matrix.test.ts:527:3
+
+
+2026-11-06T01:57:39.3060288Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-06T01:57:39.3430164Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-06T01:57:39.3623995Z ##[error]Process completed with exit code 1.

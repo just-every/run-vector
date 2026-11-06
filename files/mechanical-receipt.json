@@ -1,0 +1,29 @@
+{
+  "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "lock": {
+    "command": "pnpm sources:lock then pnpm sources:check",
+    "regenerationExit": 0,
+    "checkExit": 0,
+    "regeneratedBeforeCommit": true,
+    "checkedAfterCommit": true
+  },
+  "views": {
+    "command": "node scripts/contract-docs.mjs write AUTO-004 then node scripts/contract-docs.mjs check AUTO-004",
+    "writeExit": 0,
+    "checkExit": 0,
+    "restoredFrom": "origin/main",
+    "committed": false
+  },
+  "ledger": {
+    "command": "resolutionSlaUpgrade full d1_migrations comparison and PRAGMA foreign_key_check",
+    "exit": 0,
+    "runHead": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+    "migrationAndJourneyBytesUnchanged": true,
+    "receipt": "repair-sla-worker.json"
+  },
+  "statusIds": 272,
+  "parentStatusIds": 272,
+  "tableRows": 409,
+  "mainAtFinalMerge": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "recorded": "2026-11-06T02:46:13.639770+00:00"
+}

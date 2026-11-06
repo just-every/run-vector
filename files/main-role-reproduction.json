@@ -1,0 +1,6 @@
+{
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts",
+  "exit": 0,
+  "log": "/tmp/vector-main-role.log"
+}

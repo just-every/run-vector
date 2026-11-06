@@ -1,0 +1,26 @@
+{
+  "github_calls": 10,
+  "failures": [
+    {
+      "run": 42146022863,
+      "head": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "job": 127657898250,
+      "file": "ci-failure-hosted.txt",
+      "source": "gh run view --log-failed"
+    },
+    {
+      "run": 42146022863,
+      "head": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "job": 127657898273,
+      "file": "ci-failure-core.txt",
+      "source": "gh run view --log-failed"
+    },
+    {
+      "run": 42146022863,
+      "head": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "job": 127657898362,
+      "file": "ci-failure-worker2.txt",
+      "source": "same downloaded workflow archive, local extraction; no extra API call"
+    }
+  ]
+}

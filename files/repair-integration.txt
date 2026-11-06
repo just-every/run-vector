@@ -1,0 +1,5 @@
+
+> vector@0.4.1 integration:check /workspace/run-vector-sd-vector-c-f193
+> node scripts/sync-integration.mjs --check
+
+Integration deployment spec, setup digest and producer workflow match.

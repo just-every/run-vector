@@ -1,0 +1,15 @@
+[Vector runtime] Passed CURR-007
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 30000ms exceeded.
+    at reset (/workspace/vector-main-sd-vector-c-f193/tests/e2e/core-stream-controls-journey.mjs:47:16)
+    at async streamControlsJourney (/workspace/vector-main-sd-vector-c-f193/tests/e2e/core-stream-controls-journey.mjs:92:5)
+    at async withInvitedOperator (/workspace/vector-main-sd-vector-c-f193/tests/e2e/core-operator-journey.mjs:37:6)
+    at async file:///workspace/vector-main-sd-vector-c-f193/tests/e2e/core-runtime.mjs:750:5 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v22.20.0

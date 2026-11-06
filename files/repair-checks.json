@@ -1,0 +1,41 @@
+{
+  "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "round": 1,
+  "sourceBlobs": {
+    "management/integration/deployment-spec.json": "f7ffdb1a12fdb2aaa4a09a2c31e4d5ed34aed46e",
+    "src/core/features/roles/matrix.ts": "00a1e2e41fa83122f9ae44657dbb0cea2a8c4779",
+    "src/core/features/slas/countdown.tsx": "710dec674eceb834aa8e10971eba8490ce491f76",
+    "tests/worker/role-viewer-census.ts": "d30e5a1927e2481bd9ae02f841f1fea6dfd0d15b",
+    "sources.lock.json": "af0cf7dd4dd936b94d23ec95b46d632c9e4bab12"
+  },
+  "checks": [
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm integration:sync then pnpm integration:check",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts",
+      "exit": 0,
+      "tests": 6
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write AUTO-004 then check AUTO-004",
+      "exit": 0,
+      "views": "restored from origin/main"
+    },
+    {
+      "command": "pnpm sources:lock then pnpm sources:check",
+      "exit": 0
+    }
+  ],
+  "binding": "Checks ran with the exact repaired source bytes immediately before commit. No relevant bytes changed at commit. Source-lock and browser checks are also run at the committed head.",
+  "recorded": "2026-11-06T02:43:08.702025+00:00"
+}

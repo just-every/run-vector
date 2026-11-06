@@ -1,0 +1,28 @@
+{
+  "head": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+  "views": {
+    "write": "node scripts/contract-docs.mjs write AUTO-004",
+    "check": "node scripts/contract-docs.mjs check AUTO-004",
+    "write_exit": 0,
+    "check_exit": 0,
+    "restored": [
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ]
+  },
+  "lock": {
+    "write": "pnpm sources:lock",
+    "check": "pnpm sources:check",
+    "write_exit": 0,
+    "check_exit": 0
+  },
+  "ledger": {
+    "journey": "tests/worker/resolution-sla-upgrade.ts resolutionSlaUpgrade",
+    "command": "SELECT name FROM d1_migrations ORDER BY name",
+    "assertion": "exactly the declared migration filenames after populated upgrade; PRAGMA foreign_key_check empty",
+    "exit": 0
+  },
+  "retained_status_rows": 272,
+  "acceptance_changed": false,
+  "worktree_clean": true
+}

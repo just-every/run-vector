@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "realWorkerRestart": true,
+  "assertionsWidth": 1440,
+  "phoneSmoke": true,
+  "widths": [
+    1440,
+    390
+  ],
+  "screens": [
+    "settings",
+    "countdown",
+    "inbox"
+  ],
+  "realScheduler": true,
+  "provider": "none",
+  "commands": [
+    "native team SLA configuration",
+    "native issue create",
+    "native scheduled export",
+    "real Worker restart",
+    "native Inbox read"
+  ]
+}

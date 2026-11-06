@@ -1,0 +1,59 @@
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9031337Z > node scripts/sync-integration.mjs --check
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9031684Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9950602Z file://[REDACTED]/scripts/sync-integration.mjs:26
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9951357Z       throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9951766Z             ^
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9951879Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9952327Z Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9952966Z     at integrationRecipe (file://[REDACTED]/scripts/sync-integration.mjs:26:13)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9953394Z     at async file://[REDACTED]/scripts/sync-integration.mjs:34:3
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9953589Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:30.9953670Z Node.js v22.20.0
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.0082735Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.0379385Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1142398Z Verifying application: exit 1, signal none.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1142867Z Command: pnpm
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1143165Z Last output (up to 40 lines):
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1144135Z dist/server/assets/app.new-issue-BljY7AH3.js                             43.04 kB │ gzip:   8.13 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1145302Z dist/server/assets/app.projects._projectId-CB-QSvil.js                   43.94 kB │ gzip:   9.08 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1146248Z dist/server/assets/app.insights-lAG33dth.js                              49.77 kB │ gzip:   8.38 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1147127Z dist/server/assets/router-CDG5y3qL.js                                    51.31 kB │ gzip:  11.61 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1148433Z dist/server/assets/pages-Dw-__ozA.js                                     59.02 kB │ gzip:  17.37 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1149424Z dist/server/assets/issues-browser-DtoX0GeZ.js                            65.05 kB │ gzip:  14.00 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1150390Z dist/server/assets/app-t15tw5UR.js                                       66.24 kB │ gzip:  16.83 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1151402Z dist/server/assets/app.settings.move-in-CCUz7mWg.js                      67.88 kB │ gzip:  14.79 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1152429Z dist/server/assets/teams-section-SE3gi5p2.js                             98.55 kB │ gzip:  19.52 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1153448Z dist/server/assets/manifest-BKYyqAQi.js                                 109.82 kB │ gzip:  26.70 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1154679Z dist/server/assets/with-administration-DAtTFsrO.js                      121.52 kB │ gzip:  22.99 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1155938Z dist/server/assets/mail-TS0VgfGt.js                                     140.32 kB │ gzip:  35.41 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1156923Z dist/server/assets/anchors-BnEpFSuo.js                                  165.29 kB │ gzip:  34.61 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1157900Z dist/server/assets/schemas-C5k3y04u.js                                  196.56 kB │ gzip:  42.75 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1158897Z dist/server/assets/issue-keyboard-focus-BSQkbpbl.js                     232.45 kB │ gzip:  44.40 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1159914Z dist/server/assets/mention-markdown-bb5ws-qu.js                         240.86 kB │ gzip:  53.33 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1160944Z dist/server/assets/base.server-C-6UqrLd.js                              267.44 kB │ gzip:  66.02 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1161997Z dist/server/assets/undo-snapshot-CSlK8W-f.js                            429.18 kB │ gzip: 108.47 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1162979Z dist/server/index.js                                                  1,266.02 kB │ gzip: 273.85 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1163926Z dist/server/assets/markdown-Cz9k86IB.js                               1,548.38 kB │ gzip: 409.56 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1165061Z dist/server/assets/api-CCeZ9OWQ.js                                    1,670.78 kB │ gzip: 386.57 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1165508Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1165665Z ✓ built in 1.99s
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1165998Z Your application is built
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1166314Z build: complete (exit 0)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1166500Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1166715Z > vector@0.4.1 integration:check [REDACTED]
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1167197Z > node scripts/sync-integration.mjs --check
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1167463Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1167710Z file://[REDACTED]/scripts/sync-integration.mjs:26
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1168497Z       throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1169158Z             ^
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1169321Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1170020Z Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1170668Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1170770Z Node.js v22.20.0
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1171257Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1171837Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1172312Z Log: [REDACTED]/.seed/installer/install.log
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1172746Z verify: failed (exit 1)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1366980Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1656867Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-06T01:48:31.1818766Z ##[error]Process completed with exit code 1.

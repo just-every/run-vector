@@ -1,0 +1,11 @@
+{
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "command": "npx -y @runeditrun/rer build then node tests/e2e/core-runtime.mjs current",
+  "node": "22.20.0",
+  "exit": 1,
+  "buildLog": "/tmp/vector-main-core-build.log",
+  "journeyLog": "/tmp/vector-main-core.log",
+  "test": "core-stream-controls-journey reset after detail navigation",
+  "failure": "page.waitForFunction: Timeout 30000ms exceeded at reset, core-stream-controls-journey.mjs:47, called at line 92",
+  "classification": "same CI failure reproduced on unchanged main"
+}

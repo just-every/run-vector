@@ -1,0 +1,61 @@
+{
+  "repository": "just-every/run-vector",
+  "head": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+  "observations": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42146022863",
+      "id": 42146022863,
+      "status": "in_progress",
+      "observed_at": "2026-11-06T01:48:42.592929+00:00"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42146022863",
+      "id": 42146022863,
+      "status": "in_progress",
+      "observed_at": "2026-11-06T01:53:44.379760+00:00"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42146022863",
+      "id": 42146022863,
+      "status": "in_progress",
+      "observed_at": "2026-11-06T01:58:45.858740+00:00"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42146022863",
+      "id": 42146022863,
+      "status": "in_progress",
+      "observed_at": "2026-11-06T02:03:47.180149+00:00"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42146022863",
+      "id": 42146022863,
+      "status": "in_progress",
+      "observed_at": "2026-11-06T02:08:48.741191+00:00"
+    },
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_sha": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42146022863",
+      "id": 42146022863,
+      "status": "completed",
+      "observed_at": "2026-11-06T02:13:50.237785+00:00"
+    }
+  ],
+  "calls": 6
+}

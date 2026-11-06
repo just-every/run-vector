@@ -1,0 +1,85 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   'http://127.0.0.1:34495/api/issues/CXAABDBC-23/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CXAABDBC-25/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPA-4/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPC-2/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPB-2/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPA-4/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCIWBPB-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVA-4/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVA-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/FLW-840/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVA-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVC-2/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVC-2/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVB-2/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVA-4/sla:net::ERR_ABORTED',
++   'http://127.0.0.1:34495/api/issues/SCMTEVB-1/sla:net::ERR_ABORTED'
++ ]
+- []
+
+    at file:///workspace/run-vector-sd-vector-c-f193/tests/e2e/core-runtime.mjs:1639:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'http://127.0.0.1:34495/api/issues/CXAABDBC-23/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CXAABDBC-25/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPA-4/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPC-2/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPB-2/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPA-4/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPA-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCIWBPB-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVA-4/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVA-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/FLW-840/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVA-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVC-2/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVC-2/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVB-2/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/CDTJRIKPBX-1/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVA-4/sla:net::ERR_ABORTED',
+    'http://127.0.0.1:34495/api/issues/SCMTEVB-1/sla:net::ERR_ABORTED'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.

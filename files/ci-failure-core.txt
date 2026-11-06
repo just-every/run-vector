@@ -1,0 +1,16 @@
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2974899Z node:internal/modules/run_main:123
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2976556Z     triggerUncaughtException(
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2978136Z     ^
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2984431Z 
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2984969Z page.waitForFunction: Timeout 30000ms exceeded.
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2988036Z     at reset (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:47:16)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2989821Z     at async streamControlsJourney (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:92:5)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2991634Z     at async withInvitedOperator (/home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2993022Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:750:5 {
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2994198Z   log: [],
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2994673Z   name: 'TimeoutError'
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2995171Z }
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2995814Z 
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.2996111Z Node.js v22.20.0
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.3426358Z  ELIFECYCLE  Command failed with exit code 1.
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:57:02.3840030Z ##[error]Process completed with exit code 1.

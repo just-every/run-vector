@@ -1,0 +1,2 @@
+Contract views generated for AUTO-004
+Contract views checked for AUTO-004

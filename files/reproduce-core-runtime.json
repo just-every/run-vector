@@ -1,0 +1,12 @@
+{
+  "head": "1a3facd395e131aaadfbaf7186c7e248d5623d36",
+  "command": "pnpm verify:ci --shard core-runtime",
+  "node": "22.20.0",
+  "exit": 1,
+  "log": "/tmp/vector-reproduce-core.log",
+  "job": 127657898273,
+  "test": "core-runtime strict failed-request audit",
+  "failure": "AssertionError: expected failed requests [] but SLA reads end in net::ERR_ABORTED during native navigation",
+  "originalCiFailureReproduced": false,
+  "originalCiFailure": "page.waitForFunction: Timeout 30000ms exceeded at core-stream-controls-journey.mjs:47"
+}

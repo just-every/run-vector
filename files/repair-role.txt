@@ -1,0 +1,13 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector-sd-vector-c-f193
+
+Using secrets defined in .dev.vars
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  02:38:48
+   Duration  170.65s (transform 5.40s, setup 0ms, import 11.84s, tests 158.13s, environment 0ms)
+
