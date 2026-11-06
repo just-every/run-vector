@@ -424,6 +424,18 @@ Every background action in Vector has an accountable owner (the person or Admin 
 - **AUTO-005 — Update reminders.** Project leads and initiative owners are reminded on the chosen cadence (weekly on a weekday, every two weeks) to post an update, with a prefilled draft (PROJ-010); missing updates are flagged on the project and in the initiative roll-up. *Acceptance:* a scheduled-run test that reminds one lead once per cadence and flags a missed update. *Status:* missing.
 - **AUTO-006 — Due-soon rules.** Rules on due dates can act before the due day (for example two days before: notify the assignee and move to the active cycle), complementing the fixed due-today and overdue reminders of NOTIFY-005. Inherited from ROLE-001: only Owners and Admins build or change workspace automation rules (role matrix). *Acceptance:* an AUTO-002 rule with a due-in-two-days trigger acting once per issue and date. *Status:* partial — `src/core/features/due-reminders/service.ts` (due-today and overdue notifications only).
 
+#### AUTO-007 — Private occurrence history after access changes
+
+*Tier:* Core · *From:* new
+
+**Requirement.** A recurring-series operator's current access governs every previous-occurrence reference and recurrence result, so losing access never reveals a private issue's status or changes that issue.
+
+**Acceptance.**
+1. An operator who may manage a recurring series but cannot currently read its previous occurrence learns no private issue status through series history, recurrence results or Settings. Moving an occurrence into a private team immediately applies current access; direct issue reads retain the same non-disclosing 404.
+2. A hidden previous occurrence being open versus completed produces no distinguishable series/history/scheduling outcome exposed to that operator. In particular, skipped-versus-created results must not disclose the hidden status. Refusal or a uniform unavailable state preserves the hidden issue and reveals no private fields.
+3. Currently authorized owner/team-member controls retain correct visible occurrence links, permitted history and normal weekly skip-while-open behavior. Safe handling after access loss does not widen anyone's authority or alter the hidden issue.
+4. The native series-history door and ordinary Settings history at 1440/390 reflect the same safe result after an owner moves the issue and after its status changes. Worker restart/replay must not expose retained private status or duplicate occurrence effects.
+
 ### Reporting
 
 - **REPORT-001 — Insights.** Members chart any filtered set of issues by count or estimate over time and by any field: created vs completed, throughput, cycle time and lead time (from Started or created to Completed, with percentiles), time in each status, triage time, SLA breaches, bug inflow and open bug age, grouped by team, project, label, assignee, priority or customer tier. Each chart drills down to its issues and exports as CSV. Every chart inherits VIEW-011: it follows the member's Light, Dark or System theme, its series stay distinguishable in both, and its text and marks meet WCAG 2.2 AA contrast in both. *Acceptance:* a journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues. *Status:* partial — `tests/worker/cycle-report.test.ts` (Insights, shared dashboards and daily burn-up); `tests/e2e/insights-journey.mjs` (insightsJourney), run by `tests/e2e/cycle-report-runtime.mjs`. *Gap:* Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; `tests/e2e/insights-journey.mjs` (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused.
@@ -771,15 +783,15 @@ Signed source ingestion implements INTAKE-001/002/003/008/009 and the source reg
 
 ## Status
 
-Judged from the code and tests at commit `aef5848e3b91997652d2e4fdf21d5af80ebe4086` (29 October 2026). CT judged GITHUB-003 at `bdcd9599eb64411a48657fc8394a438a3675f5a8` on 27 October 2026 and accepted it as done. CT judged TEAM-005 at f8d5244c2a5a340ae190e7d978cdf81fd7f34ebb on 1 November 2026 and accepted it as partial: cycles on or off is proven, and the remaining settings stay in its Gap. Status inventory agrees ID for ID with ACCEPTANCE.md. INIT-001 was judged STAYS PARTIAL by ct at af171d2d782a3787e43cd339867cc06dec89677f (27 October 2026) under DONE-RIDERS rows 1, 6, 8 and 11. The current candidate adds creation delivery, Planned readback and full private-notice assertions; a fresh ct judgment and landing gates remain pending. SLACK-005 is PARTIAL pending ct's re-judge; PROJ-013 is PARTIAL. Accepted DONE is 136 of 272.
+Judged from the code and tests at commit `aef5848e3b91997652d2e4fdf21d5af80ebe4086` (29 October 2026). CT judged GITHUB-003 at `bdcd9599eb64411a48657fc8394a438a3675f5a8` on 27 October 2026 and accepted it as done. CT judged TEAM-005 at f8d5244c2a5a340ae190e7d978cdf81fd7f34ebb on 1 November 2026 and accepted it as partial: cycles on or off is proven, and the remaining settings stay in its Gap. Status inventory agrees ID for ID with ACCEPTANCE.md. INIT-001 was judged STAYS PARTIAL by ct at af171d2d782a3787e43cd339867cc06dec89677f (27 October 2026) under DONE-RIDERS rows 1, 6, 8 and 11. The current candidate adds creation delivery, Planned readback and full private-notice assertions; a fresh ct judgment and landing gates remain pending. SLACK-005 is PARTIAL pending ct's re-judge; PROJ-013 is PARTIAL. Accepted DONE is 136 of 273.
 
 API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27 October 2026 and kept it PARTIAL. The archive policy rider is adopted from that ct review; exact-head ct re-judgment and guarded landing remain outstanding.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 98 | 6 | 0 | 104 |
-| Target and push further | 38 | 63 | 67 | 168 |
-| All | 136 | 69 | 67 | 272 |
+| Target and push further | 38 | 63 | 68 | 169 |
+| All | 136 | 69 | 68 | 273 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -960,6 +972,7 @@ API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27
 | `AUTO-004` | SLAs | target | missing |  | No implementation yet |
 | `AUTO-005` | Update reminders | target | missing |  | No implementation yet |
 | `AUTO-006` | Due-soon rules | target | partial | `src/core/features/due-reminders/service.ts` | Due-today and overdue notifications only |
+| `AUTO-007` | Private occurrence history after access changes | target | missing |  | Privacy-safe recurrence results and series/Settings history after access loss are unbuilt and unproved, including hidden-open versus hidden-completed indistinguishability, current-access controls and durable restart/replay without disclosure or duplicate effects. |
 | `REPORT-001` | Insights | target | partial | `tests/worker/cycle-report.test.ts` (Insights, shared dashboards and daily burn-up); `tests/e2e/insights-journey.mjs` (insightsJourney), run by `tests/e2e/cycle-report-runtime.mjs`. | Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; `tests/e2e/insights-journey.mjs` (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused. |
 | `REPORT-002` | Cycle and project charts | target | done | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | |
 | `REPORT-003` | Dashboards | target | done | `tests/e2e/dashboards-journey.mjs` (runtime Verify: both project filters across chart/count/list, exact small identifiers, 26 matches/25 preview rows/full list, HTTP agreement and All projects at each theme and 1440/390); existing Worker and portable-definition cases. dashboardAccessCells private-Viewer positive counts/identifiers after admission are HTTP assertions; private omission is UI-asserted at both widths. | None. |

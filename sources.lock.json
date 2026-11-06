@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "ce01bebe92fdcafb08da1adcec2e59b86a56ea2fb15c6511c9edd22f6d735494",
+      "sha256": "9142453bc7d318f060da7ee9a2d001ecc245dfda7ca26ce7673870d611fa4e55",
       "executable": false
     },
     "DEMO.md": {
@@ -579,6 +579,10 @@
     },
     "docs/CLAIMS.md": {
       "sha256": "258df9bf5d6d850e1719081611d44e912567a7c3850eaeba0d323ad1891e0439",
+      "executable": false
+    },
+    "docs/contract/AUTO-007-rubric.md": {
+      "sha256": "e22902f67799180b4d1ff4966d9b5535ecc49bc9075862662e471f750d31d456",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2619,6 +2623,10 @@
     },
     "rer-setup.json": {
       "sha256": "14330643c06bb384b45522d133f1c7d73929786f37549771664a4f821f6aeab6",
+      "executable": false
+    },
+    "RULINGS.md": {
+      "sha256": "d7c28f405087baed88c40b019d783d2eb75c0ddd3f6d1a6b1d2554d869df18db",
       "executable": false
     },
     "RUN-LOCALLY.md": {
