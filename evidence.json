@@ -1,0 +1,130 @@
+{
+  "files": [
+    {
+      "blob": "e89903cfb62734551dc48310f9d6e95cb2cda087",
+      "bytes": 2267,
+      "path": "PLAN.md",
+      "sha256": "2b2d1c844200c473ccb0af5235f98973d5bfa323e9119d1ab06bd2baacc374c7"
+    },
+    {
+      "blob": "87d0b7b493e324bc1e4d56cd18b0b4ca143cf893",
+      "bytes": 8760,
+      "path": "REPORT.md",
+      "sha256": "69b2d9b1baed7fb76f907bb48a6f43c17bbf9e06a588788cceff089e45d13558"
+    },
+    {
+      "blob": "865a06a8e7462ff17ab16dd4372ab2e706237cb5",
+      "bytes": 1226,
+      "path": "additive-after.log",
+      "sha256": "cefdee8095bfa2207b9babf7ee009b5f67549070aedfd47d8649ea8fcaf6f329"
+    },
+    {
+      "blob": "6549829813b4f8e85624cd290ebfd16aa4bd4edb",
+      "bytes": 2542,
+      "path": "additive-before.log",
+      "sha256": "8a7707530c04b8bb383ce47b8f40aff15b253ad592889c3bcae8593e906de6a4"
+    },
+    {
+      "blob": "b484457fe8fb89d16aba306a517a609ffe864f87",
+      "bytes": 7556,
+      "path": "candidate.patch",
+      "sha256": "64b2f0a94c819bd9895dac42f2f8fb92f5c30eb04fc4da931a6fc7f7fe1f18fa"
+    },
+    {
+      "blob": "3ccde3c26cec095ba9292dd812b45014c05f39a8",
+      "bytes": 4010,
+      "path": "commands.jsonl",
+      "sha256": "428c6823b82de387724203cb22908c449cea5c49385f9fa30a5db54724bfe9a6"
+    },
+    {
+      "blob": "55bfeff023c4ae17dc59e12f86f446b1960e6b53",
+      "bytes": 85,
+      "path": "identity.log",
+      "sha256": "148bad84b5b174568017df50d58e073566703d43c6c9fe7fa6f1af04420adf55"
+    },
+    {
+      "blob": "0e4d6a9db9ca427c71e09512080394e62e85fd07",
+      "bytes": 1021,
+      "path": "product-push.log",
+      "sha256": "6bb631d6e3ca2f5a267c7de48f1a7d1f7f729a2604b0cf9abcaf09ba117f1e8b"
+    },
+    {
+      "blob": "289b76e36cf941f635e18adbd1e1630d220cf46d",
+      "bytes": 327,
+      "path": "real-default-check.log",
+      "sha256": "ff028abb476b2a64203fea3425b7521a89fdee147188aa9a203074f72bb87fcc"
+    },
+    {
+      "blob": "01e35ede974427eef7dac01f3b1f4a9370ed7418",
+      "bytes": 329,
+      "path": "real-default-write.log",
+      "sha256": "a319271b9bc8380dc050f515d9f633ec030e0fd5198da45d05b9af7abef24280"
+    },
+    {
+      "blob": "253ad2dca8af68d224bdaf2cd710424205edaa05",
+      "bytes": 36,
+      "path": "real-explicit-check.log",
+      "sha256": "a934ee522b1efdd336d3f894167bb1b32e9ff6f4f2cfacad425390c42fb2f2a6"
+    },
+    {
+      "blob": "ab8f6df5b5d50675285020989a0b38ced0ffc4b2",
+      "bytes": 38,
+      "path": "real-explicit-write.log",
+      "sha256": "68917a2dcdd98d4b91a3f07f8e51fad236e5dc67f781fb6a0f9d5591fb0ac98a"
+    },
+    {
+      "blob": "4d85b434bd5f2ca1fc551c8e6a0ede5ab66f84b5",
+      "bytes": 8593,
+      "path": "receipt.json",
+      "sha256": "faa7cf069cbb40ecc57573f6c27ada731f16b7a449229d4ea90916a84b3ba93c"
+    },
+    {
+      "blob": "c6581dab52b84a25aaacccb64ac29cf7daddb0b5",
+      "bytes": 217,
+      "path": "regression-after.log",
+      "sha256": "d3487f6346c29d1cacb15b670fe6be803f2dae4bbf1f969038a5d8541af06d83"
+    },
+    {
+      "blob": "81cd2197489a6e55e2c08ae6d8ba86e6354d145f",
+      "bytes": 1746,
+      "path": "regression-before.log",
+      "sha256": "d1c37f4d2b531e8ac59af867c7e38921ef8bf401c39047ffcc67e84e44c97f18"
+    },
+    {
+      "blob": "d57c114308f2fae2433efee55a0e621c6335e1d6",
+      "bytes": 98,
+      "path": "remote-custody.log",
+      "sha256": "6e1022a7c94d3b2a802dcc827439a24d42f4358c58085b8e230db9acb2d15623"
+    },
+    {
+      "blob": "746571f3430ce8830b0163b0e23796d1032d195a",
+      "bytes": 522070,
+      "path": "sources-check.log",
+      "sha256": "6177f3c13517f28590aa04dbc97dfe2e79bce78b1ed5bcfc111f46781ddd120c"
+    },
+    {
+      "blob": "e4a00f58700884f7588879c6d90924695aae5d42",
+      "bytes": 522054,
+      "path": "sources-lock.log",
+      "sha256": "b69e135b74266d39f59c1ec7caa206c6ca0e5bb9f9ce9ca619c2235e92688279"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "syntax-generator.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "syntax-test.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-contract-additive-generator-1",
+  "product_head": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "ref": "refs/heads/evidence/sd-vector-contract-additive-generator-1",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-contract-additive-generator-1"
+}

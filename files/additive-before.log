@@ -1,0 +1,51 @@
+{
+  "id": "SYNTHETIC-VECTOR-001",
+  "baseline_counts": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67,
+    "total": 272
+  },
+  "temporary_counts": {
+    "done": 136,
+    "partial": 69,
+    "missing": 68,
+    "total": 273
+  },
+  "parsed_source_clause": {
+    "id": "SYNTHETIC-VECTOR-001",
+    "title": "Synthetic ordinary authoring",
+    "kind": "published",
+    "status": "missing",
+    "evidence": [],
+    "gap": "Synthetic capability remains unimplemented.",
+    "area": "Issues",
+    "text": "Retain the source requirement. *Acceptance:* Generate the source acceptance through the public command. *Status:* missing — Synthetic capability remains unimplemented.",
+    "line": 157,
+    "row": 1055
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "SYNTHETIC-VECTOR-001"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "file:///tmp/vector-additive-probe-Oo0E5E/scripts/contract-docs.mjs:42\n if(index<0){if(!id.startsWith('BASE-AGENT-'))throw Error('No legacy acceptance entry for '+id);acceptanceLines.push(generated);}else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\\n');\n                                                    ^\n\nError: No legacy acceptance entry for SYNTHETIC-VECTOR-001\n    at file:///tmp/vector-additive-probe-Oo0E5E/scripts/contract-docs.mjs:42:53\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "SYNTHETIC-VECTOR-001"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "file:///tmp/vector-additive-probe-Oo0E5E/scripts/contract-docs.mjs:42\n if(index<0){if(!id.startsWith('BASE-AGENT-'))throw Error('No legacy acceptance entry for '+id);acceptanceLines.push(generated);}else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\\n');\n                                                    ^\n\nError: No legacy acceptance entry for SYNTHETIC-VECTOR-001\n    at file:///tmp/vector-additive-probe-Oo0E5E/scripts/contract-docs.mjs:42:53\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    }
+  ]
+}

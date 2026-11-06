@@ -1,0 +1,296 @@
+{
+  "affected_harness_registrations": {
+    "after": 3,
+    "before": 2,
+    "selected_passed": 1,
+    "selected_run": 1
+  },
+  "before_after_command_exits": {
+    "after": [
+      0,
+      0
+    ],
+    "before": [
+      1,
+      1
+    ]
+  },
+  "blockers": [],
+  "branch": "cloud/sd-vector-contract-additive-generator-1",
+  "candidate_commits": 1,
+  "candidate_identity": "Run Edit Run fleet <fleet@runeditrun.com>",
+  "candidate_trailers": [],
+  "changed_paths": [
+    "scripts/contract-docs.mjs",
+    "sources.lock.json",
+    "tests/installer/adapter.test.mjs"
+  ],
+  "ci": {
+    "queried": false,
+    "reason": "Task-specific brief prohibits CI queries and waiting; no green CI or landed receipt claimed.",
+    "run_ids": []
+  },
+  "commands": [
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=contract authoring generates an ordinary additive clause",
+        "tests/installer/adapter.test.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 1,
+      "label": "regression-before",
+      "output_file": "regression-before.log",
+      "started": "2026-11-06T03:33:59Z"
+    },
+    {
+      "argv": [
+        "node",
+        "/tmp/vector-additive-probe.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "additive-before",
+      "output_file": "additive-before.log",
+      "started": "2026-11-06T03:34:30Z"
+    },
+    {
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=contract authoring generates an ordinary additive clause",
+        "tests/installer/adapter.test.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "regression-after",
+      "output_file": "regression-after.log",
+      "started": "2026-11-06T03:34:32Z"
+    },
+    {
+      "argv": [
+        "node",
+        "/tmp/vector-additive-probe.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "additive-after",
+      "output_file": "additive-after.log",
+      "started": "2026-11-06T03:34:34Z"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "HOME-001"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "real-explicit-write",
+      "output_file": "real-explicit-write.log",
+      "started": "2026-11-06T03:36:22Z"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "HOME-001"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "real-explicit-check",
+      "output_file": "real-explicit-check.log",
+      "started": "2026-11-06T03:36:23Z"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "real-default-write",
+      "output_file": "real-default-write.log",
+      "started": "2026-11-06T03:36:23Z"
+    },
+    {
+      "argv": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "real-default-check",
+      "output_file": "real-default-check.log",
+      "started": "2026-11-06T03:36:23Z"
+    },
+    {
+      "argv": [
+        "node",
+        "--check",
+        "scripts/contract-docs.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "syntax-generator",
+      "output_file": "syntax-generator.log",
+      "started": "2026-11-06T03:36:23Z"
+    },
+    {
+      "argv": [
+        "node",
+        "--check",
+        "tests/installer/adapter.test.mjs"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "syntax-test",
+      "output_file": "syntax-test.log",
+      "started": "2026-11-06T03:36:23Z"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "sources:lock"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "sources-lock",
+      "output_file": "sources-lock.log",
+      "started": "2026-11-06T03:36:44Z"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "sources:check"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "sources-check",
+      "output_file": "sources-check.log",
+      "started": "2026-11-06T03:36:45Z"
+    },
+    {
+      "argv": [
+        "python3",
+        "/home/agent/rer-consolidation/.tools/cloud-push.py",
+        "origin",
+        "cloud/sd-vector-contract-additive-generator-1"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "product-push",
+      "output_file": "product-push.log",
+      "started": "2026-11-06T03:37:12Z"
+    },
+    {
+      "argv": [
+        "git",
+        "ls-remote",
+        "--refs",
+        "origin",
+        "refs/heads/cloud/sd-vector-contract-additive-generator-1"
+      ],
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-contract-additive-generator-1/run-vector",
+      "exit": 0,
+      "label": "remote-custody",
+      "output_file": "remote-custody.log",
+      "started": "2026-11-06T03:38:10Z"
+    }
+  ],
+  "diagnostic_counts": {
+    "after_addition": {
+      "done": 136,
+      "missing": 68,
+      "partial": 69,
+      "total": 273
+    },
+    "before": {
+      "done": 136,
+      "missing": 67,
+      "partial": 69,
+      "total": 272
+    }
+  },
+  "fresh_main": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "head": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "landing_receipt": null,
+  "ownership": {
+    "adapter_base_copy_record": false,
+    "adapter_main_blob": "c994b97893bc00ca09af4c742090820272555bb3",
+    "parser_record": {
+      "files": {
+        "src/base/seed-contract.mjs": "7beada5d271beaaf63d76e1f8cf2712ba906ec7d430f8312f4abedfad57428b4"
+      },
+      "modes": {
+        "src/base/seed-contract.mjs": "100644"
+      },
+      "originFiles": [
+        "foundation/runtime/seed-contract.mjs"
+      ],
+      "originPath": "foundation/runtime/seed-contract.mjs",
+      "path": "src/base/seed-contract.mjs",
+      "revision": "e881e6f66ce7cd737d17dbeb945995aab83c30d8"
+    }
+  },
+  "pr": null,
+  "product_counts": {
+    "by_kind": {
+      "published": 104,
+      "push-further": 10,
+      "target": 158
+    },
+    "counts": {
+      "done": 136,
+      "missing": 67,
+      "partial": 69,
+      "total": 272
+    }
+  },
+  "product_custody": "pushed",
+  "remote_head_verified": true,
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "source_lock": {
+    "all_other_files_and_metadata_unchanged": true,
+    "changed_file_hashes": [
+      "scripts/contract-docs.mjs",
+      "tests/installer/adapter.test.mjs"
+    ],
+    "check_exit": 0,
+    "regenerated_last": true
+  },
+  "status_changes": [],
+  "toolchain": {
+    "node": "v24.19.0",
+    "note": "The exact supplied cloud toolchain retained newer VM Node 24.19.0; pnpm emitted its engine warning. No package or toolchain pin changed.",
+    "pnpm": "10.12.4",
+    "repository_node_pin": "22.20.0"
+  },
+  "typecheck": {
+    "reason": "Only .mjs JavaScript files changed. tsconfig.app.json disables allowJs and includes src; tsconfig.node.json includes only the two Vite TypeScript configs. Syntax checks and the affected public-command test passed.",
+    "status": "not applicable"
+  },
+  "unchanged_authorities_and_views": {
+    "ACCEPTANCE.md": {
+      "bytes": 201588,
+      "equals_fresh_main": true,
+      "sha256": "cebdfcce65b1a5625786d6321b3eef6c0ef2ed15c22522bf7ade7d1642a5e98c"
+    },
+    "CONTRACT.md": {
+      "bytes": 495499,
+      "equals_fresh_main": true,
+      "sha256": "ce01bebe92fdcafb08da1adcec2e59b86a56ea2fb15c6511c9edd22f6d735494"
+    },
+    "docs/CLAIMS.md": {
+      "bytes": 48952,
+      "equals_fresh_main": true,
+      "sha256": "258df9bf5d6d850e1719081611d44e912567a7c3850eaeba0d323ad1891e0439"
+    }
+  }
+}
