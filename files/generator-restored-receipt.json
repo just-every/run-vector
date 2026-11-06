@@ -1,0 +1,8 @@
+{
+  "command": "node scripts/contract-docs.mjs check AUTO-007",
+  "candidate": "474430d07da59ef420040a27db4fbc1ad0cca232",
+  "exit": 1,
+  "permitted_generated_view_difference": "ACCEPTANCE.md differs from CONTRACT.md; generated views were deliberately restored from main as instructed",
+  "generated_write_then_check_pre_restore": "PASS",
+  "candidate_source_unchanged": true
+}

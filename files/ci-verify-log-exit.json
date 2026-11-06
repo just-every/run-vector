@@ -1,0 +1,1 @@
+{"command": "gh run view 42171024043 --repo just-every/run-vector --job 127738912023 --log-failed", "exit": 0}

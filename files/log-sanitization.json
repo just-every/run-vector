@@ -1,0 +1,19 @@
+{
+  "utc": "2026-11-06T06:03:08.139862+00:00",
+  "transport": "required gh run view --job --log-failed, once per failed job; no retries",
+  "secret_values_in_selected_packet": false,
+  "environment_value_omission": [
+    {
+      "file": "ci-build-failed.log",
+      "redacted_environment_lines": 1,
+      "before_sha256": "9443209213f078e80e801eab7746060a44eaf68b7eafbd9d4d4e3057e011389a",
+      "after_sha256": "cd247e0d59d7eb1ff7ac48c51dab3cf6a2c9ead672c96833cf2de98c0441d60e"
+    },
+    {
+      "file": "ci-verify-failed.log",
+      "redacted_environment_lines": 3,
+      "before_sha256": "3abc3e51d4ab6d18618a0a93e88a7edf8d82684b443f48be0ae55cb50739ceb2",
+      "after_sha256": "e5136cb110dc51dd840b4225d21e13c734b2f035487ce1a1edf0ec01891900e2"
+    }
+  ]
+}

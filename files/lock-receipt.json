@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "head": "c8eac97fffc5bc1bf01bccbe0f362120eccd1359",
+  "lock_command": "node scripts/edition-authoring/cli.mjs lock",
+  "check_command": "node scripts/edition-authoring/cli.mjs check",
+  "changed_existing_entries": [
+    "CONTRACT.md",
+    "docs/site.json"
+  ],
+  "added_entries": [
+    "RULINGS.md",
+    "docs/contract/AUTO-007-rubric.md"
+  ],
+  "generated_views_unchanged": true
+}

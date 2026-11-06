@@ -1,0 +1,20 @@
+{
+  "candidate": "c8eac97fffc5bc1bf01bccbe0f362120eccd1359",
+  "exit": 2,
+  "status": "INCOMPLETE",
+  "complete": false,
+  "findings": [
+    {
+      "rule": "scan.gitleaks-unavailable",
+      "path": ".",
+      "commit": null,
+      "commits": [
+        null
+      ],
+      "scope": "newly-public",
+      "scopes": [
+        "newly-public"
+      ]
+    }
+  ]
+}

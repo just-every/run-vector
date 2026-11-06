@@ -1,0 +1,31 @@
+{
+  "utc": "2026-11-06T05:53:35.865388+00:00",
+  "repository": "just-every/run-vector",
+  "main_base": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "branch": "cloud/ct-vector-auto001-defer-text-20261106-0230-c1",
+  "head": "474430d07da59ef420040a27db4fbc1ad0cca232",
+  "remote_verified_head": "474430d07da59ef420040a27db4fbc1ad0cca232",
+  "product_push": "success; first attempt",
+  "clean_product_checkout": true,
+  "product_files": [
+    "CONTRACT.md",
+    "RULINGS.md",
+    "docs/contract/AUTO-007-rubric.md",
+    "sources.lock.json"
+  ],
+  "pr": null,
+  "holds_released": false,
+  "independent_opus_exact_head_review": "pending; supported CT review hold retained",
+  "ci": {
+    "conclusion": null,
+    "created_at": "2026-11-06T05:52:58Z",
+    "event": "push",
+    "head_branch": "cloud/ct-vector-auto001-defer-text-20261106-0230-c1",
+    "head_sha": "474430d07da59ef420040a27db4fbc1ad0cca232",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42171024043",
+    "id": 42171024043,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "updated_utc": "2026-11-06T05:56:47.018741+00:00"
+}

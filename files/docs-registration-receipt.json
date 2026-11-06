@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "trigger_run": 42171024043,
+  "trigger_head": "474430d07da59ef420040a27db4fbc1ad0cca232",
+  "failure": "docs/site.json requires every tracked Markdown file to be classified",
+  "added_github_only": [
+    {
+      "source": "RULINGS.md",
+      "reason": "Dated contract rulings and retained review holds for maintainers and reviewers."
+    },
+    {
+      "source": "docs/contract/AUTO-007-rubric.md",
+      "reason": "Frozen future-build privacy requirements for contract reviewers; not passing evidence or an installed application guide."
+    }
+  ],
+  "existing_pages_and_classifications_unchanged": true,
+  "application_ui_runtime_tooling_changes": false
+}

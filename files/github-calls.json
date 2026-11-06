@@ -1,0 +1,102 @@
+[
+  {
+    "number": 1,
+    "utc": "2026-11-06T05:53:35.414992+00:00",
+    "epoch": 1793944414.8872955,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=474430d07da59ef420040a27db4fbc1ad0cca232&per_page=100",
+      "--jq",
+      "{workflow_runs: [.workflow_runs[] | {id,name,head_sha,head_branch,event,status,conclusion,html_url,created_at}]}"
+    ],
+    "exit": 0,
+    "run_ids": [
+      "42171024043"
+    ]
+  },
+  {
+    "number": 2,
+    "utc": "2026-11-06T05:58:36.566698+00:00",
+    "epoch": 1793944715.9238417,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42171024043",
+      "--jq",
+      "{status,conclusion,head_sha,html_url,id,name}"
+    ],
+    "exit": 0,
+    "run_ids": [
+      "42171024043"
+    ]
+  },
+  {
+    "number": 3,
+    "utc": "2026-11-06T05:58:51.079590+00:00",
+    "epoch": 1793944730.534855,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42171024043/jobs?per_page=100",
+      "--jq",
+      "{jobs: [.jobs[] | select(.conclusion == \"failure\") | {id,name,status,conclusion,html_url,steps: [.steps[] | select(.conclusion == \"failure\") | {name,number,conclusion}]}]}"
+    ],
+    "exit": 0,
+    "run_ids": [
+      "42171024043"
+    ]
+  },
+  {
+    "number": 4,
+    "utc": "2026-11-06T05:59:08.349069+00:00",
+    "epoch": 1793944746.109759,
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42171024043",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "127738654572",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "run_ids": []
+  },
+  {
+    "number": 5,
+    "utc": "2026-11-06T05:59:09.407003+00:00",
+    "epoch": 1793944748.4364483,
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42171024043",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "127738912023",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "run_ids": []
+  },
+  {
+    "number": 6,
+    "utc": "2026-11-06T06:01:00.468768+00:00",
+    "epoch": 1793944859.9891746,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=c8eac97fffc5bc1bf01bccbe0f362120eccd1359&per_page=100",
+      "--jq",
+      "{workflow_runs: [.workflow_runs[] | {id,name,head_sha,head_branch,event,status,conclusion,html_url,created_at}]}"
+    ],
+    "exit": 0,
+    "run_ids": [
+      "42171766334"
+    ]
+  }
+]

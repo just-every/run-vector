@@ -1,0 +1,11 @@
+verify	Require the complete verification wall	﻿2026-11-06T05:53:59.1794823Z ##[group]Run test "$PLAN_RESULT" = success
+verify	Require the complete verification wall	2026-11-06T05:53:59.1795704Z [36;1mtest "$PLAN_RESULT" = success[0m
+verify	Require the complete verification wall	2026-11-06T05:53:59.1796422Z [36;1mif [ "$SKIP" = true ]; then exit 0; fi[0m
+verify	Require the complete verification wall	2026-11-06T05:53:59.1797532Z [36;1mfor result in $RESULTS; do test "$result" = success; done[0m
+verify	Require the complete verification wall	2026-11-06T05:53:59.2179614Z shell: /usr/bin/bash -e {0}
+verify	Require the complete verification wall	2026-11-06T05:53:59.2180752Z env:
+verify	Require the complete verification wall	2026-11-06T05:53:59.2181511Z   <environment value omitted from public packet>
+verify	Require the complete verification wall	2026-11-06T05:53:59.2182249Z   <environment value omitted from public packet>
+verify	Require the complete verification wall	2026-11-06T05:53:59.2182826Z   <environment value omitted from public packet>
+verify	Require the complete verification wall	2026-11-06T05:53:59.2183498Z ##[endgroup]
+verify	Require the complete verification wall	2026-11-06T05:53:59.2368234Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-11-06T05:48:25.472822+00:00",
+  "main_base": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "generator_prerequisite": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "used_auto_ids_before": [
+    "AUTO-001",
+    "AUTO-002",
+    "AUTO-003",
+    "AUTO-004",
+    "AUTO-005",
+    "AUTO-006"
+  ],
+  "assigned_auto_id": "AUTO-007",
+  "rulings_file_previously_present": false,
+  "assigned_ruling_id": "RL-101",
+  "rubric": "docs/contract/AUTO-007-rubric.md",
+  "original_clause_count": 272,
+  "new_status": "missing",
+  "new_evidence": "",
+  "auto001_decision": "DEFER/twoFIX/reopenfalse",
+  "holds_released": false,
+  "pre_commit_refresh_main": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "pre_commit_refresh_utc": "2026-11-06T05:49:45.448463+00:00"
+}

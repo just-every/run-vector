@@ -1,0 +1,85 @@
+build	Build the shared production output	﻿2026-11-06T05:53:24.5534992Z ##[group]Run pnpm build
+build	Build the shared production output	2026-11-06T05:53:24.5535312Z [36;1mpnpm build[0m
+build	Build the shared production output	2026-11-06T05:53:24.5556405Z shell: /usr/bin/bash -e {0}
+build	Build the shared production output	2026-11-06T05:53:24.5556873Z env:
+build	Build the shared production output	2026-11-06T05:53:24.5557131Z   <environment value omitted from public packet>
+build	Build the shared production output	2026-11-06T05:53:24.5557449Z ##[endgroup]
+build	Build the shared production output	2026-11-06T05:53:24.8330240Z 
+build	Build the shared production output	2026-11-06T05:53:24.8331002Z > vector@0.4.1 build /home/runner/work/run-vector/run-vector
+build	Build the shared production output	2026-11-06T05:53:24.8331499Z > rer build
+build	Build the shared production output	2026-11-06T05:53:24.8331649Z 
+build	Build the shared production output	2026-11-06T05:53:25.4756351Z Checking pinned pnpm
+build	Build the shared production output	2026-11-06T05:53:25.7373353Z 10.12.4
+build	Build the shared production output	2026-11-06T05:53:25.8173592Z Building your application
+build	Build the shared production output	2026-11-06T05:53:26.0933767Z 
+build	Build the shared production output	2026-11-06T05:53:26.0937559Z > vector@0.4.1 build:source [REDACTED]
+build	Build the shared production output	2026-11-06T05:53:26.0938318Z > pnpm typecheck && vite build
+build	Build the shared production output	2026-11-06T05:53:26.0938637Z 
+build	Build the shared production output	2026-11-06T05:53:26.3648622Z 
+build	Build the shared production output	2026-11-06T05:53:26.3649423Z > vector@0.4.1 typecheck [REDACTED]
+build	Build the shared production output	2026-11-06T05:53:26.3650066Z > tsc -b
+build	Build the shared production output	2026-11-06T05:53:26.3650293Z 
+build	Build the shared production output	2026-11-06T05:53:52.4788345Z vite v8.2.2 building client environment for production...
+build	Build the shared production output	2026-11-06T05:53:52.4902069Z transforming...
+build	Build the shared production output	2026-11-06T05:53:52.9153991Z [plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/loaders.ts:4:29 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+build	Build the shared production output	2026-11-06T05:53:52.9232117Z [plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/public/sign-in-loader.ts:5:27 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+build	Build the shared production output	2026-11-06T05:53:54.1257584Z ✓ 1304 modules transformed.
+build	Build the shared production output	2026-11-06T05:53:54.1277520Z ✗ Build failed in 1.65s
+build	Build the shared production output	2026-11-06T05:53:54.1300172Z error during build:
+build	Build the shared production output	2026-11-06T05:53:54.1300657Z Build failed with 1 error:
+build	Build the shared production output	2026-11-06T05:53:54.1300948Z 
+build	Build the shared production output	2026-11-06T05:53:54.1301149Z [plugin vector:docs]
+build	Build the shared production output	2026-11-06T05:53:54.1301633Z Error: docs/site.json is invalid:
+build	Build the shared production output	2026-11-06T05:53:54.1302474Z - RULINGS.md is neither a page nor in githubOnly; add it to one with a reason
+build	Build the shared production output	2026-11-06T05:53:54.1303809Z - docs/contract/AUTO-007-rubric.md is neither a page nor in githubOnly; add it to one with a reason
+build	Build the shared production output	2026-11-06T05:53:54.1305298Z     at readManifest (file://[REDACTED]/node_modules/.vite-temp/vite.config.ts.timestamp-1793944429965-5cae35915c68a.mjs:188:29)
+build	Build the shared production output	2026-11-06T05:53:54.1307083Z     at buildDocs (file://[REDACTED]/node_modules/.vite-temp/vite.config.ts.timestamp-1793944429965-5cae35915c68a.mjs:315:23)
+build	Build the shared production output	2026-11-06T05:53:54.1308705Z     at LoadPluginContextImpl.load (file://[REDACTED]/node_modules/.vite-temp/vite.config.ts.timestamp-1793944429965-5cae35915c68a.mjs:363:17)
+build	Build the shared production output	2026-11-06T05:53:54.1310719Z     at LoadPluginContextImpl.handler (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:34054:13)
+build	Build the shared production output	2026-11-06T05:53:54.1312727Z     at plugin (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/bindingify-input-options-C0gEvtnB.mjs:1758:30)
+build	Build the shared production output	2026-11-06T05:53:54.1314490Z     at file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/bindingify-input-options-C0gEvtnB.mjs:2118:21
+build	Build the shared production output	2026-11-06T05:53:54.1316862Z     at plugin.<computed> (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/bindingify-input-options-C0gEvtnB.mjs:2316:18)
+build	Build the shared production output	2026-11-06T05:53:54.1319192Z     at aggregateBindingErrorsIntoJsError (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/error-Dsqzw0Oa.mjs:49:18)
+build	Build the shared production output	2026-11-06T05:53:54.1321217Z     at unwrapBindingResult (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/error-Dsqzw0Oa.mjs:19:128)
+build	Build the shared production output	2026-11-06T05:53:54.1323052Z     at #build (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/rolldown-D_vNlorD.mjs:133:34)
+build	Build the shared production output	2026-11-06T05:53:54.1325139Z     at async buildEnvironment (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:33821:66)
+build	Build the shared production output	2026-11-06T05:53:54.1328457Z     at async Object.build (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:34242:19)
+build	Build the shared production output	2026-11-06T05:53:54.1331592Z     at async buildStartViteEnvironments (file://[REDACTED]/node_modules/.pnpm/@tanstack+start-plugin-core@1.171.49_@tanstack+react-router@1.170.41_react-dom@19.2.8_r_4459ac5ce2231ca7e7f27d99ec194c19/node_modules/@tanstack/start-plugin-core/dist/esm/vite/planning.js:95:23)
+build	Build the shared production output	2026-11-06T05:53:54.1335340Z     at async Object.buildApp (file://[REDACTED]/node_modules/.pnpm/@tanstack+start-plugin-core@1.171.49_@tanstack+react-router@1.170.41_react-dom@19.2.8_r_4459ac5ce2231ca7e7f27d99ec194c19/node_modules/@tanstack/start-plugin-core/dist/esm/vite/plugin.js:113:8)
+build	Build the shared production output	2026-11-06T05:53:54.1338402Z     at async Object.buildApp (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:34234:6)
+build	Build the shared production output	2026-11-06T05:53:54.1340577Z     at async CAC.<anonymous> (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/cli.js:776:3) {
+build	Build the shared production output	2026-11-06T05:53:54.1341815Z   errors: [Getter/Setter]
+build	Build the shared production output	2026-11-06T05:53:54.1342238Z }
+build	Build the shared production output	2026-11-06T05:53:54.2432511Z  ELIFECYCLE  Command failed with exit code 1.
+build	Build the shared production output	2026-11-06T05:53:54.3224619Z Building your application: exit 1, signal none.
+build	Build the shared production output	2026-11-06T05:53:54.3227082Z Installation stopped while building the application. Ask your agent to check the edition's operating command for that step, correct the cause, then select Start again. Your setup answers are saved; you may need to supply credentials again.
+build	Build the shared production output	2026-11-06T05:53:54.3229025Z Command: pnpm
+build	Build the shared production output	2026-11-06T05:53:54.3229292Z Last output (up to 40 lines):
+build	Build the shared production output	2026-11-06T05:53:54.3229471Z 
+build	Build the shared production output	2026-11-06T05:53:54.3229636Z > vector@0.4.1 build:source [REDACTED]
+build	Build the shared production output	2026-11-06T05:53:54.3229966Z > pnpm typecheck && vite build
+build	Build the shared production output	2026-11-06T05:53:54.3230131Z 
+build	Build the shared production output	2026-11-06T05:53:54.3230167Z 
+build	Build the shared production output	2026-11-06T05:53:54.3230316Z > vector@0.4.1 typecheck [REDACTED]
+build	Build the shared production output	2026-11-06T05:53:54.3230595Z > tsc -b
+build	Build the shared production output	2026-11-06T05:53:54.3230704Z 
+build	Build the shared production output	2026-11-06T05:53:54.3230926Z vite v8.2.2 building client environment for production...
+build	Build the shared production output	2026-11-06T05:53:54.3288500Z transforming...
+build	Build the shared production output	2026-11-06T05:53:54.3290039Z [plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/loaders.ts:4:29 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+build	Build the shared production output	2026-11-06T05:53:54.3291958Z [plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/public/sign-in-loader.ts:5:27 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+build	Build the shared production output	2026-11-06T05:53:54.3293022Z ✓ 1304 modules transformed.
+build	Build the shared production output	2026-11-06T05:53:54.3293326Z ✗ Build failed in 1.65s
+build	Build the shared production output	2026-11-06T05:53:54.3293576Z error during build:
+build	Build the shared production output	2026-11-06T05:53:54.3293821Z Build failed with 1 error:
+build	Build the shared production output	2026-11-06T05:53:54.3293973Z 
+build	Build the shared production output	2026-11-06T05:53:54.3294084Z [plugin vector:docs]
+build	Build the shared production output	2026-11-06T05:53:54.3294328Z docs/site.json is invalid:
+build	Build the shared production output	2026-11-06T05:53:54.3294815Z - RULINGS.md is neither a page nor in githubOnly; add it to one with a reason
+build	Build the shared production output	2026-11-06T05:53:54.3295506Z - docs/contract/AUTO-007-rubric.md is neither a page nor in githubOnly; add it to one with a reason
+build	Build the shared production output	2026-11-06T05:53:54.3295993Z   errors: [Getter/Setter]
+build	Build the shared production output	2026-11-06T05:53:54.3296219Z }
+build	Build the shared production output	2026-11-06T05:53:54.3296897Z  ELIFECYCLE  Command failed with exit code 1.
+build	Build the shared production output	2026-11-06T05:53:54.3297383Z Log: [REDACTED]/.seed/installer/install.log
+build	Build the shared production output	2026-11-06T05:53:54.3297708Z build: failed (exit 1)
+build	Build the shared production output	2026-11-06T05:53:54.3478077Z  ELIFECYCLE  Command failed with exit code 1.
+build	Build the shared production output	2026-11-06T05:53:54.3670224Z ##[error]Process completed with exit code 1.

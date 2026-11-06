@@ -1,0 +1,5 @@
+{
+  "command": "rer check --profile first-party --json (pinned rer 0.2.94, Node 22.20.0)",
+  "exit": 0,
+  "output_bytes": 62000
+}

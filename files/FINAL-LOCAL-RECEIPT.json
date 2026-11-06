@@ -1,0 +1,21 @@
+{
+  "verified_at_utc": "2026-11-06T06:01:39.713739+00:00",
+  "head": "c8eac97fffc5bc1bf01bccbe0f362120eccd1359",
+  "source_lock_check": true,
+  "working_tree_clean": true,
+  "generated_views_restored_and_expected_check_difference_confirmed": true,
+  "contract_blob_unchanged_since_generator_receipts": "34160c2b32cff4954eca24fc8b0eae33958bff54",
+  "docs_manifest_check": {
+    "ok": true,
+    "sections": 4,
+    "githubOnly": 109
+  },
+  "existing_documentation_pages_and_inventory_entries_preserved": true,
+  "product_only_expected_five_files": [
+    "CONTRACT.md",
+    "RULINGS.md",
+    "docs/contract/AUTO-007-rubric.md",
+    "docs/site.json",
+    "sources.lock.json"
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "result": "PASS",
+  "main_base": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "before": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67,
+    "total": 272
+  },
+  "after": {
+    "done": 136,
+    "partial": 69,
+    "missing": 68,
+    "total": 273
+  },
+  "tiers_before": {
+    "core_legacy_unmarked": {
+      "done": 136,
+      "partial": 57,
+      "missing": 66,
+      "total": 259
+    },
+    "agent_surface": {
+      "done": 0,
+      "partial": 12,
+      "missing": 1,
+      "total": 13
+    },
+    "later": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0,
+      "total": 0
+    }
+  },
+  "tiers_after": {
+    "core_legacy_unmarked": {
+      "done": 136,
+      "partial": 57,
+      "missing": 67,
+      "total": 260
+    },
+    "agent_surface": {
+      "done": 0,
+      "partial": 12,
+      "missing": 1,
+      "total": 13
+    },
+    "later": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0,
+      "total": 0
+    }
+  },
+  "all_272_definitions_and_full_status_rows_unchanged": true,
+  "entire_old_contract_restored_by_removing_only_addition_and_reversing_generated_counts": true,
+  "homepage_claims_and_judged_provenance_unchanged": true,
+  "auto001_status_row": "| `AUTO-001` | Recurring issues | target | missing |  | No implementation yet |",
+  "added": "AUTO-007",
+  "ruling": "RL-101",
+  "acceptance_points": 4,
+  "new_evidence": "",
+  "generated_views_restored": true,
+  "normalized_contract_sha256": "ce01bebe92fdcafb08da1adcec2e59b86a56ea2fb15c6511c9edd22f6d735494"
+}
