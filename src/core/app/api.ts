@@ -1,3 +1,4 @@
+import {addProjectDependencyRoutes} from '../features/project-dependencies/routes';
 import {addTriageResponsibilityRoutes} from '../features/triage-responsibility/routes';
 import {addIssueTemplateRoutes} from '../features/issue-templates/routes';
 import {addAliasRoutes} from '../features/data/aliases/routes';
@@ -396,6 +397,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addViewRoutes(app);
   addPreferenceRoutes(app);
   addAdministrationRoutes(app);
+  addProjectDependencyRoutes(app);
   addTriageResponsibilityRoutes(app);
   addTeamMembershipRoutes(app);
   addIssueCopyRoutes(app);

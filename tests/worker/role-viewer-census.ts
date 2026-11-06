@@ -164,6 +164,14 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('PATCH','/data/aliases/prefixes/:prefix',{active:false},{prefix:importInput.source});
   native('POST','/settings/integrations/slack/app/members',{operatorId:member.id,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user});native('DELETE','/settings/integrations/slack/app/members/:operatorId',undefined,{operatorId:member.id});native('POST','/settings/integrations/slack/app',appProfile);native('POST','/settings/integrations/slack/app/create',{configurationToken:'synthetic-vector-31081-token'});native('POST','/settings/integrations/slack/app/install',undefined);native('GET','/integrations/slack/oauth/callback',undefined,{},oauthPath);
   const ip={identifier:issue.identifier},cp={...ip,itemId:comment.id},pp={id:project.id},tp={id:w.team.id},teamId={teamId:w.team.id};
+  const dependencyState=await call(owner,'/settings/projects','POST',{name:'synthetic-vector-31501',leadOperatorId:owner.id});
+  const dependencyBlocker=dependencyState.projects.find((row:any)=>row.name==='synthetic-vector-31501');
+  const newDependencyState=await call(owner,'/settings/projects','POST',{name:'synthetic-vector-31502',leadOperatorId:owner.id});
+  const newDependencyBlocker=newDependencyState.projects.find((row:any)=>row.name==='synthetic-vector-31502');
+  await call(owner,'/projects/'+project.id+'/dependencies/'+dependencyBlocker.id,'PUT');
+  both('PUT','/projects/:id/dependencies/:blockingId','/projects/:id/dependencies/:blockingId',undefined,{id:project.id,blockingId:newDependencyBlocker.id});
+  both('DELETE','/projects/:id/dependencies/:blockingId','/projects/:id/dependencies/:blockingId',undefined,{id:project.id,blockingId:dependencyBlocker.id});
+
   for(const method of ['POST','PATCH','PUT'] as const){
    const path=method==='POST'?'/initiatives':method==='PATCH'?'/initiatives/:id':'/initiatives/:id/projects';
    both(method,path,path,method==='POST'?{name:'synthetic-vector-31037',ownerOperatorId:member.id}:method==='PATCH'?{expectedVersion:initiative.version,description:'synthetic-vector-31038'}:{expectedVersion:initiative.version,projectIds:[project.id]},{id:initiative.id});
