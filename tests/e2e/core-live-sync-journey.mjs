@@ -156,7 +156,7 @@ export async function liveSyncJourney({ page, context, browser, base, state, tea
     const returned = await api('/issues/' + intake.body.identifier + '/return', 'POST', { expectedVersion: 14 });
     assert.equal(returned.status, 200);
     await row.waitFor({ timeout: 5000 });
-    await reader.getByText('Failed to fetch', { exact: true }).first().waitFor({ state: 'detached', timeout: 10000 });
+    await reader.getByText('Failed to fetch', { exact: false }).first().waitFor({ state: 'detached', timeout: 10000 });
     for (const width of [1440, 390]) {
       await reader.setViewportSize({ width, height: 1000 });
       await reader.screenshot({ path: evidence + '/live-sync-current-' + width + '.png', fullPage: true });
