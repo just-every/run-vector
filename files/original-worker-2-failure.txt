@@ -1,0 +1,52 @@
+ort retirement and reversal fences are added, and the owner signs in after  6963ms
+2026-11-06T02:58:50.1491064Z 
+2026-11-06T02:58:50.1491596Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+2026-11-06T02:58:50.1491846Z 
+2026-11-06T02:58:50.1494080Z  FAIL  tests/worker/data-http-audit-recovery.test.ts > [ROLE-005 DATA-001 DATA-005 BASE-DATA-001] aborted or failed restore attempts retain native authority, files and append-only audit history
+2026-11-06T02:58:50.1498787Z Error: Test timed out in 180000ms.
+2026-11-06T02:58:50.1499549Z If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+2026-11-06T02:58:50.1500331Z  ❯ tests/worker/data-http-audit-recovery.test.ts:7:1
+2026-11-06T02:58:50.1522047Z       5| import {ContentVerifier,ArchiveVerifier} from '@runeditrun/rer/modules…
+2026-11-06T02:58:50.1522676Z       6|
+2026-11-06T02:58:50.1523089Z       7| it('[ROLE-005 DATA-001 DATA-005 BASE-DATA-001] aborted or failed resto…
+2026-11-06T02:58:50.1523478Z        | ^
+2026-11-06T02:58:50.1523894Z       8|  const f=await populatedHttpSource(),records=await httpExport(f.call),…
+2026-11-06T02:58:50.1524458Z       9|  const original=await targetSnapshot();
+2026-11-06T02:58:50.1524742Z 
+2026-11-06T02:58:50.1524947Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+2026-11-06T02:58:50.1525226Z 
+2026-11-06T02:58:50.1525247Z 
+2026-11-06T02:58:50.1528037Z  Test Files  1 failed | 17 passed (18)
+2026-11-06T02:58:50.1528706Z       Tests  1 failed | 31 passed (32)
+2026-11-06T02:58:50.1529165Z    Start at  02:45:47
+2026-11-06T02:58:50.1529884Z    Duration  782.75s (transform 4.23s, setup 0ms, import 49.40s, tests 724.03s, environment 1ms)
+2026-11-06T02:58:50.1531252Z 
+2026-11-06T02:58:50.1540781Z 
+2026-11-06T02:58:50.1546829Z ##[error]Error: Test timed out in 180000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/worker/data-http-audit-recovery.test.ts:7:1
+
+
+2026-11-06T02:58:50.2443272Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-06T02:58:50.2756774Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-06T02:58:50.2923709Z ##[error]Process completed with exit code 1.
+2026-11-06T02:58:50.2989906Z ##[group]Run actions/upload-artifact@v4
+2026-11-06T02:58:50.2990169Z with:
+2026-11-06T02:58:50.2990374Z   name: vector-verification-worker-2
+2026-11-06T02:58:50.2990623Z   include-hidden-files: true
+2026-11-06T02:58:50.2992522Z   path: evidence/installer/proof.json
+evidence/installer/*.png
+evidence/access/proof.json
+evidence/mutation-refresh/proof.json
+.artifacts/verification/ui-runtime-failure.png
+.artifacts/verification/ui-runtime-failure-safe.json
+.artifacts/verification/issue-controls/manifest.json
+.artifacts/verification/check-results.json
+.artifacts/verification/shard-*.json
+.artifacts/verification/dev-runtime-results.json
+.artifacts/verification/dev-runtime-failure-safe.json
+.artifacts/verification/dev-failure.png
+.artifacts/verification/admin-browser/admin-failure-safe.json
+.artifacts/verification/collaboration-browser/collaboration-failure-safe.json
+
+2026-11-06T02:58:50.2994416Z   if-no-files-found:

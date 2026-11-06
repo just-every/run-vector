@@ -1,0 +1,3 @@
+Command: npx -y @runeditrun/rer check --profile first-party
+Exit: 0
+Output bytes: 0

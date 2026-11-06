@@ -1,0 +1,14 @@
+{
+  "failed_head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "run": 42152182964,
+  "job": 127678160861,
+  "original_command": "pnpm verify:ci --shard hosted-artifact",
+  "head": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "command": "pnpm test:integrations",
+  "test": "exerciseGithubChain: github-rules-390 390: no serious or critical axe findings",
+  "exit": 1,
+  "failure": "color-contrast on .git-rules > .field:nth-child(2) > .field-head > .field-saved[role=\"status\"][aria-live=\"polite\"]",
+  "comparison": "actual unchanged native journey reproduces on main; saved candidate uses identical fields CSS",
+  "repair": "keep Saved confirmation opaque while visible; hide discretely at its existing 2.2-second expiry; preserve all assertions",
+  "round": 1
+}

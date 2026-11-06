@@ -1,0 +1,24 @@
+
+AssertionError [ERR_ASSERTION]: github-rules-390 390: no serious or critical axe findings
++ actual - expected
++ [
++   {
++     id: 'color-contrast',
++     targets: [
++       [
++         '.git-rules > .field:nth-child(2) > .field-head > .field-saved[role="status"][aria-live="polite"]'
++       ]
++     ]
++   }
++ ]
+- []
+    {
+      id: 'color-contrast',
+      targets: [
+        [
+          '.git-rules > .field:nth-child(2) > .field-head > .field-saved[role="status"][aria-live="polite"]'
+        ]
+      ]
+    }
+  ],
+  expected: [],

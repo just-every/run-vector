@@ -1,0 +1,1 @@
+fixed-git-settings-proof exit=0

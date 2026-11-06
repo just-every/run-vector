@@ -1,0 +1,1 @@
+main-audit-recovery exit=0

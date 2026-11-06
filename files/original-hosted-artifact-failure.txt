@@ -1,0 +1,91 @@
+6-11-06T02:56:46.3803576Z     triggerUncaughtException(
+2026-11-06T02:56:46.3843524Z     ^
+2026-11-06T02:56:46.3904087Z 
+2026-11-06T02:56:46.3905131Z AssertionError [ERR_ASSERTION]: github-rules-1440 390: no serious or critical axe findings
+2026-11-06T02:56:46.3905923Z + actual - expected
+2026-11-06T02:56:46.3906536Z 
+2026-11-06T02:56:46.3906799Z + [
+2026-11-06T02:56:46.3907186Z +   {
+2026-11-06T02:56:46.3907616Z +     id: 'color-contrast',
+2026-11-06T02:56:46.3908084Z +     targets: [
+2026-11-06T02:56:46.3908486Z +       [
+2026-11-06T02:56:46.3909294Z +         '.git-rules > .field:nth-child(2) > .field-head > .field-saved[role="status"][aria-live="polite"]'
+2026-11-06T02:56:46.3910015Z +       ],
+2026-11-06T02:56:46.3910465Z +       [
+2026-11-06T02:56:46.3911269Z +         '.git-rules > .field:nth-child(3) > .field-head > .field-saved[role="status"][aria-live="polite"]'
+2026-11-06T02:56:46.3911993Z +       ]
+2026-11-06T02:56:46.3912376Z +     ]
+2026-11-06T02:56:46.3912884Z +   }
+2026-11-06T02:56:46.3913250Z + ]
+2026-11-06T02:56:46.3913615Z - []
+2026-11-06T02:56:46.3913895Z 
+2026-11-06T02:56:46.3914495Z     at inspect (file:///home/runner/work/run-vector/run-vector/tests/e2e/role-ui-support.mjs:28:14)
+2026-11-06T02:56:46.3915813Z     at async exerciseGithubChain (file:///home/runner/work/run-vector/run-vector/tests/e2e/integrations/github-chain.mjs:51:3)
+2026-11-06T02:56:46.3916910Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/integration-runtime.mjs:41:4 {
+2026-11-06T02:56:46.3917621Z   generatedMessage: false,
+2026-11-06T02:56:46.3918081Z   code: 'ERR_ASSERTION',
+2026-11-06T02:56:46.3918529Z   actual: [
+2026-11-06T02:56:46.3918922Z     {
+2026-11-06T02:56:46.3919327Z       id: 'color-contrast',
+2026-11-06T02:56:46.3919789Z       targets: [
+2026-11-06T02:56:46.3920205Z         [
+2026-11-06T02:56:46.3920928Z           '.git-rules > .field:nth-child(2) > .field-head > .field-saved[role="status"][aria-live="polite"]'
+2026-11-06T02:56:46.3921642Z         ],
+2026-11-06T02:56:46.3922035Z         [
+2026-11-06T02:56:46.3922850Z           '.git-rules > .field:nth-child(3) > .field-head > .field-saved[role="status"][aria-live="polite"]'
+2026-11-06T02:56:46.3923547Z         ]
+2026-11-06T02:56:46.3923912Z       ]
+2026-11-06T02:56:46.3924284Z     }
+2026-11-06T02:56:46.3924646Z   ],
+2026-11-06T02:56:46.3925030Z   expected: [],
+2026-11-06T02:56:46.3925469Z   operator: 'deepStrictEqual',
+2026-11-06T02:56:46.3925927Z   diff: 'simple'
+2026-11-06T02:56:46.3926306Z }
+2026-11-06T02:56:46.3926576Z 
+2026-11-06T02:56:46.3926790Z Node.js v22.20.0
+2026-11-06T02:56:46.4198542Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-06T02:56:46.4527332Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-06T02:56:46.4692475Z ##[error]Process completed with exit code 1.
+2026-11-06T02:56:46.4748644Z ##[group]Run actions/upload-artifact@v4
+2026-11-06T02:56:46.4748895Z with:
+2026-11-06T02:56:46.4749092Z   name: vector-verification-hosted-artifact
+2026-11-06T02:56:46.4749353Z   include-hidden-files: true
+2026-11-06T02:56:46.4751202Z   path: evidence/installer/proof.json
+evidence/installer/*.png
+evidence/access/proof.json
+evidence/mutation-refresh/proof.json
+.artifacts/verification/ui-runtime-failure.png
+.artifacts/verification/ui-runtime-failure-safe.json
+.artifacts/verification/issue-controls/manifest.json
+.artifacts/verification/check-results.json
+.artifacts/verification/shard-*.json
+.artifacts/verification/dev-runtime-results.json
+.artifacts/verification/dev-runtime-failure-safe.json
+.artifacts/verification/dev-failure.png
+.artifacts/verification/admin-browser/admin-failure-safe.json
+.artifacts/verification/collaboration-browser/collaboration-failure-safe.json
+
+2026-11-06T02:56:46.4753264Z   if-no-files-found: ignore
+2026-11-06T02:56:46.4753474Z   compression-level: 6
+2026-11-06T02:56:46.4753714Z   overwrite: false
+2026-11-06T02:56:46.4753888Z env:
+2026-11-06T02:56:46.4754045Z   TZ: UTC
+2026-11-06T02:56:46.4754228Z   PLAYWRIGHT_SKIP_BROWSER_GC: 1
+2026-11-06T02:56:46.4754441Z   VITEST_MAX_WORKERS: 1
+2026-11-06T02:56:46.4754641Z   VECTOR_VERIFY_PREBUILT_SHA: 
+2026-11-06T02:56:46.4754913Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+2026-11-06T02:56:46.4755177Z ##[endgroup]
+2026-11-06T02:56:46.6131776Z (node:9302) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-06T02:56:46.6132429Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-06T02:56:46.6205366Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-06T02:56:46.6207663Z The least common ancestor is /home/runner/work/run-vector/run-vector. This will be the root directory of the artifact
+2026-11-06T02:56:46.6208424Z With the provided path, there will be 4 files uploaded
+2026-11-06T02:56:46.6211433Z Artifact name is valid!
+2026-11-06T02:56:46.6211756Z Root directory input is valid!
+2026-11-06T02:56:46.9909827Z Beginning upload of artifact content to blob storage
+2026-11-06T02:56:47.0077414Z (node:9302) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-06T02:56:47.3020705Z Uploaded bytes 1919
+2026-11-06T02:56:47.3888744Z Finished uploading artifact content to blob storage!
+2026-11-06T02:56:47.3889594Z SHA256 digest of uploaded artifact zip is ccf3675f136f83704bdc6b00f7b4bd0862e701db5693d60461b4287db5931091
+2026-11-06T02:56:47.3890433Z Finalizing artifact upload
+2026-11-06T02:56:47.9795

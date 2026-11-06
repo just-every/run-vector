@@ -1,0 +1,1 @@
+base-auth-clean-fixture exit=0

@@ -1,0 +1,22 @@
+[
+  {
+    "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+    "run": 42152182964,
+    "job": 127678160790,
+    "shard": "worker-2",
+    "command": "pnpm verify:ci --shard worker-2",
+    "archive_command": "gh run view 42152182964 --repo just-every/run-vector --job 127678160790 --log-failed",
+    "archive_result": "exit 0, no stdout; cached downloaded archive inspected locally without another API call",
+    "failure": "Test timed out in 180000ms: aborted or failed restore attempts retain native authority, files and append-only audit history"
+  },
+  {
+    "head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+    "run": 42152182964,
+    "job": 127678160861,
+    "shard": "hosted-artifact",
+    "command": "pnpm verify:ci --shard hosted-artifact",
+    "archive_command": "gh run view 42152182964 --repo just-every/run-vector --job 127678160861 --log-failed",
+    "archive_result": "exit 0, no stdout; cached downloaded archive inspected locally without another API call",
+    "failure": "github-rules-1440 390: no serious or critical axe findings; color-contrast on field-saved status notices"
+  }
+]

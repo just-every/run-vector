@@ -1,0 +1,1 @@
+main-integrations exit=1

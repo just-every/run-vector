@@ -1,0 +1,32 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f193-pc1",
+  "candidate": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "merged_main": "2f9b4510842708e54c925db8cbcdb3b78c00d35d",
+  "preserved_saved_head": "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+  "status": "pushed",
+  "push_exit": 0,
+  "push_attempts": 1,
+  "verify_run": 42174751871,
+  "verify_event": "push",
+  "verify_conclusion": null,
+  "pr": null,
+  "product_commits_created": 1,
+  "acceptance_changes": 0,
+  "status_rows_retained": 272,
+  "counts": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66
+  },
+  "migrations_changed_in_continuation": false,
+  "permanent_tests_added_in_continuation": 0,
+  "assertions_weakened_in_continuation": false,
+  "publication_scan": "fleet gate, not run in cloud",
+  "landing": "fleet gate, not performed",
+  "run_site": "fleet gate, not run in cloud",
+  "parents": [
+    "14f77ce74afb0c776e42b935fce53ea66ef9baf4",
+    "2f9b4510842708e54c925db8cbcdb3b78c00d35d"
+  ]
+}

@@ -1,0 +1,1 @@
+saved-contrast-probe exit=1

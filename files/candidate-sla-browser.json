@@ -1,0 +1,12 @@
+{
+  "head": "4726850fd1e3e488cb82dcb9ea54df13257113c5",
+  "passed": true,
+  "widths": [
+    1440,
+    390
+  ],
+  "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/vector-final-sla-proof.mjs",
+  "door": "native Settings, issue detail and Inbox; real fixed-clock scheduled export",
+  "liveProvider": false,
+  "credentialsCaptured": false
+}
