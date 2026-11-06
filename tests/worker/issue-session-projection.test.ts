@@ -49,7 +49,7 @@ for (const route of ["edit", "accept", "return"] as const)
       const db = afterQuery(async (query, method) => {
         if (
           method === "all" &&
-          query.includes("SELECT id,actor_name FROM issue_activity")
+          query.includes("FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL")
         )
           projected = true;
         if (
