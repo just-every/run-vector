@@ -68,6 +68,7 @@ for (const table of [
   "triage_creation_receipts",
   "issue_sla_clocks",
   "issue_sla_occurrences",
+  "issue_sla_restore_holds",
   "issue_deferral_origins",
   "issue_followers",
   "issue_notification_mutes",

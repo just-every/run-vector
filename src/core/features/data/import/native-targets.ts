@@ -1,7 +1,7 @@
 import {importAlias} from '../aliases/import';
 import type { D1TargetAdapter, TargetRow, D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
-import { nativeRelations,snapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
+import { nativeRelations,snapshotExpression,legacyWithSlaSnapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
 
 const guard = (sql:string,...params:Json[]): D1Sql => ({sql:`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('import native option changed') END`,params});
 /** One set read of complete native snapshots, for preview of a re-imported file. */
@@ -35,7 +35,7 @@ export const nativeTargets: D1TargetAdapter = {
     if (kind !== 'issue') throw Error('unsupported_import_target');
     if (!row) return {sql:'NOT EXISTS(SELECT 1 FROM issues WHERE id=?) AND NOT EXISTS(SELECT 1 FROM vector_import_revisions WHERE issue_id=?)',params:[id,id]};
     const value=canonicalJson(row.value);
-    return {sql:`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE i.id=? AND t.workspace_id=? AND v.revision=? AND json_remove(${snapshotExpression},'$.manualOrder','$.related')=json_remove(json_set(json(?),'$.dependencies',${kept('dependencies')},'$.parent',${kept('parent')}),'$.manualOrder','$.related')
+    return {sql:`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE i.id=? AND t.workspace_id=? AND v.revision=? AND ${legacyWithSlaSnapshotExpression}=json_remove(json_set(json(?),'$.dependencies',${kept('dependencies')},'$.parent',${kept('parent')}),'$.manualOrder','$.related')
       AND (SELECT count(*) FROM issue_relations r WHERE r.first_issue_id=i.id)=json_array_length(COALESCE(json_extract(json(?),'$.related'),json('[]')))
       AND NOT EXISTS(SELECT 1 FROM json_each(json(?),'$.related') e WHERE NOT EXISTS(SELECT 1 FROM issue_relations r WHERE r.first_issue_id=i.id AND r.second_issue_id=json_extract(e.value,'$.second_issue_id') AND r.created_at=json_extract(e.value,'$.created_at')))
       AND (SELECT count(*) FROM manual_order_entries e WHERE e.issue_id=i.id)=json_array_length(COALESCE(json_extract(json(?),'$.manualOrder'),json('[]')))
