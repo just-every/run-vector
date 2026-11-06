@@ -1,3 +1,4 @@
+import {seedAppActorArchive,restoredAppActorArchive} from './app-actor-archive';
 import {mentionToken} from '../../src/core/features/notifications/mention-token';
 import { auditSchema } from '../../src/core/features/audit/schema';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -16,6 +17,7 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const portableAppActor=await seedAppActorArchive(f.call,f.team.id);
  const triagePath='/settings/teams/'+f.team.id+'/triage-rotation';
  expect((await f.call('/settings/teams/'+f.team.id+'/members/'+f.peer,'PUT',{role:'member'})).status).toBe(200);
  expect((await f.call(triagePath,'PUT',{startsLocal:'2026-01-05T09:00',operatorIds:[f.owner,f.peer]})).status).toBe(200);
@@ -195,6 +197,7 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  for(let index=0;index<triageTables.length;index++)expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+triageTables[index]+' ORDER BY rowid').all()).results).toEqual(triageRows[index]);
  const restoredTriage=await targetCall('/api/triage-responsibility','GET',undefined,historical);expect(restoredTriage.status).toBe(200);
  expect((await restoredTriage.json() as {teams:unknown[]}).teams).toHaveLength(1);
+ await restoredAppActorArchive(portableAppActor,historical,records);
  const restoredCredentials=await credentialState();
  const restoredChannels=await (await targetCall('/api/settings/integrations/channels','GET',undefined,historical)).json() as any;expect(restoredChannels.slack).toMatchObject({connected:false,needsAttention:true,signingSecret:false});
  expect((await (await targetCall('/api/settings/notifications','GET',undefined,historical)).json() as any).slack).toMatchObject({available:false,link:null,actionsEnabled:false});expect(restoredChannels.bindings).toEqual(expect.arrayContaining([expect.objectContaining({id:channelBinding.id,objectId:f.project.id,channelId:'CARCHIVE'}),expect.objectContaining({id:discordBinding.id,objectId:f.team.id,provider:'discord',needsAttention:true})]));

@@ -34,7 +34,7 @@ export function issueDetailReadStatements(binding: D1Database, issueId: string) 
     evidenceMetadataStatement(binding, issueId),
     binding
       .prepare(
-        "SELECT id,actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL",
+        "SELECT id,CASE WHEN app_actor_id IS NULL THEN actor_name ELSE actor_name||' · installed by '||COALESCE(app_installer_name,'Erased person') END AS actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL",
       )
       .bind(issueId),
     parentRelationsStatement(binding, issueId),

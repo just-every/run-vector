@@ -1,3 +1,4 @@
+import { AppActorsPanel } from '../../../app-actors/panel';
 import { IntegrationsPanel } from '../../../integrations/ui/integrations-panel';
 import { OAuthAppsPanel } from '../../../oauth-apps/ui/settings-panel';
 import { SectionGate } from '../shell/section-gate';
@@ -24,6 +25,7 @@ function Developers({ tab }: { tab?: string }) {
       ? <WithAdministration>{data => <>
         <IntegrationsPanel teams={data.teams} workspace part="developers" />
         <OAuthAppsPanel />
+        <AppActorsPanel teams={data.teams} />
       </>}</WithAdministration>
       : <IntegrationsPanel teams={[]} workspace={false} part="developers" />}
   </SectionPage>;

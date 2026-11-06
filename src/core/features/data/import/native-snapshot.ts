@@ -38,7 +38,7 @@ const columns = (table: string) => {
 // before removing absent fields so a set date matches the publication guard.
 const optional: Record<string,string[]> = {
   issues:['archived_at','milestone_id','start_date'], issue_comments:['description_anchor'],
-  issue_activity:['agent_id','agent_operation_id','agent_approvers_json'],
+  issue_activity:['agent_id','agent_operation_id','agent_approvers_json','app_actor_id','app_installer_id','app_installer_name'],
 };
 const object = (table: string,alias: string) => {
   const extra=optional[table]??[];

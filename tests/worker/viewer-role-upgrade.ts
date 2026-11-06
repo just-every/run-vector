@@ -35,7 +35,15 @@ export async function proveViewerRoleUpgrade(){
   const columns=(await db.prepare('PRAGMA table_info("'+name+'")').all<{name:string}>()).results.map(c=>'"'+c.name+'"').join(',');
   previousHead.push({name,columns,rows:(await db.prepare('SELECT '+columns+' FROM "'+name+'" ORDER BY '+columns).all()).results});
  }
- await applyD1Migrations(db,migrations.slice(reportBoundary));
+ const actorBoundary=migrations.findIndex(m=>m.name==='0126_app_actors.sql');
+ await applyD1Migrations(db,migrations.slice(reportBoundary,actorBoundary));
+ const actorPrevious=[] as typeof previousHead;
+ for(const {name} of (await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' ORDER BY name").all<{name:string}>()).results) {
+  const columns=(await db.prepare('PRAGMA table_info("'+name+'")').all<{name:string}>()).results.map(c=>'"'+c.name+'"').join(',');
+  actorPrevious.push({name,columns,rows:(await db.prepare('SELECT '+columns+' FROM "'+name+'" ORDER BY '+columns).all()).results});
+ }
+ await applyD1Migrations(db,migrations.slice(actorBoundary));
+ for(const row of actorPrevious)expect((await db.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained across native actor upgrade').toEqual(row.rows);
  for(const row of previousHead)expect((await db.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained across report schedules').toEqual(row.rows);
  for(const row of retained)expect((await db.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained at 0095').toEqual(row.rows);
  expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);

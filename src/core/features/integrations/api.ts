@@ -1,3 +1,4 @@
+import { asAppActor,currentAppActor } from '../app-actors/identity';
 import {addIssueTemplateRoutes} from '../issue-templates/routes';
 import {createIssueFromRequest} from '../issue-templates/application';
 import {createTeam} from "../administration/teams";
@@ -80,9 +81,9 @@ export function createIntegrationApi(){
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
   // ROLE-001: a token acts with its member's current role, never a copied one.
   const authority=await doorAuthority(c,'v1',actor.id,raw);if(authority.denied)return authority.denied;
-  c.env={...c.env,DB:mutationDatabase(visibilityDatabase(raw,actor.id),actor.id,undefined,{sql:predicate.sql,values:predicate.params},authority.fence)};
+  c.env={...c.env,DB:mutationDatabase(visibilityDatabase(raw,actor.id,'app' in actor?actor.app.teamId:undefined),actor.id,undefined,{sql:predicate.sql,values:predicate.params},authority.fence)};
   configureNotifications(c.env.DB,c.env);
-  try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
+  try{await ('app' in actor ? asAppActor(actor,next) : next());}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
  });
@@ -118,7 +119,7 @@ export function createIntegrationApi(){
  });
  app.get('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier'));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const value=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json(value);});
  app.post('/issues',async c=>c.json(await createIssueFromRequest(c.env.DB,c.get('operatorId'),await readRequestJson(c.req.raw)),201));
- app.patch('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(updateIssueSchema,await readRequestJson(c.req.raw));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const state=await updateIssueRecord(c.env.DB,id,c.get('operatorId'),input),issue=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return state==='stale'?c.json({error:'stale_version',version:issue?.version},409):c.json(issue);});
+ app.patch('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(currentAppActor()?z.object({expectedVersion:z.number().int().positive(),title:z.string().trim().min(1).max(500)}).strict():updateIssueSchema,await readRequestJson(c.req.raw));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const state=await updateIssueRecord(c.env.DB,id,c.get('operatorId'),input),issue=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return state==='stale'?c.json({error:'stale_version',version:issue?.version},409):c.json(issue);});
  app.post('/issues/:identifier/comments',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(comment,await readRequestJson(c.req.raw)),issue=await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json({id:await addComment(c.env.DB,issue.id,c.get('operatorId'),input.body)},201);});
  addIssueTemplateRoutes(app);
  addIssueCopyRoutes(app,false);

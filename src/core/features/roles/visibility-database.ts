@@ -8,14 +8,15 @@ const visibilityActor = Symbol('Vector admitted visibility')
  * Mutation targets remain real SQLite tables; their SELECT sources are scoped.
  * The native transaction/session wrapper remains outside this adapter.
  */
-export function visibilityDatabase(source: D1Database, actor: string): D1Database {
+export function visibilityDatabase(source: D1Database, actor: string, teamId?: string): D1Database {
   // Request adapters forward the private brand while retaining their fences.
   const reader=scoped.get(source) ?? (source as D1Database & { [visibilityActor]?: string })[visibilityActor]
   if (reader) {
+    if (teamId !== undefined) throw new Error('An existing visibility scope cannot be changed.')
     if (reader !== actor) throw new Error('A visibility database belongs to one admitted actor.')
     return source
   }
-  const ctes = visibilityCtes(actor)
+  const ctes = visibilityCtes(actor,teamId)
   const db = new Proxy(source, {
     get(target, key) {
       if (key === visibilityActor) return actor

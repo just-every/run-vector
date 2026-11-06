@@ -1,3 +1,4 @@
+import { currentAppActor } from '../app-actors/identity';
 import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import { requireIssueAccess } from './access'
@@ -388,8 +389,11 @@ export function activityRow(entry: {
   return {
     id: createUlid(new Date(entry.now)),
     issueId: entry.issueId,
-    actorOperatorId: entry.actorOperatorId,
-    actorName: currentAgentActor()?.actor.label ?? null,
+    actorOperatorId: currentAppActor() ? null : entry.actorOperatorId,
+    actorName: currentAppActor()?.app.name ?? currentAgentActor()?.actor.label ?? null,
+    appActorId: currentAppActor()?.app.id ?? null,
+    appInstallerId: currentAppActor()?.id ?? null,
+    appInstallerName: currentAppActor()?.app.installerName ?? null,
     ...agentActivity(),
     kind: entry.kind,
     previousValueJson: entry.previousValue === null ? null : JSON.stringify(entry.previousValue),

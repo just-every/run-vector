@@ -19,7 +19,10 @@
     "updated_at",
     "workspace_id",
     "actor_kind",
-    "actor_reference"
+    "actor_reference",
+    "app_actor_name",
+    "app_installer_id",
+    "app_installer_name"
   ],
   "cycle_closure_failures": [
     "cycle_id",
@@ -491,7 +494,10 @@
     "actor_name",
     "agent_id",
     "agent_operation_id",
-    "agent_approvers_json"
+    "agent_approvers_json",
+    "app_actor_id",
+    "app_installer_id",
+    "app_installer_name"
   ],
   "issue_comments": [
     "id",
@@ -2247,5 +2253,22 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "vector_app_actors": [
+    "id",
+    "workspace_id",
+    "name",
+    "installer_id",
+    "installer_name",
+    "team_id",
+    "scopes",
+    "state",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_app_actor_credentials": [
+    "actor_id",
+    "token_hash",
+    "dev_only"
   ]
 }

@@ -326,16 +326,16 @@ export async function planIssueUpdate(
     nextValue: { ...recordAfter, ...metadata },
     now,
   });
-  const event = { id: activity.id, issueId: issue.id, actor, at: now };
+  const event = { id: activity.id, issueId: issue.id, actor:activity.actorOperatorId, actorName:activity.actorName, at: now };
   const writes = [
     binding
       .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json)
-    SELECT ?,issues.id,?,'issue.updated',?,?,?,?,?,?,?,? FROM issues WHERE ${where}`,
+        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json,app_actor_id,app_installer_id,app_installer_name)
+    SELECT ?,issues.id,?,'issue.updated',?,?,?,?,?,?,?,?,?,?,? FROM issues WHERE ${where}`,
       )
       .bind(
         activity.id,
-        actor,
+        activity.actorOperatorId,
         activity.previousValueJson,
         activity.nextValueJson,
         now,
@@ -344,6 +344,9 @@ export async function planIssueUpdate(
         activity.agentId,
         activity.agentOperationId,
         activity.agentApproversJson,
+        activity.appActorId,
+        activity.appInstallerId,
+        activity.appInstallerName,
         ...guardValues,
       ),
   ];
@@ -401,7 +404,7 @@ export async function planIssueUpdate(
       ),
   );
   const mutationIndex = writes.length - 1;
-  if ("description" in values) writes.push(...issueReferenceStatements(binding, event, values.description as string));
+  if ("description" in values) writes.push(...issueReferenceStatements(binding, { ...event, actor }, values.description as string));
   writes.push(...finalizeEvent(binding, event));
   return {
     where,

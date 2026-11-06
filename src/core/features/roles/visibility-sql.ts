@@ -19,13 +19,14 @@ const project = (column = 'project_id') => `r.${column} IN (SELECT id FROM proje
  * identifier, nor a hidden project/team through its historical JSON. */
 const safeHistory = (column: string) => `NOT EXISTS(SELECT 1 FROM json_tree(r.${column}) j JOIN __vector_hidden_refs hidden ON hidden.ref=j.value WHERE j.type='text')`
 
-export function visibilityCtes(actor: string) {
+export function visibilityCtes(actor: string, teamId?: string) {
   // The actor comes from native admission, never from SQL supplied by a client.
   // A SQL literal avoids changing repository positional/numbered bindings.
   const literal = "'" + actor.replaceAll("'", "''") + "'"
+  const teamScope = teamId === undefined ? '' : " AND t.id='" + teamId.replaceAll("'", "''") + "'"
   return [
     `__vector_reader AS (SELECT id,workspace_id,role FROM main.operators WHERE id=${literal} AND removed_at IS NULL)`,
-    `teams AS (SELECT t.* FROM main.teams t JOIN __vector_reader reader ON reader.workspace_id=t.workspace_id WHERE ${visibleTeam('reader', 't.id')})`,
+    `teams AS (SELECT t.* FROM main.teams t JOIN __vector_reader reader ON reader.workspace_id=t.workspace_id WHERE ${visibleTeam('reader', 't.id')}${teamScope})`,
     `__vector_access AS (SELECT reader.role='guest' OR EXISTS(SELECT 1 FROM main.teams hidden WHERE hidden.workspace_id=reader.workspace_id AND hidden.id NOT IN(SELECT id FROM teams)) AS restricted FROM __vector_reader reader)`,
     `operators AS (SELECT r.id,r.workspace_id,CASE WHEN r.role='guest' THEN r.name||' (Guest)' ELSE r.name END name,r.email,r.removed_at,r.created_at,r.updated_at,r.role
       FROM main.operators r JOIN __vector_reader reader ON reader.workspace_id=r.workspace_id)`,
