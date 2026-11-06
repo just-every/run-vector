@@ -1,3 +1,4 @@
+import {advanceSlas} from '../../src/core/features/slas/service';
 import {mentionToken} from '../../src/core/features/notifications/mention-token';
 import { auditSchema } from '../../src/core/features/audit/schema';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -14,7 +15,7 @@ import {request,bindings,invite} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
  const triagePath='/settings/teams/'+f.team.id+'/triage-rotation';
  expect((await f.call('/settings/teams/'+f.team.id+'/members/'+f.peer,'PUT',{role:'member'})).status).toBe(200);
@@ -126,6 +127,14 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  triageRows=await Promise.all(triageTables.map(async name=>(await env.DB.prepare('SELECT * FROM '+name+' ORDER BY rowid').all()).results));
  expect((await f.call('/settings/teams/'+f.team.id,'PATCH',{cyclesEnabled:false})).status).toBe(200);
  const cycleConfiguration=(await env.DB.prepare('SELECT * FROM team_cycle_schedules WHERE team_id=?').bind(f.team.id).all()).results;
+ const slaRule={enabled:true,priority:await env.DB.prepare('SELECT priority FROM issues WHERE id=?').bind(f.issue.id).first('priority'),labelId:null,targetMinutes:2,warnBeforeMinutes:1,workingDays:[1,2,3,4,5,6,7],startsAt:'00:00',endsAt:'23:59'};
+ expect((await f.call('/settings/teams/'+f.team.id+'/sla','PUT',slaRule)).status).toBe(200);
+ const slaStart=Date.parse('2026-10-05T12:00:00Z');await advanceSlas(bindings,new Date());
+ await env.DB.prepare('UPDATE issue_sla_clocks SET started_at=?,observed_at=?,elapsed_minutes=0 WHERE team_id=?').bind(new Date(slaStart).toISOString(),new Date(slaStart).toISOString(),f.team.id).run();
+ await advanceSlas(bindings,new Date(slaStart+90000));await advanceSlas(bindings,new Date(slaStart+180000));
+ const slaTables=['team_slas','issue_sla_clocks','issue_sla_occurrences'];
+ const slaHistory=await Promise.all(slaTables.map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+ expect(slaHistory[1].length).toBeGreaterThan(0);expect(slaHistory[2].filter(r=>r.issue_id===f.issue.id).map(r=>r.kind).sort()).toEqual(['breach','warning']);
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
@@ -172,6 +181,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
  expect(await Promise.all(documentTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(documentHistory);
+ const restoredSla=await Promise.all(slaTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+ expect(restoredSla).toEqual(slaHistory);
+ for(const clock of restoredSla[1])expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT 1 FROM issue_sla_restore_holds WHERE issue_id=?').bind(clock.issue_id).first()).not.toBeNull();
+
  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);
 
  expect(await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json()).toMatchObject({destinations:expect.arrayContaining([expect.objectContaining({id:f.webhook,...commentSubscriptions,requiresReentry:1})])});
@@ -245,6 +258,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT count(*) AS n FROM search_issues WHERE search_issues MATCH 'searchable'").first())?.n).toBe(1);
  const cycle=await targetCall('/api/cycles/'+f.closing.id,'GET',undefined,historical);expect(cycle.status).toBe(200);expect((await cycle.json() as {snapshot:unknown}).snapshot).toEqual(f.closed.snapshot);
  const historicalWebhooks=async()=>Promise.all(['vector_webhook_events','integration_deliveries','integration_attempts'].map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+
+ await advanceSlas({...targetBindings,DB:destination.ARCHIVE_TARGET_DB},new Date(slaStart+86400000));
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM issue_sla_occurrences ORDER BY 1,2').all()).results).toEqual(slaHistory[2]);
  const webhookHistory=await historicalWebhooks();let sent=0;
  const dispatchBindings={...targetBindings,INTEGRATION_EGRESS_POLICY:'public-dns-pinned-tls-v1',INTEGRATION_EGRESS:{send:async()=>{sent++;return {status:200,headers:{},body:''};}}};
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM vector_integration_secret_keys').first())?.n).toBe(0);

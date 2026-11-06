@@ -67,9 +67,10 @@ const orderedSnapshotExpression = `CASE WHEN EXISTS(SELECT 1 FROM issue_relation
 
 
 // Clock state participates only once present, retaining older import receipts.
-export const snapshotExpression = `json_patch(${orderedSnapshotExpression},CASE WHEN EXISTS(SELECT 1 FROM issue_sla_clocks WHERE issue_id=i.id)
- THEN json_object('slaClocks',json(${relation('issue_sla_clocks','issue_id','issue_id')}),'slaOccurrences',json(${relation('issue_sla_occurrences','issue_id','kind')}))
- ELSE json('{}') END)`;
+const slaSnapshotPatch = `CASE WHEN EXISTS(SELECT 1 FROM issue_sla_clocks WHERE issue_id=i.id)
+ THEN json_object('slaClocks',json(${relation('issue_sla_clocks','issue_id','issue_id')}),'slaOccurrences',json(${relation('issue_sla_occurrences','issue_id','kind')})) ELSE json('{}') END`;
+export const legacyWithSlaSnapshotExpression = `json_patch(${legacySnapshotExpression},${slaSnapshotPatch})`;
+export const snapshotExpression = `json_patch(${orderedSnapshotExpression},${slaSnapshotPatch})`;
 
 export function emptyIssueValue(issue: Record<string,Json>): NativeIssueValue {
   return { issue,...Object.fromEntries(Object.keys(nativeRelations).map(name=>[name,[]])) } as NativeIssueValue;

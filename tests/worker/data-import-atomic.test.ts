@@ -4,6 +4,7 @@ import { setupImport } from './data-import-fixture';
 import { checkQueuedReservations } from './import-recovery-checks';
 it('[DATA-003 DATA-004] late native SQL failure and commit-time session loss publish nothing; restart resumes and rollback preserves reservations',async()=>{
  const f=await setupImport(),value=f.input([f.row('first'),f.row('last')]),review=await f.preview(value);
+ expect((await f.call('/settings/teams/'+f.team.id+'/sla','PUT',{enabled:true,priority:'high',labelId:null,targetMinutes:120,warnBeforeMinutes:30,workingDays:[1,2,3,4,5],startsAt:'09:00',endsAt:'17:00'})).status).toBe(200);
  await env.DB.prepare("CREATE TRIGGER imported_issue_fault BEFORE INSERT ON issues WHEN NEW.title='Imported last' BEGIN SELECT RAISE(ABORT,'late native failure'); END").run();
  const created=await f.apply(value,review);expect(created.status).toBe(200);
  expect((await f.call('/data/import/runs/'+(await created.json() as {id:string}).id+'/resume','POST',{})).status).toBe(503);
@@ -22,5 +23,6 @@ it('[DATA-003 DATA-004] late native SQL failure and commit-time session loss pub
  await env.DB.prepare('DROP TRIGGER imported_issue_revokes_session').run();
  const succeeded=await f.call('/data/import/runs/'+pendingRun.id+'/resume','POST',{});expect(succeeded.status).toBe(200);expect((await succeeded.json() as {state:string}).state).toBe('completed');
  await checkQueuedReservations(f);
+ expect(await env.DB.prepare('SELECT count(*) n FROM issue_sla_clocks').first('n')).toBe(0);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180_000);
