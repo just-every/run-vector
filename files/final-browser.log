@@ -1,0 +1,18 @@
+(node:32209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+BROWSER PROJ-017 project-retained-deletion-1440
+BROWSER PROJ-017 project-retained-deletion-390
+BROWSER PROJ-017 project-restored-undo-1440
+BROWSER PROJ-017 project-restored-undo-390
+BROWSER PROJ-017 project-recently-deleted-after-reload-1440
+BROWSER PROJ-017 project-recently-deleted-after-reload-390
+BROWSER PROJ-017 project-restored-membership-1440
+BROWSER PROJ-017 project-restored-membership-390
+BROWSER PROJ-017 project-retained-document-1440
+BROWSER PROJ-017 project-retained-document-390
+PROBE PROJ-017 reassignment: native deletion, later issue assignment and Settings recovery -> newer project preserved; untouched issue, milestone and document restored with original identities
+PROBE PROJ-017 stale Undo: changed membership -> HTTP 409; supported recovery remains available
+BROWSER PASS: native recovery, keyboard controls, accessibility, both widths and no page errors

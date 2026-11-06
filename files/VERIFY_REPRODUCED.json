@@ -1,0 +1,22 @@
+[
+  {
+    "head": "3f34197f8e1a10ea11b6717baa52f4b667db7dc1",
+    "job": 127646743908,
+    "shard": "worker-2",
+    "command": "pnpm run test:worker --shard=2/6",
+    "test": "[ROLE-005] native actions populate an immutable workspace audit view; Viewer census",
+    "exit": 1,
+    "failure": "project.removed: expected false to be true; native fixture coverage omitted POST /projects/restore and POST /projects/undo-deletion",
+    "log": "reproduce-worker-2.log"
+  },
+  {
+    "head": "3f34197f8e1a10ea11b6717baa52f4b667db7dc1",
+    "job": 127646743985,
+    "shard": "hosted-artifact",
+    "command": "pnpm run integration:check",
+    "test": "generated integration deployment specification",
+    "exit": 1,
+    "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+    "log": "reproduce-integration.log"
+  }
+]

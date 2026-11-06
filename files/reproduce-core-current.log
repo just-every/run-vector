@@ -1,0 +1,355 @@
+(node:14749) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14749) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed RENDER-SSR
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed BASE-OPS-005
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Current freshness] {"identifier":"FLW-844","pollCompletedAt":1793929418810,"requestStartedAt":1793929418810,"decisionRespondedAt":1793929418956,"visibleAt":1793929421289,"fromDecisionResponseMs":2333,"fromRequestStartMs":2479,"alignmentMs":0,"documentUnchanged":true}
+[Vector runtime] Passed CURR-008
+[Vector runtime] Passed CMD-001
+[Vector runtime] Passed VIEW-002-PALETTE
+[Vector runtime] Passed CMD-002
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed SEARCH-004
+PROBE SEARCH-004 bar-menu: typed and menu expression -> identical 2 public issues, private issue omitted, exact totals
+PROBE SEARCH-004 saved-reload: save and reopen -> expression unchanged, 2 issues; private membership 3 then withdrawal 2, Guest 1, Viewer writes 403 unchanged
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed VIEW-008
+PROBE VIEW-008 milestone: filtered native list and saved view -> 54 exact identifiers across two pages; duplicate-name milestone counts 51 and 1, unassigned 2; saved reload retains mode
+PROBE VIEW-008 parent: filtered native list and saved view -> distinct equal-title parents, counts 51 and 1, unassigned 2; private admission 55 then withdrawal 54 without parent identity; Guest scoped and Viewer writes 403 unchanged
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed VIEW-009
+PROBE VIEW-009 shared-cross-team: saved view and second Member palette -> two public teams, 3 filtered issues, counts and query retained after reload
+PROBE VIEW-009 visibility: same saved view and Member session -> 3 public, 4 with private membership, 3 after withdrawal; Guest shared view 404 and scoped query 2; Viewer mutations 403 with unchanged views
+[Vector runtime] Passed CMD-003
+[Vector runtime] Passed CMD-004
+[Vector runtime] Passed VIEW-004
+[Vector runtime] Passed CMD-003-STREAMS
+[Vector runtime] Passed CMD-004-SELECTED
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-003
+[Vector runtime] Passed VIEW-005
+[Vector runtime] Passed CURR-007
+[Vector runtime] Passed CURR-009
+[Vector runtime] Passed WORK-003
+[Vector runtime] Passed CURR-007
+[Vector runtime] Passed CURR-009
+[Vector runtime] Passed WORK-003
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+PROBE PROJ-017 reassignment: native deletion, later issue assignment and Settings recovery -> newer project preserved; untouched issue, milestone and document restored with original identities
+PROBE PROJ-017 stale Undo: changed membership -> HTTP 409; supported recovery remains available
+[Vector runtime] Passed RENDER-AUDIT
+[Vector runtime] Passed PROJ-004
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed ISSUE-008 ISSUE-009
+[Vector runtime] Passed ISSUE-006
+[Vector runtime] Passed ISSUE-001
+[Vector runtime] Passed INTAKE-001
+[Vector runtime] Passed INTAKE-005
+[Vector runtime] Passed INTAKE-006
+[Vector runtime] Passed RENDER-BROWSER
+[Vector runtime] Passed BASE-ACCESS-001
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Operator request ledger] {"fixedWindowSeconds":60,"limit":600,"peak":328,"total":3006,"operators":30,"buckets":[{"operator":1,"window":29898822,"requests":22},{"operator":1,"window":29898823,"requests":22},{"operator":1,"window":29898830,"requests":5},{"operator":1,"window":29898831,"requests":3},{"operator":1,"window":29898832,"requests":42},{"operator":1,"window":29898833,"requests":23},{"operator":1,"window":29898834,"requests":178},{"operator":1,"window":29898835,"requests":10},{"operator":2,"window":29898822,"requests":96},{"operator":3,"window":29898822,"requests":34},{"operator":3,"window":29898823,"requests":44},{"operator":4,"window":29898823,"requests":39},{"operator":5,"window":29898823,"requests":68},{"operator":6,"window":29898823,"requests":63},{"operator":6,"window":29898824,"requests":2},{"operator":6,"window":29898825,"requests":1},{"operator":6,"window":29898826,"requests":2},{"operator":6,"window":29898827,"requests":2},{"operator":6,"window":29898828,"requests":5},{"operator":6,"window":29898829,"requests":5},{"operator":7,"window":29898824,"requests":82},{"operator":8,"window":29898824,"requests":43},{"operator":9,"window":29898824,"requests":5},{"operator":10,"window":29898824,"requests":18},{"operator":11,"window":29898825,"requests":193},{"operator":11,"window":29898826,"requests":42},{"operator":12,"window":29898825,"requests":82},{"operator":13,"window":29898825,"requests":9},{"operator":13,"window":29898826,"requests":10},{"operator":14,"window":29898825,"requests":7},{"operator":14,"window":29898826,"requests":45},{"operator":15,"window":29898826,"requests":34},{"operator":15,"window":29898827,"requests":61},{"operator":16,"window":29898826,"requests":27},{"operator":17,"window":29898826,"requests":15},{"operator":17,"window":29898827,"requests":53},{"operator":18,"window":29898827,"requests":15},{"operator":19,"window":29898827,"requests":23},{"operator":20,"window":29898827,"requests":39},{"operator":20,"window":29898828,"requests":15},{"operator":21,"window":29898828,"requests":73},{"operator":22,"window":29898828,"requests":158},{"operator":23,"window":29898829,"requests":158},{"operator":24,"window":29898829,"requests":92},{"operator":24,"window":29898830,"requests":5},{"operator":25,"window":29898829,"requests":8},{"operator":25,"window":29898830,"requests":53},{"operator":26,"window":29898830,"requests":233},{"operator":27,"window":29898831,"requests":328},{"operator":28,"window":29898831,"requests":313},{"operator":28,"window":29898832,"requests":2},{"operator":29,"window":29898832,"requests":74},{"operator":30,"window":29898832,"requests":25}]}
+{
+  "passed": true,
+  "checks": 69,
+  "evidence": "/workspace/run-vector/.artifacts/verification"
+}
+[Vector runtime] Starting independent project installation
+(node:26311) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26311) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed RENDER-SSR
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed BASE-OPS-005
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[PROJ-014] two actual team project lists and contributor names; same Member session observes current private-team membership and withdrawal
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+[Vector runtime] Passed PROJ-017
+PROBE PROJ-017 reassignment: native deletion, later issue assignment and Settings recovery -> newer project preserved; untouched issue, milestone and document restored with original identities
+PROBE PROJ-017 stale Undo: changed membership -> HTTP 409; supported recovery remains available
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+INIT-001 reason {"width":1440,"code":"approval_withdrawn","door":{"code":"approval_withdrawn","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":null},{"role":"owner","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 reason {"width":1440,"code":"approved_again","door":{"code":"approved_again","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: #delivery is approved again. Save to post there.","header":null},{"role":"owner","panel":"Not posting: #delivery is approved again. Save to post there.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · #delivery is approved again. The Member saves again to post there. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: #delivery is approved again. The Member saves again to post there.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 reason {"width":1440,"code":"binder_cannot_edit","door":{"code":"binder_cannot_edit","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"memberPanel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","panel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}
+INIT-001 binder settings {"width":1440,"text":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 reason {"width":1440,"code":"workspace_changed","door":{"code":"workspace_changed","binderName":"synthetic-vector-1798","approvedWorkspace":"TSYNTHETIC33001","currentWorkspace":"Harbor Slack"},"text":[{"role":"member","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":null},{"role":"owner","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 approval reason {"width":1440,"text":"synthetic-vector-1794-1440 → Slack #delivery, approved for workspace members\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nWithdraw approval for synthetic-vector-1794-1440 #delivery"}
+INIT-001 header saved {"width":1440,"panel":"Posting to Discord #synthetic-vector-1860-1440: Initiative update.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nPosts to Discord #synthetic-vector-1860-1440 · Initiative update · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}
+INIT-001 header withdrawn {"width":1440,"panel":"No channel posts this initiative’s changes.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posted to a channel · Set up\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}
+INIT-001 reason {"width":390,"code":"approval_withdrawn","door":{"code":"approval_withdrawn","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":null},{"role":"owner","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 reason {"width":390,"code":"approved_again","door":{"code":"approved_again","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: #delivery is approved again. Save to post there.","header":null},{"role":"owner","panel":"Not posting: #delivery is approved again. Save to post there.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · #delivery is approved again. The Member saves again to post there. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: #delivery is approved again. The Member saves again to post there.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 reason {"width":390,"code":"binder_cannot_edit","door":{"code":"binder_cannot_edit","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"memberPanel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","panel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}
+INIT-001 binder settings {"width":390,"text":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 reason {"width":390,"code":"workspace_changed","door":{"code":"workspace_changed","binderName":"synthetic-vector-1798","approvedWorkspace":"TSYNTHETIC33001","currentWorkspace":"Harbor Slack"},"text":[{"role":"member","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":null},{"role":"owner","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 approval reason {"width":390,"text":"synthetic-vector-1794-390 → Slack #delivery, approved for workspace members\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nWithdraw approval for synthetic-vector-1794-390 #delivery"}
+INIT-001 header saved {"width":390,"panel":"Posting to Discord #synthetic-vector-1860-390: Initiative update.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nPosts to Discord #synthetic-vector-1860-390 · Initiative update · Change\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}
+INIT-001 header withdrawn {"width":390,"panel":"No channel posts this initiative’s changes.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posted to a channel · Set up\n\nUnsubscribe from initiative\n\nsynthetic-vector-1793 across teams"}
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+[Operator request ledger] {"fixedWindowSeconds":60,"limit":600,"peak":184,"total":1137,"operators":9,"buckets":[{"operator":1,"window":29898836,"requests":22},{"operator":1,"window":29898837,"requests":2},{"operator":2,"window":29898836,"requests":80},{"operator":3,"window":29898837,"requests":48},{"operator":4,"window":29898837,"requests":104},{"operator":4,"window":29898838,"requests":184},{"operator":4,"window":29898839,"requests":159},{"operator":4,"window":29898840,"requests":150},{"operator":4,"window":29898841,"requests":108},{"operator":5,"window":29898837,"requests":56},{"operator":5,"window":29898838,"requests":53},{"operator":6,"window":29898839,"requests":66},{"operator":6,"window":29898840,"requests":60},{"operator":6,"window":29898841,"requests":4},{"operator":7,"window":29898839,"requests":16},{"operator":8,"window":29898840,"requests":16},{"operator":9,"window":29898841,"requests":9}]}
+{
+  "passed": true,
+  "checks": 56,
+  "evidence": "/workspace/run-vector/.artifacts/verification/project-runtime"
+}

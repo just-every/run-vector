@@ -1,0 +1,6 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+(node:32218) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"head":"6c9d7e07498d1c190052ff287b45c4640535586b","probe":"PROJ-017 expired Undo","windowMilliseconds":10000,"elapsedMilliseconds":10319,"undoStatus":409,"unchangedTables":8,"recentlyDeletedRestoreStatus":200,"passed":true}

@@ -1,0 +1,46 @@
+administration job 127646743878
+2026-11-06T01:28:03.1103120Z     # Subtest: [TEAM-005] 390: team Settings disables cycles across editor and Current without discarding commitments; re-enable and current permissions
+2026-11-06T01:28:03.1104520Z     not ok 53 - [TEAM-005] 390: team Settings disables cycles across editor and Current without discarding commitments; re-enable and current permissions
+2026-11-06T01:28:03.1105262Z       ---
+2026-11-06T01:28:03.1105616Z       duration_ms: 5841.281801
+2026-11-06T01:28:03.1111746Z       type: 'test'
+2026-11-06T01:28:03.1138138Z       location: '/home/runner/work/run-vector/run-vector/tests/contract.ts:4:10'
+2026-11-06T01:28:03.1147155Z       failureType: 'testCodeFailure'
+2026-11-06T01:28:03.1147724Z       error: |-
+2026-11-06T01:28:03.1148358Z         Expected values to be strictly equal:
+2026-11-06T01:28:03.1148748Z         
+2026-11-06T01:28:03.1149068Z         1 !== 0
+2026-11-06T01:28:03.1149395Z         
+2026-11-06T01:28:03.1149697Z       code: 'ERR_ASSERTION'
+2026-11-06T01:28:03.1150044Z       name: 'AssertionError'
+2026-11-06T01:28:03.1150386Z       expected: 0
+2026-11-06T01:28:03.1150694Z       actual: 1
+2026-11-06T01:28:03.1151015Z       operator: 'strictEqual'
+2026-11-06T01:28:03.1151490Z       stack: |-
+2026-11-06T01:28:03.1152050Z         saveSwitch (file:///home/runner/work/run-vector/run-vector/tests/e2e/team-cycles-journey.mjs:52:12)
+2026-11-06T01:28:03.1152866Z         async file:///home/runner/work/run-vector/run-vector/tests/e2e/team-cycles-journey.mjs:61:16
+2026-11-06T01:28:03.1153725Z         async TestContext.<anonymous> (file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:107:15)
+2026-11-06T01:28:03.1154432Z         async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-06T01:28:03.1155043Z         async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-06T01:28:03.1155774Z         async clause (file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:105:11)
+2026-11-06T01:28:03.1156602Z         async teamCyclesSettings (file:///home/runner/work/run-vector/run-vector/tests/e2e/team-cycles-journey.mjs:57:3)
+2026-11-06T01:28:03.1157485Z         async TestContext.<anonymous> (file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:145:11)
+2026-11-06T01:28:03.1158177Z         async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-06T01:28:03.1158778Z         async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-06T01:28:03.1159572Z       ...
+
+core-runtime job 127646743881
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5916421Z AssertionError [ERR_ASSERTION]: invitation confirmation succeeds within the native proof budget
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5917296Z 
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5917533Z 429 !== 303
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5918087Z 
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5918863Z     at withInvitedOperator (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:34:76)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5920163Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:791:3 {
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5921007Z   generatedMessage: false,
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5921492Z   code: 'ERR_ASSERTION',
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5922341Z   actual: 429,
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5922944Z   expected: 303,
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5944345Z   operator: 'strictEqual',
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.5982874Z   diff: 'simple'
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.6013582Z }
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-06T01:26:32.6042698Z 
