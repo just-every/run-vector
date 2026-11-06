@@ -653,6 +653,9 @@ write and includes hidden intermediate projects without disclosing them.
 Project detail reads expose `directDependencies.blockedBy` and
 `directDependencies.blocking`, each with a stable edge `id` and the visible
 other project's `id` and `name`. These edges are independent of issue links.
+Each `project.dependency_added` or `project.dependency_removed` activity entry
+also carries `dependency.direction` and the other endpoint as
+`dependency.project`, which is `null` once that project is deleted.
 Repeating a set or removal is a no-op. Each actual change commits one activity
 on each project and an Inbox notice once per eligible current lead, excluding
 the actor, in the same transaction. These native project notices respect current
@@ -660,6 +663,8 @@ access and erasure, use the blocking notification preference, and have no email
 or external-channel delivery. Archive restore retains edges and notice history
 without recreating or delivering historical events.
 
-Project-page editing, project-list editing, roadmap connectors, timeline conflict
-flags, Linear import and broader notification-channel qualification remain owed
-under PROJ-015 and its receiving clauses.
+The project page lists both directions and lets Owners, Admins and Members set
+or remove a direct blocker through the same native door. Project-list editing,
+roadmap connectors, timeline conflict flags, Linear import and broader
+notification-channel qualification remain owed under PROJ-015 and its
+receiving clauses.
