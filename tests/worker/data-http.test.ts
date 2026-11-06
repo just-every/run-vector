@@ -105,6 +105,12 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  const preference=await f.call('/subscriptions','POST',{subjectType:'team',subjectId:f.team.id});expect(preference.status).toBe(201);
  const pendingSubscriptionResponse=await request('/api/issues','POST',{teamId:f.team.id,title:'synthetic-vector-1776'},peer);expect(pendingSubscriptionResponse.status).toBe(201);
  const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
+ const slaStoppedTeam=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-197',identifierPrefix:'SLAARC'})).teams.find(t=>t.identifierPrefix==='SLAARC')!;
+ expect((await f.call('/settings/teams/'+slaStoppedTeam.id+'/sla','PUT',{enabled:true,priority:'urgent',labelId:null,targetMinutes:2,warnBeforeMinutes:1,workingDays:[1,2,3,4,5,6,7],startsAt:'00:00',endsAt:'23:59'})).status).toBe(200);
+ const slaStoppedIssue=await f.create({teamId:slaStoppedTeam.id,priority:'urgent'});
+ expect((await f.call('/settings/teams/'+slaStoppedTeam.id,'PATCH',{archived:true})).status).toBe(200);
+ const slaStoppedAt=await env.DB.prepare('SELECT stopped_at FROM issue_sla_clocks WHERE issue_id=?').bind(slaStoppedIssue.id).first<string>('stopped_at');
+ expect(slaStoppedAt).toBeTruthy();
  const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
  const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
@@ -183,6 +189,7 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  expect(await Promise.all(documentTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(documentHistory);
  const restoredSla=await Promise.all(slaTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
  expect(restoredSla).toEqual(slaHistory);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT stopped_at FROM issue_sla_clocks WHERE issue_id=?').bind(slaStoppedIssue.id).first('stopped_at')).toBe(slaStoppedAt);
  for(const clock of restoredSla[1])expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT 1 FROM issue_sla_restore_holds WHERE issue_id=?').bind(clock.issue_id).first()).not.toBeNull();
 
  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);

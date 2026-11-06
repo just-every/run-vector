@@ -64,7 +64,34 @@ export async function resolutionSlaUpgrade() {
       ),
     );
   const before = await rows();
-  await applyD1Migrations(db, latest);
+  await applyD1Migrations(
+    db,
+    latest.filter((m) => m.name < "0130_sla_team_archive.sql"),
+  );
+  const archived = await populatedArchiveClock(db, at);
+  await applyD1Migrations(
+    db,
+    latest.filter((m) => m.name >= "0130_sla_team_archive.sql"),
+  );
+  expect(
+    await db
+      .prepare("SELECT * FROM issue_sla_clocks WHERE issue_id=?")
+      .bind(archived.issue)
+      .first(),
+  ).toEqual({
+    ...archived.clock,
+    stopped_at: archived.at,
+    stop_reason: "stopped",
+    revision: expect.any(String),
+  });
+  expect(
+    (
+      await db
+        .prepare("SELECT * FROM issue_sla_occurrences WHERE issue_id=?")
+        .bind(archived.issue)
+        .all()
+    ).results,
+  ).toEqual(archived.receipts);
   expect(await rows()).toEqual(before);
   await db
     .prepare(
@@ -82,4 +109,72 @@ export async function resolutionSlaUpgrade() {
         .all<{ name: string }>()
     ).results.map((m) => m.name),
   ).toEqual(migrations.map((m) => m.name).sort());
+}
+
+/** The previous schema could miss an archive between scheduler observations.
+ * Upgrade stops its populated clock while retaining the target and receipts. */
+async function populatedArchiveClock(db: D1Database, at: string) {
+  const team = (await db
+    .prepare("SELECT id,identifier_prefix FROM teams LIMIT 1")
+    .first<{ id: string; identifier_prefix: string }>())!;
+  const status = await db
+    .prepare(
+      "SELECT id FROM workflow_statuses WHERE team_id=? AND category='unstarted'",
+    )
+    .bind(team.id)
+    .first<string>("id");
+  const issue = createUlid(new Date(at));
+  await db
+    .prepare(
+      `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,status_id,priority,created_at,updated_at)
+    VALUES(?,?,?,1,?,'synthetic-vector-197',?,'urgent',?,?)`,
+    )
+    .bind(
+      issue,
+      team.identifier_prefix + "-1",
+      team.identifier_prefix,
+      team.id,
+      status,
+      at,
+      at,
+    )
+    .run();
+  const rule = JSON.stringify({
+    enabled: true,
+    priority: "urgent",
+    labelId: null,
+    targetMinutes: 10,
+    warnBeforeMinutes: 5,
+    workingDays: [1, 2, 3, 4, 5],
+    startsAt: "09:00",
+    endsAt: "17:00",
+  });
+  await db
+    .prepare(
+      `INSERT INTO issue_sla_clocks(issue_id,team_id,rule_json,timezone,started_at,observed_at,elapsed_minutes,revision)
+    VALUES(?,?,?,'UTC',?,?,3,'synthetic-vector-197')`,
+    )
+    .bind(issue, team.id, rule, at, at)
+    .run();
+  await db
+    .prepare(
+      "INSERT INTO issue_sla_occurrences(issue_id,kind,event_id,created_at) VALUES(?,'warning',?,?)",
+    )
+    .bind(issue, crypto.randomUUID(), at)
+    .run();
+  const clock = await db
+    .prepare("SELECT * FROM issue_sla_clocks WHERE issue_id=?")
+    .bind(issue)
+    .first();
+  const receipts = (
+    await db
+      .prepare("SELECT * FROM issue_sla_occurrences WHERE issue_id=?")
+      .bind(issue)
+      .all()
+  ).results;
+  await db
+    .prepare("UPDATE teams SET archived_at=?,updated_at=? WHERE id=?")
+    .bind(at, at, team.id)
+    .run();
+  return { issue, at, clock, receipts };
 }
