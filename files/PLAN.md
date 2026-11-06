@@ -11,3 +11,5 @@ Preserve the two published product commits at 123353741b39efe08ff471d7ae04c90c35
 7. Store actual non-secret reports and receipts outside the product tree, explicitly publish the report packet to evidence/sd-vector-c-f192-pc1, and return exact product and evidence provenance with lane relay lines.
 
 Known prior run: 42142856859. Failed jobs: worker-2 127647613875, imports 127647613996, hosted-artifact 127647614031. The three required gh run view --log-failed invocations returned exit zero and empty output; no assertion detail was available from those commands. The aggregate verify job only reflects failed prerequisites.
+
+Execution return: both planned forward repairs are published. Final head is 0074a30dfda830f613542820aec6ea9c589d47cb. All touched Worker checks, complete integrations, development with checkout-local dependencies and the remaining imports journeys pass. The ten-call API budget ended after observing failure on the first repair; the final candidate was pushed without another API read. No third repair round, history rewrite, main push or acceptance change occurred. Full results are REPORT.md and receipts.json.

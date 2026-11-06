@@ -1,0 +1,11 @@
+{
+  "head": "939525d461cfef7418f8563e5b05904179b98938",
+  "journey": "tests/e2e/integrations/app-actors.mjs exerciseAppActors",
+  "passed": true,
+  "widths": [
+    1440,
+    390
+  ],
+  "credentialsCaptured": false,
+  "liveProvider": false
+}

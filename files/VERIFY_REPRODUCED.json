@@ -5,7 +5,7 @@
     "command": "pnpm verify:ci --shard imports",
     "test": "tests/worker/issue-session-projection.test.ts: stale edit, accept and return projections",
     "exit": 1,
-    "failure": "AssertionError: expected false to be true at issue-session-projection.test.ts:79 (projected)"
+    "failure": "AssertionError: expected false to be true // Object.is equality"
   },
   {
     "head": "123353741b39efe08ff471d7ae04c90c353c9154",
@@ -21,6 +21,31 @@
     "command": "pnpm verify:ci --shard worker-2",
     "test": "tests/worker/source-ingest.test.ts: signed native source publication and replay are atomic, source-attributed and restart-safe; triageUpgrade",
     "exit": 1,
-    "failure": "AssertionError: audit_records: expected historical rows with 13 columns to deeply equal rows with 10 columns; new app_actor_name, app_installer_id and app_installer_name are null; triage-upgrade.ts:87"
+    "failure": "AssertionError: audit_records: expected [ { …(13) }, { …(13) }, { …(13) } ] to deeply equal [ { …(10) }, { …(10) }, { …(10) } ]"
+  },
+  {
+    "head": "939525d461cfef7418f8563e5b05904179b98938",
+    "job": "shards (imports)",
+    "command": "pnpm verify:ci --shard imports",
+    "test": "dependencies.test.ts and parent-deletion-admission.test.ts",
+    "exit": 1,
+    "failure": "AssertionError: expected 200 to be 401 // Object.is equality; parent-deletion receipt has new null app_actor_name, app_installer_id and app_installer_name columns"
+  },
+  {
+    "head": "939525d461cfef7418f8563e5b05904179b98938",
+    "job": "shards (hosted-artifact)",
+    "command": "pnpm verify:ci --shard hosted-artifact",
+    "test": "tests/e2e/integrations/sdk-intake.mjs:36",
+    "exit": 1,
+    "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value: assert.ok(error instanceof ApiError)"
+  },
+  {
+    "head": "939525d461cfef7418f8563e5b05904179b98938",
+    "job": "shards (worker-2)",
+    "command": "pnpm verify:ci --shard worker-2",
+    "test": "tests/e2e/dev-runtime.mjs:109",
+    "exit": 1,
+    "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: performance.timeOrigin changed during navigation",
+    "classification": "Local shared-dependency worktree failed on both main and candidate; the candidate public development journey passed after installing checkout-local dependencies. No application or navigation assertion changed."
   }
 ]

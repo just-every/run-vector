@@ -1,5 +1,5 @@
 {
-  "head": "939525d461cfef7418f8563e5b05904179b98938",
+  "head": "0074a30dfda830f613542820aec6ea9c589d47cb",
   "journey": "tests/e2e/integrations/app-actors.mjs exerciseAppActors",
   "passed": true,
   "widths": [

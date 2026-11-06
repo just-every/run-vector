@@ -1,0 +1,33 @@
+{
+  "startedAt": "2026-11-06T04:23:25.800Z",
+  "sourceCommit": "939525d461cfef7418f8563e5b05904179b98938",
+  "note": "Vector CI test suites and build checks.",
+  "passed": false,
+  "checks": [
+    {
+      "command": "test:worker --shard=2/6",
+      "startedAt": "2026-11-06T04:23:25.810Z",
+      "completedAt": "2026-11-06T04:30:24.627Z",
+      "passed": true
+    },
+    {
+      "command": "test:worker --shard=3/6",
+      "startedAt": "2026-11-06T04:30:24.639Z",
+      "completedAt": "2026-11-06T04:32:09.956Z",
+      "passed": true
+    },
+    {
+      "command": "build",
+      "startedAt": "2026-11-06T04:32:09.966Z",
+      "completedAt": "2026-11-06T04:32:35.498Z",
+      "passed": true
+    },
+    {
+      "command": "test:dev:ci",
+      "startedAt": "2026-11-06T04:32:35.512Z",
+      "completedAt": "2026-11-06T04:34:15.586Z",
+      "passed": false
+    }
+  ],
+  "shard": "worker-2"
+}

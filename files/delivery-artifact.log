@@ -1,0 +1,5 @@
+
+> vector@0.4.1 artifact:delivery /workspace/run-vector
+> node scripts/build-delivery-artifact.mjs
+
+/workspace/run-vector/delivery-artifact/rer-worker-artifact.json

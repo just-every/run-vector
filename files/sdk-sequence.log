@@ -1,0 +1,8 @@
+(node:21226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE ROLE-006 browser: native Settings installation and credential reveal -> attributed title and audit; Admin keyboard pause and revoke -> refused next calls; reload retains history; management, issue and audit shown at 1440 and 390.
+API-005 local compiled intake example: persisted title and identifier, insufficient scope, stale write and revocation passed.
+{"head":"939525d461cfef7418f8563e5b05904179b98938","journey":"tests/e2e/integrations/app-actors.mjs exerciseAppActors","passed":true,"widths":[1440,390],"credentialsCaptured":false,"liveProvider":false}

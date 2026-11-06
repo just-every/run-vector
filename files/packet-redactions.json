@@ -1,0 +1,9 @@
+{
+  "reason": "Remove ephemeral local sign-in entry values before public report transport; all non-secret command output is retained.",
+  "files": [
+    {
+      "path": "round-two-data-runtime.log",
+      "redacted_entry_parameters": 2
+    }
+  ]
+}

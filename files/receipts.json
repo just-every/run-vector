@@ -72,9 +72,67 @@
       "exit": 0,
       "tests": 1,
       "head": "939525d461cfef7418f8563e5b05904179b98938"
+    },
+    {
+      "command": "pnpm artifact:delivery",
+      "exit": 0,
+      "head": "939525d461cfef7418f8563e5b05904179b98938",
+      "note": "Regenerated deployment specification produces the native delivery artifact. No artifact bundle is selected as report evidence."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/dependencies.test.ts tests/worker/parent-deletion-admission.test.ts",
+      "exit": 0,
+      "files": 2,
+      "tests": 12
+    },
+    {
+      "command": "pnpm test:integrations",
+      "exit": 0,
+      "note": "Full integration runtime, both widths and native outbound loopback; original SDK error-type and all refusal assertions retained."
+    },
+    {
+      "command": "pnpm test:dev:ci",
+      "exit": 0,
+      "note": "Candidate installed its own frozen dependencies; shared-symlink environment failed the same navigation assertion on main and candidate."
+    },
+    {
+      "command": "SDK intake standalone",
+      "exit": 0
+    },
+    {
+      "command": "SDK intake after native actor journey",
+      "exit": 0
+    },
+    {
+      "command": "SDK intake on observed main",
+      "exit": 0
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "phase": "second repair"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "head": "0074a30dfda830f613542820aec6ea9c589d47cb"
+    },
+    {
+      "command": "pnpm sources:check after restoring generated route tree",
+      "exit": 0,
+      "head": "0074a30dfda830f613542820aec6ea9c589d47cb"
+    },
+    {
+      "command": "exerciseAppActors browser journey",
+      "exit": 0,
+      "head": "0074a30dfda830f613542820aec6ea9c589d47cb",
+      "widths": [
+        1440,
+        390
+      ]
     }
   ],
-  "github_budget_used": 6,
+  "github_budget_used": 10,
   "github_budget_total": 10,
   "initial_shards": [
     {
@@ -118,11 +176,11 @@
       "detail": "After isolating setup-created development settings outside the checkout; no source change."
     }
   ],
-  "product_head": "939525d461cfef7418f8563e5b05904179b98938",
+  "product_head": "0074a30dfda830f613542820aec6ea9c589d47cb",
   "product_pushed": true,
-  "ci_run": 42159071007,
+  "ci_run": null,
   "ci_event": "push",
-  "ci_status": "in_progress",
+  "ci_status": "unqueried",
   "ci_conclusion": null,
   "main_head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
   "counts_before": {
@@ -145,7 +203,7 @@
   "generated_views_committed": false,
   "product_pr": null,
   "browser": {
-    "head": "939525d461cfef7418f8563e5b05904179b98938",
+    "head": "0074a30dfda830f613542820aec6ea9c589d47cb",
     "journey": "tests/e2e/integrations/app-actors.mjs exerciseAppActors",
     "passed": true,
     "widths": [
@@ -178,13 +236,13 @@
     },
     {
       "path": "screens/roles/app-actor-audit-1440.png",
-      "bytes": 78560,
-      "sha256": "5bd89e5839f9ac2d02aaa5f1406fe66ffbfadba8b39b280c78f20f3ac5c69741"
+      "bytes": 79278,
+      "sha256": "79fd256e8a6aac16d697589dc90c95110c750ad671ad893daca4d7763b843cd3"
     },
     {
       "path": "screens/roles/app-actor-audit-390.png",
-      "bytes": 107303,
-      "sha256": "ca89d0ba52fdd02d3f4e6a7e4d67ccbacf2d07b7cf835f0b222cd1ccb8d0a176"
+      "bytes": 107731,
+      "sha256": "58c8aa3705eb9256ce4379a2d96972f593e4271554849797dce1f6ef7ac7f1d2"
     },
     {
       "path": "screens/roles/app-actor-installed-1440.png",
@@ -201,19 +259,66 @@
     "lock": {
       "write": "pnpm sources:lock",
       "check": "pnpm sources:check",
-      "exit": 0
+      "post_build_check": true,
+      "exit": 0,
+      "head": "0074a30dfda830f613542820aec6ea9c589d47cb"
     },
     "views": {
       "write": "node scripts/contract-docs.mjs write ROLE-006",
       "check": "node scripts/contract-docs.mjs check ROLE-006",
       "exit": 0,
-      "restored_from_main": true
+      "restored_from_main": true,
+      "head": "0074a30dfda830f613542820aec6ea9c589d47cb"
     },
     "ledger": {
       "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
       "exit": 0,
       "tests": 1,
-      "head": "939525d461cfef7418f8563e5b05904179b98938"
+      "head": "0074a30dfda830f613542820aec6ea9c589d47cb"
     }
-  }
+  },
+  "repair_rounds": [
+    {
+      "candidate": "939525d461cfef7418f8563e5b05904179b98938",
+      "ci_run": 42159071007,
+      "ci_status": "completed",
+      "ci_conclusion": "failure",
+      "detail": "All local touched checks passed. Final permitted status read reported failure; no API calls remain for job discovery or archive reads. Local exact-shard reproduction begins before any second repair."
+    },
+    {
+      "candidate": "0074a30dfda830f613542820aec6ea9c589d47cb",
+      "published": true,
+      "scope": "dependency projection race, historical personal audit receipt fields and SDK error diagnostics",
+      "ci_status": "unqueried",
+      "note": "Second forward repair. New exact-SHA CI status could not be discovered within the ten-call budget."
+    }
+  ],
+  "latest_observed_ci": {
+    "run": 42159071007,
+    "head": "939525d461cfef7418f8563e5b05904179b98938",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "job_ids_available": false,
+    "reason": "The final permitted run-status read used call ten; no further API calls were made."
+  },
+  "terminal_custody": "PUSHED",
+  "exact_sha_verify_green_established": false,
+  "import_tail": [
+    {
+      "command": "node tests/e2e/data-runtime.mjs",
+      "exit": 0,
+      "source_app_head": "939525d461cfef7418f8563e5b05904179b98938"
+    },
+    {
+      "command": "node tests/e2e/related-runtime.mjs",
+      "exit": 0,
+      "source_app_head": "939525d461cfef7418f8563e5b05904179b98938"
+    },
+    {
+      "command": "node tests/e2e/issue-copy-runtime.mjs",
+      "exit": 0,
+      "source_app_head": "939525d461cfef7418f8563e5b05904179b98938"
+    }
+  ]
 }
