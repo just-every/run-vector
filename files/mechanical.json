@@ -1,0 +1,32 @@
+{
+  "head": "1a454502b9af6b959adccb8d55010f3dbcbb36f4",
+  "lock": {
+    "command": "pnpm sources:lock then pnpm sources:check",
+    "exit": 0,
+    "ok": true,
+    "log_sha256": "4cecc3976e6dd295a3b14d99c6c1e7a43efd3f07e3572179bf1dcf2aa1bc5abd"
+  },
+  "views": {
+    "command": "node scripts/contract-docs.mjs write SYNC-001 then node scripts/contract-docs.mjs check SYNC-001",
+    "exit": 0,
+    "restored_from": "origin/main"
+  },
+  "ledger": {
+    "command": null,
+    "exit": 0,
+    "reason": "No D1 migration added; Durable Object configuration exercised by emitted runtime"
+  },
+  "status_ids_before": 272,
+  "status_ids_after": 272,
+  "status_counts_before": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67
+  },
+  "status_counts_after": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67
+  },
+  "generated_views_committed": false
+}

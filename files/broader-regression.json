@@ -1,0 +1,33 @@
+{
+  "command": "node tests/e2e/core-runtime.mjs current",
+  "initial_local": {
+    "exit": 1,
+    "head_at_start": "7e0faa672751201443246e862923b8cf03adf5e3",
+    "proof_file_had_uncommitted_additions": true,
+    "error": "Timeout 30000ms waiting for .issues-browser[data-list-state=\"ready\"]",
+    "test": "groupingJourney; core-grouping-journey.mjs:29,113",
+    "curr008_passed": true
+  },
+  "main_comparison": {
+    "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+    "exit": 1,
+    "grouping_journey": "passed VIEW-008",
+    "later_error": "invitation confirmation succeeds within the native proof budget: 429 !== 303",
+    "test": "withInvitedOperator; core-operator-journey.mjs:34; core-runtime.mjs:750"
+  },
+  "candidate_recheck": {
+    "head": "1a454502b9af6b959adccb8d55010f3dbcbb36f4",
+    "status": "completed",
+    "grouping_journey": "passed VIEW-008",
+    "cross_team_view": "passed VIEW-009",
+    "curr008": "passed",
+    "current_phase_passed": true,
+    "current_phase_checks": 60,
+    "current_phase_sha256": "5fd65e858976c1da0a28637292453a7da3b0c5afa9566cfa5b3e1aef21ca176d",
+    "exit": 0,
+    "project_phase_passed": true,
+    "project_phase_checks": 46,
+    "project_phase_sha256": "0f641607b311816d7f66994d7c756e808833210a6c6d7526446f0659bc9aafef"
+  },
+  "ci_failure_claimed": false
+}

@@ -1,0 +1,177 @@
+{
+  "passed": true,
+  "samples": [
+    {
+      "start": 1793928249340,
+      "responseAt": 1793928249517,
+      "renderAt": 1793928249600,
+      "requestToRenderMs": 260,
+      "responseToRenderMs": 83
+    },
+    {
+      "start": 1793928249661,
+      "responseAt": 1793928249856,
+      "renderAt": 1793928250043,
+      "requestToRenderMs": 382,
+      "responseToRenderMs": 187
+    },
+    {
+      "start": 1793928250092,
+      "responseAt": 1793928250238,
+      "renderAt": 1793928250532,
+      "requestToRenderMs": 440,
+      "responseToRenderMs": 294
+    },
+    {
+      "start": 1793928250588,
+      "responseAt": 1793928250783,
+      "renderAt": 1793928250903,
+      "requestToRenderMs": 315,
+      "responseToRenderMs": 120
+    },
+    {
+      "start": 1793928250957,
+      "responseAt": 1793928251135,
+      "renderAt": 1793928251322,
+      "requestToRenderMs": 365,
+      "responseToRenderMs": 187
+    },
+    {
+      "start": 1793928251387,
+      "responseAt": 1793928251563,
+      "renderAt": 1793928251650,
+      "requestToRenderMs": 263,
+      "responseToRenderMs": 87
+    },
+    {
+      "start": 1793928251703,
+      "responseAt": 1793928251920,
+      "renderAt": 1793928252105,
+      "requestToRenderMs": 402,
+      "responseToRenderMs": 185
+    },
+    {
+      "start": 1793928252144,
+      "responseAt": 1793928252367,
+      "renderAt": 1793928252551,
+      "requestToRenderMs": 407,
+      "responseToRenderMs": 184
+    },
+    {
+      "start": 1793928252607,
+      "responseAt": 1793928252741,
+      "renderAt": 1793928252930,
+      "requestToRenderMs": 323,
+      "responseToRenderMs": 189
+    },
+    {
+      "start": 1793928252992,
+      "responseAt": 1793928253148,
+      "renderAt": 1793928253229,
+      "requestToRenderMs": 237,
+      "responseToRenderMs": 81
+    },
+    {
+      "start": 1793928253262,
+      "responseAt": 1793928253515,
+      "renderAt": 1793928253708,
+      "requestToRenderMs": 446,
+      "responseToRenderMs": 193
+    },
+    {
+      "start": 1793928253799,
+      "responseAt": 1793928253956,
+      "renderAt": 1793928254151,
+      "requestToRenderMs": 352,
+      "responseToRenderMs": 195
+    }
+  ],
+  "p95RequestToRenderMs": 446,
+  "currentP95RequestToRenderMs": 511,
+  "currentSamples": [
+    {
+      "action": "defer",
+      "start": 1793928257362,
+      "renderAt": 1793928257580,
+      "requestToRenderMs": 218
+    },
+    {
+      "action": "return",
+      "start": 1793928257590,
+      "renderAt": 1793928257869,
+      "requestToRenderMs": 279
+    },
+    {
+      "action": "defer",
+      "start": 1793928257895,
+      "renderAt": 1793928258177,
+      "requestToRenderMs": 282
+    },
+    {
+      "action": "return",
+      "start": 1793928258186,
+      "renderAt": 1793928258495,
+      "requestToRenderMs": 309
+    },
+    {
+      "action": "defer",
+      "start": 1793928258505,
+      "renderAt": 1793928258780,
+      "requestToRenderMs": 275
+    },
+    {
+      "action": "return",
+      "start": 1793928258811,
+      "renderAt": 1793928259063,
+      "requestToRenderMs": 252
+    },
+    {
+      "action": "defer",
+      "start": 1793928259072,
+      "renderAt": 1793928259511,
+      "requestToRenderMs": 439
+    },
+    {
+      "action": "return",
+      "start": 1793928259515,
+      "renderAt": 1793928259709,
+      "requestToRenderMs": 194
+    },
+    {
+      "action": "defer",
+      "start": 1793928259736,
+      "renderAt": 1793928260153,
+      "requestToRenderMs": 417
+    },
+    {
+      "action": "return",
+      "start": 1793928260160,
+      "renderAt": 1793928260591,
+      "requestToRenderMs": 431
+    },
+    {
+      "action": "defer",
+      "start": 1793928260596,
+      "renderAt": 1793928260976,
+      "requestToRenderMs": 380
+    },
+    {
+      "action": "return",
+      "start": 1793928261005,
+      "renderAt": 1793928261516,
+      "requestToRenderMs": 511
+    }
+  ],
+  "forcedSocketRecoveryMs": 445,
+  "independentNativeSessions": true,
+  "documentUnchanged": true,
+  "navigationUnchanged": true,
+  "workerRestart": true,
+  "privateWithdrawalAndReconnect": true,
+  "signoutStopsDelivery": true,
+  "contentFreeFrames": true,
+  "screenshots": [
+    1440,
+    390
+  ]
+}

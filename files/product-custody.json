@@ -1,0 +1,9 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f195",
+  "head": "1a454502b9af6b959adccb8d55010f3dbcbb36f4",
+  "remote_head": "1a454502b9af6b959adccb8d55010f3dbcbb36f4",
+  "checkout_clean": true,
+  "product_push_guard": "cloud-push.py",
+  "push_log_sha256": "17222ac82f658bdd7140c80958d8f1e2f8892caa3fab42ffe932e9989583b83b"
+}

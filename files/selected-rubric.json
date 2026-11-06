@@ -1,0 +1,42 @@
+{
+  "head": "1a454502b9af6b959adccb8d55010f3dbcbb36f4",
+  "scope": "Selected SYNC-001 native issue-edit and Current cells only; full clause remains PARTIAL",
+  "rows": [
+    {
+      "id": "R1",
+      "outcome": "Native title edits reach a second authenticated browser at measured p95 under one second without navigation or reload",
+      "path": "tests/e2e/core-live-sync-journey.mjs",
+      "line": 68
+    },
+    {
+      "id": "R2",
+      "outcome": "Current membership follows repeated native defer and return decisions at measured p95 under one second",
+      "path": "tests/e2e/core-live-sync-journey.mjs",
+      "line": 114
+    },
+    {
+      "id": "R3",
+      "outcome": "A real socket drop recovers inside five seconds and the actual built Worker can restart",
+      "path": "tests/e2e/core-live-sync-journey.mjs",
+      "line": 96
+    },
+    {
+      "id": "R4",
+      "outcome": "Current native session, workspace and private team authority governs dispatch and reconnect",
+      "path": "tests/worker/live-sync.test.ts",
+      "line": 77
+    },
+    {
+      "id": "R5",
+      "outcome": "Only committed selected mutations invalidate; stale, no-op, refused, rolled-back and concurrent losing attempts do not publish",
+      "path": "tests/worker/live-sync.test.ts",
+      "line": 46
+    },
+    {
+      "id": "R6",
+      "outcome": "Private withdrawal and sign-out stop delivery and private reads stay refused after reconnect",
+      "path": "tests/e2e/core-live-sync-journey.mjs",
+      "line": 183
+    }
+  ]
+}
