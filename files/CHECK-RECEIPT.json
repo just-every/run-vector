@@ -119,9 +119,6 @@
   "candidate_identities": "PASS, all candidates including side parents, fleet author/committer, no trailers",
   "ci": {
     "conclusion": null,
-    "created_at": "2026-11-06T06:00:43Z",
-    "event": "push",
-    "head_branch": "cloud/ct-vector-auto001-defer-text-20261106-0230-c1",
     "head_sha": "c8eac97fffc5bc1bf01bccbe0f362120eccd1359",
     "html_url": "https://github.com/just-every/run-vector/actions/runs/42171766334",
     "id": 42171766334,

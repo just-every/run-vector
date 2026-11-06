@@ -98,5 +98,21 @@
     "run_ids": [
       "42171766334"
     ]
+  },
+  {
+    "number": 7,
+    "utc": "2026-11-06T06:06:01.381581+00:00",
+    "epoch": 1793945161.0210962,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42171766334",
+      "--jq",
+      "{status,conclusion,head_sha,html_url,id,name}"
+    ],
+    "exit": 0,
+    "run_ids": [
+      "42171766334"
+    ]
   }
 ]

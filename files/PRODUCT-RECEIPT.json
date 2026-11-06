@@ -19,16 +19,13 @@
   "independent_opus_exact_head_review": "pending; supported CT review hold retained",
   "ci": {
     "conclusion": null,
-    "created_at": "2026-11-06T06:00:43Z",
-    "event": "push",
-    "head_branch": "cloud/ct-vector-auto001-defer-text-20261106-0230-c1",
     "head_sha": "c8eac97fffc5bc1bf01bccbe0f362120eccd1359",
     "html_url": "https://github.com/just-every/run-vector/actions/runs/42171766334",
     "id": 42171766334,
     "name": "Verify",
     "status": "in_progress"
   },
-  "updated_utc": "2026-11-06T06:03:45.932003+00:00",
+  "updated_utc": "2026-11-06T06:06:34.233405+00:00",
   "product_commits": [
     "c8eac97fffc5bc1bf01bccbe0f362120eccd1359",
     "474430d07da59ef420040a27db4fbc1ad0cca232"
@@ -38,5 +35,11 @@
     "head": "474430d07da59ef420040a27db4fbc1ad0cca232",
     "conclusion": "failure",
     "reason": "new Markdown files required docs/site.json classification; corrected without application/runtime/tooling changes"
-  }
+  },
+  "terminal_custody": "PUSHED",
+  "ready_awarded": false,
+  "github_calls_used": 7,
+  "github_budget": 10,
+  "github_calls_remaining": 3,
+  "watch_stop_reason": "Exact-head Verify still running after required 300-second interval; remaining three calls reserved for failure diagnosis, and brief prohibits long CI wait"
 }
