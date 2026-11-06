@@ -33,7 +33,7 @@ export async function retainProject(db:D1Database,actor:string,id:string) {
   db.prepare(`INSERT INTO project_deletions(id,project_id,workspace_id,actor_id,deleted_at,retain_until,session_hash,undo_until,members_json) VALUES(?,?,?,?,?,datetime(?,'+30 days'),?,?,?)`).bind(receipt,id,ctx.workspace,actor,ctx.at,ctx.at,session,until,JSON.stringify(members)),
   ...members.map(member=>db.prepare('INSERT INTO project_deletion_memberships(deletion_id,issue_id,milestone_id) VALUES(?,?,?)').bind(receipt,member.id,member.milestone_id)),
   db.prepare(`INSERT INTO project_activity(id,project_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) VALUES(?,?,?,'project.deleted',?,?,?,?)`).bind(createUlid(new Date(ctx.at)),id,actor,'null',JSON.stringify({deletionId:receipt}),ctx.at,ctx.at),
-  ...audit(ctx,'project.deleted',id,String(project.name),null,{deletionId:receipt}),
+  ...audit(ctx,'project.removed',id,String(project.name),null,{deletionId:receipt}),
  ]);
  return session?{id:receipt,projectId:id,version:1,expiresAt:Date.parse(until)}:null;
 }

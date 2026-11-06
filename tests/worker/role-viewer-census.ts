@@ -1,3 +1,4 @@
+import {projectRecoveryInput} from '../../src/core/features/project-deletion/routes';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -45,6 +46,12 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
  const detail=(target:any)=>call(owner,'/issues/'+target.identifier);
  const make=(n:number)=>call(owner,'/issues','POST',{title:'synthetic-vector-'+n,teamId:w.team.id});
  const makeTeam=async(n:number,prefix:string)=>{const state=await call(owner,'/settings/teams','POST',{name:'synthetic-vector-'+n,identifierPrefix:prefix});return state.teams.find((team:any)=>team.name==='synthetic-vector-'+n);};
+ const recoveryState=await call(owner,'/settings/projects','POST',{name:'synthetic-vector-31105',leadOperatorId:owner.id});
+ const recoveryProject=recoveryState.projects.find((row:any)=>row.name==='synthetic-vector-31105');
+ await call(owner,'/settings/projects/'+recoveryProject.id,'DELETE');
+ const recoveries=await call(owner,'/projects/recently-deleted');
+ let recovery=recoveries.projects.find((row:any)=>row.projectId===recoveryProject.id);
+ expect(recovery).toBeDefined();
  const destinationTeam=await makeTeam(31001,'SYNCENS');
  const requestTeam=await makeTeam(31002,'SYNREQS');
  const requesterCookie=await invite('synthetic-vector-31003@vector.test',owner.cookie);
@@ -161,6 +168,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('PATCH','/settings/report-exports/:id',{expectedVersion:1,enabled:true,consent:true},{id:reportExport.id});
   native('DELETE','/settings/report-exports/:id',undefined,{id:reportExport.id});
   const both=(method:Door['method'],nativePath:string,bearerPath:string,body:unknown,params:Record<string,string>={})=>{add('native',method,nativePath,body,params);add('bearer',method,bearerPath,body,params);};
+  both('POST','/projects/restore','/projects/restore',projectRecoveryInput.parse({id:recovery.id,version:recovery.version}));
+  native('POST','/projects/undo-deletion',projectRecoveryInput.parse({id:recovery.id,version:recovery.version}));
   native('PATCH','/data/aliases/prefixes/:prefix',{active:false},{prefix:importInput.source});
   native('POST','/settings/integrations/slack/app/members',{operatorId:member.id,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user});native('DELETE','/settings/integrations/slack/app/members/:operatorId',undefined,{operatorId:member.id});native('POST','/settings/integrations/slack/app',appProfile);native('POST','/settings/integrations/slack/app/create',{configurationToken:'synthetic-vector-31081-token'});native('POST','/settings/integrations/slack/app/install',undefined);native('GET','/integrations/slack/oauth/callback',undefined,{},oauthPath);
   const ip={identifier:issue.identifier},cp={...ip,itemId:comment.id},pp={id:project.id},tp={id:w.team.id},teamId={teamId:w.team.id};
@@ -234,6 +243,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   // Validate the administration/resource family bodies with the same schemas
   // their handlers use, independently of the role gate's early refusal.
   const schemas:Record<string,{parse(input:unknown):unknown}>={
+   'POST /projects/restore':projectRecoveryInput,
+   'POST /projects/undo-deletion':projectRecoveryInput,
    'POST /settings/report-exports':createSchedule,
    'PATCH /settings/report-exports/:id':changeSchedule,
    'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,
@@ -273,6 +284,15 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const restoreHash=await digest('synthetic-vector-31075');let restoreJob='';
   let restoreActive=false;
   const beforeRequest=async(surface:Surface,door:Door)=>{
+   if(door.path==='/projects/restore'||door.path==='/projects/undo-deletion'){
+    // Keep the actual recovery receipt live, including the ten-second Undo
+    // window, before taking the Viewer's unchanged-storage snapshot.
+    await call(owner,'/projects/restore','POST',{id:recovery.id,version:recovery.version});
+    await call(owner,'/settings/projects/'+recoveryProject.id,'DELETE');
+    recovery=(await call(owner,'/projects/recently-deleted')).projects.find((row:any)=>row.projectId===recoveryProject.id);
+    plans[surface].get(key(door))!.body=projectRecoveryInput.parse({id:recovery.id,version:recovery.version});
+    return;
+   }
    if(surface!=='native'||!door.path.startsWith('/data/restore/'))return;
    restoreJob=createUlid(new Date());
    expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_restore_status').first('n')).toBe(0);

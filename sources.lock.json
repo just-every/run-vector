@@ -2030,7 +2030,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "742d90eb3c9591118cbbe1b0a6dedfdec3e8a822d6fba2d4f3f4b988439042b3",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -6586,11 +6586,11 @@
       "executable": false
     },
     "src/core/features/project-deletion/repository.ts": {
-      "sha256": "9cf21ef591b98941a7c66e12debd300c3f9e0a424da145176960abc8b049e1d1",
+      "sha256": "6079267417d357282d1135a1b2e02fdcd6b36f9cd4424129c0ab809bfe3be77a",
       "executable": false
     },
     "src/core/features/project-deletion/routes.ts": {
-      "sha256": "c2704a72d53b185e713733dc0fc665174ba7ecf62daba17c7ddda9abb3664c97",
+      "sha256": "803b3cc74fe88ae77be7396819416b2faeab8a6a640687a6b3fe4ebc08106177",
       "executable": false
     },
     "src/core/features/project-deletion/ui.tsx": {
@@ -8362,7 +8362,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "3efb7e2ea5e36a828f78d370920e8d51e2ee95302f3a8540cc7c7549ad82cbe9",
+      "sha256": "484dbf89c7ff2ce1522bfb1fb06245bae7cbc0b2e7609c3122bf5087ef646d1b",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -9654,7 +9654,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "bd158829b602468170a56a0c09c6ee018d2272155094ed1291d62b0f52481981",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
