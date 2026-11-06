@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {execFileSync} from 'node:child_process';
+const root='/workspace/run-vector',load=path=>import(pathToFileURL(resolve(root,path)));
+const {chromium}=await load('node_modules/@playwright/test/index.mjs');
+const {createAdminRuntime,bootstrapOwner}=await load('tests/e2e/admin-runtime-support.mjs');
+const runtime=createAdminRuntime(1440,[],{port:15988,inspectorPort:15989});
+let browser;
+try {
+ runtime.initialize();await runtime.start();
+ browser=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium',args:['--no-sandbox','--use-mock-keychain','--password-store=basic']});
+ const context=await browser.newContext(),page=await context.newPage();await bootstrapOwner(page,runtime);
+ const api=async(path,method='GET',data)=>context.request.fetch(runtime.base+'/api'+path,{method,headers:{Origin:runtime.base},...(data===undefined?{}:{data})});
+ const session=await (await api('/session')).json();
+ const created=await (await api('/settings/projects','POST',{name:'synthetic-vector-9800',leadOperatorId:session.operatorId})).json();
+ const project=created.projects.find(p=>p.name==='synthetic-vector-9800');
+ const started=Date.now(),deletion=await api('/settings/projects/'+project.id,'DELETE');assert.equal(deletion.status(),200);
+ const finished=Date.now(),receipt=JSON.parse(deletion.headers()['x-vector-project-undo']);
+ assert.ok(receipt.expiresAt>=started+10000);assert.ok(receipt.expiresAt<=finished+10000);
+ const tables=['projects','issues','project_deletions','project_deletion_memberships','project_activity','issue_activity','audit_records','administration_audit_details'];
+ const snapshot=()=>tables.map(table=>runtime.sql('SELECT * FROM '+table+' ORDER BY rowid'));
+ const before=snapshot();
+ await new Promise(done=>setTimeout(done,Math.max(0,receipt.expiresAt-Date.now())+100));
+ const refused=await api('/projects/undo-deletion','POST',{id:receipt.id,version:receipt.version});assert.equal(refused.status(),409);
+ assert.deepEqual(snapshot(),before);
+ assert.equal((await api('/projects/'+project.id)).status(),404);
+ const restore=await api('/projects/restore','POST',{id:receipt.id,version:receipt.version});assert.equal(restore.status(),200);
+ assert.equal((await api('/projects/'+project.id)).status(),200);
+ console.log(JSON.stringify({head:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),probe:'PROJ-017 expired Undo',windowMilliseconds:10000,elapsedMilliseconds:Date.now()-started,undoStatus:refused.status(),unchangedTables:tables.length,recentlyDeletedRestoreStatus:restore.status(),passed:true}));
+} finally {if(browser)await browser.close();await runtime.stop();}
