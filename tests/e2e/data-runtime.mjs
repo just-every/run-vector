@@ -9,6 +9,7 @@ import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {exerciseDataMapping} from './data-ui-journey.mjs';
 import {exerciseProfileBrowser} from './data-profile-journey.mjs';
 import {exerciseStagedCli,exerciseProfileCli} from './data-staged-cli.mjs';
+import {exerciseFileMigration} from './file-migration-journey.mjs';
 const evidence=resolve('evidence/data'),scratch=await mkdtemp(join(tmpdir(),'vector-import-cli-'));let browser,installation;
 const proof={passed:false,widths:[],publicCommands:[],privateReview:false};
 try{
@@ -16,6 +17,7 @@ try{
  browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const options=await(await runtime.req('/api/data/import/options',{headers:{Cookie:cookie}})).json(),team=options.references.teams.find(row=>!row.archived_at),status=options.references.statuses.find(row=>row.team_id===team.id&&row.category==='unstarted')??options.references.statuses.find(row=>row.team_id===team.id);
  for(const width of [1440,390]){await exerciseDataMapping({page,runtime,team,status,width,evidence});proof.widths.push(width);}
+ proof.fileMigrations=[];for(const width of [1440,390])proof.fileMigrations.push(await exerciseFileMigration({page,runtime,team,status,width,evidence}));
  const session=join(scratch,'session'),file=join(scratch,'issues.json'),mapping=join(scratch,'mapping.json'),review=join(scratch,'review.json');
  await writeFile(session,cookie,{mode:0o600});await writeFile(file,JSON.stringify([{key:'cli-record',headline:'Public CLI mapped issue',organisation:team.name}]),{mode:0o600});
  await writeFile(mapping,JSON.stringify({mapping:{sourceId:'key',title:'headline',team:'organisation'},defaults:{status:status.id}}),{mode:0o600});

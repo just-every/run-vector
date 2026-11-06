@@ -18,6 +18,12 @@ export async function importedStatements(db: D1Database, values: string[], at: s
       WHERE lower(trim(imported_author_name)) IN (SELECT value FROM json_each(?))`,
     params: [ERASED_AUTHOR, at, at, list],
   }];
+  // Migration source references are separate durable custody, covered by the
+  // same erasure transaction and version fence as its retained run reports.
+  statements.push({sql:`UPDATE vector_file_migrations SET version=version+1 WHERE id IN
+    (SELECT migration_id FROM vector_migration_references WHERE lower(trim(source_id)) IN (SELECT value FROM json_each(?)) OR lower(trim(target_source_id)) IN (SELECT value FROM json_each(?)))`,params:[list,list]});
+  statements.push({sql:`DELETE FROM vector_migration_references WHERE lower(trim(source_id)) IN (SELECT value FROM json_each(?)) OR lower(trim(target_source_id)) IN (SELECT value FROM json_each(?))`,params:[list,list]});
+  statements.push({sql:`UPDATE vector_file_migrations SET source='erased-'||id,version=version+1 WHERE lower(trim(source)) IN (SELECT value FROM json_each(?))`,params:[list]});
   // Alias identity cannot retain a source ID or source label that is itself
   // the erased person's exact value. Ordinary opaque issue keys remain valid.
   statements.push({sql:`DELETE FROM issue_aliases WHERE lower(trim(source_key)) IN(SELECT value FROM json_each(?))

@@ -293,7 +293,7 @@ export const doors: Door[] = [
   {method:'PATCH',path:'/data/aliases/prefixes/:prefix',row:'data.aliases'},
   // Import, export and portability
   { method: 'ALL', path: '/portability/*', row: ({ path }) => /^\/api\/portability\/imports(?:\/|$)/.test(path) ? 'data.restore' : 'data.export', teams:({db,actor})=>teamsOf(db,actor,'all') },
-  ...([['GET', '/data/import/options'], ['GET', '/data/import/runs'], ['GET', '/data/import/runs/:id'], ['GET', '/data/import/runs/:id/originals'], ['GET', '/data/import/runs/:id/report'],
+  ...([['GET','/data/migrations'],['POST','/data/migrations'],['GET','/data/migrations/:id'],['GET','/data/migrations/:id/report.csv'],['POST','/data/migrations/:id/finish'],['GET', '/data/import/options'], ['GET', '/data/import/runs'], ['GET', '/data/import/runs/:id'], ['GET', '/data/import/runs/:id/originals'], ['GET', '/data/import/runs/:id/report'],
     ['GET', '/data/import/runs/:id/report.csv'], ['GET', '/data/import/runs/:id/rollback'], ['POST', '/data/import/preview'], ['POST', '/data/import/apply'],
     ['POST', '/data/import/runs/:id/resume'], ['POST', '/data/import/runs/:id/rollback']] as const)
     .map(([method, path]): Door => ({ method, path, row: 'data.import' })),

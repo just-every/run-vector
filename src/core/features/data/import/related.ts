@@ -3,10 +3,11 @@ import type { MappedRow } from './row-values';
 
 /** A related pair belongs to the endpoint published last. It never enters the
  * directed reference graph, so reciprocal and circular related links are valid. */
-export function mapRelated(rows:MappedRow[],order:string[],errors:ImportDiagnostic[],at:string) {
+export function mapRelated(rows:MappedRow[],order:string[],errors:ImportDiagnostic[],at:string,defer?:(row:MappedRow,value:string)=>boolean) {
   const bySource=new Map(rows.filter(row=>row.value).map(row=>[row.record.sourceId,row]));
   const rank=new Map(order.map((id,index)=>[id,index])),seen=new Set<string>();
   for(const row of rows)for(const source of row.related) {
+    if(defer?.(row,source))continue;
     const target=bySource.get(source);
     if(!row.value||!target?.value) {
       errors.push({row:row.record.location.row!,field:'related',code:'related_target_not_in_run',message:'A related issue must be imported in this run; it cannot change a retained issue from another run.'});continue;

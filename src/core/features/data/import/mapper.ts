@@ -1,3 +1,4 @@
+import { pendingCollector } from '../migrations/pending';
 import { isProfile } from './profiles';
 import { mapRelated } from './related';
 import { mapManualOrder } from './manual-order';
@@ -77,8 +78,10 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   }
   // "X blocks Y" belongs to Y's snapshot. Reusing Y cannot change a prior
   // run's snapshot or take ownership of it just to add X's dependency.
+  const {pending,defer}=pendingCollector(input,rows);
   const rowBySource=new Map(rows.map(row=>[row.record.sourceId,row]));
   for(const row of rows)for(const blocked of row.blocks) {
+    if(defer(row,'blocks',blocked,true))continue;
     const target=rowBySource.get(blocked);
     if(input.format==='jira-csv'&&!target?.value) {
       const retained=effects.has(blocked),problem={row:row.record.location.row!,code:retained?'retained_blocks_target':'invalid_issue_reference',message:retained?'This Blocks target is retained from a prior import run. Adding a blocker would change that run’s issue; this relationship cannot be imported.':'The Blocks target cannot be imported from this file. Resolve its row errors before applying.'};
@@ -110,7 +113,8 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   for(const row of rows) {
     if(!row.value)continue;
     const id=String(row.value.issue.id),needs:string[]=[];
-    const reference=(field:string,value:string)=>{
+    const reference=(field:'parent'|'dependencies'|'duplicateOf',value:string)=>{
+      if(defer(row,field,value,isLinear(input.format)||isProfile(input.format)||input.format==='jira-csv'))return;
       try{const target=selected(value);if(target.id===id)throw Error('An issue cannot reference itself.');needs.push(target.id);return target;}
       catch(error){errors.push({row:row.record.location.row!,field,code:'invalid_issue_reference',message:error instanceof Error?error.message:'Invalid reference.'});}
     };
@@ -140,21 +144,26 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     next.set(prefix,sequence);row.value!.issue.sequence_number=sequence;row.value!.issue.identifier=prefix+'-'+sequence;
     identifiers.set(id,String(row.value!.issue.identifier));
   }
-  for(const row of rows)if(row.value && row.duplicateOf) {
+  for(const row of rows)if(row.value && row.duplicateOf && !pending.some(item=>item.sourceId===row.record.sourceId&&item.kind==='duplicateOf')) {
     const link=row.value.links.find(item=>item.id===stableImportId(actor.workspace,input.source,row.record.sourceId,'duplicate-link'));
     if(!link)continue;
     const target=selected(row.duplicateOf),identifier=identifiers.get(target.id)??target.identifier;
     link.name='Duplicate of '+identifier;
     link.url=origin+'/app/issues/'+encodeURIComponent(identifier);
   }
-  mapRelated(rows,order,errors,effectiveAt);
+  mapRelated(rows,order,errors,effectiveAt,(row,value)=>defer(row,'related',value,true));
+  if(pending.length) {
+    const wanted=pending.map(item=>sourceIdentity(actor.workspace,input.source,'issue',item.targetSourceId));
+    const tombstones=(await db.prepare('SELECT identity FROM ik_d1_erased_sources WHERE destination=? AND identity IN (SELECT value FROM json_each(?))').bind(actor.workspace,JSON.stringify(wanted)).all<{identity:string}>()).results;
+    if(tombstones.length)errors.push({row:0,code:'source_erased',message:'A pending endpoint was erased. It cannot be reintroduced by a migration.'});
+  }
   await mapManualOrder(db,actor.workspace,input,rows,errors);
   const ranked=new Map(order.map((id,index)=>[id,index]));
   const records=[...source.records].sort((a,b)=>{
     const ai=effects.get(a.sourceId)?.effects[0]?.targetId,bi=effects.get(b.sourceId)?.effects[0]?.targetId;
     return (ranked.get(ai??'')??reusedRanks.get(ai??'')??-1)-(ranked.get(bi??'')??reusedRanks.get(bi??'')??-1);
   });
-  return {source:{...source,records},effects,errors,omissions,reused,references:refs};
+  return {source:{...source,records},effects,errors,omissions,reused,references:refs,pending};
 }
 
 type Prior={job_id:string;identity:string;source_hash:string;mapping_version:string;target_id:string;record_json:string;ordinal:number};

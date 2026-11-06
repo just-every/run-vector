@@ -95,6 +95,8 @@ const developmentAssets = new Set([
   '/src/core/features/data/ui/jira-configuration.tsx',
   '/src/core/features/data/ui/import-client.ts',
   '/src/core/features/data/ui/import-runs.tsx',
+  '/src/core/features/data/ui/file-migrations.tsx',
+  '/src/core/features/data/ui/migration-client.ts',
   '/src/core/features/data/ui/import-report.tsx',
   '/src/core/features/data/ui/data.css',
   '/src/core/features/data/import/types.ts',

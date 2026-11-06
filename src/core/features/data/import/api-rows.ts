@@ -25,10 +25,10 @@ export function apiRowEffects(payload: Record<string,Json>, sourceId: string, ro
     if (!parsed.success) { errors.push({ row, field: 'api attachments', code: 'unsafe_link', message: `Attachment ${index + 1} is not a HTTPS link without credentials (${link.url.split(':')[0].slice(0, 20)}:). Nothing is fetched or imported for it.` }); return; }
     result.links.push({ id: stableImportId(actor.workspace, input.source, sourceId, 'link:' + index), issue_id: id, comment_id: null, actor_operator_id: actor.id, name: parsed.data.name, url: parsed.data.url, deleted_at: null, created_at: effectiveAt, updated_at: effectiveAt });
   });
-  if (issue.parent) { if (inRun.has(issue.parent)) result.parent = 'source:' + issue.parent; else outside('api parent', issue.parent); }
+  if (issue.parent) { if (input.migrationId || inRun.has(issue.parent)) result.parent = 'source:' + issue.parent; else outside('api parent', issue.parent); }
   for (const relation of issue.relations) {
     if (relation.type === 'blocks' || relation.type === 'duplicate' || relation.type === 'related') {
-      if (!inRun.has(relation.identifier)) { outside('api ' + relation.type, relation.identifier); continue; }
+      if (!input.migrationId && !inRun.has(relation.identifier)) { outside('api ' + relation.type, relation.identifier); continue; }
       if (relation.type === 'related') result.related.push(relation.identifier);
       else if (relation.type === 'blocks') result.blocks.push(relation.identifier);
       else if (!result.duplicateOf) result.duplicateOf = 'source:' + relation.identifier;

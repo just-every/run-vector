@@ -10,6 +10,7 @@ import type { ImportActor } from './authority';
 import { z } from 'zod';
 import { detachedIssues } from './detached-issues';
 import { importOperation } from './failure';
+import { addMigrationRoutes } from '../migrations/routes';
 const parse=<T>(schema:z.ZodType<T>,value:unknown):T=>{
   const result=schema.safeParse(value);
   if(!result.success)throw new ImportError(400,'invalid_import_input','The import request has an invalid field, type or bound.');
@@ -26,6 +27,7 @@ async function actor(c:Context<AppEnvironment>):Promise<ImportActor> {
 // The base64 file plus its mapping; Workers accept far larger bodies.
 const importRequestBytes=2*Math.ceil(importLimits.bytes/3)*4+262144;
 export function addImportRoutes(app:Hono<AppEnvironment>) {
+  addMigrationRoutes(app,actor);
   app.get('/data/import/options',async c=>{
     const owner=await actor(c),references=await loadImportReferences(c.env.DB,owner.workspace);
     return c.json({references,bounds:importLimits});

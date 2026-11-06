@@ -19,6 +19,9 @@ import { rollbackPreview,refuseRollbackConflicts } from './rollback';
 import { reportInput,buildReport,reportCsv,type ReportInput } from './report';
 import { ImportError,importLimits,type ImportInput,type ImportPreview } from './types';
 
+import { importMigration } from '../migrations/model';
+import { migrationRunMetadata } from '../migrations/pending';
+
 // Each published source entry also carries Base's provenance, claim and guard
 // statements and two reads. Batch sizing keeps this request's executions well
 // inside D1's per-invocation limit (measured in docs/MOVE-IN.md).
@@ -29,18 +32,19 @@ function normalized(input:ImportInput):ImportInput {
   return {...selected,source:'vector-import:'+selected.source};
 }
 function mappingVersion(input:ImportInput) {
-  return 'vector-issues-v1:'+sha256(canonicalJson({...(input.format==='jira-csv'?{jiraEffectsVersion:4}:{}),...(input.format==='linear-api-json'?{linearEffectsVersion:2}:{}),format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
+  return 'vector-issues-v1:'+sha256(canonicalJson({...(input.migrationId?{migrationId:input.migrationId}:{}),...(input.format==='jira-csv'?{jiraEffectsVersion:4}:{}),...(input.format==='linear-api-json'?{linearEffectsVersion:2}:{}),format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
 }
-type PlannedPreview = ImportPreview & { plan?: ImportPlan; batchSize?: number; report?: ReportInput };
+type PlannedPreview = ImportPreview & { plan?: ImportPlan; batchSize?: number; report?: ReportInput; migration?: Awaited<ReturnType<typeof importMigration>> };
 async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<PlannedPreview> {
   const input=normalized(raw),effectiveAt=input.effectiveAt??new Date().toISOString();
   if(!Number.isFinite(Date.parse(effectiveAt)) || new Date(effectiveAt).toISOString()!==effectiveAt)throw new ImportError(400,'invalid_review_time');
+  const migration=await importMigration(db,actor,input);
   const parsed=await parseImport(input),version=mappingVersion(input);
   const mapped=await mapImport(db,actor,input,parsed.source,effectiveAt,version,origin);
   const errors=[...parsed.errors,...mapped.errors];
   if(!parsed.source.records.length)errors.push({row:0,code:'empty_import',message:'The file contains no issue rows.'});
   const jiraReview=input.format==='jira-csv'?buildJiraReview(parsed.source.records,input,errors,mapped.omissions,mapped.references):undefined;
-  const preview:PlannedPreview={ready:false,effectiveAt,...(jiraReview?{jiraReview}:{}),...(parsed.jiraDates?{jiraDates:parsed.jiraDates}:{}),headers:parsed.headers,errors,omissions:mapped.omissions,count:parsed.source.records.length,bounds:importLimits,measured:{fileBytes:Buffer.from(input.base64,'base64').byteLength,rows:parsed.source.records.length,reused:mapped.reused}};
+  const preview:PlannedPreview={ready:false,effectiveAt,...(migration?{migration,pending:mapped.pending}:{}),...(jiraReview?{jiraReview}:{}),...(parsed.jiraDates?{jiraDates:parsed.jiraDates}:{}),headers:parsed.headers,errors,omissions:mapped.omissions,count:parsed.source.records.length,bounds:importLimits,measured:{fileBytes:Buffer.from(input.base64,'base64').byteLength,rows:parsed.source.records.length,reused:mapped.reused}};
   if(errors.length)return preview;
   const context=importContext(db,actor,input.source,version);
   const plan=await planD1Import(mapped.source,{version,map:record=>mapped.effects.get(record.sourceId)!},context);
@@ -64,7 +68,7 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
       entryStatements=Math.max(entryStatements,statementsHere);entryBytes=Math.max(entryBytes,bytesHere);
     }
     const batchSize=Math.max(1,Math.min(1000,Math.floor(importLimits.batchStatements/entryStatements),Math.floor(importLimits.batchBytes/entryBytes),Math.floor(batchExecutions/(entryStatements+entryOverhead))));
-    const creation=await preflightReservedImport(plan,{...context,reviewedFingerprint:plan.fingerprint},id=>importRunMetadata(id,batchSize,reportJson));
+    const creation=await preflightReservedImport(plan,{...context,reviewedFingerprint:plan.fingerprint},id=>[...importRunMetadata(id,batchSize,reportJson),...migrationRunMetadata(migration,id,mapped.pending)]);
     Object.assign(preview.measured,{nativeBytes,nativeStatements,maxParameters,entryStatements,entryBytes,batchSize,batches:Math.ceil(plan.entries.length/batchSize),creationStatements:creation.mutationStatements,creationExecutions:creation.totalExecutions,creationMaxBoundBytes:creation.maxBoundBytes,planBytes:Buffer.byteLength(canonicalJson(plan))});
     if(entryStatements+entryOverhead>batchExecutions || entryBytes>importLimits.batchBytes)throw new ImportError(413,'import_native_limit');
     preview.batchSize=batchSize;
@@ -79,7 +83,7 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
   return preview;
 }
 export async function previewImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<ImportPreview> {
-  const {plan:_plan,batchSize:_batchSize,report:_report,...preview}=await planImport(db,actor,raw,origin);
+  const {plan:_plan,batchSize:_batchSize,report:_report,migration:_migration,...preview}=await planImport(db,actor,raw,origin);
   return preview;
 }
 export type ImportRun = ImportJob & { progress: RunProgress };
@@ -104,7 +108,7 @@ export async function applyImport(db:D1Database,actor:ImportActor,input:ImportIn
   // under it conflicts instead of racing the retained run for the same records.
   const unfinished=await db.prepare(`SELECT id FROM ik_jobs WHERE destination=? AND namespace=? AND fingerprint<>? AND state IN ('queued','applying','failed','rolling_back','undoing') LIMIT 1`).bind(actor.workspace,plan.namespace,plan.fingerprint).first();
   if(unfinished)throw new ImportError(409,'import_run_unfinished','A run for this source name is unfinished. Resume or roll it back before applying a different file.');
-  const job=await createReservedImport(plan,importContext(db,actor,plan.namespace,plan.mappingVersion,reviewedFingerprint,operationKey),id=>importRunMetadata(id,preview.batchSize!,JSON.stringify(preview.report)));
+  const job=await createReservedImport(plan,importContext(db,actor,plan.namespace,plan.mappingVersion,reviewedFingerprint,operationKey),id=>[...importRunMetadata(id,preview.batchSize!,JSON.stringify(preview.report)),...migrationRunMetadata(preview.migration,id,preview.pending??[])]);
   return withProgress(db,job);
 }
 async function withProgress(db:D1Database,job:ImportJob):Promise<ImportRun> {
