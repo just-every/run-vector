@@ -111,14 +111,36 @@ export async function liveSyncJourney({ page, context, browser, base, state, tea
     await row.waitFor();
     await ready(); await settleReads(reader);
     const currentDocument = await reader.evaluate(() => performance.timeOrigin);
-    const currentStart = Date.now();
-    const decision = await api('/issues/' + intake.body.identifier + '/defer', 'POST', { expectedVersion: 1, returnAt: new Date(Date.now() + 600000).toISOString() });
-    assert.equal(decision.status, 200);
-    await row.waitFor({ state: 'detached', timeout: 1500 });
-    const currentMs = Date.now() - currentStart;
-    assert.ok(currentMs < 1000);
-    assert.equal(reader.url(), currentUrl);
-    assert.equal(await reader.evaluate(() => performance.timeOrigin), currentDocument);
+    const currentSamples = [];
+    let currentFrameCount = 0, currentPending = false;
+    const gateCurrentClock = async route => {
+      if (route.request().method() === 'GET' && currentPending)
+        await reader.waitForFunction(previous => window.__liveFrames.filter(frame => frame.body === '{"type":"invalidate"}').length > previous, currentFrameCount, { timeout: 10000 });
+      await route.continue();
+    };
+    await reader.route('**/api/**', gateCurrentClock);
+    for (let index = 0; index < 12; index++) {
+      currentFrameCount = (await frames()).filter(frame => frame.body === '{"type":"invalidate"}').length;
+      currentPending = true;
+      const action = index % 2 === 0 ? 'defer' : 'return';
+      const start = Date.now();
+      const decision = await api('/issues/' + intake.body.identifier + '/' + action, 'POST', {
+        expectedVersion: index + 1,
+        ...(action === 'defer' ? { returnAt: new Date(Date.now() + 600000).toISOString() } : {}),
+      });
+      assert.equal(decision.status, 200);
+      await row.waitFor({ state: action === 'defer' ? 'detached' : 'visible', timeout: 1500 });
+      const renderAt = Date.now();
+      currentPending = false;
+      assert.ok((await frames()).filter(frame => frame.body === '{"type":"invalidate"}').length > currentFrameCount);
+      currentSamples.push({ action, start, renderAt, requestToRenderMs: renderAt - start });
+      assert.equal(reader.url(), currentUrl);
+      assert.equal(await reader.evaluate(() => performance.timeOrigin), currentDocument);
+    }
+    await reader.unroute('**/api/**', gateCurrentClock);
+    const currentOrder = currentSamples.map(row => row.requestToRenderMs).sort((a, b) => a - b);
+    const currentMs = currentOrder[Math.ceil(currentOrder.length * .95) - 1];
+    assert.ok(currentMs < 1000, `Current decision request-to-render p95 ${currentMs} ms`);
     // Park the writer on its public lobby so this deliberate restart does not
     // inject failures into unrelated shared-journey background assertions.
     await beforePrivateNavigation(page, base + '/');
@@ -129,9 +151,12 @@ export async function liveSyncJourney({ page, context, browser, base, state, tea
     await page.goto(base + '/app/issues/' + id);
     await page.getByRole('heading', { name: recoveredTitle, exact: true }).waitFor();
     await reader.waitForFunction(() => window.__liveSockets.some(socket => socket.readyState === WebSocket.OPEN), { timeout: 10000 });
-    const returned = await api('/issues/' + intake.body.identifier + '/return', 'POST', { expectedVersion: 2 });
+    assert.equal((await api('/issues/' + intake.body.identifier + '/defer', 'POST', { expectedVersion: 13, returnAt: new Date(Date.now() + 600000).toISOString() })).status, 200);
+    await row.waitFor({ state: 'detached', timeout: 5000 });
+    const returned = await api('/issues/' + intake.body.identifier + '/return', 'POST', { expectedVersion: 14 });
     assert.equal(returned.status, 200);
     await row.waitFor({ timeout: 5000 });
+    await reader.getByText('Failed to fetch', { exact: true }).first().waitFor({ state: 'detached', timeout: 10000 });
     for (const width of [1440, 390]) {
       await reader.setViewportSize({ width, height: 1000 });
       await reader.screenshot({ path: evidence + '/live-sync-current-' + width + '.png', fullPage: true });
@@ -140,6 +165,12 @@ export async function liveSyncJourney({ page, context, browser, base, state, tea
     await beforePrivateNavigation(reader, base + '/app/issues/' + id);
     await reader.goto(base + '/app/issues/' + id);
     await reader.getByRole('heading', { name: recoveredTitle, exact: true }).waitFor();
+    await reader.setViewportSize({ width: 1440, height: 1000 });
+    const reaction = reader.getByRole('button', { name: 'Add 👍 reaction', exact: true });
+    await reaction.focus();
+    await reader.getByRole('tooltip', { name: 'Add 👍 reaction', exact: true }).waitFor();
+    await reader.keyboard.press('Escape');
+    await reaction.blur();
     for (const width of [1440, 390]) {
       await reader.setViewportSize({ width, height: 1000 });
       await reader.screenshot({ path: evidence + '/live-sync-issue-' + width + '.png', fullPage: true });
@@ -185,7 +216,7 @@ export async function liveSyncJourney({ page, context, browser, base, state, tea
     assert.equal(actualFrames.filter(frame => frame.body === '{"type":"invalidate"}').length, framesBeforeSignout.filter(frame => frame.body === '{"type":"invalidate"}').length);
     assert.ok(actualFrames.every(frame => ['{"type":"ready"}', '{"type":"pong"}', '{"type":"invalidate"}'].includes(frame.body)));
     assert.deepEqual(errors, []);
-    const receipt = { passed: true, samples: latencies, p95RequestToRenderMs: p95, currentRequestToRenderMs: currentMs, forcedSocketRecoveryMs: recoveryMs,
+    const receipt = { passed: true, samples: latencies, p95RequestToRenderMs: p95, currentP95RequestToRenderMs: currentMs, currentSamples, forcedSocketRecoveryMs: recoveryMs,
       independentNativeSessions: true, documentUnchanged: true, navigationUnchanged: true, workerRestart: true, privateWithdrawalAndReconnect: true, signoutStopsDelivery: true, contentFreeFrames: true, screenshots: [1440, 390] };
     await writeFile(evidence + '/live-sync-browser.json', JSON.stringify(receipt, null, 2));
     console.info('[SYNC-001] ' + JSON.stringify(receipt));

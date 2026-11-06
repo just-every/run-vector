@@ -8310,7 +8310,7 @@
       "executable": false
     },
     "tests/e2e/core-live-sync-journey.mjs": {
-      "sha256": "7800e9cd765b53e52c5b083c76b1b6d9ddc1296e3dad5f991d4f9482bc68b270",
+      "sha256": "efa357d2cf878eac0b740c2a59a1965e78f5eb97e28f1ecc130eb6a713fe0a3c",
       "executable": false
     },
     "tests/e2e/core-manual-order-journey.mjs": {
