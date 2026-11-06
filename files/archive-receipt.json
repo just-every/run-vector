@@ -1,0 +1,6 @@
+{
+  "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "exit": 0,
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/data-http.test.ts",
+  "completedAt": "2026-11-06T01:26:45.482498+00:00"
+}

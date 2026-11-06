@@ -1,0 +1,6 @@
+{
+  "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "exit": 0,
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/integration-api.test.ts tests/worker/integration-authority.test.ts tests/worker/agent-native-attribution.test.ts tests/worker/role-matrix.test.ts tests/worker/project-fields-upgrade.test.ts",
+  "completedAt": "2026-11-06T01:23:49.874871+00:00"
+}

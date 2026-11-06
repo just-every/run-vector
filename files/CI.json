@@ -1,0 +1,48 @@
+{
+  "run": 42142856859,
+  "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "observations": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42142856859",
+      "id": 42142856859,
+      "name": "Verify",
+      "status": "in_progress",
+      "observedAt": "2026-11-06T01:18:26.617940+00:00"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42142856859",
+      "id": 42142856859,
+      "name": "Verify",
+      "status": "in_progress",
+      "observedAt": "2026-11-06T01:23:52.529461+00:00"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42142856859",
+      "id": 42142856859,
+      "name": "Verify",
+      "status": "in_progress",
+      "observedAt": "2026-11-06T01:28:54.595338+00:00"
+    }
+  ],
+  "lastObservation": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "123353741b39efe08ff471d7ae04c90c353c9154",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42142856859",
+    "id": 42142856859,
+    "name": "Verify",
+    "status": "in_progress",
+    "observedAt": "2026-11-06T01:28:54.595338+00:00"
+  },
+  "taskGitHubCalls": 5,
+  "polling": "one watcher, at least 300 seconds between observations of this run"
+}

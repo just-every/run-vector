@@ -1,0 +1,25 @@
+{
+  "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "commits": [
+    {
+      "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "authorAllowed": true,
+      "committerAllowed": true,
+      "trailers": [],
+      "parentStatusRowsRetained": true,
+      "statusRows": 272,
+      "subject": "Fence native agent management and preserve existing custody"
+    },
+    {
+      "head": "139173c78013fc19b92db0d547cfe470320c450b",
+      "authorAllowed": true,
+      "committerAllowed": true,
+      "trailers": [],
+      "parentStatusRowsRetained": true,
+      "statusRows": 272,
+      "subject": "Add scoped native app actors and retained attribution [skip ci]"
+    }
+  ],
+  "existingAssertionsRemoved": [],
+  "newTestRegistrations": 0
+}

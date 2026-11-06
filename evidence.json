@@ -1,0 +1,172 @@
+{
+  "files": [
+    {
+      "blob": "b3608f656527b2c8cdabf5834e61793fcfb0090c",
+      "bytes": 1593,
+      "path": "CI.json",
+      "sha256": "027b735743cb01202bbcbdc2b350b7126bb3e5e6e14facd97a3002086f1e0ac4"
+    },
+    {
+      "blob": "c943c00bfd0083c7d8e0985f1d568560c3fc8efc",
+      "bytes": 1923,
+      "path": "PLAN.md",
+      "sha256": "213d15866307aa59864c7964753cdacbe03430a2d4e966d605c3ceff195733e0"
+    },
+    {
+      "blob": "fe607abd927dcb3ee2191d5c5bb264890f45466c",
+      "bytes": 2910,
+      "path": "PROVENANCE.json",
+      "sha256": "d6a5a1b343ee71409c2387718bb4a0fff6283fae1c5822f0d0cfc0be1e56dfa8"
+    },
+    {
+      "blob": "ff4dee7b7f8d52ee5167bca2d4c6563a2966928e",
+      "bytes": 13095,
+      "path": "REPORT.md",
+      "sha256": "55936c93b84bd03cce605566949ecb9df26c27376c07443336e8c3e3d00a3f0f"
+    },
+    {
+      "blob": "8c93e3c9116eeba1a4adefa7453ceb24abe0342d",
+      "bytes": 217,
+      "path": "archive-receipt.json",
+      "sha256": "42e1fc628a6ce0c0606148a89050a2656d536921c538684ae00ed9e5c99314f1"
+    },
+    {
+      "blob": "985fadfe28d9cde852e8bce43db939703c52ba35",
+      "bytes": 340,
+      "path": "archive.log",
+      "sha256": "e91ae9df87ae96065249a00954eec1e35e65675fbccbc7fd14a5ba37b9bd6e86"
+    },
+    {
+      "blob": "6cd5ba5e1efe75e94c1e560fd56d8d4a23b3c730",
+      "bytes": 331,
+      "path": "browser.log",
+      "sha256": "b536ccb5fc180001ae9106e9aaf9058e82418f78e63cfd2bbc5e624595a24f68"
+    },
+    {
+      "blob": "3a3f490b45748887f045af3ff45055beeaa01d7d",
+      "bytes": 146,
+      "path": "browser/receipt.json",
+      "sha256": "f3db8e49b834ec82832b20e963d7995dbed8ce0b5387aff5772829915c5906ce"
+    },
+    {
+      "blob": "a90bc5cc73eb8ab09d834f6eef32e711a0246ba5",
+      "bytes": 47948,
+      "path": "browser/roles/app-actor-admin-revoked-1440.png",
+      "sha256": "ad7ba79c73a6144e5a4d10a465c53fc3b8004199a2d9622e1ca8cdb0e1ef151e"
+    },
+    {
+      "blob": "58209201163bd005af6cbc56be2927b41037b000",
+      "bytes": 43432,
+      "path": "browser/roles/app-actor-admin-revoked-390.png",
+      "sha256": "71e7fe556d15452508ab8bf8a23bb2f23cf086ea1669391e2f330bea408f5bc7"
+    },
+    {
+      "blob": "32512f54aeb733389aeffcb5a2d5125c454819c1",
+      "bytes": 113357,
+      "path": "browser/roles/app-actor-attributed-issue-1440.png",
+      "sha256": "989c4107790dd45af886ae3d153f196bfa5a23df0106cdbe3d75a15a9d7b1ffc"
+    },
+    {
+      "blob": "6ed6f2bf9e46508d9db1bd41eba911fbc29152aa",
+      "bytes": 105229,
+      "path": "browser/roles/app-actor-attributed-issue-390.png",
+      "sha256": "29fec647e2bb4f0d42df63f85a52ea864629dfb2ba27960efc0b300306236f5b"
+    },
+    {
+      "blob": "626db05470934a5d2a03e31c84cb4c1138d722cd",
+      "bytes": 78853,
+      "path": "browser/roles/app-actor-audit-1440.png",
+      "sha256": "38349cd783a52fc7dfe78757bf001459b38549018718c970fec7d88a1922d912"
+    },
+    {
+      "blob": "c4e4e6c973411029f9afcf9889a9ac9427d19d2f",
+      "bytes": 108086,
+      "path": "browser/roles/app-actor-audit-390.png",
+      "sha256": "16f475b54bbd82d751faaa8ca15a1aa0f629fec9edd596fc74608c286e5c2300"
+    },
+    {
+      "blob": "7e8c0ba8203a53087233e6cc29685d29611271fc",
+      "bytes": 48535,
+      "path": "browser/roles/app-actor-installed-1440.png",
+      "sha256": "7030c435071917144f89cc9aa39702845a8e97a39cc774c04b3e236b91a7e228"
+    },
+    {
+      "blob": "e13526ba2af3ac67df22341fad1c89f537bb8762",
+      "bytes": 47880,
+      "path": "browser/roles/app-actor-installed-390.png",
+      "sha256": "f65c1852b19782d57c603f86086f10d23c5e77aefeda02c317601495c8207238"
+    },
+    {
+      "blob": "4e0796e34c1b74aa5613c3970326b9c400ea355c",
+      "bytes": 34076,
+      "path": "build.log",
+      "sha256": "a29aaa8d3ce0c92a90410e615c927e8800eb698afe2c0c066bddf1040efb3aeb"
+    },
+    {
+      "blob": "56fe1711904cf2adde162efdbe96096aedd79ddf",
+      "bytes": 190,
+      "path": "check-receipt.json",
+      "sha256": "0cff0efd34ab6b339c0c842846c5f1b742038f3dc01fa50e43399b40728db6c0"
+    },
+    {
+      "blob": "4e57766c68f5ea698c6c2654c47d35d2a261d0a1",
+      "bytes": 74,
+      "path": "contract-views.log",
+      "sha256": "a53297390f6a65b8a6507458291e95d9dd7f012f29f65ef528d519dcb57e95b0"
+    },
+    {
+      "blob": "8a4177bfe931db2b3a193e325dc5472ec5fca1f0",
+      "bytes": 3645,
+      "path": "custody.log",
+      "sha256": "36ac3f470db16ed07afebfd8e5e5d0371eddee80d0b96b3e5a1545556dc7cb36"
+    },
+    {
+      "blob": "54e8a15a063de2653cc8c94abcdc8305ed595a95",
+      "bytes": 740,
+      "path": "identity-receipt.json",
+      "sha256": "ff59025d1c95104c3a1d6b834ef3e3f13b3b3749e9c1bb16012a3752980acbe0"
+    },
+    {
+      "blob": "42e16abe869ed003aa238ac4971bab8a9961e4b2",
+      "bytes": 637,
+      "path": "mechanical-receipt.json",
+      "sha256": "1989122e1e8a92e03d8f1c5fc21ae0cc0dbd584f750134b76d26f0cfa52c8352"
+    },
+    {
+      "blob": "918ba59460229a48c7c232123453b07f8c49e0c0",
+      "bytes": 246,
+      "path": "migration-ledger.log",
+      "sha256": "6f66f83aaa4cd5b98807566c3606cd9427b44eff03db0611c987bf3d36fb81b9"
+    },
+    {
+      "blob": "9d4e7fb43070d79be89a8edfe66f23740f1a598d",
+      "bytes": 795,
+      "path": "product-push.log",
+      "sha256": "df6b3c251faada921c25c934ef34005001d1f3af87c75036f3266855859c2151"
+    },
+    {
+      "blob": "9d093ab4b843b89cd186da53a351125b52f493b5",
+      "bytes": 27,
+      "path": "role-door-coverage.log",
+      "sha256": "8e3856e90e331fb1d53d101775761de6ac6c339d9d164cb233334bda0cbd6fa8"
+    },
+    {
+      "blob": "c5a77e528122dfbe16132f035d8c910d223c2750",
+      "bytes": 389,
+      "path": "worker-receipt.json",
+      "sha256": "8955be41e89d9c027a0c50049220df6f2b484bf129a37a1c3dc311db91f78795"
+    },
+    {
+      "blob": "75ba641cff20838e8b8d86f822b83c788aab038e",
+      "bytes": 3508,
+      "path": "worker.log",
+      "sha256": "9f415be1d1268ebe31af287adf649beca94bc416aafe915c46ac595d7bcd12a0"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f192",
+  "product_head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "ref": "refs/heads/evidence/sd-vector-c-f192",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f192"
+}

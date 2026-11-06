@@ -1,0 +1,22 @@
+{
+  "lock": {
+    "command": "pnpm sources:lock",
+    "exit": 0
+  },
+  "lockCheck": {
+    "command": "pnpm sources:check",
+    "exit": 0
+  },
+  "views": {
+    "write": "node scripts/contract-docs.mjs write ROLE-006",
+    "check": "node scripts/contract-docs.mjs check ROLE-006",
+    "exit": 0,
+    "generatedViewsRestoredFromMain": true
+  },
+  "ledger": {
+    "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0
+  },
+  "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "basis": "Commands ran on the unchanged candidate source before its final commit; origin main merge was already up to date."
+}

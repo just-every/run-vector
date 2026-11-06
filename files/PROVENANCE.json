@@ -1,0 +1,100 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f192",
+  "head": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "base": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "save": "139173c78013fc19b92db0d547cfe470320c450b",
+  "pr": null,
+  "fullHistory": true,
+  "generatedViewsCommitted": false,
+  "status": {
+    "ROLE-006": {
+      "before": "missing",
+      "after": "partial"
+    }
+  },
+  "counts": {
+    "before": {
+      "done": 136,
+      "partial": 69,
+      "missing": 67
+    },
+    "after": {
+      "done": 136,
+      "partial": 70,
+      "missing": 66
+    },
+    "statusRows": 272
+  },
+  "publicationScan": "not run in cloud; required by fleet lander",
+  "candidateRunSite": "main-only fleet gate",
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "123353741b39efe08ff471d7ae04c90c353c9154",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42142856859",
+      "id": 42142856859,
+      "name": "Verify",
+      "status": "in_progress",
+      "observedAt": "2026-11-06T01:28:54.595338+00:00"
+    }
+  ],
+  "baselineCi": [
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42137975260",
+      "id": 42137975260,
+      "name": "Run site",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42137975274",
+      "id": 42137975274,
+      "name": "Verify",
+      "status": "completed"
+    },
+    {
+      "conclusion": "skipped",
+      "event": "push",
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42137975287",
+      "id": 42137975287,
+      "name": "Run demo",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "dynamic",
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42137973969",
+      "id": 42137973969,
+      "name": "Push on main",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "event": "push",
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42125138769",
+      "id": 42125138769,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ],
+  "remoteHead": "123353741b39efe08ff471d7ae04c90c353c9154",
+  "productCustody": "PUSHED",
+  "selectedFlowLocalChecks": "passed",
+  "remainingGates": [
+    "exact-SHA Verify completion",
+    "full-history publication scan",
+    "independent interface qualification",
+    "guarded landing",
+    "candidate Run site"
+  ]
+}
