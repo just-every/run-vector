@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a97eee3b61aa628a77775874393ce04f350d994a528acc70b17b04e8a963150e",
+      "sha256": "ed5dc908281a1a414275eecfed04d4fb06086a233f9d024c1dc6c85bdb796266",
       "executable": false
     },
     "DEMO.md": {
@@ -8334,7 +8334,7 @@
       "executable": false
     },
     "tests/e2e/core-project-deletion-journey.mjs": {
-      "sha256": "d6a615e35986dc2a7b5c2c79f0c4fb51968a3d13dba53939584316ad4130e495",
+      "sha256": "5580f6e8bd8ad6a51e9cbb7436c5f32ee42a06881d1251b55e20cbdd129114bf",
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
@@ -9546,7 +9546,7 @@
       "executable": false
     },
     "tests/worker/project-deletion-scenario.ts": {
-      "sha256": "360cbadd06aa1b4363113d934e5fabe884905d2ef02c74f97c5f49893a64eebf",
+      "sha256": "95d0bfe778b5b9b55c64fbd9541283d7b53f96967d1b998a35824177533fa481",
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {

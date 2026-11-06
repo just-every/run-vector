@@ -96,6 +96,20 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  await page.getByRole('heading',{name:doc.title,exact:true}).waitFor();
  await page.getByText(doc.body,{exact:true}).filter({visible:true}).first().waitFor();
  await screens('project-retained-document');
+ // Expiry is exercised against the real server clock, after the control has
+ // disappeared. A fresh native restore still uses the same versioned receipt.
+ receipt=await remove();
+ await new Promise(resolve=>setTimeout(resolve,Math.max(0,receipt.expiresAt-Date.now()+250)));
+ await notice.getByRole('button',{name:'Undo project deletion',exact:true}).waitFor({state:'hidden'});
+ const beforeExpired={recent:await api('/projects/recently-deleted'),issue:await api('/issues/'+second.identifier)};
+ const expired=await page.request.post(base+'/api/projects/undo-deletion',{headers:{Origin:base},data:{id:receipt.id,version:receipt.version}});
+ assert.equal(expired.status(),409);
+ assert.deepEqual({recent:await api('/projects/recently-deleted'),issue:await api('/issues/'+second.identifier)},beforeExpired);
+ await api('/projects/restore','POST',{id:receipt.id,version:receipt.version});
+ assert.equal((await api('/issues/'+first.identifier)).project.id,destination.id);
+ for(const issue of [cleared,explicitlyCleared])assert.equal((await api('/issues/'+issue.identifier)).project,null);
+ assert.equal((await api('/projects/'+project.id)).activity.filter(a=>a.kind==='project.restored').length,3);
+ console.log('PROBE PROJ-017 expired Undo: real ten-second expiry -> control removed, HTTP 409 and unchanged issue and recovery state; Recently deleted restore remains usable');
  console.log('PROBE PROJ-017 reassignment: native deletion, later issue assignment and Settings recovery -> newer project preserved; untouched issue, milestone and document restored with original identities');
  console.log('PROBE PROJ-017 stale Undo: changed membership -> rendered refusal and HTTP 409 with unchanged issue content, activity and recovery entries');
  console.log('PROBE PROJ-017 explicit clearing: reassign then clear, and explicit later clear -> both issues remain unassigned after restore');

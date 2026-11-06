@@ -22,6 +22,16 @@ export async function projectDeletionScenario(f:Awaited<ReturnType<typeof roleWo
  const viewer=await f.fresh('member');
  await f.mutate('/settings/operators/'+viewer.id+'/role','PATCH',{role:'viewer'});
  let receipt=await remove();
+ // The native deleting session alone can Undo, and a replay changes nothing.
+ expect(await read(await f.call('/projects/undo-deletion','POST',{id:receipt.id,version:1}))).toEqual({projectId:project.id});
+ let restored=await read(await f.call('/projects/'+project.id));
+ expect(restored).toMatchObject({id:project.id,name:project.name,description:project.description,milestones:initial.milestones});
+ for(const issue of issues)expect(await read(await f.call('/issues/'+issue.identifier))).toMatchObject({id:issue.id,project:{id:project.id},milestone:{id:milestone.id}});
+ expect(await read(await f.call('/documents/'+doc.id))).toMatchObject({id:doc.id,body:doc.body});
+ expect(restored.activity.filter((a:any)=>a.kind==='project.restored')).toHaveLength(1);
+ await refused(()=>f.call('/projects/undo-deletion','POST',{id:receipt.id,version:1}),409);
+ await resetLimits();
+ receipt=await remove();
  const foreignCookie=await signIn();
  await refused(()=>request('/api/projects/undo-deletion','POST',{id:receipt.id,version:1},foreignCookie),409);
  for(const surface of ['call','api'] as const){
@@ -40,16 +50,6 @@ export async function projectDeletionScenario(f:Awaited<ReturnType<typeof roleWo
  }
  await refused(()=>f.admin.call('/projects/undo-deletion','POST',{id:receipt.id,version:1}),409);
  await refused(()=>f.call('/projects/restore','POST',{id:receipt.id,version:2}),409);
- // The native deleting session alone can Undo, and a replay changes nothing.
- expect(await read(await f.call('/projects/undo-deletion','POST',{id:receipt.id,version:1}))).toEqual({projectId:project.id});
- let restored=await read(await f.call('/projects/'+project.id));
- expect(restored).toMatchObject({id:project.id,name:project.name,description:project.description,milestones:initial.milestones});
- for(const issue of issues)expect(await read(await f.call('/issues/'+issue.identifier))).toMatchObject({id:issue.id,project:{id:project.id},milestone:{id:milestone.id}});
- expect(await read(await f.call('/documents/'+doc.id))).toMatchObject({id:doc.id,body:doc.body});
- expect(restored.activity.filter((a:any)=>a.kind==='project.restored')).toHaveLength(1);
- await refused(()=>f.call('/projects/undo-deletion','POST',{id:receipt.id,version:1}),409);
- await resetLimits();
- receipt=await remove();
  // Reassignment, reassign then clear, explicit null, and a non-membership edit.
  const patch=async(i:number,change:Record<string,unknown>)=>{const current=await read(await f.call('/issues/'+issues[i].identifier));return read(await f.call('/issues/'+current.identifier,'PATCH',{expectedVersion:current.version,...change}));};
  await patch(0,{projectId:destination.id});
