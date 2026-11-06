@@ -2678,7 +2678,7 @@
       "executable": false
     },
     "scripts/contract-docs.mjs": {
-      "sha256": "17598668017202efe065dae49e102df9dcfe44d983edae50f3db39c1d1865c03",
+      "sha256": "aa4688ff5f04d91b3f12508bd592a6988e3cd2578924c1267d4909b4cb101af8",
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
@@ -4650,7 +4650,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/subject.ts": {
-      "sha256": "3d583ec4cf5a7f8850cffe38093a012755e8c3b5095bf4959b74362cc3c2a24a",
+      "sha256": "e0f88bf39abbb932d47e7a3c3ccfc4c176b416639249305ff8bc6c0f3b1c37a9",
       "executable": false
     },
     "src/core/features/data/http-restore.ts": {
@@ -7046,11 +7046,11 @@
       "executable": false
     },
     "src/core/features/settings/ui/fields/field-feedback.tsx": {
-      "sha256": "66927fb47e2d715671e19c4c51dc22f674ed37dd126ede06d20e2085c6bab8a5",
+      "sha256": "d8cdce791a67120fc89d7e53a81cbae1886789e378c838e9b153b032def6089a",
       "executable": false
     },
     "src/core/features/settings/ui/fields/fields.css": {
-      "sha256": "6a35da4bcdbfd2aadd4e65fb6d8cb617dd1cb606cfd1214f9c93334e964be9e4",
+      "sha256": "dc6fbfad34106af888d8167976e8fff993086ba072c3d757a7d2385da1bda69b",
       "executable": false
     },
     "src/core/features/settings/ui/fields/leave-guard.tsx": {
@@ -8998,7 +8998,7 @@
       "executable": false
     },
     "tests/installer/adapter.test.mjs": {
-      "sha256": "e7586cafee17dcccdcaf1a58deded9bb30125b14fc1cebb61b2e571902380f12",
+      "sha256": "2a116c11a5d71f2f4481b1363804dafd603a2d79872465a112a078dcd81aa1a7",
       "executable": false
     },
     "tests/installer/native-proof.mjs": {
@@ -9374,7 +9374,7 @@
       "executable": false
     },
     "tests/worker/imported-person-erasure.test.ts": {
-      "sha256": "12b46cf5f1733b50a8e11b3a84c7b6993a57cf8434a1908672f1856e9c193eb6",
+      "sha256": "5a64a7fc0ccf8d839f52427880ee3ddb84576e3adb5a904cdf3927757c6d3f73",
       "executable": false
     },
     "tests/worker/initiatives-scenario.ts": {
