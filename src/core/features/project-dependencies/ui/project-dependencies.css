@@ -10,7 +10,7 @@
 .project-dependencies form button { padding: 0.5rem 0.8rem; }
 .project-dependencies button:disabled { opacity: 0.6; cursor: default; }
 .project-dependencies details { margin-top: 0.5rem; }
-.project-dependencies summary { display: flex; align-items: center; min-height: 2.75rem; width: max-content; color: var(--app-cobalt-ink); font-size: var(--app-text-small); font-weight: 650; cursor: pointer; }
+.project-dependencies summary { width: max-content; min-height: 2.75rem; line-height: 2.75rem; color: var(--app-cobalt-ink); font-size: var(--app-text-small); font-weight: 650; cursor: pointer; }
 .project-dependencies summary[aria-disabled="true"] { cursor: wait; }
 .project-dependencies summary:focus-visible,
 .project-dependencies button:focus-visible,

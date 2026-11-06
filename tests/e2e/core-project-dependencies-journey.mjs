@@ -87,6 +87,8 @@ async function dependencyFlow({page,memberPage,memberContext,base,api,capture,me
         .filter(node=>[...node.childNodes].some(child=>child.nodeType===3&&child.textContent.trim()))
         .map(node=>parseFloat(getComputedStyle(node).fontSize))));
       assert.ok(smallest>=13,label+' text is at least 13px at '+width);
+      // Keep the fixed phone navigation clear of the inspected controls.
+      await controls(current).region.evaluate(region=>region.scrollIntoView({block:'start'}));
       await capture('PROJ-015',label+'-'+width,current);
     }
     await current.setViewportSize({width:1440,height:1000});
