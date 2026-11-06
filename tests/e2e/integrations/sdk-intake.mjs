@@ -33,7 +33,7 @@ export async function exerciseSdkIntake({runtime, cookie, team}) {
   const before = runtime.sql('SELECT id, title, version FROM issues ORDER BY id');
   const refused = async (run, status, code) => {
     const error = await run().then(() => null, error => error);
-    assert.ok(error instanceof ApiError);
+    assert.ok(error instanceof ApiError, error instanceof Error ? error.name + ': ' + error.message : 'The API request unexpectedly succeeded');
     assert.equal(error.status, status);
     assert.equal(error.body.error, code);
     assert.equal(error.message.includes(issued.token), false, 'errors exclude request credentials');

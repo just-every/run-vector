@@ -546,7 +546,7 @@ it("[REL-001 BASE-ACCESS-001] native related-issue lookup and stale conflict DTO
         if (property === "prepare")
           return (query: string) => {
             const statement = target.prepare(query);
-            return query.includes("SELECT id,actor_name FROM issue_activity")
+            return query.includes("FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL")
               ? wrap(statement)
               : statement;
           };

@@ -8610,7 +8610,7 @@
       "executable": false
     },
     "tests/e2e/integrations/sdk-intake.mjs": {
-      "sha256": "a81eccf624ec65222671fbda5cd3afa388424bf5b9e9af897c7dc8b35341dd19",
+      "sha256": "c4f1ee862c75d2cbfeb0b95d298e632b62b04ecd1c091b2de5e61d461314a9fe",
       "executable": false
     },
     "tests/e2e/integrations/slack-app-archive.mjs": {
@@ -9206,7 +9206,7 @@
       "executable": false
     },
     "tests/worker/dependencies.test.ts": {
-      "sha256": "b10ee7d744d1107544cb018ed67579a7ef91395cb5362e000c4c5864b228fb20",
+      "sha256": "4130ce9459511d809a075dd70b2ae9e41fb18b87d0e4341fcc98fd2e5d9834dc",
       "executable": false
     },
     "tests/worker/description-history.test.ts": {
@@ -9518,7 +9518,7 @@
       "executable": false
     },
     "tests/worker/parent-deletion-admission.test.ts": {
-      "sha256": "7974e5aeac4c145ab8861137482b10eb9ddfeed5402e84bd8df18ec14cfde525",
+      "sha256": "7d74affd4aab70f237292236d62b4707be641a9a4956ff93f7069faf617b2dd2",
       "executable": false
     },
     "tests/worker/parent-deletion-custody.test.ts": {
