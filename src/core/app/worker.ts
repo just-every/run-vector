@@ -1,3 +1,4 @@
+export { VectorLiveSync } from '../features/live-sync/hub';
 import {aliasRedirect} from '../features/data/aliases/routes';
 import { agentResponse } from '../features/agent-door/runtime';
 import {initiativePageDenial} from '../features/initiatives/authority';

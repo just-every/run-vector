@@ -1,6 +1,7 @@
 import type { BootstrapEnvironment } from '../features/bootstrap/config'
 
 export type WorkerBindings = Pick<VectorBindings, 'DB' | 'FILES' | 'APP_ORIGIN'> & BootstrapEnvironment & {
+  LIVE_SYNC?: DurableObjectNamespace<import('../features/live-sync/hub').VectorLiveSync>
   RESTORE_COORDINATOR?: VectorBindings['RESTORE_COORDINATOR']
   ASSETS: {
     fetch(request: Request): Promise<Response>

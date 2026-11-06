@@ -1,3 +1,4 @@
+import { liveConnection } from '../features/live-sync/server';
 import {aliasRedirect} from '../features/data/aliases/routes';
 import { businessSettings } from '../features/agent-door/runtime';
 import {createOAuthPublicApp} from '../features/oauth-apps/routes';
@@ -133,6 +134,7 @@ export function createServerApp() {
   app.route("/api/v1",createReleaseApi());
   app.route("/api/oauth",createOAuthPublicApp());
   app.route("/api/v1",createIntegrationApi());
+  app.get("/api/live-sync", c => liveConnection(c.req.raw, c.env));
   app.route("/api", createApiApp());
 
   return app;

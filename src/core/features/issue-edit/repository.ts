@@ -1,3 +1,4 @@
+import { publishCommittedChange } from '../live-sync/server';
 import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
 import { isMutationAccessError } from "../auth/mutation-database";
 import { drizzle } from "drizzle-orm/d1";
@@ -37,8 +38,10 @@ export async function updateIssueRecord(
     if (current.version !== input.expectedVersion) return "stale" as const;
     throw new IssueMutationError("invalid_option", error.message);
   }
-  if (results[plan.mutationIndex].results.length === 1)
+  if (results[plan.mutationIndex].results.length === 1) {
+    await publishCommittedChange(db, plan.activityId!);
     return "written" as const;
+  }
   const current = await requireIssue(drizzle(db), identifier);
   if (current.version !== input.expectedVersion) return "stale" as const;
   throw new IssueMutationError(

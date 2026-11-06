@@ -6,6 +6,8 @@ import { receiveUndoReceipt } from '../features/issue-undo/ui/receipt';
 import { isSecondaryRead, onSecondaryRefresh } from './secondary-refresh';
 import { createRefreshBatch, refreshBatchSchema } from './refresh-batch';
 
+import { isLiveRead, onLiveRefresh } from '../features/live-sync/client';
+
 const backgroundBatch = createRefreshBatch(url => fetchJson(url, refreshBatchSchema));
 export async function fetchBackgroundJson<S extends z.ZodType>(url: string, schema: S, signal?: AbortSignal): Promise<z.output<S>> {
   return privateReads.read(url, async () => {
@@ -229,7 +231,9 @@ export function useApiResource<S extends z.ZodType>(
       resourceStateForIdentity(latestSnapshot.current, url, schema),
     );
     currentController.current = controller;
+    const stopLive = isLiveRead(url) ? onLiveRefresh(() => { void controller.refreshAfterMutation(); }) : () => {};
     const dispose = () => {
+      stopLive();
       if (currentController.current === controller) currentController.current = null;
       controller.dispose({ abortPending: abortPendingOnDispose });
     };

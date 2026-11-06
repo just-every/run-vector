@@ -1,3 +1,4 @@
+import { publishCommittedChange } from '../live-sync/server';
 import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import { requireIssueAccess } from './access'
@@ -201,9 +202,11 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
   // The browsing revision trigger writes too. Only the guarded issue's native
   // RETURNING row identifies whether this decision actually committed.
   const rows = writes[issueWriteIndex].results as { id: string }[]
-  return rows.length === 1 && rows[0].id === issue.id
-    ? { outcome: 'written', identifier: issue.identifier }
-    : { outcome: 'stale', identifier: issue.identifier }
+  if (rows.length === 1 && rows[0].id === issue.id) {
+    await publishCommittedChange(binding, activityId)
+    return { outcome: 'written', identifier: issue.identifier }
+  }
+  return { outcome: 'stale', identifier: issue.identifier }
 }
 
 function decisionSelection(db: Database, identifier: string, request: IntakeDecisionRecordInput, next: DecisionState, now: string, decisionId: string) {

@@ -1,3 +1,4 @@
+export { VectorLiveSync } from '../features/live-sync/hub';
 // Local-only Worker entry. vite.config.ts loads it only for `vite dev`; the deployed main stays worker.ts,
 // and `rer build` refuses any output that contains the dev layer. It adds dev sign-in, personas without a dev bar.
 // Dev labels rewrite HTML, so they must receive the uncompressed document.

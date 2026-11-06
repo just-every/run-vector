@@ -1,3 +1,4 @@
+import { configureLivePublication } from '../features/live-sync/server';
 import {addTriageResponsibilityRoutes} from '../features/triage-responsibility/routes';
 import {addIssueTemplateRoutes} from '../features/issue-templates/routes';
 import {addAliasRoutes} from '../features/data/aliases/routes';
@@ -198,6 +199,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       // Context owns this bindings object; never change the shared Worker env.
       context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence, undefined, authority.fence) };
       configureUndoSession(context.env.DB, operator.fence.sessionId);
+      configureLivePublication(context.env.DB, context.env, operator.workspaceId);
     }
     configureNotifications(context.env.DB,context.env);
     let pendingDrain: Promise<boolean> | undefined;

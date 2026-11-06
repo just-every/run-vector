@@ -8,6 +8,12 @@ export function createReadLifecycle() {
   const pending = new Map<symbol, string>();
   const idle = new Set<() => void>();
   const resumed = new Set<() => void>();
+  const paused = new Set<() => void>();
+  const pause = (owner: symbol) => {
+    const wasPaused = pauses.size > 0;
+    pauses.add(owner);
+    if (!wasPaused) for (const notify of paused) notify();
+  };
   const release = (owner: symbol) => {
     if (!pauses.delete(owner) || pauses.size) return;
     for (const notify of resumed) notify();
@@ -37,15 +43,19 @@ export function createReadLifecycle() {
       }
     },
     pause() {
-      pauses.add(manualPause);
+      pause(manualPause);
     },
     resume() {
       release(manualPause);
     },
     hold() {
       const owner = Symbol("document-navigation");
-      pauses.add(owner);
+      pause(owner);
       return () => release(owner);
+    },
+    onPause(notify: () => void) {
+      paused.add(notify);
+      return () => { paused.delete(notify); };
     },
     onResume(notify: () => void) {
       resumed.add(notify);

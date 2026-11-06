@@ -1,3 +1,4 @@
+import { publishCommittedChange } from '../live-sync/server';
 import { returnStatements, finalizeEvent } from '../notifications/events';
 import { createUlid } from "../../shared/ids";
 import { sql } from 'drizzle-orm';
@@ -92,7 +93,9 @@ export async function clearDeferral(
     db.prepare('DELETE FROM issue_deferral_origins WHERE issue_id=? AND EXISTS(SELECT 1 FROM issue_activity WHERE id=?)').bind(issue.id,activityId),
     ...finalizeEvent(db,event),
   ]);
-  return writes[0].meta.changes === 1;
+  const written = writes[0].meta.changes === 1;
+  if (written) await publishCommittedChange(db, activityId);
+  return written;
 }
 
 export async function guardReturnedNoop(db: D1Database, issue: DeferredIntake, actor: string) {
