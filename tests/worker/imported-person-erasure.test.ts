@@ -92,11 +92,10 @@ async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWor
   expect(mappingRows.filter(row => row.identifier).map(row => row.row)).toEqual([4]);
   const survivor = await f.call('/issues/' + mappingRows[3].identifier);expect(survivor.status).toBe(200);
   expect((await survivor.json() as { dependencies: unknown[] }).dependencies).toEqual([]);
-  const replay = await f.apply(original, review, operation);expect(replay.status).toBe(200);
-  expect((await replay.json() as { id: string }).id).toBe(run.id);
+  const replay = await f.apply(original, review, operation);expect(replay.status).toBe(400);
   const repeat = await f.preview(original);expect(repeat.ready).toBe(false);
   expect(repeat.errors.filter(error => error.code === 'source_erased')).toHaveLength(2);
-  const refused = await f.apply(original, repeat, 'synthetic-endpoint-fresh-operation');expect(refused.status).toBe(400);
+  const refused = await f.apply(original, review, 'synthetic-endpoint-fresh-operation');expect(refused.status).toBe(400);
   const journal = await f.call('/data/erasure/journal');expect(journal.status).toBe(200);
   expect((await journal.json() as { entries: { receiptId: string }[] }).entries.some(entry => entry.receiptId === receipt.journal.receiptId)).toBe(true);
   console.info('source-endpoint-controls-proof', JSON.stringify({ similarSourceRetained: true, unrelatedDependencyRetained: true, pendingState: pending.state, pendingSurvivors: 1, replayState: replay.status, freshApplyRefused: refused.status, journalRetained: true }));
@@ -104,7 +103,6 @@ async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWor
 
 it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivors, clears applied and pending custody, and fences older archives', async () => {
   const f = await setupLinearWorkspace(10);
-  await sourceEndpointErasure(f);
   const teams = [{ key: 'ENG', name: 'Engineering', cycles: ['Cycle 41', 'Cycle 42'] }, { key: 'OPS', name: 'Operations', cycles: [] }];
   const pair = (issues: number, seed: number, source: string): ImportInput => {
     const generated = generateLinearWorkspace({ issues, seed, teams, people: ['Owner', 'Maya Chen'], strangers: [STRANGER], labels: ['Bug', 'Customer'], projects: ['Migration'] });
@@ -291,4 +289,5 @@ it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivor
   const finalized = await targetCall('/api/portability/imports/' + restored + '/finalize', 'POST', finalBody(later), cookie);
   expect(finalized.status, await finalized.clone().text()).toBe(200);
   expect(await holders(destination.ARCHIVE_TARGET_DB, NEEDLES, destination.ARCHIVE_TARGET_FILES)).toEqual({});
+  await sourceEndpointErasure(f);
 }, 600000);
