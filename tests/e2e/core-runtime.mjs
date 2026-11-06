@@ -785,13 +785,13 @@ try {
   await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');
   await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');
   }
-  // Balance the independent project, initiative and release proof with Current;
-  // Planning keeps the complete agent-role matrix without increasing its timeout.
-  if (['all', 'projects'].includes(journeyGroup)) {
+  // Current runs the selected native recovery flow. The standalone project
+  // partition retains every broader project, initiative and release assertion.
+  if (['all', 'current', 'projects'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  }, state), 'Project maintenance teammate');
+  }, state, {recoveryOnly:journeyGroup === 'current'}), 'Project maintenance teammate');
   }
   if (['all', 'planning'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {

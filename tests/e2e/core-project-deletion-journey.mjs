@@ -1,6 +1,14 @@
+import {readFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 /** Native project recovery using the rendered controls and real retained data. */
 export async function projectDeletionJourney({page,base,api,navigate,capture,team,memberId,memberContext}) {
+ const axeSource=await readFile(createRequire(import.meta.url).resolve('axe-core/axe.min.js'),'utf8');
+ async function audit(region){
+  await page.evaluate(source=>{const script=document.createElement('script');const nonce=document.querySelector('script[nonce]')?.nonce;if(nonce)script.nonce=nonce;script.textContent=source;document.head.append(script);},axeSource);
+  const violations=await region.evaluate(async element=>(await window.axe.run(element)).violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id));
+  assert.deepEqual(violations,[]);
+ }
  const suffix=Date.now(),name='synthetic-vector-9700-'+suffix;
  const project=(await api('/settings/projects','POST',{name,description:'synthetic-vector-9701',leadOperatorId:memberId})).projects.find(p=>p.name===name);
  const destination=(await api('/settings/projects','POST',{name:'synthetic-vector-9702-'+suffix,leadOperatorId:memberId})).projects.find(p=>p.name==='synthetic-vector-9702-'+suffix);
@@ -26,8 +34,10 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  const notice=page.getByRole('region',{name:'Project deletion Undo',exact:true});
  await notice.getByRole('button',{name:'Undo project deletion',exact:true}).waitFor();
  assert.equal((await api('/issues/'+first.identifier)).project,null);
+ await audit(notice);
  await screens('project-retained-deletion');
- await notice.getByRole('button',{name:'Undo project deletion',exact:true}).click();
+ await notice.getByRole('button',{name:'Undo project deletion',exact:true}).focus();
+ await page.keyboard.press('Enter');
  await page.waitForURL(base+'/app/projects/'+project.id);
  await page.getByRole('heading',{name,exact:true}).waitFor();
  assert.equal((await api('/issues/'+first.identifier)).milestone.id,milestone.id);
@@ -47,6 +57,7 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  const recent=page.getByRole('region',{name:'Recently deleted projects',exact:true});
  await recent.getByRole('button',{name:'Restore '+name,exact:true}).waitFor();
  assert.ok((await recent.innerText()).includes('Deleted by'));
+ await audit(recent);
  await screens('project-recently-deleted-after-reload');
  await recent.getByRole('button',{name:'Restore '+name,exact:true}).click();
  await page.waitForURL(base+'/app/projects/'+project.id);
@@ -54,10 +65,13 @@ export async function projectDeletionJourney({page,base,api,navigate,capture,tea
  assert.equal((await api('/issues/'+first.identifier)).project.id,destination.id);
  assert.equal((await api('/issues/'+second.identifier)).project.id,project.id);
  assert.equal((await api('/issues/'+second.identifier)).milestone.id,milestone.id);
- assert.deepEqual((await api('/projects/'+project.id)).milestones,detail.milestones);
+ const recoveredMilestones=(await api('/projects/'+project.id)).milestones;
+ assert.deepEqual(recoveredMilestones.map(({progress,...fields})=>fields),detail.milestones.map(({progress,...fields})=>fields));
+ assert.equal(recoveredMilestones[0].progress.total,1);
  assert.equal((await api('/projects/'+project.id)).activity.filter(a=>a.kind==='project.restored').length,2);
  const retained=await api('/documents/'+doc.id);assert.equal(retained.body,doc.body);assert.equal(retained.id,doc.id);
  await page.reload();await page.getByRole('heading',{name,exact:true}).waitFor();
+ await page.getByRole('region',{name:'Documents',exact:true}).getByRole('link',{name:doc.title,exact:true}).waitFor();
  await screens('project-restored-membership');
  await navigate('/app/documents/'+doc.id);
  await page.getByRole('heading',{name:doc.title,exact:true}).waitFor();

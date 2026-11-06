@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 import { readDevelopmentLink } from './outbox-session.mjs';
 
-export async function projectMembershipJourney(page, context, base, capture = async () => {}, state) {
+export async function projectMembershipJourney(page, context, base, capture = async () => {}, state, {recoveryOnly=false} = {}) {
   const api = async (path, method = 'GET', data) => {
     return withOperatorClient(context, async client => {
       const response = await client.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
@@ -36,6 +36,10 @@ export async function projectMembershipJourney(page, context, base, capture = as
     });
     assert.equal(minted.status(), 201);
     const { token } = await minted.json();
+    if (recoveryOnly) {
+      await projectDeletionJourney({page,base,api,navigate,capture,team,memberId:member.operatorId,memberContext});
+      return;
+    }
     await contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId:member.operatorId});
     await projectDeletionJourney({page,base,api,navigate,capture,team,memberId:member.operatorId,memberContext});
     for (const width of [1440, 390]) {

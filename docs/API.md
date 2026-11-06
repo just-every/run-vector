@@ -146,7 +146,9 @@ not expand an old token. New routes are:
 | GET /api/v1/comments/ID | comments:read | A live comment on an issue this operator can read |
 | PATCH /api/v1/comments/ID | comments:edit | Strict `{body, expectedVersion}` input, native author-only editing |
 | DELETE /api/v1/comments/ID | comments:delete | Strict `{expectedVersion}` input, native author/Owner/Admin deletion policy; deleted comments disappear |
-| DELETE /api/v1/projects/ID | projects:delete | Deletes populated projects, preserves their issues and clears the issues’ project assignment |
+| DELETE /api/v1/projects/ID | projects:delete | Retains the project for recovery, preserves its issues and clears their project assignment; Owner or Admin only |
+| GET /api/v1/projects/recently-deleted | projects:delete | Current-authority retained project receipts with actor, deletion time and version |
+| POST /api/v1/projects/restore | projects:delete | `{id, version}` restores retained native content and untouched issue memberships; later reassignment or explicit clearing wins |
 | GET /api/v1/projects/ID/milestones | milestones:read | Cursor list, optional `completed=true` or `false` filter |
 | GET /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:read | Full native milestone projection, including progress and slip |
 | POST /api/v1/projects/ID/milestones | milestones:write | Native creation: `name`, optional `description`, `targetDate` |
@@ -639,3 +641,5 @@ return 404; invalid or unavailable properties are refused. Sequence reservations
 may leave gaps after a refusal. Template deletion never deletes created issues.
 
 Apply `migrations/core/0125_issue_templates.sql` after unchanged 0124. Templates are portable content; deleting one retains its created issues. Retain the additive schema on compatible-source rollback.
+
+Project recovery is also available in Settings → Workspace. The deleting native session receives a ten-second Undo control. Bearer clients use Recently deleted and the versioned restore receipt; they receive no native-session Undo. Restored archives retain project deletion history and content but exclude Undo session bindings. Configurable retention, permanent erase, scheduled purge and full keyboard qualification remain owed in PROJ-017.

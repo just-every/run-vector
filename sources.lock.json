@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f046dd63b8c2857c4dec673751714e439b0b16c1c130737f20dc9c566505b280",
+      "sha256": "a97eee3b61aa628a77775874393ce04f350d994a528acc70b17b04e8a963150e",
       "executable": false
     },
     "DEMO.md": {
@@ -554,7 +554,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "51dab32f80dbad290b2c41429f17cf49dc601670f41a34e06816021f3ea86f97",
+      "sha256": "bb101cdc222b0f9a313779475eb1172b7c8b0980e60660168f7ab2cfe8c60d11",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -8334,7 +8334,7 @@
       "executable": false
     },
     "tests/e2e/core-project-deletion-journey.mjs": {
-      "sha256": "68602f7f9ce1b8bfdb47f2ad8ae8746cb75a4faea7151c7d270ff565ef532819",
+      "sha256": "db09d95c805be07006766767f2a593ee6dbaf41ad552e583e0ed0585d6bdea6e",
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
@@ -8346,7 +8346,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "3e8fc9555c4c98f7c2c504ca8664f2c8e0843ace86eb37bbe60d5d95ad71a3a8",
+      "sha256": "830e4717ba54f6a4022eb92283f22e56773fdc845b856a9cda9b2b4d159e4875",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
@@ -8362,7 +8362,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "484dbf89c7ff2ce1522bfb1fb06245bae7cbc0b2e7609c3122bf5087ef646d1b",
+      "sha256": "3efb7e2ea5e36a828f78d370920e8d51e2ee95302f3a8540cc7c7549ad82cbe9",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
