@@ -486,7 +486,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "cebdfcce65b1a5625786d6321b3eef6c0ef2ed15c22522bf7ade7d1642a5e98c",
+      "sha256": "7ac22462223bcea34282d2f1d7d8e9cf832587b589b335acbf3a35a17c3f246a",
       "executable": false
     },
     "ADOPTING.md": {
@@ -494,7 +494,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "a765b18d548f2dd7c0cc1a7ef63fcd36525c79e68685d6e55eeff4611f1f305c",
+      "sha256": "662cd0f15436ab331fd1037063f0fe4f3ca66f94172653a57b186b700520b9ab",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "19dab9abdc309d4dc830e486f09a826371c6a2339f0a04315f6f5934f86210da",
+      "sha256": "c7f6425d858c8a6e12693f1cd4983d01e488db89d577b243cebaf5f43276b5e2",
       "executable": false
     },
     "DEMO.md": {
@@ -578,7 +578,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "258df9bf5d6d850e1719081611d44e912567a7c3850eaeba0d323ad1891e0439",
+      "sha256": "1fe6e87949c13284e6db6941f827acc7af0c0831bcf1e1dc376e83a3d5d4e1ab",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4233,12 +4233,16 @@
       "sha256": "fd19954a47ddb9c3d85c5e0a9be2649c153a9e88b36bc7e16cd99dde4e81d5a6",
       "executable": false
     },
+    "src/core/features/agent-door/prompts.ts": {
+      "sha256": "4d63f800990b6933b26c73f7b639d11493d4e3e7c91b5dba200f4eab69d5be74",
+      "executable": false
+    },
     "src/core/features/agent-door/read-tools.ts": {
       "sha256": "0348f4896a2112b065753b578810986731a7097f7ff830f6a80526223271ed1c",
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
-      "sha256": "22ea4fc8cb216decc4279fca91184089d5a8bcfbd13b5544c9ebf4f3ef60baaf",
+      "sha256": "e387f6186d7efc43dedbd4f3e14319a0ec2a6ab34b5d9e8a5cde78af306e3ce2",
       "executable": false
     },
     "src/core/features/agent-door/schemas.ts": {
@@ -9095,6 +9099,10 @@
     },
     "tests/worker/agent-native-attribution.test.ts": {
       "sha256": "c17987cf2e4b42fd036240f14b6ed24ad3a1f82d2b4b251b76574b6b849e516a",
+      "executable": false
+    },
+    "tests/worker/agent-prompts.test.ts": {
+      "sha256": "7c7c887f628abcfaf141ac641c938b82d146ffa2f892b21fa6f64be8993e48d2",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
