@@ -295,6 +295,11 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision')).toBe(subscriptionRevision);
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT subscription_revision FROM vector_restore_status WHERE id=1').first<number>('subscription_revision')).toBe(subscriptionRevision);
  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
+ expect((await targetCall('/api/settings/teams/'+slaStoppedTeam.id,'PATCH',{archived:false},historical)).status).toBe(200);
+ const restoredStop=await targetCall('/api/issues/'+slaStoppedIssue.identifier+'/sla','GET',undefined,historical);
+ expect(restoredStop.status).toBe(200);expect(await restoredStop.json()).toMatchObject({state:'stopped',stoppedAt:slaStoppedAt});
+ await advanceSlas({...targetBindings,DB:destination.ARCHIVE_TARGET_DB},new Date('2034-01-01T00:00:00Z'));
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM issue_sla_occurrences ORDER BY 1,2').all()).results).toEqual(slaHistory[2]);
  const reportAfter=(await (await targetCall('/api/settings/report-exports','GET',undefined,historical)).json() as any).schedules.find((row:any)=>row.id===reportProfile.id);
  expect(reportAfter).toMatchObject({requiresReentry:true,enabled:true,kind:'bucket',configuration:{team:f.team.id}});
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_report_export_runs WHERE export_id=? ORDER BY id').bind(reportProfile.id).all()).results).toEqual(reportRuns);
