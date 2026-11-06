@@ -7,6 +7,7 @@ export const notificationKinds = [
   "thread_reopened",
   "intake_return",
   "triage",
+  "sla_warning",
   "unblocked",
   "due_reminder",
   "status",

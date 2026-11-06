@@ -2247,5 +2247,30 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "team_slas": [
+    "team_id",
+    "body_json",
+    "revision",
+    "created_at",
+    "updated_at"
+  ],
+  "issue_sla_clocks": [
+    "issue_id",
+    "team_id",
+    "rule_json",
+    "timezone",
+    "started_at",
+    "observed_at",
+    "elapsed_minutes",
+    "stopped_at",
+    "stop_reason",
+    "revision"
+  ],
+  "issue_sla_occurrences": [
+    "issue_id",
+    "kind",
+    "event_id",
+    "created_at"
   ]
 }

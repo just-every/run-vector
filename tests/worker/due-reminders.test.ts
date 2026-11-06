@@ -1,3 +1,4 @@
+import {resolutionSlaJourney} from './resolution-sla-scenario';
 import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
@@ -353,8 +354,8 @@ check(
   },
 );
 check(
-  "NOTIFY-005 BASE-DATA-001",
-  "restored effects hold new reminders until reviewed while preserving historical claims",
+  "NOTIFY-005 BASE-DATA-001 AUTO-004 NOTIFY-001 SLACK-003 ROLE-009",
+  "restored effects hold new reminders until reviewed while preserving historical claims; resolution SLAs warn and breach once through native clocks and bound channels",
   async () => {
     const f = await reminderFixture();
     await f.configure("UTC");
@@ -379,5 +380,6 @@ check(
     );
     await tick("2026-10-11T10:00:00Z");
     expect(await f.notifications()).toHaveLength(1);
+    await resolutionSlaJourney(f);
   },
 );

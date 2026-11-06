@@ -111,6 +111,9 @@ const issueTemplateDoors: Door[] = [
 ]
 
 export const doors: Door[] = [
+  {method:'GET',path:'/settings/teams/:id/sla',row:'teams.settings',teams:team('id')},
+  {method:'PUT',path:'/settings/teams/:id/sla',row:'teams.settings',teams:team('id')},
+  {method:'GET',path:'/issues/:identifier/sla',row:'work.read',teams:issue},
   {method:'GET',path:'/settings/report-exports',row:'reports.export'},
   {method:'POST',path:'/settings/report-exports',row:'reports.export'},
   {method:'PATCH',path:'/settings/report-exports/:id',row:'reports.export'},

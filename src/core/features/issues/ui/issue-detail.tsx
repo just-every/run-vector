@@ -1,3 +1,4 @@
+import {SlaCountdown} from '../../slas/countdown';
 import {DocumentsSection} from '../../documents/ui/list';
 import {IssueSpecification,documentIssueDetailSchema,type DocumentIssueDetailData} from '../../documents/ui/specification';
 import { useDateFormat } from "../../../shared/date-format";
@@ -207,6 +208,7 @@ function IssueInspector({
             ) : null}
           </div>
           <h1 id="issue-title">{issue.title}</h1>
+          <SlaCountdown identifier={issue.identifier} version={issue.version}/>
           {issue.archivedAt && (
             <p className="issue-archived-notice" role="note">
               Archived {formatInstant(issue.archivedAt)}. It is left out of lists and default search; choosing another status brings it back.
