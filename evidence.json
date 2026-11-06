@@ -1,0 +1,118 @@
+{
+  "files": [
+    {
+      "blob": "f2e59a771c09932e91ffcda0088a835aa6ad88f5",
+      "bytes": 846,
+      "path": "AUTO-007-rubric.md",
+      "sha256": "38d34329c5f903b4b07d8addf96a5c4b6cac37a928aaebf808fb762c4c01554f"
+    },
+    {
+      "blob": "de06d9f331f036937ff548fda5cb58dd6d108fea",
+      "bytes": 3234,
+      "path": "PLAN.md",
+      "sha256": "666cf45a11c1536c37c0ba0a782a45c2bfa713a205b28625e0f7f02824ee9063"
+    },
+    {
+      "blob": "1c7a7f96c566e209e16bbeeb6e15d2f784a5f932",
+      "bytes": 8590,
+      "path": "REPORT.md",
+      "sha256": "0c56f9dc0c8bafd81572c39c79b660ab1ba3e7deac9b947ec841252739c0e645"
+    },
+    {
+      "blob": "cbc29e4045988c0cf0b8328dfdd4a2cb2767ebcb",
+      "bytes": 1846,
+      "path": "RL-101.md",
+      "sha256": "2ffa3fc3e367fe7ec398210b702f01e198b75a53fbed62424a6965f8e81765fa"
+    },
+    {
+      "blob": "2eec68e4e0a30f38b885c66e12d36092c73d234b",
+      "bytes": 1657,
+      "path": "checks.json",
+      "sha256": "3e36ea28d18c2c83af43dc06e93e2c10e6466e2864b715f0164343821568c96c"
+    },
+    {
+      "blob": "d9febc797c8eebf3aa895f0aaaaa74fdc73957a1",
+      "bytes": 35,
+      "path": "diff-check.txt",
+      "sha256": "6ef30d0dab3ffaa482362512635b064a912b9785203a6599db89398788cc75d8"
+    },
+    {
+      "blob": "482d15d9ce4ce09c0763eb24570aeaee88c85a0e",
+      "bytes": 275,
+      "path": "draft-recovery.txt",
+      "sha256": "bd93fee24b9ae1c40c3b7b691042193f632a4fdb078222bcef4c36b9a402f036"
+    },
+    {
+      "blob": "1d5763888d64cbbe2ecddfd742b337603a723c02",
+      "bytes": 721,
+      "path": "generator-check.txt",
+      "sha256": "88769427a06d3a249b6fc5b28c6744f5f7185ab79cf528029df97b51936b8c7c"
+    },
+    {
+      "blob": "cbe5955e37551fa234a02ed3488387c0588e64d8",
+      "bytes": 721,
+      "path": "generator-write.txt",
+      "sha256": "3844f588ffe045b404f28178a073c2776a7efbac1d2545c3a7349e1e09a7002e"
+    },
+    {
+      "blob": "9ed56abb018dfd34166392a4bcf79bcd64e88d4f",
+      "bytes": 3323,
+      "path": "preservation.json",
+      "sha256": "25a2d502fb0c0c4c1a5e4ad98acc7b006c0a1423b6551a7296c4e09446dacac4"
+    },
+    {
+      "blob": "3f44678d503bd1fa2a86d924232644bd628f79d6",
+      "bytes": 10544,
+      "path": "proposed.patch",
+      "sha256": "a150f6903e0e0b4451bfa7bf41136c08b164496a60687c137bd47c49d32e8194"
+    },
+    {
+      "blob": "16c54626ae9f629f29f89129dfcc64b517101eb0",
+      "bytes": 2538,
+      "path": "release-schema.txt",
+      "sha256": "b4ea61e36e4fe0098de8ac04d260c60036154f5d4ab186e43c1040301e87a2be"
+    },
+    {
+      "blob": "a92ee01c11bd0a82d886feedb271e99581522a5b",
+      "bytes": 2565,
+      "path": "rer-check.txt",
+      "sha256": "906213ab9263f67c9c821c774db82aab98ae98f578d25a41bb953a086180ec2a"
+    },
+    {
+      "blob": "5cad6cf8b4134018a951fd7e0fdd58c33feb694a",
+      "bytes": 285,
+      "path": "seed-schema.txt",
+      "sha256": "5253a9da4f6dcc47132049024e9e11c836bb9a7288e8aee7cf2827ed4341736d"
+    },
+    {
+      "blob": "29faf981954a6cf006b244901937f1b5bf1e54fd",
+      "bytes": 522333,
+      "path": "source-check.txt",
+      "sha256": "c9df9e4a784d32b0bb930a94571ca45eaa558a1d9290c6ad4ff4bbaac9341f91"
+    },
+    {
+      "blob": "fff53bd00a9bc810c1d3b264b9572141febdc81b",
+      "bytes": 522316,
+      "path": "source-lock.txt",
+      "sha256": "25f2a950b2da8c17e597063ef31af240743e6fcaee8ab93327e1f0566bf7a4fe"
+    },
+    {
+      "blob": "fcae71c8a22f358fc351a80d01ba85e8515d5df4",
+      "bytes": 848,
+      "path": "terminal-product.json",
+      "sha256": "c2dd57eb7c229448880efb5fbb1f31a8e24d46a0ce893d7393e6eebdddd6c7a9"
+    },
+    {
+      "blob": "57bc768570425d2cb5a0e6e55ab888f86ef56168",
+      "bytes": 191,
+      "path": "typecheck.txt",
+      "sha256": "b78c08f1140539568cff6319d65f4390d1a40fcc08a9d8e799bf90d74a63052e"
+    }
+  ],
+  "product_branch": "cloud/ct-vector-auto001-defer-text-20261106-0230",
+  "product_head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "ref": "refs/heads/evidence/ct-vector-auto001-defer-text-20261106-0230",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "ct-vector-auto001-defer-text-20261106-0230"
+}

@@ -1,0 +1,4 @@
+$ git apply --reverse --check /home/agent/rer-consolidation/work/ct-vector-auto001-defer-text-20261106-0230/packet/proposed.patch
+exit=0
+Draft patch reverses cleanly against the preserved staged source.
+sha256=a150f6903e0e0b4451bfa7bf41136c08b164496a60687c137bd47c49d32e8194

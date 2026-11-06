@@ -1,0 +1,67 @@
+$ cloud_run npx -y @runeditrun/rer check
+exit=1
+Installing the pinned @runeditrun/rer and the checkout's frozen dependencies
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +302
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 302, reused 0, downloaded 23, added 23
+Progress: resolved 302, reused 0, downloaded 59, added 59
+Progress: resolved 302, reused 0, downloaded 85, added 85
+Progress: resolved 302, reused 0, downloaded 114, added 113
+Progress: resolved 302, reused 0, downloaded 156, added 156
+Progress: resolved 302, reused 0, downloaded 202, added 202
+Progress: resolved 302, reused 0, downloaded 221, added 222
+Progress: resolved 302, reused 0, downloaded 250, added 251
+Progress: resolved 302, reused 0, downloaded 274, added 275
+Progress: resolved 302, reused 0, downloaded 300, added 301
+Progress: resolved 302, reused 0, downloaded 301, added 302, done
+.../node_modules/workerd postinstall$ node install.js
+.../esbuild@0.28.1/node_modules/esbuild postinstall$ node install.js
+.../node_modules/workerd postinstall$ node install.js
+.../node_modules/workerd postinstall: Done
+.../esbuild@0.28.1/node_modules/esbuild postinstall: Done
+.../node_modules/workerd postinstall: Done
+
+dependencies:
++ @tanstack/react-router 1.170.41
++ @tanstack/react-start 1.168.60
++ drizzle-orm 0.45.2
++ highlight.js 11.12.0
++ hono 4.13.7
++ mdast-util-from-markdown 2.0.3
++ mdast-util-gfm 3.1.0
++ micromark-extension-gfm 3.0.0
++ micromark-util-decode-string 2.0.1
++ react 19.2.8
++ react-dom 19.2.8
++ react-markdown 10.1.0
++ remark-gfm 4.0.1
++ zod 4.6.5
+
+devDependencies:
++ @cloudflare/vite-plugin 1.54.5
++ @cloudflare/vitest-plugin 1.1.2
++ @cloudflare/workers-types 5.20260908.1
++ @playwright/test 1.63.0
++ @runeditrun/rer 0.2.94
++ @tailwindcss/vite 4.3.3
++ @types/node 24.19.2
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ @vitejs/plugin-react 6.1.1
++ axe-core 4.13.0
++ marked 18.0.14
++ miniflare 5.20260907.0-alpha
++ prettier 3.9.9
++ tailwindcss 4.3.3
++ typescript 5.9.3
++ vite 8.2.2
++ vitest 4.1.11
++ wrangler 4.129.1
+
+Done in 11.9s using pnpm v10.12.4
+CONTRACT.status: CONTRACT.md:793: Summary row "Target and push further" says 67 missing, 168 total; the Status table has 68 missing, 169 total.
+CONTRACT.status: CONTRACT.md:794: Summary row "All" says 67 missing, 272 total; the Status table has 68 missing, 273 total.
+check: failed (exit 1)

@@ -1,0 +1,22 @@
+{
+  "base": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "product_head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "product_branch": "cloud/ct-vector-auto001-defer-text-20261106-0230",
+  "product_commits": 0,
+  "product_push": false,
+  "pr": null,
+  "ci_runs": [],
+  "github_api_calls": 0,
+  "unchanged_files": {
+    "scripts/contract-docs.mjs": true,
+    "src/base/seed-contract.mjs": true,
+    "seed.json": true,
+    "RELEASE.json": true,
+    "ACCEPTANCE.md": true,
+    "docs/CLAIMS.md": true
+  },
+  "draft_patch_sha256": "a150f6903e0e0b4451bfa7bf41136c08b164496a60687c137bd47c49d32e8194",
+  "draft_patch_bytes": 10544,
+  "review_hold": "retained as instructed; independent Opus exact-head review pending; no release/submit/land",
+  "publication_scan": "Mac publication scanner unavailable in this cloud; no product publication attempted"
+}

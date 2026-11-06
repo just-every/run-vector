@@ -1,0 +1,83 @@
+{
+  "base": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "baseline": {
+    "done": 136,
+    "partial": 69,
+    "missing": 67,
+    "total": 272
+  },
+  "proposed": {
+    "done": 136,
+    "partial": 69,
+    "missing": 68,
+    "total": 273
+  },
+  "baselineByTier": {
+    "Core": {
+      "done": 136,
+      "partial": 57,
+      "missing": 66,
+      "total": 259
+    },
+    "Agent surface": {
+      "done": 0,
+      "partial": 12,
+      "missing": 1,
+      "total": 13
+    },
+    "Later": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0,
+      "total": 0
+    }
+  },
+  "proposedByTier": {
+    "Core": {
+      "done": 136,
+      "partial": 57,
+      "missing": 67,
+      "total": 260
+    },
+    "Agent surface": {
+      "done": 0,
+      "partial": 12,
+      "missing": 1,
+      "total": 13
+    },
+    "Later": {
+      "done": 0,
+      "partial": 0,
+      "missing": 0,
+      "total": 0
+    }
+  },
+  "oldClausesUnchanged": 272,
+  "oldFullStatusRowsUnchanged": 272,
+  "added": [
+    {
+      "id": "AUTO-007",
+      "title": "Private occurrence history after access changes",
+      "kind": "target",
+      "status": "missing",
+      "evidence": [],
+      "gap": "Privacy-safe recurrence results, series history and Settings after access loss are unbuilt and unproved, including hidden-open/completed indistinguishability, current-authority controls and durable restart/replay safety.",
+      "area": "Automation and follow-through",
+      "text": "*Tier:* Core \u00b7 *From:* new **Requirement.** Recurring series history, recurrence results and Settings respect current access to previous occurrences, including after an occurrence moves to a private team, without revealing private issue status or widening authority. **Acceptance.** 1. An operator who may manage a series but cannot currently read its previous occurrence learns no private issue status through series history, recurrence results or Settings. Moving the occurrence into a private team immediately applies current access; direct issue reads retain the same non-disclosing 404. 2. A hidden previous occurrence being open versus completed produces no distinguishable series, history or scheduling outcome exposed to that operator. Skipped-versus-created results cannot disclose its status. Refusal or a uniform unavailable state preserves the hidden issue and reveals no private fields. 3. Currently authorized owners and team members retain correct visible occurrence links, permitted history and normal weekly skip-while-open behavior. Safe handling after access loss neither widens anyone's authority nor alters the hidden issue. 4. Native series history and ordinary Settings history at 1440 and 390 reflect the same safe result after an owner moves the issue and after its status changes. Worker restart and replay expose no retained private status and produce no duplicate occurrence effects.",
+      "line": 427,
+      "row": 970
+    }
+  ],
+  "generatorSummaryPersisted": false,
+  "generatedViewsUnchanged": true,
+  "oldContractByteExactAfterRemovingAdditions": true,
+  "autoHighestBefore": 6,
+  "nextAuto": 7,
+  "existingRulingsFile": false,
+  "nextRuling": 101,
+  "frozenRubricExact": true,
+  "newAcceptancePointCount": 4,
+  "newClauseWordCount": 207,
+  "generatedSummaryNotHandEdited": true
+}

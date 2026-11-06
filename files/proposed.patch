@@ -1,0 +1,100 @@
+diff --git a/CONTRACT.md b/CONTRACT.md
+index f80ba48..30d4189 100644
+--- a/CONTRACT.md
++++ b/CONTRACT.md
+@@ -424,6 +424,18 @@ Every background action in Vector has an accountable owner (the person or Admin
+ - **AUTO-005 — Update reminders.** Project leads and initiative owners are reminded on the chosen cadence (weekly on a weekday, every two weeks) to post an update, with a prefilled draft (PROJ-010); missing updates are flagged on the project and in the initiative roll-up. *Acceptance:* a scheduled-run test that reminds one lead once per cadence and flags a missed update. *Status:* missing.
+ - **AUTO-006 — Due-soon rules.** Rules on due dates can act before the due day (for example two days before: notify the assignee and move to the active cycle), complementing the fixed due-today and overdue reminders of NOTIFY-005. Inherited from ROLE-001: only Owners and Admins build or change workspace automation rules (role matrix). *Acceptance:* an AUTO-002 rule with a due-in-two-days trigger acting once per issue and date. *Status:* partial — `src/core/features/due-reminders/service.ts` (due-today and overdue notifications only).
+ 
++#### AUTO-007 — Private occurrence history after access changes
++
++*Tier:* Core · *From:* new
++
++**Requirement.** Recurring series history, recurrence results and Settings respect current access to previous occurrences, including after an occurrence moves to a private team, without revealing private issue status or widening authority.
++
++**Acceptance.**
++1. An operator who may manage a series but cannot currently read its previous occurrence learns no private issue status through series history, recurrence results or Settings. Moving the occurrence into a private team immediately applies current access; direct issue reads retain the same non-disclosing 404.
++2. A hidden previous occurrence being open versus completed produces no distinguishable series, history or scheduling outcome exposed to that operator. Skipped-versus-created results cannot disclose its status. Refusal or a uniform unavailable state preserves the hidden issue and reveals no private fields.
++3. Currently authorized owners and team members retain correct visible occurrence links, permitted history and normal weekly skip-while-open behavior. Safe handling after access loss neither widens anyone's authority nor alters the hidden issue.
++4. Native series history and ordinary Settings history at 1440 and 390 reflect the same safe result after an owner moves the issue and after its status changes. Worker restart and replay expose no retained private status and produce no duplicate occurrence effects.
++
+ ### Reporting
+ 
+ - **REPORT-001 — Insights.** Members chart any filtered set of issues by count or estimate over time and by any field: created vs completed, throughput, cycle time and lead time (from Started or created to Completed, with percentiles), time in each status, triage time, SLA breaches, bug inflow and open bug age, grouped by team, project, label, assignee, priority or customer tier. Each chart drills down to its issues and exports as CSV. Every chart inherits VIEW-011: it follows the member's Light, Dark or System theme, its series stay distinguishable in both, and its text and marks meet WCAG 2.2 AA contrast in both. *Acceptance:* a journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues. *Status:* partial — `tests/worker/cycle-report.test.ts` (Insights, shared dashboards and daily burn-up); `tests/e2e/insights-journey.mjs` (insightsJourney), run by `tests/e2e/cycle-report-runtime.mjs`. *Gap:* Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; `tests/e2e/insights-journey.mjs` (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused.
+@@ -960,6 +972,7 @@ API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27
+ | `AUTO-004` | SLAs | target | missing |  | No implementation yet |
+ | `AUTO-005` | Update reminders | target | missing |  | No implementation yet |
+ | `AUTO-006` | Due-soon rules | target | partial | `src/core/features/due-reminders/service.ts` | Due-today and overdue notifications only |
++| `AUTO-007` | Private occurrence history after access changes | target | missing |  | Privacy-safe recurrence results, series history and Settings after access loss are unbuilt and unproved, including hidden-open/completed indistinguishability, current-authority controls and durable restart/replay safety. |
+ | `REPORT-001` | Insights | target | partial | `tests/worker/cycle-report.test.ts` (Insights, shared dashboards and daily burn-up); `tests/e2e/insights-journey.mjs` (insightsJourney), run by `tests/e2e/cycle-report-runtime.mjs`. | Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; `tests/e2e/insights-journey.mjs` (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused. |
+ | `REPORT-002` | Cycle and project charts | target | done | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | |
+ | `REPORT-003` | Dashboards | target | done | `tests/e2e/dashboards-journey.mjs` (runtime Verify: both project filters across chart/count/list, exact small identifiers, 26 matches/25 preview rows/full list, HTTP agreement and All projects at each theme and 1440/390); existing Worker and portable-definition cases. dashboardAccessCells private-Viewer positive counts/identifiers after admission are HTTP assertions; private omission is UI-asserted at both widths. | None. |
+diff --git a/RULINGS.md b/RULINGS.md
+new file mode 100644
+index 0000000..cbc29e4
+--- /dev/null
++++ b/RULINGS.md
+@@ -0,0 +1,11 @@
++# Vector contract rulings
++
++### RL-101 — AUTO-001 deferred at its lifetime FIX cap; separate privacy capability
++
++Date: 2026-11-06. Ruler: CT. Clauses: AUTO-001, AUTO-007.
++
++AUTO-001 is DEFER after two lifetime FIX verdicts. Neither original source/gate identity `352cadb54aad54198b16ba0c245079555d7d923a` nor corrected source/gate identity `133901fe0c6b727a95df326dfbf2d3b58869ca45` lands as gated. The original gate found missing Settings controls (A) and private previous-occurrence status disclosure (B). The required independent Opus review returned FIX1 on `133901fe0c6b727a95df326dfbf2d3b58869ca45`: A was resolved; the same B reproduced through scheduled and native doors and Settings at 1440 and 390. A Member received issue GET 404, while series history said skipped when the moved private issue was open and created after its completion. This is introduced privacy exposure absent on main, not a third new blocker.
++
++The lifetime two-FIX cap closes this AUTO-001 attempt. Its original scope, Status, full Gap and Evidence, frozen checks and two-FIX history remain intact; this ruling does not reopen or promote it. SD takes another buildable clause. AUTO-007 records one new Core privacy capability for the next planned Vector round, with missing Status and empty Evidence. It is not a third AUTO-001 repair. Its frozen future-build requirements are recorded in `docs/contract/AUTO-007-rubric.md`; they are requirements, never passing evidence.
++
++Original deployment-inventory notes, the 0126 migration collision and CI failures remain provenance only. This contract pass repairs no tooling and transfers no proof. Existing source, stack, review, provider and release holds remain. The supported CT review hold remains pending independent Opus review on the exact candidate head; this ruling authorizes no release, submission or landing.
+diff --git a/docs/contract/AUTO-007-rubric.md b/docs/contract/AUTO-007-rubric.md
+new file mode 100644
+index 0000000..f2e59a7
+--- /dev/null
++++ b/docs/contract/AUTO-007-rubric.md
+@@ -0,0 +1,11 @@
++# AUTO-007 frozen future-build rubric
++
++These are requirements for a future build, never passing evidence. AUTO-007 starts missing with empty Evidence. AUTO-001 remains deferred under RL-101; this rubric does not reopen its attempt or transfer proof from either gated source.
++
++R1 realistic Member series creation in teamA, Owner move of prior occurrence to private teamB, Member issueGET404;
++
++R2 scheduled export and native series-history read while hidden-open then hidden-completed, compare operator-visible outcomes for indistinguishability with populated private records unchanged;
++
++R3 owner/currently-authorized team-member positive controls retain accurate history/links/normal recurrence, unauthorized doors refuse without effects;
++
++R4 Settings history at1440/390 plus durable restart/replay preserve safe projection and once-only effects.
+diff --git a/sources.lock.json b/sources.lock.json
+index 03ed60b..cfd9735 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -522,7 +522,7 @@
+       "executable": false
+     },
+     "CONTRACT.md": {
+-      "sha256": "ce01bebe92fdcafb08da1adcec2e59b86a56ea2fb15c6511c9edd22f6d735494",
++      "sha256": "0042715345c71ff2c0740ec60bb57b0a21242472821a8ae3b6d21898a108a994",
+       "executable": false
+     },
+     "DEMO.md": {
+@@ -581,6 +581,10 @@
+       "sha256": "258df9bf5d6d850e1719081611d44e912567a7c3850eaeba0d323ad1891e0439",
+       "executable": false
+     },
++    "docs/contract/AUTO-007-rubric.md": {
++      "sha256": "38d34329c5f903b4b07d8addf96a5c4b6cac37a928aaebf808fb762c4c01554f",
++      "executable": false
++    },
+     "docs/DATA-OWNERSHIP.md": {
+       "sha256": "aaa1af0563ce1183fc7d7acdc3c354b411b2ebd58088c7655cf7bbc8bcf2f12e",
+       "executable": false
+@@ -2621,6 +2625,10 @@
+       "sha256": "14330643c06bb384b45522d133f1c7d73929786f37549771664a4f821f6aeab6",
+       "executable": false
+     },
++    "RULINGS.md": {
++      "sha256": "2ffa3fc3e367fe7ec398210b702f01e198b75a53fbed62424a6965f8e81765fa",
++      "executable": false
++    },
+     "RUN-LOCALLY.md": {
+       "sha256": "64cf895da133f876c42f844edd5acf8c28556f0f0d36b618463a3e5096977a33",
+       "executable": false

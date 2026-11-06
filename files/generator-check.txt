@@ -1,0 +1,13 @@
+$ node scripts/contract-docs.mjs check AUTO-007
+exit=1
+file:///workspace/run-vector-ct/scripts/contract-docs.mjs:42
+ if(index<0){if(!id.startsWith('BASE-AGENT-'))throw Error('No legacy acceptance entry for '+id);acceptanceLines.push(generated);}else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\n');
+                                                    ^
+
+Error: No legacy acceptance entry for AUTO-007
+    at file:///workspace/run-vector-ct/scripts/contract-docs.mjs:42:53
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.19.0

@@ -1,0 +1,93 @@
+{
+  "timestamp": "2026-11-06T02:31:30.303894+00:00",
+  "checks": [
+    {
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "AUTO-007"
+      ],
+      "exit": 1,
+      "receipt": "generator-write.txt"
+    },
+    {
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "AUTO-007"
+      ],
+      "exit": 1,
+      "receipt": "generator-check.txt"
+    },
+    {
+      "command": [
+        "node",
+        "vendor/base/schema/validate.mjs",
+        "--schema",
+        "SEED",
+        "seed.json"
+      ],
+      "exit": 1,
+      "receipt": "seed-schema.txt"
+    },
+    {
+      "command": [
+        "node",
+        "vendor/base/schema/validate.mjs",
+        "--schema",
+        "RELEASE",
+        "RELEASE.json"
+      ],
+      "exit": 1,
+      "receipt": "release-schema.txt"
+    },
+    {
+      "command": [
+        "cloud_run",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "check"
+      ],
+      "exit": 1,
+      "receipt": "rer-check.txt"
+    },
+    {
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "receipt": "typecheck.txt"
+    },
+    {
+      "command": [
+        "pnpm",
+        "sources:lock"
+      ],
+      "exit": 0,
+      "receipt": "source-lock.txt"
+    },
+    {
+      "command": [
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0,
+      "receipt": "source-check.txt"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit": 0,
+      "receipt": "diff-check.txt"
+    }
+  ],
+  "finished": "2026-11-06T02:35:48.057801+00:00"
+}

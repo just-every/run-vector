@@ -1,0 +1,7 @@
+$ node vendor/base/schema/validate.mjs --schema SEED seed.json
+exit=1
+0/1 valid against vendor/base/schema/SEED.schema.json, 1 invalid
+FAIL seed.json
+  $.replaces[0]: expected object, got string
+  $.replaces[1]: expected object, got string
+  $.replaces[2]: expected object, got string
