@@ -1,0 +1,51 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker <checkout>
+> vitest run --config vitest.config.ts tests/worker/due-reminders.test.ts -t 'resolution SLAs'
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 <checkout>
+
+ ❯ tests/worker/due-reminders.test.ts (5 tests | 1 failed | 4 skipped) 2203ms
+   × [NOTIFY-005 BASE-DATA-001 AUTO-004 NOTIFY-001 SLACK-003 ROLE-009] restored effects hold new reminders until reviewed while preserving historical claims; resolution SLAs warn and breach once through native clocks and bound channels 2201ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/due-reminders.test.ts > [NOTIFY-005 BASE-DATA-001 AUTO-004 NOTIFY-001 SLACK-003 ROLE-009] restored effects hold new reminders until reviewed while preserving historical claims; resolution SLAs warn and breach once through native clocks and bound channels
+AssertionError: expected { state: 'running', …(6) } to match object { state: 'stopped', …(2) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "remainingMinutes": 6,
+-   "state": "stopped",
+-   "stoppedAt": "2026-11-03T10:04:00.000Z",
++   "remainingMinutes": 4,
++   "state": "running",
++   "stoppedAt": null,
+  }
+
+ ❯ resolutionSlaStateJourney tests/worker/resolution-sla-state-scenario.ts:58:24
+     56|   expect((await f.call(`/settings/teams/${team.id}`, "PATCH", { archiv…
+     57|   // No scheduled observation took place while the team was archived.
+     58|   expect(await read()).toMatchObject({
+       |                        ^
+     59|     state: "stopped",
+     60|     stoppedAt: "2026-11-03T10:04:00.000Z",
+ ❯ resolutionSlaJourney tests/worker/resolution-sla-scenario.ts:353:5
+ ❯ tests/worker/due-reminders.test.ts:383:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  05:41:47
+   Duration  7.61s (transform 2.28s, setup 0ms, import 5.02s, tests 2.20s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

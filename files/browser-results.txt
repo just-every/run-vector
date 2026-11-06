@@ -1,0 +1,4 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PROBE AUTO-004 browser: native team Settings -> persistent target, countdown and one Inbox warning at 1440 and 390; real fixed-clock scheduler -> no early warning and one breach.

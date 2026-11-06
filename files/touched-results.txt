@@ -1,0 +1,17 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker <checkout>
+> vitest run --config vitest.config.ts tests/worker/due-reminders.test.ts tests/worker/data-http.test.ts
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 <checkout>
+
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  05:50:49
+   Duration  79.16s (transform 2.99s, setup 0ms, import 8.79s, tests 69.56s, environment 0ms)
+

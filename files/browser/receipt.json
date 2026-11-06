@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "widths": [
+    1440,
+    390
+  ],
+  "entry": "tests/e2e/resolution-sla-journey.mjs",
+  "runtime": "native mounted Worker and real scheduled export",
+  "liveProvider": false,
+  "head": "091e707eee124b0a52421053e5c142f40f8178bf",
+  "exit": 0,
+  "command": [
+    "cloud_run",
+    "timeout",
+    "1200",
+    "node",
+    "/tmp/vector-sla-browser.mjs"
+  ],
+  "screens": [
+    {
+      "file": "resolution-sla/archive-countdown-1440.png",
+      "sha256": "adbcbf89edac634d04e1258e44d4f55b311f21672875c8ca544c233840bedc16"
+    },
+    {
+      "file": "resolution-sla/archive-countdown-390.png",
+      "sha256": "c2e77222177f58805b6f72e9b71116c9727abf2e57db1ee0934b377fe242cf87"
+    },
+    {
+      "file": "resolution-sla/countdown-1440.png",
+      "sha256": "2586de5485c902d3e48500e24c991d3db218ccda4b9d83e7d04ef6916ab90f0d"
+    },
+    {
+      "file": "resolution-sla/countdown-390.png",
+      "sha256": "52954d2aeb3b0f9e73c00d70f32001c2f3a49841423bc1ebf60654c02596490b"
+    },
+    {
+      "file": "resolution-sla/inbox-1440.png",
+      "sha256": "edefb858cdedab51dda406c29226f00d84cd291906217038357c4ee0553013bc"
+    },
+    {
+      "file": "resolution-sla/inbox-390.png",
+      "sha256": "f9b2db71ac73b5426010771a7f9aacee511f61ad2e0b0c8e41b72181a1827f93"
+    },
+    {
+      "file": "resolution-sla/settings-1440.png",
+      "sha256": "5fad75f1b5efe6e271af084451d46a71223ceec3f4167f0893f3e255ec909dc7"
+    },
+    {
+      "file": "resolution-sla/settings-390.png",
+      "sha256": "46dff4e43101e396680ddd745985ec8c3c5b2b0112991d52fbb7ff56f1feedbd"
+    }
+  ]
+}

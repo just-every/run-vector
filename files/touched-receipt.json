@@ -1,0 +1,13 @@
+{
+  "head": "091e707eee124b0a52421053e5c142f40f8178bf",
+  "command": [
+    "pnpm",
+    "test:worker",
+    "tests/worker/due-reminders.test.ts",
+    "tests/worker/data-http.test.ts"
+  ],
+  "exit": 0,
+  "startedAt": "2026-11-06T05:50:48.436832+00:00",
+  "completedAt": "2026-11-06T05:52:08.995515+00:00",
+  "log_sha256": "f1a3c1217ea9539462641222e9503ac47428ffd12ad1a90c64da72c0fe118719"
+}

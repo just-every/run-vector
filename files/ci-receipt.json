@@ -1,0 +1,25 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f197",
+  "head": "091e707eee124b0a52421053e5c142f40f8178bf",
+  "runId": 42170959260,
+  "event": "push",
+  "observation": {
+    "conclusion": null,
+    "head_sha": "091e707eee124b0a52421053e5c142f40f8178bf",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42170959260",
+    "status": "in_progress"
+  },
+  "observedAt": "2026-11-06T05:57:59Z",
+  "githubCallsUsed": 3,
+  "dispatched": false,
+  "rerun": false,
+  "logsDownloaded": false,
+  "terminalCustody": "PUSHED",
+  "baseline": {
+    "head": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+    "verify": 42169379975,
+    "runSite": 42169379974,
+    "conclusion": "success"
+  }
+}

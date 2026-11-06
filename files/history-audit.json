@@ -1,0 +1,45 @@
+{
+  "head": "091e707eee124b0a52421053e5c142f40f8178bf",
+  "base": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+  "statusRowAudit": [
+    {
+      "head": "ae0548c3a5234b2b0adf5674807c9451e82eccc1",
+      "parent": "5cf3649a1dddb2c2774bae51121b156518bd7b69",
+      "parentRows": 272,
+      "candidateRows": 272,
+      "dropped": []
+    },
+    {
+      "head": "099ed25c27eaf8ca454ac5d8afe4860a4c45b651",
+      "parent": "ae0548c3a5234b2b0adf5674807c9451e82eccc1",
+      "parentRows": 272,
+      "candidateRows": 272,
+      "dropped": []
+    },
+    {
+      "head": "e5039ccf43c609a694562c4b2f91a097dab6ddc8",
+      "parent": "099ed25c27eaf8ca454ac5d8afe4860a4c45b651",
+      "parentRows": 272,
+      "candidateRows": 272,
+      "dropped": []
+    },
+    {
+      "head": "93d6431f1035388fea9345bd42a0a8e18cb97b4d",
+      "parent": "e5039ccf43c609a694562c4b2f91a097dab6ddc8",
+      "parentRows": 272,
+      "candidateRows": 272,
+      "dropped": []
+    },
+    {
+      "head": "091e707eee124b0a52421053e5c142f40f8178bf",
+      "parent": "93d6431f1035388fea9345bd42a0a8e18cb97b4d",
+      "parentRows": 272,
+      "candidateRows": 272,
+      "dropped": []
+    }
+  ],
+  "newEmailShapedStrings": 0,
+  "newProviderShapedKeys": 0,
+  "worktreeClean": true,
+  "generatedViewsCommitted": false
+}
