@@ -5,9 +5,20 @@ import { insertHistoricalSample } from "./historical-sample-fixture";
 /**
  * Columns a later migration adds to a table that already held rows, with the value an
  * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1.
+ * 0126 leaves native activity and audit rows without app actor attribution.
  */
 const addedAfterBoundary: Record<string, Record<string, unknown>> = {
   teams: { cycles_enabled: 1 },
+  issue_activity: {
+    app_actor_id: null,
+    app_installer_id: null,
+    app_installer_name: null,
+  },
+  audit_records: {
+    app_actor_name: null,
+    app_installer_id: null,
+    app_installer_name: null,
+  },
 };
 /** A populated prior head retains every value, including queued candidates and mutes. */
 export async function triageUpgrade() {

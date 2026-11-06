@@ -2034,7 +2034,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "5bade589b34fe19d91f4b40a85cd5260394b0f4c4e8e449ded56cff1ef853eb3",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -9410,7 +9410,7 @@
       "executable": false
     },
     "tests/worker/issue-session-projection.test.ts": {
-      "sha256": "6d1afe1d3843f3a2725263a5fb470f1ce54830d827d8fc1d6bc5518828136ed7",
+      "sha256": "c5425bbb8ff70e578df190ab0e4345c580b193862f46cbbca929618af92df2e5",
       "executable": false
     },
     "tests/worker/issue-templates.test.ts": {
@@ -9746,7 +9746,7 @@
       "executable": false
     },
     "tests/worker/triage-upgrade.ts": {
-      "sha256": "e5f71a4de946053df4b0283b44ddae50066685f38c4f02f71d3dd156a00e2e6a",
+      "sha256": "6124e1e6c9f8a8f70da29d47a42fd342913f732f3256cda8858efe8d27957b3b",
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {
