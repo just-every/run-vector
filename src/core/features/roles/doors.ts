@@ -261,6 +261,9 @@ export const doors: Door[] = [
   ...([['POST', '/settings/integrations/sources'], ['POST', '/settings/integrations/sources/:id/rotate'], ['POST', '/settings/integrations/sources/:id/webhook-url'], ['DELETE', '/settings/integrations/sources/:id']] as const)
     .map(([method, path]): Door => ({ method, path, row: 'sources.manage' })),
   // Projects
+  { method: 'GET', path: '/projects/recently-deleted', row: 'projects.delete' },
+  { method: 'POST', path: '/projects/restore', row: 'projects.delete' },
+  { method: 'POST', path: '/projects/undo-deletion', row: 'projects.delete' },
   { method: 'POST', path: '/settings/projects', row: channelOr('projects.write') },
   { method: 'PATCH', path: '/settings/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
   { method: 'DELETE', path: '/settings/projects/:id', row: 'projects.delete', project },
@@ -329,6 +332,8 @@ export const apiDoors: Door[] = [
   { method: 'DELETE', path: '/comments/:id', row: commentDeletion, teams: comment },
   { method: 'POST', path: '/projects', row: 'projects.write' },
   { method: 'PATCH', path: '/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
+  { method: 'GET', path: '/projects/recently-deleted', row: 'projects.delete' },
+  { method: 'POST', path: '/projects/restore', row: 'projects.delete' },
   { method: 'DELETE', path: '/projects/:id', row: 'projects.delete', project },
   { method: 'POST', path: '/projects/:id/milestones', row: 'milestones.write' },
   { method: 'PATCH', path: '/projects/:id/milestones/:milestoneId', row: 'milestones.write' },

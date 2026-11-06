@@ -2,6 +2,7 @@ import {TriageProvider,TriageCount} from '../../features/triage-responsibility/u
 import { useHydrated } from '../initial-resources'
 import { MobileAccount } from './mobile-account'
 import { DeletionNotice } from '../../features/issue-deletion/receipt-notice'
+import {ProjectUndoNotice} from '../../features/project-deletion/ui';
 import { IssueUndoNotice } from '../../features/issue-undo/ui/notice'
 import { StreamPlanningProvider } from '../../features/streams/ui/stream-planning-state'
 import type { ReactNode } from 'react'
@@ -317,6 +318,7 @@ function AppShellContent({ children }: AppShellProps) {
         )}
         <DeletionNotice />
         <IssueUndoNotice />
+        <ProjectUndoNotice />
         {children}
       </div>
       <nav className="app-mobile-nav" aria-label="Workspace">

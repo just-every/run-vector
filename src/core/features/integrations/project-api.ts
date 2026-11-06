@@ -1,3 +1,4 @@
+import {addProjectDeletionRoutes} from '../project-deletion/routes';
 import { pageQuery,paginate } from './api-pagination';
 import type { Hono } from 'hono';
 import type { AppEnvironment } from '../../app/bindings';
@@ -14,6 +15,7 @@ function parse<T>(schema:z.ZodType<T>,value:unknown) {
   return result.data;
 }
 export function addProjectApi(app:Hono<AppEnvironment>) {
+  addProjectDeletionRoutes(app,true);
   app.get('/projects',async c=>{
     const {limit,cursor,...filters}=parse(projectPortfolioQuery.safeExtend(pageQuery.shape),c.req.query());
     const value=await projectPortfolio(c.env.DB,c.get('operatorId'),filters);

@@ -4969,6 +4969,74 @@
           }
         }
       }
+    },
+    "/projects/recently-deleted": {
+      "get": {
+        "operationId": "projects_recently_deleted",
+        "summary": "List retained project deletions",
+        "x-scopes": [
+          "projects:delete"
+        ],
+        "x-object": "projects",
+        "x-operation": "recently_deleted",
+        "responses": {
+          "200": {
+            "description": "Current authorized recovery result"
+          },
+          "403": {
+            "description": "Current role does not allow project recovery"
+          },
+          "409": {
+            "description": "Stale, expired or unavailable receipt; no writes"
+          }
+        }
+      }
+    },
+    "/projects/restore": {
+      "post": {
+        "operationId": "projects_restore",
+        "summary": "Recover retained projects",
+        "x-scopes": [
+          "projects:delete"
+        ],
+        "x-object": "projects",
+        "x-operation": "restore",
+        "responses": {
+          "200": {
+            "description": "Current authorized recovery result"
+          },
+          "403": {
+            "description": "Current role does not allow project recovery"
+          },
+          "409": {
+            "description": "Stale, expired or unavailable receipt; no writes"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "version"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

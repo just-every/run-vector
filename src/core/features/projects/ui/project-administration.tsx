@@ -132,7 +132,7 @@ export function ProjectAdministration({
       <SaveProjectTemplate project={project} />
       {confirmingDelete && deletes ? (
         <div role="group" aria-label="Confirm project deletion">
-          <p>Delete {project.name}? Its issues will stay in Vector without a project. This cannot be undone.</p>
+          <p>Delete {project.name}? Its issues will stay in Vector without a project. You can restore the project from Settings → Workspace for 30 days.</p>
           <button type="button" disabled={deletion.pending || !hydrated}
             onClick={() => void deletion.run(`/api/settings/projects/${project.id}`, "DELETE")}>
             Delete project and keep issues

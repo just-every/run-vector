@@ -17,7 +17,7 @@ const team = (column = 'team_id') => `r.${column} IN (SELECT id FROM teams)`
 const project = (column = 'project_id') => `r.${column} IN (SELECT id FROM projects)`
 /** Relation history must not disclose a now-hidden issue through its retained
  * identifier, nor a hidden project/team through its historical JSON. */
-const safeHistory = (column: string) => `NOT EXISTS(SELECT 1 FROM json_tree(r.${column}) j JOIN __vector_hidden_refs hidden ON hidden.ref=j.value WHERE j.type='text')`
+const safeHistory = (column: string, membership = false) => `NOT EXISTS(SELECT 1 FROM json_tree(r.${column}) j JOIN __vector_hidden_refs hidden ON hidden.ref=j.value WHERE j.type='text'${membership ? " AND NOT (r.kind IN('project.removed','project.restored') AND j.key='projectId')" : ''})`
 
 export function visibilityCtes(actor: string) {
   // The actor comes from native admission, never from SQL supplied by a client.
@@ -30,7 +30,7 @@ export function visibilityCtes(actor: string) {
     `operators AS (SELECT r.id,r.workspace_id,CASE WHEN r.role='guest' THEN r.name||' (Guest)' ELSE r.name END name,r.email,r.removed_at,r.created_at,r.updated_at,r.role
       FROM main.operators r JOIN __vector_reader reader ON reader.workspace_id=r.workspace_id)`,
     scoped('issues', team()),
-    scoped('projects', `r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (EXISTS(SELECT 1 FROM issues i WHERE i.project_id=r.id) OR (NOT (${guest}) AND NOT EXISTS(SELECT 1 FROM main.issues i WHERE i.project_id=r.id)))`),
+    scoped('projects', `NOT EXISTS(SELECT 1 FROM main.project_deletions deleted WHERE deleted.project_id=r.id AND deleted.restored_at IS NULL) AND r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (EXISTS(SELECT 1 FROM issues i WHERE i.project_id=r.id) OR (NOT (${guest}) AND NOT EXISTS(SELECT 1 FROM main.issues i WHERE i.project_id=r.id)))`),
     `__vector_hidden_refs AS (SELECT id AS ref FROM main.issues WHERE id NOT IN(SELECT id FROM issues) UNION SELECT identifier FROM main.issues WHERE id NOT IN(SELECT id FROM issues) UNION SELECT id FROM main.teams WHERE id NOT IN(SELECT id FROM teams) UNION SELECT id FROM main.projects WHERE id NOT IN(SELECT id FROM projects))`,
     ...['workflow_statuses', 'cycles', 'team_members', 'team_departures', 'team_cycle_schedules', 'team_triage_rotations', 'team_triage_rotation_members', 'team_housekeeping', 'subissue_team_rules'].map(t => scoped(t, team())),
     scoped('team_join_requests', `${team()} OR r.requester_id=${literal}`),
@@ -48,7 +48,7 @@ export function visibilityCtes(actor: string) {
     `issue_activity AS (SELECT r.rowid AS rowid,r.* FROM main.issue_activity r WHERE
       ((r.kind<>'issue.mentioned' OR json_extract(r.next_value_json,'$.sourceIssueId') IN(SELECT id FROM issues)
         OR json_extract(r.next_value_json,'$.sourceDocumentId') IN(SELECT id FROM documents)) AND ${issue()})
-      AND (${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')}))`,
+      AND (${safeHistory('previous_value_json',true)} AND ${safeHistory('next_value_json',true)}))`,
     ...['project_labels', 'project_milestones'].map(t => scoped(t, project())),
     scoped('project_activity', `${project()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')}`),
     scoped('project_membership_events', `${project()} AND (NOT (${restricted}) OR r.identifier IN(SELECT identifier FROM issues) OR r.identifier IN(SELECT identifier FROM issue_deletions))`),

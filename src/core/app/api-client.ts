@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { privateReads } from "./read-lifecycle.ts";
 import { resourceKey, useInitialResource } from './initial-resources';
+import { receiveProjectUndoReceipt } from '../features/project-deletion/receipt';
 import { receiveUndoReceipt } from '../features/issue-undo/ui/receipt';
 import { isSecondaryRead, onSecondaryRefresh } from './secondary-refresh';
 import { createRefreshBatch, refreshBatchSchema } from './refresh-batch';
@@ -40,6 +41,7 @@ export async function fetchJson<S extends z.ZodType>(
     if (!response.ok) throw new ApiError(response.status, body);
     const result = schema.parse(body);
     receiveUndoReceipt(response);
+    receiveProjectUndoReceipt(response);
     return result;
   };
   return (init?.method ?? "GET").toUpperCase() === "GET" &&

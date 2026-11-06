@@ -1,3 +1,4 @@
+import {projectDeletionScenario} from './project-deletion-scenario';
 import { createServerApp } from '../../src/core/app/server';
 import { bindings } from './base-auth-fixture';
 import {exerciseInitiatives} from './initiatives-scenario';
@@ -47,6 +48,7 @@ it('[PROJ-003 ROLE-001 RELEASE-001 INIT-001 NOTIFY-009] only Owners and Admins d
     expect((await f.call('/settings/projects/' + project.id, 'DELETE')).status).toBe(404);
     expect((await read(second.identifier)).version).toBe(after.version);
   }
+  await projectDeletionScenario(f);
   await exerciseReleases(f);
   await exerciseInitiatives(f);
 });

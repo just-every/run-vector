@@ -1,3 +1,4 @@
+import {RecentlyDeletedProjects} from '../../../project-deletion/ui';
 import { fetchJson, useApiResource } from '../../../../app/api-client';
 import { useViewerTime } from '../../../../app/viewer-time';
 import { administrationSchema } from '../../../administration/schema';
@@ -48,6 +49,7 @@ function WorkspaceFields() {
       <SelectField label="Who may create labels" value={admin.workspace.memberLabelCreation ? 'members' : 'admins'} options={creators}
         save={next => put('/api/settings/labels/creation', next === 'members').then(result => administration.publishReceipt(() => result))} />
     </> : <Skeleton />}
+    <RecentlyDeletedProjects />
   </div>;
 }
 

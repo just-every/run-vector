@@ -19,7 +19,7 @@ export async function updateIssueRecord(
   if (!plan) return "stale" as const;
   if (!plan.changed) {
     const result = await binding
-      .prepare(`UPDATE issues SET version=version WHERE ${plan.where} RETURNING identifier`)
+      .prepare(`UPDATE issues SET version=version${input.projectId !== undefined ? ",project_id=project_id" : input.milestoneId !== undefined ? ",milestone_id=milestone_id" : ""} WHERE ${plan.where} RETURNING identifier`)
       .bind(...plan.guardValues)
       .run<{ identifier: string }>();
     // Revision triggers also write on a matched semantic no-op.

@@ -347,6 +347,8 @@ export async function planIssueUpdate(
         ...guardValues,
       ),
   ];
+  if (input.projectId !== undefined || input.milestoneId !== undefined)
+    writes.push(binding.prepare(`DELETE FROM project_deletion_memberships WHERE issue_id=? AND EXISTS(SELECT 1 FROM issues WHERE ${where})`).bind(issue.id,...guardValues));
   writes.push(...blockerStatements(binding, event));
   writes.push(...followerChangeStatements(binding, event));
   if ("assigneeOperatorId" in values)

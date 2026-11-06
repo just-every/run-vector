@@ -49,6 +49,7 @@ import { configureNotifications, needsNotificationDrain, notificationEventIds, d
 import { drainNotificationMail } from '../features/notifications/mail';
 import { deliverCommittedDirectMessages } from '../features/integrations/outbound';
 import { fileSettlementDatabase } from '../features/auth/mutation-database';
+import {addProjectDeletionRoutes} from '../features/project-deletion/routes';
 import { addAdministrationRoutes } from '../features/administration/routes';
 import { addTeamMembershipRoutes } from '../features/team-membership/routes';
 import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
@@ -379,6 +380,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     if (!query.success) return context.json({error:"invalid_request",issues:query.error.issues},400);
     return context.json(await projectPortfolio(context.env.DB,context.get("operatorId"),query.data));
   });
+  addProjectDeletionRoutes(app);
   app.get("/projects/:projectId", async (context) => {
     const parameters=projectParamSchema.safeParse(context.req.param());
     const query=parseQuery(context,timeQuerySchema);

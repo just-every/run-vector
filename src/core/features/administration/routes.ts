@@ -170,8 +170,10 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
   app.delete(
     "/settings/projects/:id",
     handle(async (c) => {
-      await removeProject(c.env.DB, c.get("operatorId"), c.req.param("id")!);
-      return read(c);
+      const receipt = await removeProject(c.env.DB, c.get("operatorId"), c.req.param("id")!);
+      const response = await read(c);
+      if (receipt) response.headers.set("x-vector-project-undo", JSON.stringify(receipt));
+      return response;
     }),
   );
   app.post(

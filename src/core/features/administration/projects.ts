@@ -8,7 +8,6 @@ import {
   ownedRow,
   guard,
   commit,
-  audit,
   type AdministrationContext,
 } from "./transaction";
 
@@ -159,38 +158,4 @@ export async function updateProject(
   ]);
 }
 
-export async function removeProject(db: D1Database, actor: string, id: string) {
-  const ctx = await administrationContext(db, actor),
-    old = await ownedRow<Project>(ctx, "projects", id);
-  await commit(ctx, [
-    guard(
-      ctx.db,
-      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND color IS ? AND icon IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
-      id,
-      ctx.workspace,
-      old.name,
-      old.description,
-      old.lead_operator_id,
-      old.target_date,
-      old.start_date,
-      old.color,
-      old.icon,
-      old.priority,
-      old.lifecycle,
-      old.archived_at,
-    ),
-    ctx.db
-      .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
-         SELECT substr(?,1,10)||upper(hex(randomblob(8))),id,?,'project.removed',json_object('projectId',project_id,'milestoneId',milestone_id),json_object('projectId',NULL,'milestoneId',NULL),?,?
-         FROM issues WHERE project_id=?`,
-      )
-      .bind(createUlid(new Date(ctx.at)), actor, ctx.at, ctx.at, id),
-    ctx.db
-      .prepare("UPDATE issues SET project_id=NULL,milestone_id=NULL,version=version+1,updated_at=? WHERE project_id=?")
-      .bind(ctx.at, id),
-    ctx.db.prepare("DELETE FROM project_activity WHERE project_id=?").bind(id),
-    ctx.db.prepare("DELETE FROM projects WHERE id=?").bind(id),
-    ...audit(ctx, "project.removed", id, old.name, old, null),
-  ]);
-}
+export { retainProject as removeProject } from '../project-deletion/repository';

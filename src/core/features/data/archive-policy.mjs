@@ -30,7 +30,7 @@ export const portabilityPolicy = {
  includeTables: ['oa_operators'],
  replaceableTables: ['search_index_state', 'issue_list_revision', 'subscription_clock'],
  derivedTables: ['search_issues', 'search_projects', 'search_views'],
- secretColumns: { vector_report_exports: ['claim'], team_email_intake: ['event_verification_key'], notification_digest_batches: ['claim_token'], notification_deliveries: ['claim_token'], ik_jobs: ['lease_token'], integration_deliveries: ['claim'] },
+ secretColumns: { project_deletions: ['session_hash'], vector_report_exports: ['claim'], team_email_intake: ['event_verification_key'], notification_digest_batches: ['claim_token'], notification_deliveries: ['claim_token'], ik_jobs: ['lease_token'], integration_deliveries: ['claim'] },
  buckets: { FILES: {} },
  requiredConfiguration: ['FIRST_OWNER_EMAIL', 'SESSION_SECRET', 'APP_ORIGIN', 'MAIL_MODE', 'MAIL_FROM'],
 };
