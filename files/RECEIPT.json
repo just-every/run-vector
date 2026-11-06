@@ -1,0 +1,225 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f191-local1-fix1",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f191-local1-fix1",
+  "source_head": "6ede4ca7a38c98f23cc2c33e54e1a189d85cf79b",
+  "main_head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+  "product_head": "d3c868c3f4464226f647303981bea7e27677469a",
+  "lifetime": "FIX1 of 2",
+  "clauses": {
+    "DATA-017": {
+      "before": "partial",
+      "after": "partial"
+    },
+    "status_changes": []
+  },
+  "commands": [
+    {
+      "command": "cloud_run npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "note": "One official setup; raw local runtime/settings output excluded from public packet"
+    },
+    {
+      "command": "cloud_run pnpm exec vitest run --config vitest.config.ts tests/worker/file-migration.test.ts",
+      "source": "original production source plus regression extension, before production edits",
+      "exit": 1,
+      "files_failed": 1,
+      "tests_failed": 1,
+      "started_at": "2026-11-06T05:14:53Z",
+      "duration_seconds": 49.81,
+      "log": "privacy-before.log"
+    },
+    {
+      "command": "cloud_run pnpm exec vitest run --config vitest.config.ts tests/worker/file-migration.test.ts",
+      "source": "fixed product source, identical to committed source bytes",
+      "exit": 0,
+      "files_passed": 1,
+      "tests_passed": 1,
+      "started_at": "2026-11-06T05:16:00Z",
+      "duration_seconds": 47.53,
+      "log": "privacy-after.log"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run pnpm check",
+      "exit": 0,
+      "log": "mechanics.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write DATA-017",
+      "exit": 0,
+      "log": "contract-generation.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check DATA-017",
+      "exit": 0,
+      "log": "contract-generation.log"
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0,
+      "note": "Generated views neither committed nor manually resolved"
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "log": "source-lock.log"
+    },
+    {
+      "command": "git diff --check; git diff --cached --check",
+      "exit": 0
+    },
+    {
+      "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f191-local1-fix1",
+      "exit": 0,
+      "attempts": 1,
+      "log": "product-push.log"
+    }
+  ],
+  "probe_before": {
+    "migrationListedForAdmin": true,
+    "nativeIssueStatus": 404,
+    "priorRunReportStatus": 409,
+    "migrationReportStatus": 200,
+    "migrationCsvStatus": 200,
+    "privateTeamVisibleInReport": true,
+    "pendingExposed": true,
+    "csvPendingExposed": true,
+    "captured_console_line": true
+  },
+  "probe_after": {
+    "migrationListedForAdmin": false,
+    "nativeIssueStatus": 404,
+    "priorRunReportStatus": 409,
+    "migrationReportStatus": 409,
+    "migrationCsvStatus": 409,
+    "privateTeamVisibleInReport": false,
+    "pendingExposed": false,
+    "csvPendingExposed": false,
+    "basis": "passing explicit public-door assertions; captured successful console output is not included by native harness"
+  },
+  "authorized_controls": [
+    "Owner full report and CSV",
+    "Admin public migration despite unrelated hidden team",
+    "granted Admin exact equality to Owner report and pending count/list",
+    "granted Admin CSV exact absent source endpoint",
+    "old per-run report still creator-bound",
+    "membership withdrawal JSON/CSV/finish refusal with no writes",
+    "authorized current Admin finish and once-only replay",
+    "withdrawal also hides accepted omissions"
+  ],
+  "counts": {
+    "changed_test_registrations_before": 1,
+    "changed_test_registrations_after": 1,
+    "net_registrations": 0,
+    "clauses": {
+      "done": 136,
+      "partial": 69,
+      "missing": 67,
+      "total": 272
+    }
+  },
+  "original_ci_dependency": {
+    "run_id": 42152804143,
+    "job_id": 127680188637,
+    "status": "original red; no retry or waiver; main control incomplete at outer 1800 s"
+  },
+  "product_pushed": true,
+  "publication_scan": "Mac fleet obligation; unavailable in cloud",
+  "independent_gate": "original-family affected B re-gate pending",
+  "full_exact_final_runtime_verify": "guarded lander obligation; no green claim",
+  "pr": null,
+  "logs": {
+    "privacy-before.log": {
+      "bytes": 1560,
+      "sha256": "5df9fc70e633b9285349b5f9d0070e3191277dabf644e6486568510729e75e78"
+    },
+    "privacy-after.log": {
+      "bytes": 432,
+      "sha256": "5b9b547c30f630a563c9b1ba21751c6117d8a6eba50223db8e04d12183693cf9"
+    },
+    "typecheck.log": {
+      "bytes": 217,
+      "sha256": "5693cefc150023611125201b4175c8233942f7fa0171ea1eaf5377654a4c25ef"
+    },
+    "mechanics.log": {
+      "bytes": 216,
+      "sha256": "52a0a7d8104afedbcaf706dfe6bac444ff357e59b47095f5e5ea51fc9c2af479"
+    },
+    "contract-generation.log": {
+      "bytes": 74,
+      "sha256": "bbd53201c1ab403cc413eb9b4f35195ff9a856bef8505abc617e3cdb23a8d543"
+    },
+    "source-lock.log": {
+      "bytes": 1047816,
+      "sha256": "fd2c394e335b60c6061fb080da577cb8e5fabb2d0b7095ecba86e0616c84c14b"
+    },
+    "product-push.log": {
+      "bytes": 1028,
+      "sha256": "8ad30d212093d81481cc460f6812a8225dab4abfc6155e0c04df9dca3ea3a411"
+    },
+    "IDENTITY_LOG.txt": {
+      "bytes": 274,
+      "sha256": "8b72b4c60c63efa4448bf154d27aed1d411c33c5153447beaf353db7abcc212c"
+    },
+    "SOURCE_EQUALITY.json": {
+      "bytes": 9497,
+      "sha256": "926155218aefd5265bd7ca0cce380eaf5490c84578e507e75c7bf9ea1b42aa09"
+    },
+    "CI_STATUS.json": {
+      "bytes": 561,
+      "sha256": "3ac0f7476dfb7d3f046a81aa5b1c5efb3e3e17576756c07934da78d2237f9617"
+    }
+  },
+  "fix_changed_paths": [
+    "sources.lock.json",
+    "src/core/features/data/migrations/model.ts",
+    "src/core/features/data/migrations/report.ts",
+    "src/core/features/data/migrations/service.ts",
+    "tests/worker/file-migration.test.ts"
+  ],
+  "product_ancestry": [
+    "d3c868c3f4464226f647303981bea7e27677469a DATA-017 protect migration custody with native private-team visibility",
+    "6ede4ca7a38c98f23cc2c33e54e1a189d85cf79b DATA-017 guard capture replay and exact pending-list finish",
+    "a79213510780131ec8012a160359fa26dd7d4d5d DATA-017 prove pending acceptance, erasure and portable custody [skip ci]",
+    "301a0d0e66715abffea661bf71ed42c2bfaff811 DATA-017 retain reviewed file migrations and explicit pending acceptance [skip ci]"
+  ],
+  "ci_calls_used_before_exact_discovery": 1,
+  "ci_initial_discovery": "CI_INITIAL_REQUEST.json; abbreviated SHA cannot establish exact-SHA status",
+  "created_at": "2026-11-06T05:24:18.791579+00:00",
+  "candidate_ci": {
+    "requested_at": "2026-11-06T05:25:08.679369+00:00",
+    "request": "gh api repos/just-every/run-vector/actions/runs?head_sha=d3c868c3f4464226f647303981bea7e27677469a&per_page=100",
+    "head_sha": "d3c868c3f4464226f647303981bea7e27677469a",
+    "github_calls_total": 2,
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "head_sha": "d3c868c3f4464226f647303981bea7e27677469a",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42167787360",
+        "id": 42167787360,
+        "name": "Verify",
+        "status": "in_progress"
+      }
+    ]
+  },
+  "terminal_product_custody": "PUSHED",
+  "ci_green_claimed": false,
+  "ready_claimed": false,
+  "blockers": [],
+  "unresolved_dependencies": [
+    "Exact-SHA Verify 42167787360 is in_progress with no conclusion at last permitted discovery",
+    "Same-original-family independent affected B re-gate",
+    "Mac publication scan and guarded landing"
+  ]
+}

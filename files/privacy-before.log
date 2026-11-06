@@ -1,0 +1,35 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f191-local1-fix1/run-vector
+
+Using secrets defined in .dev.vars
+stdout | tests/worker/file-migration.test.ts > [DATA-017] reviewed file runs retain exact missing endpoints and finish only by current explicit acceptance, once across restart and restore
+PRIVACY_PROBE {"migrationListedForAdmin":true,"nativeIssueStatus":404,"priorRunReportStatus":409,"migrationReportStatus":200,"migrationCsvStatus":200,"privateTeamVisibleInReport":true,"pendingExposed":true,"csvPendingExposed":true}
+
+ ❯ tests/worker/file-migration.test.ts (1 test | 1 failed) 40887ms
+   × [DATA-017] reviewed file runs retain exact missing endpoints and finish only by current explicit acceptance, once across restart and restore 40886ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/file-migration.test.ts > [DATA-017] reviewed file runs retain exact missing endpoints and finish only by current explicit acceptance, once across restart and restore
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/worker/file-migration.test.ts:111:95
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  05:14:53
+   Duration  49.81s (transform 3.81s, setup 0ms, import 8.34s, tests 40.89s, environment 0ms)
+

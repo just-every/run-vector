@@ -1,0 +1,8 @@
+{
+  "request": "gh api repos/just-every/run-vector/actions/runs?head_sha=d3c868c&per_page=100",
+  "requested_at": "2026-11-06T05:20:07.095495+00:00",
+  "result": {
+    "workflow_runs": []
+  },
+  "qualification": "Invalid discovery request used an abbreviated SHA; empty result establishes no exact-SHA status and is not used as green evidence. Counted as one GitHub budget call."
+}
