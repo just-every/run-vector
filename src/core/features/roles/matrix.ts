@@ -42,7 +42,7 @@ export const matrix = {
   'teams.membership': row('Set open or invite-only membership; approve join requests; add Members to an invite-only or private team (TEAM-007)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.request': row('Request membership of an invite-only or private team (TEAM-007)', 'yes', 'yes', 'yes', 'no'),
   'teams.join': row('Join an open public team or leave one\'s team (ROLE-007, TEAM-007)', 'yes', 'yes', 'yes', 'no'),
-  'teams.settings': row('Change team settings: name and unused prefix, the sub-issue completion/reopening rule, triage, cycles and estimates on or off, estimate scale, default template, Git automation rules, resolution SLAs, auto-close and auto-archive (AUTO-004, TEAM-001, ISSUE-019, TEAM-005, GITHUB-003, AUTO-003)', 'yes', 'yes', 'team-setting', 'no'),
+  'teams.settings': row('Change team settings: name and unused prefix, the sub-issue completion/reopening rule, triage, cycles and estimates on or off, estimate scale, default template, Git automation rules, auto-close and auto-archive (TEAM-001, ISSUE-019, TEAM-005, GITHUB-003, AUTO-003)', 'yes', 'yes', 'team-setting', 'no'),
   'teams.workflow': row('Add, rename, reorder or remove workflow statuses (TEAM-002, TEAM-004)', 'yes', 'yes', 'team-setting', 'no'),
   'teams.archive': row('Archive or unarchive a team, whatever its *Who manages team settings* permission (TEAM-003)', 'yes', 'yes', 'team-owner', 'no'),
   'documents.write': row("Write, edit and comment on documents under projects, issues, initiatives and teams they can see (PROJ-013)", 'yes', 'yes', 'yes', 'invited-teams'),

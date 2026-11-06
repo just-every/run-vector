@@ -9,6 +9,7 @@ import {slackIntakeFixture} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import * as administrationInput from '../../src/core/features/administration/schema';
+import {slaInput} from '../../src/core/features/slas/schema';
 import {housekeepingSchema} from '../../src/core/features/housekeeping/schema';
 import {rotationInput} from '../../src/core/features/triage-responsibility/schema';
 import {channelDefaultsInputSchema} from '../../src/core/features/notifications/channel-schema';
@@ -189,6 +190,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('PUT','/settings/teams/creation',{membersMayCreate:false});both('POST','/settings/teams','/teams',{name:'synthetic-vector-31044',identifierPrefix:'SYNNEW'});both('PUT','/settings/teams/:id/privacy','/teams/:id/privacy',{isPrivate:false},tp);
   native('POST','/teams/:teamId/join',undefined,{teamId:destinationTeam.id});native('POST','/teams/:teamId/leave',undefined,teamId);native('PUT','/settings/teams/:id/members/:operatorId',{role:'member'},{...tp,operatorId:w.lead.id});native('DELETE','/settings/teams/:id/members/:operatorId',undefined,{...tp,operatorId:w.lead.id});native('PUT','/settings/teams/:id/membership',{mode:'invite_only',requestsEnabled:true},tp);native('POST','/settings/teams/:id/requests/:requesterId/decision',{decision:'approved'},{id:requestTeam.id,requesterId});native('POST','/teams/:teamId/requests',undefined,{teamId:requestTeam.id});
   native('PUT','/settings/teams/:id/permissions',{settings:'team_owners',planning:'all_members'},tp);native('PATCH','/settings/teams/:id',{name:'synthetic-vector-31045'},tp);
+  native('PUT','/settings/teams/:id/sla',{enabled:true,priority:'high',labelId:null,targetMinutes:60,warnBeforeMinutes:15,workingDays:[1,2,3,4,5],startsAt:'09:00',endsAt:'17:00'},tp);
   const housekeeping={closeAfterDays:30,archiveAfterDays:60,exemptBugs:true};native('PUT','/settings/teams/:id/housekeeping',housekeeping,tp);native('POST','/settings/teams/:id/housekeeping/preview',housekeeping,tp);
   native('PUT','/settings/teams/:teamId/email-intake',{...email.settings,enabled:false},teamId);native('PUT','/settings/teams/:teamId/email-intake/event-key',{key:eventKey},teamId);native('PATCH','/teams/:teamId/subissue-rule',{expectedVersion:children.rule.version,enabled:true},teamId);
   native('POST','/settings/teams/:id/statuses',{name:'synthetic-vector-31046',category:'started'},tp);native('PUT','/settings/teams/:id/statuses/order',{statusIds:workflow.map((row:any)=>row.id)},tp);native('PATCH','/settings/teams/:id/statuses/:statusId',{name:'synthetic-vector-31047'},{...tp,statusId:workflowStatus.id});native('DELETE','/settings/teams/:id/statuses/:statusId',{destinationStatusId:w.team.statuses.find(row=>row.category==='unstarted')!.id},{...tp,statusId:workflowStatus.id});
@@ -256,6 +258,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'POST /settings/cycles':administrationInput.cycleCreateSchema,
    'PUT /settings/teams/:id/cycle-schedule':administrationInput.cycleScheduleSchema,
    'PUT /settings/teams/:id/triage-rotation':rotationInput,
+   'PUT /settings/teams/:id/sla':slaInput,
    'PUT /settings/teams/:id/housekeeping':housekeepingSchema,
    'POST /settings/teams/:id/housekeeping/preview':housekeepingSchema,
    'PUT /settings/notifications/channel-defaults':channelDefaultsInputSchema,
