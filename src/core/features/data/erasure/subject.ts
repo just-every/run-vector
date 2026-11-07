@@ -18,12 +18,18 @@ export function personValues(subject: ErasureSubject, extraNames: string[] = [])
   return [...new Set([subject.email, ...subject.names, ...extraNames].filter((value): value is string => Boolean(value)).map(value => value.trim().toLowerCase()))].sort();
 }
 
-/** import-kit `related` matchers. A retained record matches when any string in
- * its payload equals a value; an original matches when its text holds one. The
- * matchers read decoded personal data and keep nothing. */
+/** import-kit `related` matchers. Payloads retain the file's own column names,
+ * so recognize exact values and explicit source references at any depth. Native
+ * references use `source:` for one endpoint; dependency cells also accept a
+ * comma-separated list or an array (import/references.ts and import/mapper.ts).
+ * Never match a substring of an endpoint or an unprefixed free-text list.
+ * The matchers read decoded personal data and keep nothing. */
 export function relatedMatchers(values: string[]) {
   const wanted = new Set(values);
-  const holds = (value: Json | undefined): boolean => typeof value === 'string' ? wanted.has(value.trim().toLowerCase())
+  const endpoint = (value: string) => value.startsWith('source:') && wanted.has(value.slice('source:'.length).trim().toLowerCase());
+  const textHolds = (value: string) => wanted.has(value.trim().toLowerCase()) || endpoint(value.trim())
+    || value.split(',').some(part => endpoint(part.trim()));
+  const holds = (value: Json | undefined): boolean => typeof value === 'string' ? textHolds(value)
     : Array.isArray(value) ? value.some(holds)
     : value !== null && typeof value === 'object' ? Object.values(value).some(holds) : false;
   const decoder = new TextDecoder();

@@ -10,12 +10,13 @@ import {
 import { calculateCycleProgress } from "../cycles/progress";
 import { readCycleReport } from "../cycle-report/read";
 import { SettingsError } from "./transaction";
+import { teamFieldsStatement, fieldProjection } from "../custom-fields/read";
 
 const cycleColumns =
   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
 export async function readAdministration(db: D1Database, actor: string) {
   const { workspace_id: workspaceId, role } = await settingsActor(db, actor);
-  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests] =
+  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests, fieldRows] =
     await Promise.all([
       db
         .prepare("SELECT id,name,timezone,member_label_creation AS memberLabelCreation,member_team_creation AS memberTeamCreation FROM workspace_settings WHERE id=?")
@@ -77,7 +78,9 @@ export async function readAdministration(db: D1Database, actor: string) {
         WHERE t.workspace_id=? AND (r.requester_id=? OR EXISTS(SELECT 1 FROM operators actor WHERE actor.id=? AND actor.role IN('owner','admin'))
           OR EXISTS(SELECT 1 FROM team_members own WHERE own.team_id=t.id AND own.operator_id=? AND own.role='owner')) ORDER BY r.created_at,r.requester_id`)
         .bind(workspaceId,actor,actor,actor).all<{teamId:string;requesterId:string;name:string;state:string}>(),
+      teamFieldsStatement(db, workspaceId).all(),
     ]);
+  const fields = fieldProjection(fieldRows.results);
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
       "unauthenticated",
@@ -101,6 +104,7 @@ export async function readAdministration(db: D1Database, actor: string) {
       autoCycleStarted: Boolean(t.autoCycleStarted),
       autoCycleCompleted: Boolean(t.autoCycleCompleted),
       statuses: statuses.results.filter((s) => s.teamId === t.id),
+      customFields: fields.filter((field) => field.teamId === t.id),
       members: members.results.filter((m) => m.teamId === t.id).map(({ operatorId, role }) => ({ operatorId, role })),
       departedAssignments: departed.results.filter((d) => d.teamId === t.id).map(({ teamId: _team, ...issue }) => issue),
     })),

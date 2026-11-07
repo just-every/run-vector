@@ -1,0 +1,30 @@
+.project-dependencies { margin: 1rem 0; min-width: 0; }
+.project-dependencies__list { display: grid; margin: 0.6rem 0 0; padding: 0; list-style: none; }
+.project-dependencies__list li { display: flex; align-items: center; gap: 0.75rem; min-height: 2.75rem; min-width: 0; border-top: 1px solid rgb(var(--app-ink-rgb) / 12%); }
+.project-dependencies__list li:first-child { border-top: 0; }
+.project-dependencies__relation { flex: none; min-width: 5.5rem; color: var(--app-muted); font-size: var(--app-text-small); font-weight: 650; }
+.project-dependencies__list a { flex: 1 1 auto; min-width: 0; color: var(--app-cobalt-ink); font-size: var(--app-text-small); font-weight: 700; overflow-wrap: anywhere; }
+.project-dependencies__remove,
+.project-dependencies form button { min-height: 2.75rem; border: 1px solid var(--control-border); border-radius: 0.5rem; background: var(--app-field); color: var(--app-ink); font-size: var(--app-text-small); font-weight: 650; cursor: pointer; }
+.project-dependencies__remove { width: 2.75rem; font-size: 1.1rem; line-height: 1; }
+.project-dependencies form button { padding: 0.5rem 0.8rem; }
+.project-dependencies button:disabled { opacity: 0.6; cursor: default; }
+.project-dependencies details { margin-top: 0.5rem; }
+.project-dependencies summary { width: max-content; min-height: 2.75rem; line-height: 2.75rem; color: var(--app-cobalt-ink); font-size: var(--app-text-small); font-weight: 650; cursor: pointer; }
+.project-dependencies summary[aria-disabled="true"] { cursor: wait; }
+.project-dependencies summary:focus-visible,
+.project-dependencies button:focus-visible,
+.project-dependencies select:focus-visible,
+.project-dependencies__list a:focus-visible { outline: 2px solid var(--app-focus); outline-offset: 2px; }
+.project-dependencies fieldset { display: grid; grid-template-columns: minmax(9rem, 0.6fr) minmax(0, 1.4fr) auto; align-items: end; gap: 0.75rem; min-width: 0; margin: 0.5rem 0 0; border: 0; padding: 0; }
+.project-dependencies__field { display: grid; gap: 0.35rem; min-width: 0; }
+.project-dependencies label { color: var(--app-muted); font-size: var(--app-text-small); font-weight: 650; }
+.project-dependencies select { width: 100%; min-width: 0; min-height: 2.75rem; border: 1px solid var(--app-field-border); border-radius: 0.45rem; padding: 0.4rem 0.6rem; background: var(--app-field); color: var(--app-ink); font: inherit; font-size: var(--app-text-small); }
+.project-dependencies [role="alert"],
+.project-dependencies [role="status"] { margin: 0.6rem 0 0; font-size: var(--app-text-small); line-height: 1.45; overflow-wrap: anywhere; }
+.project-dependencies [role="alert"] { color: var(--app-danger); }
+.project-dependencies [role="status"] { color: var(--app-body); }
+@media (max-width: 46rem) {
+  .project-dependencies fieldset { grid-template-columns: 1fr; }
+  .project-dependencies form button { justify-self: start; }
+}

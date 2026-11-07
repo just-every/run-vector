@@ -4,6 +4,7 @@ import { ApiError, fetchJson } from "../../../app/api-client";
 import { useHydrated } from "../../../app/initial-resources";
 import type { StreamOptions } from "../../streams/ui/data";
 import { issueDetailSchema, type IssueDetailData } from "./data";
+import { IssueFieldPicker, fieldValues, withFieldValue } from "../../custom-fields/ui/issue-field-picker";
 
 export function IssueProperties({
   issue: suppliedIssue,
@@ -26,7 +27,8 @@ export function IssueProperties({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [conflict, setConflict] = useState(false);
-  async function change(field: string, value: string) {
+  const change = (field: string, value: string) => save({ [field]: value || null });
+  async function save(body: Record<string, unknown>) {
     if (busy || conflict) return;
     setBusy(true);
     setError("");
@@ -39,7 +41,7 @@ export function IssueProperties({
           headers: { "content-type": "application/json" },
           body: JSON.stringify({
             expectedVersion: issue.version,
-            [field]: value || null,
+            ...body,
           }),
         },
       );
@@ -76,6 +78,7 @@ export function IssueProperties({
       setBusy(false);
     }
   }
+  const values = fieldValues(issue.customFields);
   const statuses =
     options?.statuses.filter(
       (s) =>
@@ -182,6 +185,15 @@ export function IssueProperties({
       {picker("Milestone", "milestoneId", issue.milestoneId ?? "",
         options?.milestones.filter(item => item.projectId === issue.project?.id) ?? [],
         "No milestone", !issue.project)}
+      {issue.fields.map((field) => (
+        <IssueFieldPicker
+          key={field.id}
+          field={field}
+          value={values?.[field.id]}
+          disabled={!writable || !hydrated || busy || conflict || !values}
+          onChange={(optionId) => values && void save({ customFields: withFieldValue(values, field.id, optionId) })}
+        />
+      ))}
       {error ? (
         <p role="alert">
           {error}{" "}

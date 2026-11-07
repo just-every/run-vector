@@ -25,6 +25,7 @@ import {
   workflowStatuses,
 } from '../../platform/db/schema'
 import { IssueMutationError } from './errors'
+import { admitFieldValues } from '../custom-fields/validation'
 import type { AcceptIssueInput, CreateIssueInput, DeclineIssueInput, DeferIssueInput } from './input'
 
 type Database = ReturnType<typeof drizzle>
@@ -80,6 +81,8 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
     throw new IssueMutationError('invalid_option', 'New issues must use a non-Intake, non-Duplicate status.')
   }
   await validateIssueOptions(db, team.workspaceId, team.id, request.input)
+  // FIELD-001: one typed boundary for every creating door; untyped legacy keys pass unchanged.
+  const fields = await admitFieldValues(binding, team.id, {}, request.input.customFields)
 
   const allocation = await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)
   const sequenceNumber = allocation.sequence
@@ -104,7 +107,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
     estimate: request.input.estimate,
     expectedOutcome: request.input.expectedOutcome,
     customerImpact: request.input.customerImpact,
-    customFieldsJson: JSON.stringify(request.input.customFields),
+    customFieldsJson: JSON.stringify(fields.values),
     deferredUntil: null,
     version: 1,
     completedAt: status.category === 'completed' ? now : null,
@@ -134,7 +137,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
     dueDate: request.input.dueDate,
       expectedOutcome: request.input.expectedOutcome,
       customerImpact: request.input.customerImpact,
-      customFields: request.input.customFields,
+      customFields: fields.values,
     },
     now,
   })
@@ -143,7 +146,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
   const labelWrites = request.input.labelIds.length === 0
     ? []
     : [db.insert(issueLabels).values(request.input.labelIds.map((labelId) => ({ issueId, labelId, createdAt: now })))]
-  const writes = [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
+  const writes = [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, { ...request.input, fieldValues: fields.checked }, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
     }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...(request.commitStatements?.(binding,identifier) ?? [])]

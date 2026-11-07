@@ -24,6 +24,7 @@ export const inboxSchema = z.object({
       sourceEventKind: z.string().nullable().optional(),
       identifier: z.string(),
       documentId: z.string().nullable().optional(),
+      projectId: z.string().nullable().optional(),
       title: z.string(),
       actor: z.string().nullable(),
       causes: z.array(kind),
