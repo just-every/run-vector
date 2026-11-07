@@ -1,10 +1,12 @@
 import type { CopySource } from "./snapshot";
 import type { DroppedCopyValue } from "./schema";
 import { IssueMutationError } from "../issues/errors";
+import { mapCopiedFieldValues } from "../custom-fields/copy";
 
 /** Native moves and copies share workspace team/status eligibility. Labels and
- * custom fields currently have workspace scope, so their destination mapping
- * is identity; team statuses and cycles cannot carry their old team IDs. */
+ * untyped custom-field keys have workspace scope, so their destination mapping
+ * is identity; team statuses, cycles and typed team fields (FIELD-001) cannot
+ * carry their old team's identity into another team. */
 export async function copyDestination(
   db: D1Database,
   teamId: string,
@@ -71,15 +73,21 @@ export async function mapCopyValues(
     drop("milestoneId", milestoneId, "The original milestone is unavailable for the copied project.");
     milestoneId = null;
   }
+  const fields = await mapCopiedFieldValues(
+    db,
+    source.identifier,
+    JSON.parse(source.custom_fields_json) as Record<string, unknown>,
+    teamId,
+  );
+  dropped.push(...fields.dropped);
   return {
     labels,
     milestoneId,
     cycleId,
     projectId,
-    customFields: JSON.parse(source.custom_fields_json) as Record<
-      string,
-      unknown
-    >,
+    customFields: fields.values,
+    fieldValues: fields.checked,
+    customFieldMappings: fields.mappings,
     dropped,
   };
 }

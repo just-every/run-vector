@@ -9,10 +9,10 @@ export async function resolutionSlaUpgrade() {
   const db = (env as unknown as { ARCHIVE_TARGET_DB: D1Database })
     .ARCHIVE_TARGET_DB;
   const migrations = inject("migrations");
-  const latest = migrations.filter((m) => m.name >= "0126_resolution_slas.sql");
+  const latest = migrations.filter((m) => m.name >= "0128_resolution_slas.sql");
   await applyD1Migrations(
     db,
-    migrations.filter((m) => m.name < "0126_resolution_slas.sql"),
+    migrations.filter((m) => m.name < "0128_resolution_slas.sql"),
   );
   await bootstrapWorkspace(db, bindings);
   const workspace = (await db

@@ -27,6 +27,7 @@ export const scopeLabels:Record<(typeof tokenScopes)[number],string>={
  'initiatives:read':'Read initiatives you can access',
  'initiatives:write':'Create and update initiatives',
  'evidence:read':'Read agent evidence you can access',
+ 'events:read':'Read retained agent events you can access',
 };
 export function scopeDescription(serialized:string){
  const scopes=JSON.parse(serialized) as (typeof tokenScopes)[number][];

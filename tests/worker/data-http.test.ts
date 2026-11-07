@@ -17,6 +17,14 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const blockerName='synthetic-vector-1530';
+ const blockerState=await f.mutate('/settings/projects','POST',{name:blockerName,leadOperatorId:f.peer});
+ const projectBlocker=blockerState.projects.find(p=>p.name===blockerName)!;
+ const graphPath='/projects/'+f.project.id+'/dependencies/'+projectBlocker.id;
+ expect((await f.call(graphPath,'PUT')).status).toBe(200);
+ const directGraphBefore=(await (await f.call('/projects/'+f.project.id)).json() as any).directDependencies;
+ const graphReceiptsBefore=await Promise.all(['project_dependencies','project_notifications'].map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY id').all()).results));
+
  const triagePath='/settings/teams/'+f.team.id+'/triage-rotation';
  expect((await f.call('/settings/teams/'+f.team.id+'/members/'+f.peer,'PUT',{role:'member'})).status).toBe(200);
  expect((await f.call(triagePath,'PUT',{startsLocal:'2026-01-05T09:00',operatorIds:[f.owner,f.peer]})).status).toBe(200);
@@ -223,6 +231,12 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  const restoredProject=await targetCall('/api/projects/'+f.project.id,'GET',undefined,historical);
  expect(restoredProject.status).toBe(200);
  const restoredProjectBody=await restoredProject.json();
+ expect(restoredProjectBody).toMatchObject({directDependencies:directGraphBefore});
+ expect(await Promise.all(['project_dependencies','project_notifications'].map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY id').all()).results))).toEqual(graphReceiptsBefore);
+ const graphReplay=await targetCall('/api'+graphPath,'PUT',undefined,historical);
+ expect(graphReplay.status,await graphReplay.clone().text()).toBe(200);
+ expect(await Promise.all(['project_dependencies','project_notifications'].map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY id').all()).results))).toEqual(graphReceiptsBefore);
+
  expect(restoredProjectBody).toMatchObject({milestones:[expect.objectContaining({id:milestone.id,name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'})]});
  expect(await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json()).toMatchObject({milestoneId:milestone.id,milestone:{name:'Archive delivery'},startDate:'2026-09-01',dueDate:'2026-09-07'});
  expect(restoredProjectBody).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});

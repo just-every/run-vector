@@ -8,6 +8,7 @@ import {
 import { z } from "zod";
 import { housekeepingSchema } from "../housekeeping/schema";
 import { cycleReportSchema } from "../cycle-report/schema.ts";
+import { customFieldSchema } from "../custom-fields/schema";
 
 export const administrationId = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 export const workflowCategory = z.enum([
@@ -176,6 +177,7 @@ export const administrationSchema = z.object({
       autoCycleStarted: z.boolean(),
       autoCycleCompleted: z.boolean(),
       statuses: z.array(administrationStatusSchema),
+      customFields: z.array(customFieldSchema),
       membershipMode: z.enum(["open","invite_only"]),
       requestsEnabled: z.boolean(),
       joinRequests: z.array(z.object({requesterId:z.string(),name:z.string(),state:z.enum(["pending","approved","declined"])})),
