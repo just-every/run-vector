@@ -9,6 +9,7 @@
     "audit",
     "idempotency",
     "resources",
+    "prompts",
     "events"
   ],
   "tools": [

@@ -1,6 +1,8 @@
 import inventory from '../archive-inventory.json';
 import type { Json, D1Sql } from '../../../../../vendor/base/import-kit/src/d1/index';
 
+// Direct project edges and their notifications belong to project identities,
+// never an issue snapshot. Issue import rollback must leave that graph intact.
 // Each owned relation participates in the same full-value predicate. Incoming
 // relationships are guarded separately on reversal, since later entries in the
 // accepted batch may legitimately point at an earlier imported issue.
