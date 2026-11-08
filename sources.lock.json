@@ -4222,7 +4222,7 @@
       "executable": false
     },
     "src/core/features/administration/projects.ts": {
-      "sha256": "923c447833ebdecb43c3116712cae836aa2db764b616c368d491fdca41411f6c",
+      "sha256": "0d94068341367534a40dd0359e2a316f80d4106e5b0ebfe664a1fde935635b7b",
       "executable": false
     },
     "src/core/features/administration/read.ts": {
@@ -4234,7 +4234,7 @@
       "executable": false
     },
     "src/core/features/administration/schema.ts": {
-      "sha256": "73da960d53a28605e0a47641f11c6ac9755a4b2da01bb6e5c05cead9ed0b4add",
+      "sha256": "8b25eab8a89c376ca37a773905070c40cc82666835dbc58e4d33b1ad6521e89a",
       "executable": false
     },
     "src/core/features/administration/teams.ts": {
@@ -7062,11 +7062,11 @@
       "executable": false
     },
     "src/core/features/roadmap/routes.ts": {
-      "sha256": "603420acc5bb890eb220a3b2d7b7b855c46152de6c1c504bd04aa7813c041b5a",
+      "sha256": "421db767736b885a203219e3d5684f9cda6818f14be26cf9f5775a162cb563b4",
       "executable": false
     },
     "src/core/features/roadmap/schema.ts": {
-      "sha256": "df458953010314b4760f312edf228cd5b91d79769f0aa89702eba54bae3d009c",
+      "sha256": "e303657027feef696f347dee1207a929fc4c6a3b9ece4580e873761bd0211c24",
       "executable": false
     },
     "src/core/features/roles/authority.ts": {
@@ -9970,7 +9970,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "e3e0ac6eaefdf1307773c0c115d5fb8db42dfc9271827a2ff8fc59a8d070df01",
+      "sha256": "a7fc08c712cc17870918a47f5a011c9c351ee7807de78f449871b10695dbefdd",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

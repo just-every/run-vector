@@ -12,7 +12,8 @@ export function addRoadmapRoutes(app:Hono<AppEnvironment>) {
     const id=administrationId.safeParse(c.req.param('id')),body=roadmapChange.safeParse(await readRequestJson(c.req.raw));
     if(!id.success || !body.success)return c.json({error:'invalid_request',message:'Choose valid planning fields and a current project version.'},400);
     try {
-      await updateProject(c.env.DB,c.get('operatorId'),id.data,body.data,{combineDates:true});
+      const {expectedVersion,...change}=body.data;
+      await updateProject(c.env.DB,c.get('operatorId'),id.data,change,{combineDates:true,expectedVersion});
       return c.json(await readRoadmap(c.env.DB,c.get('operatorId')));
     } catch(error) {
       if(error instanceof SettingsError)return c.json({error:error.code,message:error.message},error.status);

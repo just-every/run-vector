@@ -3,7 +3,7 @@ import {projectUpdateSchema} from '../administration/schema';
 export const roadmapChange = z.object({
   startDate:projectUpdateSchema.shape.startDate,targetDate:projectUpdateSchema.shape.targetDate,
   priority:projectUpdateSchema.shape.priority,labelIds:projectUpdateSchema.shape.labelIds,
-  expectedVersion:projectUpdateSchema.shape.expectedVersion.unwrap(),
+  expectedVersion:z.string().regex(/^[a-f0-9]{64}$/),
 }).strict().refine(value => Object.keys(value).length > 1, 'Choose a field to change.');
 export const placementSchema = z.object({kind:z.enum(['interval','diamond','open','unscheduled']),start:z.string().nullable(),end:z.string().nullable()});
 export const roadmapProjectSchema = z.object({
