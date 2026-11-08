@@ -2038,7 +2038,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
+      "sha256": "cc02b7d8df5dcf7388a7a38c33c1203c0835289aa1c9d28afc42933f570bf504",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -7062,7 +7062,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "2b6a6282d2ad83d0244853033e8180aac2570b5df1b068f03558f3aa7ffc1f4a",
+      "sha256": "3c4d106927432922ef8fdc1fe6cd80c48ea1c38013d339f75abca922c7c59e06",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -9774,7 +9774,7 @@
       "executable": false
     },
     "tests/worker/outbound-subscription-upgrade.ts": {
-      "sha256": "c5f93749115073f345a8c194ab3b8655f7775769e3a047028efee3aa76a9ba98",
+      "sha256": "809b26ab4381f19d3dd343a9c07d047fb29fa95438e6c8844c5737f06781b442",
       "executable": false
     },
     "tests/worker/outbound-webhooks.test.ts": {
@@ -10038,7 +10038,7 @@
       "executable": false
     },
     "tests/worker/team-cycles-journey.ts": {
-      "sha256": "13deb5f74063c307671d781e8d01df61f9ab6f2225ff4e59f3d11a05ece23cd4",
+      "sha256": "4f41b285d8b3d9b9ceedf8ba15b0ecac87f9295ab7f1f6af707eb0dc0ddb19c6",
       "executable": false
     },
     "tests/worker/triage-responsibility-journey.ts": {
@@ -10046,7 +10046,7 @@
       "executable": false
     },
     "tests/worker/triage-upgrade.ts": {
-      "sha256": "e5f71a4de946053df4b0283b44ddae50066685f38c4f02f71d3dd156a00e2e6a",
+      "sha256": "4beec45ca7ed90b51668ae8a2fa9ed70b3a557f88583f915f14dddab1d64b96c",
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {

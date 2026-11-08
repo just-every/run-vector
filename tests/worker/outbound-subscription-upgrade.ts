@@ -25,7 +25,7 @@ export async function outboundSubscriptionUpgrade() {
   expect(await db.prepare('SELECT * FROM vector_webhook_destinations WHERE id=?').bind(destination).first()).toEqual({ ...original,
     event_kinds: JSON.stringify(['issue.created', 'issue.updated', 'issue.completed']), team_ids: '[]' });
   expect((await db.prepare('SELECT * FROM vector_webhook_events ORDER BY id').all()).results).toEqual(queued);
-  expect((await db.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(issues);
+  expect((await db.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(issues.map(issue=>({...issue,issue_type_id:null})));
   await db.batch([
     db.prepare('INSERT INTO issue_comments(id,issue_id,actor_operator_id,body,created_at,updated_at) VALUES(?,?,?,?,?,?)').bind('synthetic-vector-9053', issue.id, owner, 'synthetic-vector-9054', at, at),
     activity('synthetic-vector-9055', 'comment.created', 'synthetic-vector-9053'),

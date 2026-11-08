@@ -4,10 +4,11 @@ import { expect, inject } from "vitest";
 import { insertHistoricalSample } from "./historical-sample-fixture";
 /**
  * Columns a later migration adds to a table that already held rows, with the value an
- * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1.
+ * untouched pre-existing row takes: 0124 enables cycles; 0134 leaves issue types off and unset.
  */
 const addedAfterBoundary: Record<string, Record<string, unknown>> = {
-  teams: { cycles_enabled: 1 },
+  teams: { cycles_enabled: 1, issue_types_enabled: 0 },
+  issues: { issue_type_id: null },
 };
 /** A populated prior head retains every value, including queued candidates and mutes. */
 export async function triageUpgrade() {
