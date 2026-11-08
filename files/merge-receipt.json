@@ -1,0 +1,10 @@
+{
+  "main": "442b6145",
+  "automationMigration": "0135_automation_rules.sql",
+  "automationSqlUnchanged": true,
+  "mainSlackMigrationUnchanged": true,
+  "snapshotFamilies": [
+    "slackThreads",
+    "automationRuns"
+  ]
+}

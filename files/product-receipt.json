@@ -1,0 +1,24 @@
+{
+  "branch": "cloud/sd-vector-c-f204-pc1",
+  "head": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "parents": [
+    "b2ea97e0b67e65ddca17a89631080860d054e3a3",
+    "442b61455234c57befcb642bf4afdaa2dc459922"
+  ],
+  "integratedMain": "442b61455234c57befcb642bf4afdaa2dc459922",
+  "savedHeadRetained": true,
+  "workingTreeClean": true,
+  "contractDiff": "",
+  "generatedViewDiff": "",
+  "productPush": "success",
+  "productRef": "refs/heads/cloud/sd-vector-c-f204-pc1",
+  "publicationScan": {
+    "status": "not run in cloud; fleet gate",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null
+  },
+  "mainEquality": false,
+  "runSite": "fleet gate after landing",
+  "pr": null
+}

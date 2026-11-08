@@ -1,0 +1,59 @@
+{
+  "run": 42511092094,
+  "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "conclusion": "failure",
+  "failedJobs": [
+    {
+      "job": 128824388714,
+      "shard": "core-runtime",
+      "failure": "page.waitForFunction: Timeout 30000ms exceeded.",
+      "location": "tests/e2e/core-stream-controls-journey.mjs:47:16",
+      "logExcerpt": [
+        "2026-11-08T18:49:57.7860210Z page.waitForFunction: Timeout 30000ms exceeded.",
+        "2026-11-08T18:49:57.7861089Z     at reset (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:47:16)",
+        "2026-11-08T18:49:57.7862574Z     at async streamControlsJourney (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:92:5)",
+        "2026-11-08T18:49:57.7863669Z     at async withInvitedOperator (/home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)",
+        "2026-11-08T18:49:57.7864648Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:754:5 {",
+        "2026-11-08T18:49:57.7865209Z   log: [],",
+        "2026-11-08T18:49:57.7865471Z   name: 'TimeoutError'",
+        "2026-11-08T18:49:57.7865752Z }",
+        "2026-11-08T18:49:57.7865885Z "
+      ]
+    },
+    {
+      "job": 128824388750,
+      "shard": "hosted-artifact",
+      "failure": "Stale integration management/integration/deployment-spec.json",
+      "location": "scripts/sync-integration.mjs:26",
+      "logExcerpt": [
+        "2026-11-08T18:41:42.7863961Z Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+        "2026-11-08T18:41:42.7864365Z     at integrationRecipe (file://[REDACTED]/scripts/sync-integration.mjs:26:13)",
+        "2026-11-08T18:41:42.7864866Z     at async file://[REDACTED]/scripts/sync-integration.mjs:34:3",
+        "2026-11-08T18:41:42.7865002Z ",
+        "2026-11-08T18:41:42.7865051Z Node.js v22.20.0",
+        "2026-11-08T18:41:42.7962888Z \u2009ELIFECYCLE\u2009 Command failed with exit code 1.",
+        "2026-11-08T18:41:42.8217548Z \u2009ELIFECYCLE\u2009 Command failed with exit code 1.",
+        "2026-11-08T18:41:42.8932883Z Verifying application: exit 1, signal none.",
+        "2026-11-08T18:41:42.8933194Z Command: pnpm"
+      ]
+    },
+    {
+      "job": 128824388910,
+      "shard": "imports",
+      "failure": "AssertionError: expected false to be true",
+      "location": "tests/worker/issue-session-projection.test.ts:79:25",
+      "logExcerpt": [
+        "2026-11-08T18:43:51.3452193Z AssertionError: expected false to be true // Object.is equality",
+        "2026-11-08T18:43:51.3452475Z ",
+        "2026-11-08T18:43:51.3452613Z - Expected",
+        "2026-11-08T18:43:51.3452782Z + Received",
+        "2026-11-08T18:43:51.3452874Z ",
+        "2026-11-08T18:43:51.3452948Z - true",
+        "2026-11-08T18:43:51.3453112Z + false",
+        "2026-11-08T18:43:51.3453196Z ",
+        "2026-11-08T18:43:51.3453444Z  \u276f tests/worker/issue-session-projection.test.ts:79:25"
+      ]
+    }
+  ],
+  "logArchiveNote": "gh 2.46 --log-failed returned empty because archive entries were consolidated per job; read its already downloaded zip without another GitHub log call."
+}

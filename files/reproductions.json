@@ -1,0 +1,45 @@
+{
+  "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "timezone": "UTC",
+  "reproductions": [
+    {
+      "job": 128824388750,
+      "command": "pnpm verify:ci --shard hosted-artifact",
+      "test": "integration:check",
+      "exit": 1,
+      "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+      "repair": "Regenerated the declared deployment specification from the unchanged additive migration using pnpm integration:sync."
+    },
+    {
+      "job": 128824388910,
+      "command": "pnpm verify:ci --shard imports",
+      "test": "tests/worker/issue-session-projection.test.ts: stale edit, accept and return projection denies native signout between final native auth and the shared admission statement",
+      "exit": 1,
+      "failure": "AssertionError: expected false to be true at issue-session-projection.test.ts:79:25",
+      "mainComparison": "All three tests pass on main 0e8a686c06eddd55943ed1d2690df32a8fc82213 on the same machine.",
+      "repair": "Identify the actor projection by its source and non-null actor predicate rather than its obsolete SELECT prefix. Keep the forced signout, reached-hook assertions, 401 and unchanged storage assertions.",
+      "localSetupNote": "The first full local shard also failed first-run mail admission after rer setup introduced private .dev.vars. CI did not have that failure. Moved the generated private file outside the checkout without reading it; rerun unchanged first-run test to verify."
+    },
+    {
+      "job": 128824388714,
+      "command": "pnpm verify:ci --shard core-runtime",
+      "test": "streamControlsJourney reset at core-stream-controls-journey.mjs:47",
+      "originalFailure": "page.waitForFunction: Timeout 30000ms exceeded.",
+      "flowResult": "Saved head and main each completed all 59 Current browser checks, including CURR-009 and WORK-003 at both widths. The original reset failure was not reproduced.",
+      "repair": "No change to stream behavior or its assertions; no speculative fix. The same command also executes a separate long project installation after the 59-check Current flow.",
+      "baselineNote": "Main comparison is the initial main 0e8a686c. The saved-head project tail later read additive migration files after the forward merge began; it cannot establish full exact-tree baseline provenance. The Current flow completed before that merge.",
+      "exit": 0,
+      "completedChecks": {
+        "current": 59,
+        "independentProjects": 54
+      },
+      "mainExit": 0,
+      "mainCompletedChecks": {
+        "current": 59,
+        "independentProjects": 54
+      }
+    }
+  ]
+}

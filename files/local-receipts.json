@@ -1,0 +1,115 @@
+{
+  "headBeforeRepair": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "checks": [
+    {
+      "command": "pnpm test:worker tests/worker/issue-session-projection.test.ts tests/worker/first-run.test.ts tests/worker/automation-rules.test.ts",
+      "exit": 0,
+      "files": 3,
+      "tests": 5,
+      "durationSeconds": 88.4
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write AUTO-002",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check AUTO-002",
+      "exit": 0,
+      "generatedViews": "restored from origin/main"
+    },
+    {
+      "command": "pnpm integration:sync",
+      "exit": 0
+    },
+    {
+      "command": "pnpm integration:check",
+      "exit": 0
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests": 1
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:worker tests/worker/role-matrix.test.ts",
+      "exit": 0,
+      "tests": 6,
+      "durationSeconds": 217.88
+    },
+    {
+      "command": "pnpm test:worker tests/worker/automation-rules.test.ts tests/worker/issue-session-projection.test.ts tests/worker/project-fields-upgrade.test.ts tests/worker/outbound-broken-destination.test.ts",
+      "exit": 0,
+      "tests": 13,
+      "files": 4,
+      "durationSeconds": 142.14,
+      "tree": "merge of b2ea97e0 and 442b6145, automation migration renamed to 0135"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "tree": "same merged tree"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "tree": "final merged source"
+    },
+    {
+      "command": "pnpm integration:sync && pnpm integration:check",
+      "exit": 0,
+      "tree": "final merged source"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write AUTO-002 && node scripts/contract-docs.mjs check AUTO-002",
+      "exit": 0,
+      "generatedViews": "restored to origin/main and absent from candidate diff"
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tree": "final merged source"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "tree": "final merged source"
+    },
+    {
+      "command": "pnpm sources:lock && pnpm sources:check",
+      "exit": 0,
+      "tree": "final merged source"
+    }
+  ],
+  "candidateHead": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "baseline": {
+    "source": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+    "coreRuntimeExit": 0,
+    "currentBrowserChecks": 59,
+    "projectBrowserChecks": 54,
+    "note": "Current browser flow was unchanged and completed before merge; later project-tail migrations were read during merge, so full baseline exact-tree provenance is qualified."
+  },
+  "mainComparison": {
+    "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "coreRuntimeExit": 0,
+    "currentBrowserChecks": 59,
+    "projectBrowserChecks": 54,
+    "sessionProjectionTests": 3,
+    "sessionProjectionExit": 0
+  }
+}
