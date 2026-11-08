@@ -1,0 +1,12 @@
+{
+  "label": "ledger",
+  "command": [
+    "timeout",
+    "180",
+    "node",
+    "--test",
+    "scripts/deployment/tests/migration-head.test.mjs"
+  ],
+  "exit": 0,
+  "seconds": 1.02
+}

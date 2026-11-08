@@ -1,0 +1,16 @@
+{
+  "label": "comparison-main-rollback",
+  "command": [
+    "timeout",
+    "300",
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "vitest.config.ts",
+    "tests/worker/data-http-audit-recovery.test.ts"
+  ],
+  "exit": 0,
+  "seconds": 137.87
+}

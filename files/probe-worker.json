@@ -1,0 +1,20 @@
+{
+  "label": "probe-worker",
+  "command": [
+    "timeout",
+    "600",
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "vitest.config.ts",
+    "tests/worker/integration-api.test.ts",
+    "tests/worker/role-matrix.test.ts",
+    "tests/worker/project-fields.test.ts",
+    "tests/worker/project-fields-upgrade.test.ts",
+    "tests/worker/roadmap.test.ts"
+  ],
+  "exit": 0,
+  "seconds": 293.87
+}

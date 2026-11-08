@@ -1,0 +1,13 @@
+{
+  "label": "views-check",
+  "command": [
+    "timeout",
+    "120",
+    "node",
+    "scripts/contract-docs.mjs",
+    "check",
+    "INIT-003"
+  ],
+  "exit": 0,
+  "seconds": 0.1
+}

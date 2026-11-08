@@ -1,0 +1,11 @@
+{
+  "label": "lock-write",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "sources:lock"
+  ],
+  "exit": 0,
+  "seconds": 1.23
+}

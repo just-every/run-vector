@@ -1,0 +1,12 @@
+{
+  "repository": "just-every/run-vector",
+  "source_branch": "cloud/sd-vector-c-f202",
+  "source_head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "full_history": true,
+  "merge_result": "Already up to date; origin/main is ancestor of source",
+  "diff_stat": "sources.lock.json                                  |  60 +++++--\n src/core/app/api.ts                                |   2 +\n src/core/app/page-resources.server.ts              |   3 +-\n src/core/app/ui/app-shell.tsx                      |   2 +\n src/core/features/administration/project-fields.ts |  22 ++-\n src/core/features/administration/projects.ts       |  11 +-\n src/core/features/administration/schema.ts         |   1 +\n src/core/features/projects/ui/project-activity.tsx |   6 +-\n src/core/features/roadmap/editor.tsx               |  25 +++\n src/core/features/roadmap/page.tsx                 | 119 +++++++++++++\n src/core/features/roadmap/placement.ts             |  31 ++++\n src/core/features/roadmap/read.ts                  |  32 ++++\n src/core/features/roadmap/roadmap.css              |   8 +\n src/core/features/roadmap/routes.ts                |  22 +++\n src/core/features/roadmap/schema.ts                |  22 +++\n src/core/features/roles/doors.ts                   |   2 +\n src/routeTree.gen.ts                               |  21 +++\n src/routes/app.roadmap.tsx                         |   4 +\n tests/e2e/core-project-membership-journey.mjs      |   2 +\n tests/e2e/roadmap-journey.mjs                      | 186 +++++++++++++++++++++\n tests/worker/roadmap.test.ts                       | 112 +++++++++++++\n 21 files changed, 676 insertions(+), 17 deletions(-)",
+  "init_003_row": "| `INIT-003` | Roadmap timeline | target | missing |  | No implementation yet |",
+  "source_migration_head": "0133_release_notes.sql",
+  "other_cited_commit": "806b1715d89a5383b5722b1b6c37a615b0665763 Prove suspension retains personal history while clearing revoked Inbox pages"
+}

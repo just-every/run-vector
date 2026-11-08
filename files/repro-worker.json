@@ -1,0 +1,25 @@
+{
+  "label": "repro-worker",
+  "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "command": [
+    "timeout",
+    "600",
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "vitest.config.ts",
+    "tests/worker/integration-api.test.ts",
+    "tests/worker/role-matrix.test.ts",
+    "tests/worker/project-fields.test.ts",
+    "tests/worker/project-fields-upgrade.test.ts",
+    "tests/worker/roadmap.test.ts"
+  ],
+  "exit": 1,
+  "files": 5,
+  "tests": 17,
+  "passed": 15,
+  "failed": 2,
+  "seconds": 173.2
+}

@@ -1,0 +1,92 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+ ❯ tests/worker/role-matrix.test.ts (6 tests | 1 failed) 104941ms
+   × [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 9019ms
+Using secrets defined in .dev.vars
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+ ❯ tests/worker/integration-api.test.ts (5 tests | 1 failed) 14637ms
+   × [API-003] the versioned schema is published through the real app 78ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/integration-api.test.ts > [API-003] the versioned schema is published through the real app
+AssertionError: expected { type: 'object', …(2) } to deeply equal { type: 'object', …(3) }
+
+- Expected
++ Received
+
+@@ -19,14 +19,10 @@
+      },
+      "description": {
+        "maxLength": 100000,
+        "type": "string",
+      },
+-     "expectedVersion": {
+-       "pattern": "^[a-f0-9]{64}$",
+-       "type": "string",
+-     },
+      "icon": {
+        "anyOf": [
+          {
+            "pattern": "^\\p{RGI_Emoji}(?![\\s\\S])",
+            "type": "string",
+
+ ❯ tests/worker/integration-api.test.ts:92:176
+     90|   ['/projects/{id}/milestones/order','put',planning.projectMilestoneOr…
+     91|   ['/cycles','post',planning.cycleCreateSchema],
+     92|  ] as const){const generated=z.toJSONSchema(validator,{io:'input'});de…
+       |                                                                                                                                                                                ^
+     93|  const mounted=f.app.routes.filter(r=>r.method!=='ALL'&&r.path.startsW…
+     94|  expect(mounted).toEqual(apiRoutes.map(r=>r.method+' '+r.path).sort());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+AssertionError: native fixture coverage from src/core/features/roles/doors.ts: expected [ 'ALL /portability/*', …(173) ] to deeply equal [ 'ALL /portability/*', …(174) ]
+
+- Expected
++ Received
+
+@@ -42,11 +42,10 @@
+    "PATCH /issues/:identifier/parent",
+    "PATCH /issues/:identifier/subissues",
+    "PATCH /issues/:identifier/subscription",
+    "PATCH /releases/:id",
+    "PATCH /releases/:id/notes",
+-   "PATCH /roadmap/projects/:id",
+    "PATCH /settings",
+    "PATCH /settings/labels/:id",
+    "PATCH /settings/operators/:operatorId/role",
+    "PATCH /settings/projects/:id",
+    "PATCH /settings/projects/:id/milestones/:milestoneId",
+
+ ❯ prepareViewerCensus tests/worker/role-viewer-census.ts:288:244
+
+ ❯ viewerVisibilityJourney tests/worker/role-viewer-journey.ts:40:15
+ ❯ tests/worker/role-matrix.test.ts:527:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 3 passed (5)
+      Tests  2 failed | 15 passed (17)
+   Start at  21:12:30
+   Duration  173.20s (transform 5.38s, setup 0ms, import 27.67s, tests 142.73s, environment 1ms)
+

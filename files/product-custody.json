@@ -1,0 +1,21 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f202-fix1",
+  "head": "4881b2069146819298fe5f7672bcea2d71a93704",
+  "source": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "status": "",
+  "push_status": "pushed",
+  "pr": null,
+  "contract_unchanged": true,
+  "views_unchanged": true,
+  "parent_source_preserved": true,
+  "remote_head": "4881b2069146819298fe5f7672bcea2d71a93704",
+  "terminal_status": "PUSHED",
+  "ci_run_id": 42525382204,
+  "ci_status": "queued",
+  "ci_conclusion": null,
+  "ci_url": "https://github.com/just-every/run-vector/actions/runs/42525382204",
+  "github_budget_exhausted": true,
+  "ready": false
+}

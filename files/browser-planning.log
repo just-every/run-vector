@@ -1,0 +1,1560 @@
+(node:4316) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed RENDER-SSR
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-OPS-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-AGENT-010
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-AGENT-012
+[Vector runtime] Passed BASE-AGENT-009
+[Agent role parity +0.000s] start
+[Agent role parity +0.004s] await native GET /api/session
+[Agent role parity +0.017s] native response GET /api/session
+[Agent role parity +0.051s] await native POST /api/settings/integrations/tokens
+[Agent role parity +0.081s] native response POST /api/settings/integrations/tokens
+[Agent role parity +0.082s] await invitation admin
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Agent role parity +5.119s] await native POST /api/settings/integrations/tokens
+[Agent role parity +5.197s] native response POST /api/settings/integrations/tokens
+[Agent role parity +5.201s] await invitation lead
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Agent role parity +10.756s] await native POST /api/settings/integrations/tokens
+[Agent role parity +11.036s] native response POST /api/settings/integrations/tokens
+[Agent role parity +11.041s] await invitation member
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Agent role parity +16.177s] await native POST /api/settings/integrations/tokens
+[Agent role parity +16.577s] native response POST /api/settings/integrations/tokens
+[Agent role parity +16.580s] await invitation guest
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Agent role parity +22.089s] await native POST /api/settings/integrations/tokens
+[Agent role parity +22.636s] native response POST /api/settings/integrations/tokens
+[Agent role parity +22.640s] await invitation viewer
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Agent role parity +28.382s] await native POST /api/settings/integrations/tokens
+[Agent role parity +28.947s] native response POST /api/settings/integrations/tokens
+[Agent role parity +28.956s] await native GET /auth/session
+[Agent role parity +28.957s] await native GET /auth/session
+[Agent role parity +28.960s] await native GET /auth/session
+[Agent role parity +28.960s] await native GET /auth/session
+[Agent role parity +28.961s] await native GET /auth/session
+[Agent role parity +28.963s] await native GET /auth/session
+[Agent role parity +28.994s] native response GET /auth/session
+[Agent role parity +28.995s] native response GET /auth/session
+[Agent role parity +28.995s] native response GET /auth/session
+[Agent role parity +28.996s] native response GET /auth/session
+[Agent role parity +28.998s] native response GET /auth/session
+[Agent role parity +28.998s] native response GET /auth/session
+[Agent role parity +29.002s] await native POST /api/settings/teams
+[Agent role parity +29.064s] native response POST /api/settings/teams
+[Agent role parity +29.068s] await native POST /api/settings/teams
+[Agent role parity +29.101s] native response POST /api/settings/teams
+[Agent role parity +29.105s] await native PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +29.147s] native response PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +29.151s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +29.186s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +29.190s] await native PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +29.698s] native response PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +29.707s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +30.131s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +30.137s] await native PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +30.168s] native response PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +30.172s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +30.368s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +30.375s] await native PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +30.457s] native response PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +30.460s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +30.487s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +30.490s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +30.524s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +30.528s] await native PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +30.556s] native response PUT /api/settings/teams/01M6YH88YEEGG60HXDRTYVCYCV/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +30.560s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +30.594s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +30.597s] await native PATCH /api/settings/operators/01M6YH85QGE2YHSYHYFJDFXV6F/role
+[Agent role parity +30.618s] native response PATCH /api/settings/operators/01M6YH85QGE2YHSYHYFJDFXV6F/role
+[Agent role parity +30.621s] await native POST /api/issues
+[Agent role parity +30.711s] native response POST /api/issues
+[Agent role parity +30.714s] await native POST /api/issues
+[Agent role parity +30.783s] native response POST /api/issues
+[Agent role parity +30.787s] await native PUT /agents/api/policy
+[Agent role parity +30.798s] native response PUT /agents/api/policy
+[Agent role parity +30.801s] await native GET /api/session
+[Agent role parity +30.812s] native response GET /api/session
+[Agent role parity +30.813s] owner autonomous public
+[Agent role parity +30.813s] await show owner agent-role-public-owner
+[Agent role parity +30.813s] await issue navigation owner
+[Agent role parity +33.571s] await issue reload owner
+[Agent role parity +33.924s] await issue heading owner
+[Agent role parity +33.938s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +33.969s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +34.204s] await axe/screenshots agent-role-public-owner
+[Agent role parity +35.139s] capture complete agent-role-public-owner
+[Agent role parity +35.433s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +35.776s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +36.063s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +36.142s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +36.143s] await MCP owner vector.issue.concurrent_edits
+[Agent role parity +36.246s] MCP response owner vector.issue.concurrent_edits
+[Agent role parity +36.246s] await MCP owner vector.issue.comment
+[Agent role parity +36.545s] MCP response owner vector.issue.comment
+[Agent role parity +36.548s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +36.590s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +36.593s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +36.620s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +36.621s] await show owner readback
+[Agent role parity +36.621s] await issue navigation owner
+[Agent role parity +36.772s] await issue reload owner
+[Agent role parity +37.123s] await issue heading owner
+[Agent role parity +37.146s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +37.196s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +40.528s] owner autonomous private
+[Agent role parity +40.528s] await show owner agent-role-private-owner
+[Agent role parity +40.529s] await issue navigation owner
+[Agent role parity +40.938s] await issue reload owner
+[Agent role parity +41.352s] await issue heading owner
+[Agent role parity +41.379s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +41.924s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +42.544s] await axe/screenshots agent-role-private-owner
+[Agent role parity +43.589s] capture complete agent-role-private-owner
+[Agent role parity +43.843s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +43.930s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +44.093s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +44.163s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +44.164s] await MCP owner vector.issue.concurrent_edits
+[Agent role parity +44.255s] MCP response owner vector.issue.concurrent_edits
+[Agent role parity +44.255s] await MCP owner vector.issue.comment
+[Agent role parity +44.383s] MCP response owner vector.issue.comment
+[Agent role parity +44.386s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +44.796s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +44.802s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +45.003s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +45.004s] await show owner readback
+[Agent role parity +45.004s] await issue navigation owner
+[Agent role parity +45.154s] await issue reload owner
+[Agent role parity +45.585s] await issue heading owner
+[Agent role parity +45.599s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +45.645s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +48.973s] await native GET /api/session
+[Agent role parity +48.995s] native response GET /api/session
+[Agent role parity +48.996s] admin autonomous public
+[Agent role parity +48.996s] await show admin agent-role-public-admin
+[Agent role parity +48.996s] await issue navigation admin
+[Agent role parity +51.798s] await issue reload admin
+[Agent role parity +52.100s] await issue heading admin
+[Agent role parity +52.108s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +52.194s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +52.485s] await axe/screenshots agent-role-public-admin
+[Agent role parity +53.745s] capture complete agent-role-public-admin
+[Agent role parity +54.053s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +54.188s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +54.344s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +54.541s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +54.542s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +54.632s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +54.632s] await MCP admin vector.issue.comment
+[Agent role parity +54.700s] MCP response admin vector.issue.comment
+[Agent role parity +54.703s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +54.763s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +54.767s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +54.793s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +54.794s] await show admin readback
+[Agent role parity +54.794s] await issue navigation admin
+[Agent role parity +54.945s] await issue reload admin
+[Agent role parity +55.286s] await issue heading admin
+[Agent role parity +55.298s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +55.348s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +58.703s] admin autonomous private
+[Agent role parity +58.704s] await show admin agent-role-private-admin
+[Agent role parity +58.704s] await issue navigation admin
+[Agent role parity +59.040s] await issue reload admin
+[Agent role parity +59.369s] await issue heading admin
+[Agent role parity +59.376s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +59.665s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +59.882s] await axe/screenshots agent-role-private-admin
+[Agent role parity +61.043s] capture complete agent-role-private-admin
+[Agent role parity +61.335s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +61.472s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +61.601s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +61.766s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +61.768s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +61.859s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +61.859s] await MCP admin vector.issue.comment
+[Agent role parity +61.925s] MCP response admin vector.issue.comment
+[Agent role parity +61.928s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +61.953s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +61.956s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +61.983s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +61.984s] await show admin readback
+[Agent role parity +61.984s] await issue navigation admin
+[Agent role parity +62.135s] await issue reload admin
+[Agent role parity +62.647s] await issue heading admin
+[Agent role parity +62.653s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +63.029s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +66.014s] await native GET /api/session
+[Agent role parity +66.039s] native response GET /api/session
+[Agent role parity +66.040s] lead autonomous public
+[Agent role parity +66.040s] await show lead agent-role-public-lead
+[Agent role parity +66.040s] await issue navigation lead
+[Agent role parity +69.414s] await issue reload lead
+[Agent role parity +69.704s] await issue heading lead
+[Agent role parity +69.714s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +69.793s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +70.049s] await axe/screenshots agent-role-public-lead
+[Agent role parity +71.569s] capture complete agent-role-public-lead
+[Agent role parity +71.901s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +72.004s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +72.176s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +72.306s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +72.307s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +72.423s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +72.423s] await MCP lead vector.issue.comment
+[Agent role parity +72.552s] MCP response lead vector.issue.comment
+[Agent role parity +72.556s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +72.604s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +72.609s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +72.641s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +72.641s] await show lead readback
+[Agent role parity +72.642s] await issue navigation lead
+[Agent role parity +72.896s] await issue reload lead
+[Agent role parity +73.240s] await issue heading lead
+[Agent role parity +73.245s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +73.325s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +76.603s] lead autonomous private
+[Agent role parity +76.603s] await show lead agent-role-private-lead
+[Agent role parity +76.604s] await issue navigation lead
+[Agent role parity +76.925s] await issue reload lead
+[Agent role parity +77.219s] await issue heading lead
+[Agent role parity +77.225s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +77.299s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +77.692s] await axe/screenshots agent-role-private-lead
+[Agent role parity +78.999s] capture complete agent-role-private-lead
+[Agent role parity +79.311s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +79.465s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +79.604s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +79.700s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +79.701s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +79.794s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +79.794s] await MCP lead vector.issue.comment
+[Agent role parity +79.864s] MCP response lead vector.issue.comment
+[Agent role parity +79.867s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +79.895s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +79.898s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +79.928s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +79.929s] await show lead readback
+[Agent role parity +79.929s] await issue navigation lead
+[Agent role parity +80.080s] await issue reload lead
+[Agent role parity +80.842s] await issue heading lead
+[Agent role parity +80.852s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +80.955s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +84.263s] await native GET /api/session
+[Agent role parity +84.281s] native response GET /api/session
+[Agent role parity +84.282s] member autonomous public
+[Agent role parity +84.282s] await show member agent-role-public-member
+[Agent role parity +84.283s] await issue navigation member
+[Agent role parity +87.178s] await issue reload member
+[Agent role parity +87.484s] await issue heading member
+[Agent role parity +87.492s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +87.562s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +87.852s] await axe/screenshots agent-role-public-member
+[Agent role parity +89.311s] capture complete agent-role-public-member
+[Agent role parity +89.713s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +89.821s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +89.972s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +90.104s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +90.104s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +90.208s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +90.208s] await MCP member vector.issue.comment
+[Agent role parity +90.328s] MCP response member vector.issue.comment
+[Agent role parity +90.331s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +90.398s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +90.402s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +90.430s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +90.431s] await show member readback
+[Agent role parity +90.431s] await issue navigation member
+[Agent role parity +90.624s] await issue reload member
+[Agent role parity +90.910s] await issue heading member
+[Agent role parity +90.920s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +90.993s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +94.374s] member autonomous private
+[Agent role parity +94.374s] await show member agent-role-private-member
+[Agent role parity +94.375s] await issue navigation member
+[Agent role parity +94.722s] await issue reload member
+[Agent role parity +95.007s] await issue heading member
+[Agent role parity +95.016s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +95.102s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +95.328s] await axe/screenshots agent-role-private-member
+[Agent role parity +96.687s] capture complete agent-role-private-member
+[Agent role parity +97.046s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +97.164s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +97.323s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +97.443s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +97.444s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +97.769s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +97.769s] await MCP member vector.issue.comment
+[Agent role parity +97.857s] MCP response member vector.issue.comment
+[Agent role parity +97.861s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +97.886s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +97.889s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +97.917s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +97.918s] await show member readback
+[Agent role parity +97.918s] await issue navigation member
+[Agent role parity +98.193s] await issue reload member
+[Agent role parity +98.621s] await issue heading member
+[Agent role parity +98.630s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +98.702s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +102.278s] await native GET /api/session
+[Agent role parity +102.303s] native response GET /api/session
+[Agent role parity +102.304s] guest autonomous public
+[Agent role parity +102.304s] await show guest agent-role-public-guest
+[Agent role parity +102.310s] await native GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +102.320s] native response GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +102.320s] await issue navigation guest
+[Agent role parity +104.783s] await issue reload guest
+[Agent role parity +105.081s] await issue heading guest
+[Agent role parity +105.085s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +105.158s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +105.413s] await axe/screenshots agent-role-public-guest
+[Agent role parity +106.984s] capture complete agent-role-public-guest
+[Agent role parity +107.326s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +107.555s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +107.742s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +107.844s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +107.845s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +107.946s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +107.946s] await MCP guest vector.issue.comment
+[Agent role parity +108.029s] MCP response guest vector.issue.comment
+[Agent role parity +108.033s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +108.066s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +108.070s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +108.100s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +108.101s] await show guest readback
+[Agent role parity +108.104s] await native GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +108.112s] native response GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +108.113s] await issue navigation guest
+[Agent role parity +108.555s] await issue reload guest
+[Agent role parity +108.873s] await issue heading guest
+[Agent role parity +108.882s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +108.957s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +112.283s] guest autonomous private
+[Agent role parity +112.283s] await show guest agent-role-private-guest
+[Agent role parity +112.291s] await native GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +112.302s] native response GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +112.303s] await issue navigation guest
+[Agent role parity +112.714s] await issue reload guest
+[Agent role parity +113.040s] await issue heading guest
+[Agent role parity +113.053s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +113.125s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +113.370s] await axe/screenshots agent-role-private-guest
+[Agent role parity +115.457s] capture complete agent-role-private-guest
+[Agent role parity +115.947s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +116.150s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +116.333s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +116.600s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +116.601s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +116.687s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +116.687s] await MCP guest vector.issue.comment
+[Agent role parity +116.759s] MCP response guest vector.issue.comment
+[Agent role parity +116.767s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +116.896s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +116.901s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +116.928s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +116.929s] await show guest readback
+[Agent role parity +116.932s] await native GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +116.940s] native response GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +116.940s] await issue navigation guest
+[Agent role parity +117.090s] await issue reload guest
+[Agent role parity +117.427s] await issue heading guest
+[Agent role parity +117.436s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +117.506s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +120.818s] await native GET /api/session
+[Agent role parity +120.837s] native response GET /api/session
+[Agent role parity +120.838s] viewer autonomous public
+[Agent role parity +120.838s] await show viewer agent-role-public-viewer
+[Agent role parity +120.838s] await issue navigation viewer
+[Agent role parity +122.894s] await issue reload viewer
+[Agent role parity +123.372s] await issue heading viewer
+[Agent role parity +123.382s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +123.439s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +123.640s] await axe/screenshots agent-role-public-viewer
+[Agent role parity +124.821s] capture complete agent-role-public-viewer
+[Agent role parity +124.844s] snapshot read-only D1 (8 tables)
+[Agent role parity +124.846s] snapshot complete
+[Agent role parity +124.850s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +124.877s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +124.881s] await native PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +124.892s] native response PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +124.893s] await MCP viewer vector.issue.concurrent_edits
+[Agent role parity +124.925s] MCP response viewer vector.issue.concurrent_edits
+[Agent role parity +124.925s] snapshot read-only D1 (8 tables)
+[Agent role parity +124.926s] snapshot complete
+[Agent role parity +124.929s] await native POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +124.942s] native response POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +124.942s] await MCP viewer vector.issue.comment
+[Agent role parity +124.966s] MCP response viewer vector.issue.comment
+[Agent role parity +124.966s] snapshot read-only D1 (8 tables)
+[Agent role parity +124.967s] snapshot complete
+[Agent role parity +124.968s] viewer autonomous private
+[Agent role parity +124.968s] await show viewer agent-role-private-viewer
+[Agent role parity +124.971s] await issue navigation viewer
+[Agent role parity +126.972s] await issue reload viewer
+[Agent role parity +127.269s] await issue heading viewer
+[Agent role parity +127.274s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +127.474s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +127.674s] await axe/screenshots agent-role-private-viewer
+[Agent role parity +128.901s] capture complete agent-role-private-viewer
+[Agent role parity +128.922s] snapshot read-only D1 (8 tables)
+[Agent role parity +128.923s] snapshot complete
+[Agent role parity +128.927s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +128.966s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +128.971s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +128.983s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +128.983s] await MCP viewer vector.issue.concurrent_edits
+[Agent role parity +129.012s] MCP response viewer vector.issue.concurrent_edits
+[Agent role parity +129.013s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.014s] snapshot complete
+[Agent role parity +129.017s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +129.030s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +129.031s] await MCP viewer vector.issue.comment
+[Agent role parity +129.054s] MCP response viewer vector.issue.comment
+[Agent role parity +129.055s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.056s] snapshot complete
+[Agent role parity +129.056s] await sponsor downgrade autonomous
+[Agent role parity +129.395s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.396s] snapshot complete
+[Agent role parity +129.401s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +129.427s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +129.433s] await native PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +129.463s] native response PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +129.465s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +129.495s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +129.495s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.496s] snapshot complete
+[Agent role parity +129.499s] await native POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +129.510s] native response POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +129.510s] await MCP member vector.issue.comment
+[Agent role parity +129.535s] MCP response member vector.issue.comment
+[Agent role parity +129.535s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.536s] snapshot complete
+[Agent role parity +129.537s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.538s] snapshot complete
+[Agent role parity +129.538s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +129.565s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +129.565s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.567s] snapshot complete
+[Agent role parity +129.567s] await MCP member vector.issue.comment
+[Agent role parity +129.590s] MCP response member vector.issue.comment
+[Agent role parity +129.590s] snapshot read-only D1 (8 tables)
+[Agent role parity +129.591s] snapshot complete
+[Agent role parity +129.592s] await MCP member vector.issue.activity_history
+[Agent role parity +129.766s] MCP response member vector.issue.activity_history
+[Agent role parity +129.769s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +129.815s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +129.816s] await show member agent-role-downgraded
+[Agent role parity +129.817s] await issue navigation member
+[Agent role parity +130.218s] await issue reload member
+[Agent role parity +130.529s] await issue heading member
+[Agent role parity +130.538s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +130.639s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +130.856s] await axe/screenshots agent-role-downgraded
+[Agent role parity +131.981s] capture complete agent-role-downgraded
+[Agent role parity +132.004s] await MCP member vector.issue.activity_history
+[Agent role parity +132.074s] MCP response member vector.issue.activity_history
+[Agent role parity +132.077s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +132.131s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +132.131s] await show member readback
+[Agent role parity +132.132s] await issue navigation member
+[Agent role parity +134.100s] await issue reload member
+[Agent role parity +134.393s] await issue heading member
+[Agent role parity +134.403s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +134.483s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +134.670s] await native PATCH /api/settings/operators/01M6YH7T11GP1JR6QGPGD7NQ60/role
+[Agent role parity +134.698s] native response PATCH /api/settings/operators/01M6YH7T11GP1JR6QGPGD7NQ60/role
+[Agent role parity +134.702s] await native GET /api/options
+[Agent role parity +134.726s] native response GET /api/options
+[Agent role parity +134.734s] await native POST /api/issues
+[Agent role parity +134.834s] native response POST /api/issues
+[Agent role parity +134.834s] snapshot read-only D1 (8 tables)
+[Agent role parity +134.835s] snapshot complete
+[Agent role parity +134.838s] await native GET /api/issues/FLW-847
+[Agent role parity +134.862s] native response GET /api/issues/FLW-847
+[Agent role parity +134.867s] await native PATCH /api/issues/FLW-847
+[Agent role parity +134.877s] native response PATCH /api/issues/FLW-847
+[Agent role parity +134.878s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +134.902s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +134.902s] snapshot read-only D1 (8 tables)
+[Agent role parity +134.903s] snapshot complete
+[Agent role parity +134.906s] await native POST /api/issues/FLW-847/comments
+[Agent role parity +134.916s] native response POST /api/issues/FLW-847/comments
+[Agent role parity +134.916s] await MCP guest vector.issue.comment
+[Agent role parity +134.941s] MCP response guest vector.issue.comment
+[Agent role parity +134.941s] snapshot read-only D1 (8 tables)
+[Agent role parity +134.942s] snapshot complete
+[Agent role parity +134.944s] await private withdrawal autonomous
+[Agent role parity +135.022s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +135.074s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +135.075s] snapshot read-only D1 (8 tables)
+[Agent role parity +135.076s] snapshot complete
+[Agent role parity +135.079s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +135.105s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +135.111s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +135.121s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +135.122s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +135.148s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +135.148s] snapshot read-only D1 (8 tables)
+[Agent role parity +135.151s] snapshot complete
+[Agent role parity +135.154s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +135.167s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +135.168s] await MCP admin vector.issue.comment
+[Agent role parity +135.197s] MCP response admin vector.issue.comment
+[Agent role parity +135.197s] snapshot read-only D1 (8 tables)
+[Agent role parity +135.198s] snapshot complete
+[Agent role parity +135.199s] snapshot read-only D1 (8 tables)
+[Agent role parity +135.199s] snapshot complete
+[Agent role parity +135.199s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +135.225s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +135.225s] snapshot read-only D1 (8 tables)
+[Agent role parity +135.226s] snapshot complete
+[Agent role parity +135.226s] await MCP admin vector.issue.comment
+[Agent role parity +135.252s] MCP response admin vector.issue.comment
+[Agent role parity +135.252s] snapshot read-only D1 (8 tables)
+[Agent role parity +135.254s] snapshot complete
+[Agent role parity +135.254s] await MCP admin vector.issue.activity_history
+[Agent role parity +135.276s] MCP response admin vector.issue.activity_history
+[Agent role parity +135.279s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +135.303s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +138.835s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +138.879s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +138.950s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +138.985s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +138.986s] snapshot read-only D1 (8 tables)
+[Agent role parity +138.987s] snapshot complete
+[Agent role parity +138.990s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +139.042s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +139.047s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +139.057s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +139.058s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +139.081s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +139.081s] snapshot read-only D1 (8 tables)
+[Agent role parity +139.082s] snapshot complete
+[Agent role parity +139.085s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +139.094s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +139.095s] await MCP lead vector.issue.comment
+[Agent role parity +139.119s] MCP response lead vector.issue.comment
+[Agent role parity +139.119s] snapshot read-only D1 (8 tables)
+[Agent role parity +139.120s] snapshot complete
+[Agent role parity +139.121s] snapshot read-only D1 (8 tables)
+[Agent role parity +139.122s] snapshot complete
+[Agent role parity +139.122s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +139.147s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +139.147s] snapshot read-only D1 (8 tables)
+[Agent role parity +139.148s] snapshot complete
+[Agent role parity +139.149s] await MCP lead vector.issue.comment
+[Agent role parity +139.172s] MCP response lead vector.issue.comment
+[Agent role parity +139.172s] snapshot read-only D1 (8 tables)
+[Agent role parity +139.173s] snapshot complete
+[Agent role parity +139.174s] await MCP lead vector.issue.activity_history
+[Agent role parity +139.194s] MCP response lead vector.issue.activity_history
+[Agent role parity +139.197s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +139.222s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +142.843s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +142.928s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +143.843s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +143.878s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +143.879s] snapshot read-only D1 (8 tables)
+[Agent role parity +143.880s] snapshot complete
+[Agent role parity +143.884s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +143.935s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +143.941s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +143.953s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +143.954s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +143.983s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +143.983s] snapshot read-only D1 (8 tables)
+[Agent role parity +143.984s] snapshot complete
+[Agent role parity +143.988s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +144.001s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +144.002s] await MCP member vector.issue.comment
+[Agent role parity +144.036s] MCP response member vector.issue.comment
+[Agent role parity +144.036s] snapshot read-only D1 (8 tables)
+[Agent role parity +144.038s] snapshot complete
+[Agent role parity +144.038s] snapshot read-only D1 (8 tables)
+[Agent role parity +144.040s] snapshot complete
+[Agent role parity +144.040s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +144.069s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +144.069s] snapshot read-only D1 (8 tables)
+[Agent role parity +144.070s] snapshot complete
+[Agent role parity +144.070s] await MCP member vector.issue.comment
+[Agent role parity +144.097s] MCP response member vector.issue.comment
+[Agent role parity +144.097s] snapshot read-only D1 (8 tables)
+[Agent role parity +144.099s] snapshot complete
+[Agent role parity +144.099s] await MCP member vector.issue.activity_history
+[Agent role parity +144.119s] MCP response member vector.issue.activity_history
+[Agent role parity +144.122s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +144.145s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +147.851s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +147.897s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +148.008s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +148.061s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +148.062s] snapshot read-only D1 (8 tables)
+[Agent role parity +148.063s] snapshot complete
+[Agent role parity +148.067s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +148.119s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +148.125s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +148.146s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +148.147s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +148.176s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +148.176s] snapshot read-only D1 (8 tables)
+[Agent role parity +148.177s] snapshot complete
+[Agent role parity +148.180s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +148.193s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +148.194s] await MCP guest vector.issue.comment
+[Agent role parity +148.224s] MCP response guest vector.issue.comment
+[Agent role parity +148.224s] snapshot read-only D1 (8 tables)
+[Agent role parity +148.225s] snapshot complete
+[Agent role parity +148.226s] snapshot read-only D1 (8 tables)
+[Agent role parity +148.226s] snapshot complete
+[Agent role parity +148.226s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +148.253s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +148.254s] snapshot read-only D1 (8 tables)
+[Agent role parity +148.255s] snapshot complete
+[Agent role parity +148.255s] await MCP guest vector.issue.comment
+[Agent role parity +148.280s] MCP response guest vector.issue.comment
+[Agent role parity +148.280s] snapshot read-only D1 (8 tables)
+[Agent role parity +148.281s] snapshot complete
+[Agent role parity +148.281s] await MCP guest vector.issue.activity_history
+[Agent role parity +148.321s] MCP response guest vector.issue.activity_history
+[Agent role parity +148.324s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +148.355s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +152.163s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +152.196s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +154.890s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +154.942s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +154.942s] snapshot read-only D1 (8 tables)
+[Agent role parity +154.944s] snapshot complete
+[Agent role parity +154.949s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +154.995s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +155.000s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +155.118s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +155.119s] await MCP viewer vector.issue.concurrent_edits
+[Agent role parity +155.145s] MCP response viewer vector.issue.concurrent_edits
+[Agent role parity +155.145s] snapshot read-only D1 (8 tables)
+[Agent role parity +155.146s] snapshot complete
+[Agent role parity +155.149s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +155.158s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +155.159s] await MCP viewer vector.issue.comment
+[Agent role parity +155.180s] MCP response viewer vector.issue.comment
+[Agent role parity +155.180s] snapshot read-only D1 (8 tables)
+[Agent role parity +155.181s] snapshot complete
+[Agent role parity +155.181s] await MCP viewer vector.issue.activity_history
+[Agent role parity +155.200s] MCP response viewer vector.issue.activity_history
+[Agent role parity +155.203s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +155.224s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +158.751s] await native PATCH /api/settings/operators/01M6YH85QGE2YHSYHYFJDFXV6F/role
+[Agent role parity +158.792s] native response PATCH /api/settings/operators/01M6YH85QGE2YHSYHYFJDFXV6F/role
+[Agent role parity +158.793s] await named-team reassignment autonomous
+[Agent role parity +158.798s] await native GET /api/options
+[Agent role parity +158.815s] native response GET /api/options
+[Agent role parity +158.819s] await native POST /api/issues
+[Agent role parity +158.900s] native response POST /api/issues
+[Agent role parity +158.904s] await native GET /api/issues/FLW-848
+[Agent role parity +158.927s] native response GET /api/issues/FLW-848
+[Agent role parity +158.930s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +158.986s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +158.989s] snapshot read-only D1 (8 tables)
+[Agent role parity +158.992s] snapshot complete
+[Agent role parity +159.006s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +159.094s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +159.099s] await native PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +159.109s] native response PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +159.110s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +159.132s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +159.132s] snapshot read-only D1 (8 tables)
+[Agent role parity +159.134s] snapshot complete
+[Agent role parity +159.138s] await native POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +159.154s] native response POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +159.155s] await MCP guest vector.issue.comment
+[Agent role parity +159.177s] MCP response guest vector.issue.comment
+[Agent role parity +159.178s] snapshot read-only D1 (8 tables)
+[Agent role parity +159.179s] snapshot complete
+[Agent role parity +159.179s] snapshot read-only D1 (8 tables)
+[Agent role parity +159.180s] snapshot complete
+[Agent role parity +159.180s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +159.206s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +159.207s] snapshot read-only D1 (8 tables)
+[Agent role parity +159.208s] snapshot complete
+[Agent role parity +159.208s] await MCP guest vector.issue.comment
+[Agent role parity +159.231s] MCP response guest vector.issue.comment
+[Agent role parity +159.231s] snapshot read-only D1 (8 tables)
+[Agent role parity +159.232s] snapshot complete
+[Agent role parity +159.232s] await show guest agent-role-guest-reassigned
+[Agent role parity +159.248s] await native GET /api/issues/FLW-848/releases
+[Agent role parity +159.260s] native response GET /api/issues/FLW-848/releases
+[Agent role parity +159.269s] await issue navigation guest
+[Agent role parity +159.677s] await issue reload guest
+[Agent role parity +160.016s] await issue heading guest
+[Agent role parity +160.033s] await native GET /api/issues/FLW-848
+[Agent role parity +160.106s] native response GET /api/issues/FLW-848
+[Agent role parity +160.386s] await axe/screenshots agent-role-guest-reassigned
+[Agent role parity +161.499s] capture complete agent-role-guest-reassigned
+[Agent role parity +161.556s] await native PATCH /api/issues/FLW-848
+[Agent role parity +161.680s] native response PATCH /api/issues/FLW-848
+[Agent role parity +161.698s] await native GET /api/issues/FLW-848
+[Agent role parity +161.754s] native response GET /api/issues/FLW-848
+[Agent role parity +161.760s] await native POST /api/issues/FLW-848/comments
+[Agent role parity +161.829s] native response POST /api/issues/FLW-848/comments
+[Agent role parity +161.833s] await native GET /api/issues/FLW-848/discussion
+[Agent role parity +161.874s] native response GET /api/issues/FLW-848/discussion
+[Agent role parity +161.875s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +161.971s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +161.971s] await MCP guest vector.issue.comment
+[Agent role parity +162.027s] MCP response guest vector.issue.comment
+[Agent role parity +162.030s] await native GET /api/issues/FLW-848
+[Agent role parity +162.074s] native response GET /api/issues/FLW-848
+[Agent role parity +162.078s] await native GET /api/issues/FLW-848/discussion
+[Agent role parity +162.112s] native response GET /api/issues/FLW-848/discussion
+[Agent role parity +162.113s] await show guest readback
+[Agent role parity +162.116s] await native GET /api/issues/FLW-848/releases
+[Agent role parity +162.124s] native response GET /api/issues/FLW-848/releases
+[Agent role parity +162.125s] await issue navigation guest
+[Agent role parity +162.276s] await issue reload guest
+[Agent role parity +162.633s] await issue heading guest
+[Agent role parity +162.639s] await native GET /api/issues/FLW-848
+[Agent role parity +162.748s] native response GET /api/issues/FLW-848
+[Agent role parity +166.058s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +166.090s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +166.091s] snapshot read-only D1 (8 tables)
+[Agent role parity +166.093s] snapshot complete
+[Agent role parity +166.096s] await native GET /api/issues/FLW-848
+[Agent role parity +166.145s] native response GET /api/issues/FLW-848
+[Agent role parity +166.151s] await native PATCH /api/issues/FLW-848
+[Agent role parity +166.161s] native response PATCH /api/issues/FLW-848
+[Agent role parity +166.162s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +166.190s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +166.190s] snapshot read-only D1 (8 tables)
+[Agent role parity +166.192s] snapshot complete
+[Agent role parity +166.224s] await native POST /api/issues/FLW-848/comments
+[Agent role parity +166.248s] native response POST /api/issues/FLW-848/comments
+[Agent role parity +166.249s] await MCP guest vector.issue.comment
+[Agent role parity +166.285s] MCP response guest vector.issue.comment
+[Agent role parity +166.285s] snapshot read-only D1 (8 tables)
+[Agent role parity +166.287s] snapshot complete
+[Agent role parity +166.287s] snapshot read-only D1 (8 tables)
+[Agent role parity +166.288s] snapshot complete
+[Agent role parity +166.288s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +166.320s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +166.320s] snapshot read-only D1 (8 tables)
+[Agent role parity +166.321s] snapshot complete
+[Agent role parity +166.321s] await MCP guest vector.issue.comment
+[Agent role parity +166.351s] MCP response guest vector.issue.comment
+[Agent role parity +166.352s] snapshot read-only D1 (8 tables)
+[Agent role parity +166.353s] snapshot complete
+[Agent role parity +166.353s] await show guest readback
+[Agent role parity +166.356s] await native GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +166.370s] native response GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +166.371s] await issue navigation guest
+[Agent role parity +166.706s] await issue reload guest
+[Agent role parity +167.004s] await issue heading guest
+[Agent role parity +167.013s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +167.081s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +170.436s] await native PUT /agents/api/policy
+[Agent role parity +170.449s] native response PUT /agents/api/policy
+[Agent role parity +170.452s] await native GET /api/session
+[Agent role parity +170.474s] native response GET /api/session
+[Agent role parity +170.475s] owner review public
+[Agent role parity +170.475s] await show owner readback
+[Agent role parity +170.475s] await issue navigation owner
+[Agent role parity +172.104s] await issue reload owner
+[Agent role parity +172.428s] await issue heading owner
+[Agent role parity +172.446s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +172.481s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.030s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.112s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.290s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.357s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.358s] await MCP owner vector.issue.concurrent_edits
+[Agent role parity +173.446s] MCP response owner vector.issue.concurrent_edits
+[Agent role parity +173.446s] await MCP owner vector.issue.comment
+[Agent role parity +173.513s] MCP response owner vector.issue.comment
+[Agent role parity +173.516s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.542s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +173.548s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +173.568s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +173.569s] await show owner readback
+[Agent role parity +173.569s] await issue navigation owner
+[Agent role parity +173.719s] await issue reload owner
+[Agent role parity +174.391s] await issue heading owner
+[Agent role parity +174.413s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +174.449s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +177.872s] owner review private
+[Agent role parity +177.872s] await show owner readback
+[Agent role parity +177.873s] await issue navigation owner
+[Agent role parity +178.226s] await issue reload owner
+[Agent role parity +178.845s] await issue heading owner
+[Agent role parity +178.864s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +178.901s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.411s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.492s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.681s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.739s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.740s] await MCP owner vector.issue.concurrent_edits
+[Agent role parity +179.850s] MCP response owner vector.issue.concurrent_edits
+[Agent role parity +179.850s] await MCP owner vector.issue.comment
+[Agent role parity +179.904s] MCP response owner vector.issue.comment
+[Agent role parity +179.906s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.933s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +179.937s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +179.958s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +179.959s] await show owner readback
+[Agent role parity +179.959s] await issue navigation owner
+[Agent role parity +180.110s] await issue reload owner
+[Agent role parity +180.432s] await issue heading owner
+[Agent role parity +180.445s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +180.478s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +183.842s] await native GET /api/session
+[Agent role parity +183.865s] native response GET /api/session
+[Agent role parity +183.866s] admin review public
+[Agent role parity +183.866s] await show admin readback
+[Agent role parity +183.877s] await issue navigation admin
+[Agent role parity +184.227s] await issue reload admin
+[Agent role parity +184.510s] await issue heading admin
+[Agent role parity +184.519s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +184.591s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.206s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.338s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.530s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.644s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.645s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +185.734s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +185.734s] await MCP admin vector.issue.comment
+[Agent role parity +185.810s] MCP response admin vector.issue.comment
+[Agent role parity +185.812s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.836s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +185.840s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +185.867s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +185.867s] await show admin readback
+[Agent role parity +185.868s] await issue navigation admin
+[Agent role parity +186.018s] await issue reload admin
+[Agent role parity +186.360s] await issue heading admin
+[Agent role parity +186.367s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +186.426s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +189.756s] admin review private
+[Agent role parity +189.757s] await show admin readback
+[Agent role parity +189.757s] await issue navigation admin
+[Agent role parity +190.055s] await issue reload admin
+[Agent role parity +190.358s] await issue heading admin
+[Agent role parity +190.367s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +190.458s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.019s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.153s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.365s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.493s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.494s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +191.598s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +191.598s] await MCP admin vector.issue.comment
+[Agent role parity +191.667s] MCP response admin vector.issue.comment
+[Agent role parity +191.669s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.692s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +191.696s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +191.726s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +191.727s] await show admin readback
+[Agent role parity +191.727s] await issue navigation admin
+[Agent role parity +191.878s] await issue reload admin
+[Agent role parity +192.223s] await issue heading admin
+[Agent role parity +192.232s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +192.281s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +195.597s] await native GET /api/session
+[Agent role parity +195.624s] native response GET /api/session
+[Agent role parity +195.625s] lead review public
+[Agent role parity +195.625s] await show lead readback
+[Agent role parity +195.638s] await issue navigation lead
+[Agent role parity +195.972s] await issue reload lead
+[Agent role parity +196.295s] await issue heading lead
+[Agent role parity +196.300s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +196.361s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.042s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.165s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.337s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.439s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.439s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +197.527s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +197.527s] await MCP lead vector.issue.comment
+[Agent role parity +197.591s] MCP response lead vector.issue.comment
+[Agent role parity +197.594s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.615s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +197.619s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +197.646s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +197.647s] await show lead readback
+[Agent role parity +197.647s] await issue navigation lead
+[Agent role parity +197.798s] await issue reload lead
+[Agent role parity +198.117s] await issue heading lead
+[Agent role parity +198.121s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +198.169s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +201.528s] lead review private
+[Agent role parity +201.528s] await show lead readback
+[Agent role parity +201.529s] await issue navigation lead
+[Agent role parity +201.849s] await issue reload lead
+[Agent role parity +202.184s] await issue heading lead
+[Agent role parity +202.192s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +202.267s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +202.831s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +202.883s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +203.079s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +203.181s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +203.182s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +203.272s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +203.273s] await MCP lead vector.issue.comment
+[Agent role parity +203.353s] MCP response lead vector.issue.comment
+[Agent role parity +203.356s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +203.386s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +203.389s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +203.418s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +203.419s] await show lead readback
+[Agent role parity +203.419s] await issue navigation lead
+[Agent role parity +203.570s] await issue reload lead
+[Agent role parity +203.910s] await issue heading lead
+[Agent role parity +203.920s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +203.990s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +207.385s] await native GET /api/session
+[Agent role parity +207.408s] native response GET /api/session
+[Agent role parity +207.409s] member review public
+[Agent role parity +207.409s] await show member readback
+[Agent role parity +207.417s] await issue navigation member
+[Agent role parity +207.778s] await issue reload member
+[Agent role parity +208.110s] await issue heading member
+[Agent role parity +208.113s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +208.168s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +208.745s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +208.849s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +209.029s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +209.132s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +209.133s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +209.244s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +209.244s] await MCP member vector.issue.comment
+[Agent role parity +209.327s] MCP response member vector.issue.comment
+[Agent role parity +209.330s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +209.355s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +209.359s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +209.391s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +209.392s] await show member readback
+[Agent role parity +209.392s] await issue navigation member
+[Agent role parity +209.543s] await issue reload member
+[Agent role parity +210.045s] await issue heading member
+[Agent role parity +210.052s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +210.109s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +213.526s] member review private
+[Agent role parity +213.526s] await show member readback
+[Agent role parity +213.527s] await issue navigation member
+[Agent role parity +213.948s] await issue reload member
+[Agent role parity +214.291s] await issue heading member
+[Agent role parity +214.297s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +214.350s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.039s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.170s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.390s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.499s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.500s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +215.603s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +215.603s] await MCP member vector.issue.comment
+[Agent role parity +215.695s] MCP response member vector.issue.comment
+[Agent role parity +215.698s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.724s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +215.729s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +215.761s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +215.762s] await show member readback
+[Agent role parity +215.763s] await issue navigation member
+[Agent role parity +215.913s] await issue reload member
+[Agent role parity +216.287s] await issue heading member
+[Agent role parity +216.293s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +216.366s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +219.760s] await native GET /api/session
+[Agent role parity +219.780s] native response GET /api/session
+[Agent role parity +219.781s] guest review public
+[Agent role parity +219.781s] await show guest readback
+[Agent role parity +219.785s] await native GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +219.797s] native response GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +219.799s] await issue navigation guest
+[Agent role parity +220.141s] await issue reload guest
+[Agent role parity +220.505s] await issue heading guest
+[Agent role parity +220.509s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +220.565s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.168s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.300s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.500s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.612s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.612s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +221.711s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +221.711s] await MCP guest vector.issue.comment
+[Agent role parity +221.792s] MCP response guest vector.issue.comment
+[Agent role parity +221.795s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.846s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +221.850s] await native GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +221.885s] native response GET /api/issues/AGPFHGBBB-1/discussion
+[Agent role parity +221.885s] await show guest readback
+[Agent role parity +221.888s] await native GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +221.898s] native response GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +221.899s] await issue navigation guest
+[Agent role parity +222.049s] await issue reload guest
+[Agent role parity +222.415s] await issue heading guest
+[Agent role parity +222.421s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +222.487s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +225.860s] guest review private
+[Agent role parity +225.860s] await show guest readback
+[Agent role parity +225.865s] await native GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +225.881s] native response GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +225.882s] await issue navigation guest
+[Agent role parity +226.210s] await issue reload guest
+[Agent role parity +226.541s] await issue heading guest
+[Agent role parity +226.545s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +226.616s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +227.228s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +227.434s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +227.643s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +227.798s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +227.800s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +227.899s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +227.899s] await MCP guest vector.issue.comment
+[Agent role parity +227.969s] MCP response guest vector.issue.comment
+[Agent role parity +227.972s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +227.999s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +228.002s] await native GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +228.030s] native response GET /api/issues/AGPFHGBBBP-1/discussion
+[Agent role parity +228.031s] await show guest readback
+[Agent role parity +228.034s] await native GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +228.047s] native response GET /api/issues/AGPFHGBBBP-1/releases
+[Agent role parity +228.048s] await issue navigation guest
+[Agent role parity +228.198s] await issue reload guest
+[Agent role parity +228.560s] await issue heading guest
+[Agent role parity +228.568s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +228.664s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +232.045s] await native GET /api/session
+[Agent role parity +232.063s] native response GET /api/session
+[Agent role parity +232.064s] viewer review public
+[Agent role parity +232.064s] await show viewer readback
+[Agent role parity +232.078s] await issue navigation viewer
+[Agent role parity +232.431s] await issue reload viewer
+[Agent role parity +232.784s] await issue heading viewer
+[Agent role parity +232.797s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +232.875s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +233.101s] snapshot read-only D1 (8 tables)
+[Agent role parity +233.103s] snapshot complete
+[Agent role parity +233.106s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +233.134s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +233.140s] await native PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +233.150s] native response PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +233.151s] await MCP viewer vector.issue.concurrent_edits
+[Agent role parity +233.180s] MCP response viewer vector.issue.concurrent_edits
+[Agent role parity +233.181s] snapshot read-only D1 (8 tables)
+[Agent role parity +233.185s] snapshot complete
+[Agent role parity +233.189s] await native POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +233.199s] native response POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +233.201s] await MCP viewer vector.issue.comment
+[Agent role parity +233.228s] MCP response viewer vector.issue.comment
+[Agent role parity +233.228s] snapshot read-only D1 (8 tables)
+[Agent role parity +233.230s] snapshot complete
+[Agent role parity +233.230s] viewer review private
+[Agent role parity +233.230s] await show viewer readback
+[Agent role parity +233.231s] await issue navigation viewer
+[Agent role parity +236.596s] await issue reload viewer
+[Agent role parity +236.977s] await issue heading viewer
+[Agent role parity +236.987s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +237.097s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +237.299s] snapshot read-only D1 (8 tables)
+[Agent role parity +237.302s] snapshot complete
+[Agent role parity +237.306s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +237.340s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +237.344s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +237.356s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +237.356s] await MCP viewer vector.issue.concurrent_edits
+[Agent role parity +237.382s] MCP response viewer vector.issue.concurrent_edits
+[Agent role parity +237.382s] snapshot read-only D1 (8 tables)
+[Agent role parity +237.384s] snapshot complete
+[Agent role parity +237.388s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +237.403s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +237.404s] await MCP viewer vector.issue.comment
+[Agent role parity +237.439s] MCP response viewer vector.issue.comment
+[Agent role parity +237.440s] snapshot read-only D1 (8 tables)
+[Agent role parity +237.442s] snapshot complete
+[Agent role parity +237.443s] await sponsor downgrade review
+[Agent role parity +238.058s] snapshot read-only D1 (8 tables)
+[Agent role parity +238.060s] snapshot complete
+[Agent role parity +238.065s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +238.100s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +238.106s] await native PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +238.118s] native response PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +238.119s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +238.151s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +238.151s] snapshot read-only D1 (8 tables)
+[Agent role parity +238.153s] snapshot complete
+[Agent role parity +238.157s] await native POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +238.169s] native response POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +238.170s] await MCP member vector.issue.comment
+[Agent role parity +238.201s] MCP response member vector.issue.comment
+[Agent role parity +238.202s] snapshot read-only D1 (8 tables)
+[Agent role parity +238.203s] snapshot complete
+[Agent role parity +238.204s] snapshot read-only D1 (8 tables)
+[Agent role parity +238.205s] snapshot complete
+[Agent role parity +238.205s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +238.243s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +238.243s] snapshot read-only D1 (8 tables)
+[Agent role parity +238.245s] snapshot complete
+[Agent role parity +238.245s] await MCP member vector.issue.comment
+[Agent role parity +238.280s] MCP response member vector.issue.comment
+[Agent role parity +238.280s] snapshot read-only D1 (8 tables)
+[Agent role parity +238.282s] snapshot complete
+[Agent role parity +238.283s] await MCP member vector.issue.activity_history
+[Agent role parity +238.362s] MCP response member vector.issue.activity_history
+[Agent role parity +238.367s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +238.402s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +238.402s] await show member readback
+[Agent role parity +238.403s] await issue navigation member
+[Agent role parity +238.840s] await issue reload member
+[Agent role parity +239.339s] await issue heading member
+[Agent role parity +239.346s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +239.423s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +239.739s] await MCP member vector.issue.activity_history
+[Agent role parity +239.819s] MCP response member vector.issue.activity_history
+[Agent role parity +239.824s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +239.878s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +239.879s] await show member readback
+[Agent role parity +239.879s] await issue navigation member
+[Agent role parity +243.027s] await issue reload member
+[Agent role parity +243.441s] await issue heading member
+[Agent role parity +243.450s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +243.528s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +243.725s] await native PATCH /api/settings/operators/01M6YH7T11GP1JR6QGPGD7NQ60/role
+[Agent role parity +243.884s] native response PATCH /api/settings/operators/01M6YH7T11GP1JR6QGPGD7NQ60/role
+[Agent role parity +243.891s] await native GET /api/options
+[Agent role parity +243.908s] native response GET /api/options
+[Agent role parity +243.912s] await native POST /api/issues
+[Agent role parity +243.997s] native response POST /api/issues
+[Agent role parity +243.998s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.001s] snapshot complete
+[Agent role parity +244.004s] await native GET /api/issues/FLW-849
+[Agent role parity +244.051s] native response GET /api/issues/FLW-849
+[Agent role parity +244.057s] await native PATCH /api/issues/FLW-849
+[Agent role parity +244.068s] native response PATCH /api/issues/FLW-849
+[Agent role parity +244.069s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +244.093s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +244.093s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.095s] snapshot complete
+[Agent role parity +244.098s] await native POST /api/issues/FLW-849/comments
+[Agent role parity +244.109s] native response POST /api/issues/FLW-849/comments
+[Agent role parity +244.109s] await MCP guest vector.issue.comment
+[Agent role parity +244.134s] MCP response guest vector.issue.comment
+[Agent role parity +244.134s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.136s] snapshot complete
+[Agent role parity +244.136s] await private withdrawal review
+[Agent role parity +244.221s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +244.285s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +244.285s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.287s] snapshot complete
+[Agent role parity +244.293s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +244.341s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +244.346s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +244.357s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +244.357s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +244.383s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +244.384s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.385s] snapshot complete
+[Agent role parity +244.392s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +244.405s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +244.405s] await MCP admin vector.issue.comment
+[Agent role parity +244.434s] MCP response admin vector.issue.comment
+[Agent role parity +244.434s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.436s] snapshot complete
+[Agent role parity +244.436s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.438s] snapshot complete
+[Agent role parity +244.438s] await MCP admin vector.issue.concurrent_edits
+[Agent role parity +244.463s] MCP response admin vector.issue.concurrent_edits
+[Agent role parity +244.463s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.464s] snapshot complete
+[Agent role parity +244.465s] await MCP admin vector.issue.comment
+[Agent role parity +244.490s] MCP response admin vector.issue.comment
+[Agent role parity +244.490s] snapshot read-only D1 (8 tables)
+[Agent role parity +244.492s] snapshot complete
+[Agent role parity +244.492s] await MCP admin vector.issue.activity_history
+[Agent role parity +244.521s] MCP response admin vector.issue.activity_history
+[Agent role parity +244.524s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +244.550s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +248.228s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +248.288s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7F3112MKYV3JA5J341WQ
+[Agent role parity +248.364s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +248.444s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +248.444s] snapshot read-only D1 (8 tables)
+[Agent role parity +248.446s] snapshot complete
+[Agent role parity +248.451s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +248.515s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +248.521s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +248.535s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +248.535s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +248.563s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +248.563s] snapshot read-only D1 (8 tables)
+[Agent role parity +248.565s] snapshot complete
+[Agent role parity +248.568s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +248.579s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +248.580s] await MCP lead vector.issue.comment
+[Agent role parity +248.608s] MCP response lead vector.issue.comment
+[Agent role parity +248.608s] snapshot read-only D1 (8 tables)
+[Agent role parity +248.610s] snapshot complete
+[Agent role parity +248.611s] snapshot read-only D1 (8 tables)
+[Agent role parity +248.612s] snapshot complete
+[Agent role parity +248.612s] await MCP lead vector.issue.concurrent_edits
+[Agent role parity +248.642s] MCP response lead vector.issue.concurrent_edits
+[Agent role parity +248.642s] snapshot read-only D1 (8 tables)
+[Agent role parity +248.643s] snapshot complete
+[Agent role parity +248.644s] await MCP lead vector.issue.comment
+[Agent role parity +248.670s] MCP response lead vector.issue.comment
+[Agent role parity +248.670s] snapshot read-only D1 (8 tables)
+[Agent role parity +248.672s] snapshot complete
+[Agent role parity +248.672s] await MCP lead vector.issue.activity_history
+[Agent role parity +248.699s] MCP response lead vector.issue.activity_history
+[Agent role parity +248.702s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +248.730s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +252.701s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +252.789s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7MAFX24NP1DV8DGK63TY
+[Agent role parity +255.879s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +255.929s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +255.930s] snapshot read-only D1 (8 tables)
+[Agent role parity +255.931s] snapshot complete
+[Agent role parity +255.934s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +255.979s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +255.984s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +255.996s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +255.997s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +256.069s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +256.069s] snapshot read-only D1 (8 tables)
+[Agent role parity +256.071s] snapshot complete
+[Agent role parity +256.074s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +256.088s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +256.088s] await MCP member vector.issue.comment
+[Agent role parity +256.121s] MCP response member vector.issue.comment
+[Agent role parity +256.121s] snapshot read-only D1 (8 tables)
+[Agent role parity +256.123s] snapshot complete
+[Agent role parity +256.123s] snapshot read-only D1 (8 tables)
+[Agent role parity +256.125s] snapshot complete
+[Agent role parity +256.125s] await MCP member vector.issue.concurrent_edits
+[Agent role parity +256.181s] MCP response member vector.issue.concurrent_edits
+[Agent role parity +256.181s] snapshot read-only D1 (8 tables)
+[Agent role parity +256.184s] snapshot complete
+[Agent role parity +256.184s] await MCP member vector.issue.comment
+[Agent role parity +256.214s] MCP response member vector.issue.comment
+[Agent role parity +256.214s] snapshot read-only D1 (8 tables)
+[Agent role parity +256.216s] snapshot complete
+[Agent role parity +256.216s] await MCP member vector.issue.activity_history
+[Agent role parity +256.238s] MCP response member vector.issue.activity_history
+[Agent role parity +256.242s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +256.269s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +260.119s] await native PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +260.198s] native response PUT /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7T11GP1JR6QGPGD7NQ60
+[Agent role parity +260.302s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +260.346s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH7ZQCK6Q844ZSZHDQ58P8
+[Agent role parity +260.349s] snapshot read-only D1 (8 tables)
+[Agent role parity +260.351s] snapshot complete
+[Agent role parity +260.354s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +260.415s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +260.424s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +260.436s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +260.439s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +260.465s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +260.465s] snapshot read-only D1 (8 tables)
+[Agent role parity +260.467s] snapshot complete
+[Agent role parity +260.471s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +260.482s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +260.483s] await MCP guest vector.issue.comment
+[Agent role parity +260.512s] MCP response guest vector.issue.comment
+[Agent role parity +260.512s] snapshot read-only D1 (8 tables)
+[Agent role parity +260.514s] snapshot complete
+[Agent role parity +260.514s] snapshot read-only D1 (8 tables)
+[Agent role parity +260.516s] snapshot complete
+[Agent role parity +260.516s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +260.544s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +260.545s] snapshot read-only D1 (8 tables)
+[Agent role parity +260.547s] snapshot complete
+[Agent role parity +260.547s] await MCP guest vector.issue.comment
+[Agent role parity +260.576s] MCP response guest vector.issue.comment
+[Agent role parity +260.576s] snapshot read-only D1 (8 tables)
+[Agent role parity +260.578s] snapshot complete
+[Agent role parity +260.578s] await MCP guest vector.issue.activity_history
+[Agent role parity +260.604s] MCP response guest vector.issue.activity_history
+[Agent role parity +260.608s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +260.651s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +264.721s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +264.774s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +267.496s] await native DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +267.555s] native response DELETE /api/settings/teams/01M6YH88ZXV20AYHPN548EB6ZA/members/01M6YH85QGE2YHSYHYFJDFXV6F
+[Agent role parity +267.558s] snapshot read-only D1 (8 tables)
+[Agent role parity +267.562s] snapshot complete
+[Agent role parity +267.566s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +267.632s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +267.639s] await native PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +267.652s] native response PATCH /api/issues/AGPFHGBBBP-1
+[Agent role parity +267.653s] await MCP viewer vector.issue.concurrent_edits
+[Agent role parity +267.681s] MCP response viewer vector.issue.concurrent_edits
+[Agent role parity +267.681s] snapshot read-only D1 (8 tables)
+[Agent role parity +267.683s] snapshot complete
+[Agent role parity +267.687s] await native POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +267.698s] native response POST /api/issues/AGPFHGBBBP-1/comments
+[Agent role parity +267.699s] await MCP viewer vector.issue.comment
+[Agent role parity +267.726s] MCP response viewer vector.issue.comment
+[Agent role parity +267.726s] snapshot read-only D1 (8 tables)
+[Agent role parity +267.728s] snapshot complete
+[Agent role parity +267.728s] await MCP viewer vector.issue.activity_history
+[Agent role parity +267.753s] MCP response viewer vector.issue.activity_history
+[Agent role parity +267.755s] await native GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +267.785s] native response GET /api/issues/AGPFHGBBBP-1
+[Agent role parity +271.330s] await native PATCH /api/settings/operators/01M6YH85QGE2YHSYHYFJDFXV6F/role
+[Agent role parity +271.369s] native response PATCH /api/settings/operators/01M6YH85QGE2YHSYHYFJDFXV6F/role
+[Agent role parity +271.370s] await named-team reassignment review
+[Agent role parity +271.374s] await native GET /api/options
+[Agent role parity +271.392s] native response GET /api/options
+[Agent role parity +271.396s] await native POST /api/issues
+[Agent role parity +271.755s] native response POST /api/issues
+[Agent role parity +271.763s] await native GET /api/issues/FLW-850
+[Agent role parity +271.789s] native response GET /api/issues/FLW-850
+[Agent role parity +271.793s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +271.814s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +271.815s] snapshot read-only D1 (8 tables)
+[Agent role parity +271.816s] snapshot complete
+[Agent role parity +271.820s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +271.845s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +271.851s] await native PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +271.861s] native response PATCH /api/issues/AGPFHGBBB-1
+[Agent role parity +271.861s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +271.886s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +271.887s] snapshot read-only D1 (8 tables)
+[Agent role parity +271.888s] snapshot complete
+[Agent role parity +271.891s] await native POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +271.901s] native response POST /api/issues/AGPFHGBBB-1/comments
+[Agent role parity +271.901s] await MCP guest vector.issue.comment
+[Agent role parity +271.922s] MCP response guest vector.issue.comment
+[Agent role parity +271.923s] snapshot read-only D1 (8 tables)
+[Agent role parity +271.924s] snapshot complete
+[Agent role parity +271.925s] snapshot read-only D1 (8 tables)
+[Agent role parity +271.926s] snapshot complete
+[Agent role parity +271.926s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +271.951s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +271.951s] snapshot read-only D1 (8 tables)
+[Agent role parity +271.953s] snapshot complete
+[Agent role parity +271.953s] await MCP guest vector.issue.comment
+[Agent role parity +271.979s] MCP response guest vector.issue.comment
+[Agent role parity +271.980s] snapshot read-only D1 (8 tables)
+[Agent role parity +271.981s] snapshot complete
+[Agent role parity +271.982s] await show guest readback
+[Agent role parity +271.985s] await native GET /api/issues/FLW-850/releases
+[Agent role parity +271.992s] native response GET /api/issues/FLW-850/releases
+[Agent role parity +271.993s] await issue navigation guest
+[Agent role parity +272.318s] await issue reload guest
+[Agent role parity +272.613s] await issue heading guest
+[Agent role parity +272.620s] await native GET /api/issues/FLW-850
+[Agent role parity +272.674s] native response GET /api/issues/FLW-850
+[Agent role parity +272.899s] await native PATCH /api/issues/FLW-850
+[Agent role parity +273.013s] native response PATCH /api/issues/FLW-850
+[Agent role parity +273.018s] await native GET /api/issues/FLW-850
+[Agent role parity +273.078s] native response GET /api/issues/FLW-850
+[Agent role parity +273.082s] await native POST /api/issues/FLW-850/comments
+[Agent role parity +273.136s] native response POST /api/issues/FLW-850/comments
+[Agent role parity +273.140s] await native GET /api/issues/FLW-850/discussion
+[Agent role parity +273.167s] native response GET /api/issues/FLW-850/discussion
+[Agent role parity +273.168s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +273.256s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +273.256s] await MCP guest vector.issue.comment
+[Agent role parity +273.305s] MCP response guest vector.issue.comment
+[Agent role parity +273.307s] await native GET /api/issues/FLW-850
+[Agent role parity +273.331s] native response GET /api/issues/FLW-850
+[Agent role parity +273.334s] await native GET /api/issues/FLW-850/discussion
+[Agent role parity +273.354s] native response GET /api/issues/FLW-850/discussion
+[Agent role parity +273.355s] await show guest readback
+[Agent role parity +273.361s] await native GET /api/issues/FLW-850/releases
+[Agent role parity +273.380s] native response GET /api/issues/FLW-850/releases
+[Agent role parity +273.381s] await issue navigation guest
+[Agent role parity +273.532s] await issue reload guest
+[Agent role parity +274.072s] await issue heading guest
+[Agent role parity +274.077s] await native GET /api/issues/FLW-850
+[Agent role parity +274.130s] native response GET /api/issues/FLW-850
+[Agent role parity +277.459s] await native PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +277.493s] native response PATCH /api/settings/operators/01M6YH7ZQCK6Q844ZSZHDQ58P8/role
+[Agent role parity +277.494s] snapshot read-only D1 (8 tables)
+[Agent role parity +277.496s] snapshot complete
+[Agent role parity +277.499s] await native GET /api/issues/FLW-850
+[Agent role parity +277.545s] native response GET /api/issues/FLW-850
+[Agent role parity +277.550s] await native PATCH /api/issues/FLW-850
+[Agent role parity +277.560s] native response PATCH /api/issues/FLW-850
+[Agent role parity +277.561s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +277.595s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +277.595s] snapshot read-only D1 (8 tables)
+[Agent role parity +277.597s] snapshot complete
+[Agent role parity +277.602s] await native POST /api/issues/FLW-850/comments
+[Agent role parity +277.615s] native response POST /api/issues/FLW-850/comments
+[Agent role parity +277.616s] await MCP guest vector.issue.comment
+[Agent role parity +277.640s] MCP response guest vector.issue.comment
+[Agent role parity +277.641s] snapshot read-only D1 (8 tables)
+[Agent role parity +277.643s] snapshot complete
+[Agent role parity +277.643s] snapshot read-only D1 (8 tables)
+[Agent role parity +277.645s] snapshot complete
+[Agent role parity +277.645s] await MCP guest vector.issue.concurrent_edits
+[Agent role parity +277.681s] MCP response guest vector.issue.concurrent_edits
+[Agent role parity +277.681s] snapshot read-only D1 (8 tables)
+[Agent role parity +277.683s] snapshot complete
+[Agent role parity +277.684s] await MCP guest vector.issue.comment
+[Agent role parity +277.707s] MCP response guest vector.issue.comment
+[Agent role parity +277.707s] snapshot read-only D1 (8 tables)
+[Agent role parity +277.709s] snapshot complete
+[Agent role parity +277.709s] await show guest readback
+[Agent role parity +277.712s] await native GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +277.720s] native response GET /api/issues/AGPFHGBBB-1/releases
+[Agent role parity +277.720s] await issue navigation guest
+[Agent role parity +278.225s] await issue reload guest
+[Agent role parity +278.571s] await issue heading guest
+[Agent role parity +278.577s] await native GET /api/issues/AGPFHGBBB-1
+[Agent role parity +278.644s] native response GET /api/issues/AGPFHGBBB-1
+[Agent role parity +282.017s] complete
+[Vector runtime] Passed BASE-AGENT-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-AGENT-003
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-AGENT-008
+[Vector runtime] Passed ISSUE-015
+[Vector runtime] Passed ISSUE-025
+[Vector runtime] Passed ISSUE-008
+[Vector runtime] Passed ISSUE-008
+[Vector runtime] Passed NOTIFY-001
+[Vector runtime] Passed NOTIFY-001
+[Vector runtime] Passed NOTIFY-009
+[Vector runtime] Passed WORK-004
+[Vector runtime] Passed PROJ-005
+[Vector runtime] Passed PROJ-005
+[Vector runtime] Passed PROJ-005
+[Vector runtime] Passed PROJ-005
+[Vector runtime] Passed PROJ-005
+[Vector runtime] Passed PROJ-005
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed PROJ-006
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed INTAKE-010
+[Vector runtime] Passed CYCLE-008
+[Vector runtime] Passed CYCLE-008
+[Vector runtime] Passed CYCLE-008
+[Vector runtime] Passed CYCLE-008
+[Invited operator cleanup failed after journey error] browserContext.clearCookies: Target page, context or browser has been closed
+    at withInvitedOperator (/workspace/run-vector/tests/e2e/core-operator-journey.mjs:42:19)
+    at async file:///workspace/run-vector/tests/e2e/core-runtime.mjs:807:3 {
+  log: []
+}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForResponse: Target page, context or browser has been closed
+    at beforePrivateNavigation (/workspace/run-vector/tests/e2e/collaboration-navigation.mjs:89:33)
+    at cycleMembershipJourney (/workspace/run-vector/tests/e2e/core-cycle-membership-journey.mjs:23:11)
+    at async withInvitedOperator (/workspace/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+    at async file:///workspace/run-vector/tests/e2e/core-runtime.mjs:807:3 {
+  log: []
+}
+
+Node.js v24.19.0

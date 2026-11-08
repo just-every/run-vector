@@ -1,0 +1,12 @@
+{
+  "label": "browser-planning",
+  "command": [
+    "timeout",
+    "900",
+    "node",
+    "tests/e2e/core-runtime.mjs",
+    "planning"
+  ],
+  "exit": 124,
+  "seconds": 930.08
+}

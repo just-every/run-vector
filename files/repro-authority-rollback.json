@@ -1,0 +1,17 @@
+{
+  "label": "repro-authority-rollback",
+  "command": [
+    "timeout",
+    "360",
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "vitest.config.ts",
+    "tests/worker/data-http-audit-recovery.test.ts",
+    "tests/worker/description-history.test.ts"
+  ],
+  "exit": 0,
+  "seconds": 149.19
+}

@@ -1,0 +1,11 @@
+{
+  "label": "sdk-generate",
+  "command": [
+    "timeout",
+    "120",
+    "node",
+    "sdk/generate.mjs"
+  ],
+  "exit": 0,
+  "seconds": 0.07
+}

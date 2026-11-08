@@ -1,0 +1,13 @@
+{
+  "label": "build",
+  "command": [
+    "timeout",
+    "600",
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "build"
+  ],
+  "exit": 0,
+  "seconds": 38.31
+}

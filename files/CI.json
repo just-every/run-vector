@@ -1,0 +1,12 @@
+{
+  "id": 42525382204,
+  "name": "Verify",
+  "head_sha": "4881b2069146819298fe5f7672bcea2d71a93704",
+  "head_branch": "cloud/sd-vector-c-f202-fix1",
+  "status": "queued",
+  "conclusion": null,
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42525382204",
+  "at": "2026-11-08T21:53:43.661710+00:00",
+  "watcher_call": 6,
+  "gh_calls_total": 10
+}

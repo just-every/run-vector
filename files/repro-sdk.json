@@ -1,0 +1,12 @@
+{
+  "label": "repro-sdk",
+  "command": [
+    "timeout",
+    "120",
+    "node",
+    "sdk/generate.mjs",
+    "--check"
+  ],
+  "exit": 0,
+  "seconds": 0.07
+}

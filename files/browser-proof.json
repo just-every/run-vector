@@ -1,0 +1,30 @@
+{
+  "head": "4881b2069146819298fe5f7672bcea2d71a93704",
+  "journey": "tests/e2e/roadmap-journey.mjs via core-runtime.mjs projects",
+  "roadmap_result": "PASS: placements, spans, milestones, drag, ends, keyboard, planning fields, stale refusal, roles, phone, themes and AA",
+  "synthetic_fixtures_only": true,
+  "captures": [
+    {
+      "file": "roadmap-four-placements-1440.png",
+      "width": 1440,
+      "sha256": "ab2449e9c66c48572783aa477b075673ceb931c7e6b7d05b0d41fdf3c4348826",
+      "source": ".artifacts/verification/project-runtime/roadmap-four-placements-1440.png"
+    },
+    {
+      "file": "roadmap-list-390.png",
+      "width": 390,
+      "sha256": "0832f3d7b0aaeb02eed19b7e7f685404a1ed18dbdbc0633f40918e88b0f97036",
+      "source": ".artifacts/verification/project-runtime/roadmap-list-390.png"
+    }
+  ],
+  "project_entrypoint_exit": 0,
+  "project_checks": 60,
+  "runtime_results_sha256": "baedf15c7557bf168497f0f38f9955e991173c62b5bec3110820d08758199d45",
+  "inspected_captures": true,
+  "browser_executable": "/usr/bin/chromium",
+  "browser_args": [
+    "--use-mock-keychain",
+    "--password-store=basic",
+    "--no-sandbox"
+  ]
+}

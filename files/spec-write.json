@@ -1,0 +1,11 @@
+{
+  "label": "spec-write",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "integration:sync"
+  ],
+  "exit": 0,
+  "seconds": 0.65
+}

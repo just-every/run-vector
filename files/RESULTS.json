@@ -1,0 +1,370 @@
+{
+  "tag": "sd-vector-c-f202-fix1",
+  "repository": "just-every/run-vector",
+  "product": {
+    "repository": "just-every/run-vector",
+    "branch": "cloud/sd-vector-c-f202-fix1",
+    "head": "4881b2069146819298fe5f7672bcea2d71a93704",
+    "source": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+    "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "status": "",
+    "push_status": "pushed",
+    "pr": null,
+    "contract_unchanged": true,
+    "views_unchanged": true,
+    "parent_source_preserved": true,
+    "remote_head": "4881b2069146819298fe5f7672bcea2d71a93704",
+    "terminal_status": "PUSHED",
+    "ci_run_id": 42525382204,
+    "ci_status": "queued",
+    "ci_conclusion": null,
+    "ci_url": "https://github.com/just-every/run-vector/actions/runs/42525382204",
+    "github_budget_exhausted": true,
+    "ready": false
+  },
+  "ci": {
+    "id": 42525382204,
+    "name": "Verify",
+    "head_sha": "4881b2069146819298fe5f7672bcea2d71a93704",
+    "head_branch": "cloud/sd-vector-c-f202-fix1",
+    "status": "queued",
+    "conclusion": null,
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42525382204",
+    "at": "2026-11-08T21:53:43.661710+00:00",
+    "watcher_call": 6,
+    "gh_calls_total": 10
+  },
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_status_changes": [],
+  "init_003_actual_status": "missing (unchanged; brief described PARTIAL)",
+  "checks": [
+    {
+      "label": "repro-worker",
+      "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/integration-api.test.ts",
+        "tests/worker/role-matrix.test.ts",
+        "tests/worker/project-fields.test.ts",
+        "tests/worker/project-fields-upgrade.test.ts",
+        "tests/worker/roadmap.test.ts"
+      ],
+      "exit": 1,
+      "files": 5,
+      "tests": 17,
+      "passed": 15,
+      "failed": 2,
+      "seconds": 173.2
+    },
+    {
+      "label": "comparison-main",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/integration-api.test.ts",
+        "tests/worker/role-matrix.test.ts",
+        "tests/worker/project-fields.test.ts",
+        "tests/worker/project-fields-upgrade.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 265.66
+    },
+    {
+      "label": "comparison-main-rollback",
+      "command": [
+        "timeout",
+        "300",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/data-http-audit-recovery.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 137.87
+    },
+    {
+      "label": "repro-authority-rollback",
+      "command": [
+        "timeout",
+        "360",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/data-http-audit-recovery.test.ts",
+        "tests/worker/description-history.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 149.19
+    },
+    {
+      "label": "repro-typecheck",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "seconds": 22.08
+    },
+    {
+      "label": "repro-ledger",
+      "command": [
+        "timeout",
+        "180",
+        "node",
+        "--test",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 1.08
+    },
+    {
+      "label": "repro-spec",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0,
+      "seconds": 0.47
+    },
+    {
+      "label": "repro-sdk",
+      "command": [
+        "timeout",
+        "120",
+        "node",
+        "sdk/generate.mjs",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "label": "probe-worker",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/integration-api.test.ts",
+        "tests/worker/role-matrix.test.ts",
+        "tests/worker/project-fields.test.ts",
+        "tests/worker/project-fields-upgrade.test.ts",
+        "tests/worker/roadmap.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 293.87
+    },
+    {
+      "label": "probe-authority-rollback",
+      "command": [
+        "timeout",
+        "360",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/data-http-audit-recovery.test.ts",
+        "tests/worker/description-history.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 160.9
+    },
+    {
+      "label": "probe-typecheck",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "seconds": 22.26
+    },
+    {
+      "label": "views-write",
+      "command": [
+        "timeout",
+        "120",
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "INIT-003"
+      ],
+      "exit": 0,
+      "seconds": 0.1
+    },
+    {
+      "label": "views-check",
+      "command": [
+        "timeout",
+        "120",
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "INIT-003"
+      ],
+      "exit": 0,
+      "seconds": 0.1
+    },
+    {
+      "label": "ledger",
+      "command": [
+        "timeout",
+        "180",
+        "node",
+        "--test",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 1.02
+    },
+    {
+      "label": "sdk-generate",
+      "command": [
+        "timeout",
+        "120",
+        "node",
+        "sdk/generate.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.07
+    },
+    {
+      "label": "sdk-check",
+      "command": [
+        "timeout",
+        "120",
+        "node",
+        "sdk/generate.mjs",
+        "--check"
+      ],
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "label": "build",
+      "command": [
+        "timeout",
+        "600",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "exit": 0,
+      "seconds": 38.31
+    },
+    {
+      "label": "spec-write",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "integration:sync"
+      ],
+      "exit": 0,
+      "seconds": 0.65
+    },
+    {
+      "label": "spec-check",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0,
+      "seconds": 0.46
+    },
+    {
+      "label": "lock-write",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "sources:lock"
+      ],
+      "exit": 0,
+      "seconds": 1.23
+    },
+    {
+      "label": "lock-check",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0,
+      "seconds": 1.25
+    },
+    {
+      "label": "browser-planning",
+      "command": [
+        "timeout",
+        "900",
+        "node",
+        "tests/e2e/core-runtime.mjs",
+        "planning"
+      ],
+      "exit": 124,
+      "seconds": 930.08
+    },
+    {
+      "label": "browser-projects",
+      "command": [
+        "timeout",
+        "900",
+        "node",
+        "tests/e2e/core-runtime.mjs",
+        "projects"
+      ],
+      "exit": 0,
+      "seconds": 457.81
+    }
+  ],
+  "blockers": [],
+  "local_limitations": [
+    "The optional full planning browser command reached its 900-second timeout; the focused project journey and exact-SHA CI provide the relevant browser verdict."
+  ]
+}

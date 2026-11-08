@@ -1,0 +1,11 @@
+{
+  "label": "probe-typecheck",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "typecheck"
+  ],
+  "exit": 0,
+  "seconds": 22.26
+}

@@ -1,0 +1,19 @@
+{
+  "label": "comparison-main",
+  "command": [
+    "timeout",
+    "600",
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "--config",
+    "vitest.config.ts",
+    "tests/worker/integration-api.test.ts",
+    "tests/worker/role-matrix.test.ts",
+    "tests/worker/project-fields.test.ts",
+    "tests/worker/project-fields-upgrade.test.ts"
+  ],
+  "exit": 0,
+  "seconds": 265.66
+}

@@ -1,0 +1,11 @@
+{
+  "label": "spec-check",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "integration:check"
+  ],
+  "exit": 0,
+  "seconds": 0.46
+}

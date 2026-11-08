@@ -1,0 +1,12 @@
+{
+  "label": "browser-projects",
+  "command": [
+    "timeout",
+    "900",
+    "node",
+    "tests/e2e/core-runtime.mjs",
+    "projects"
+  ],
+  "exit": 0,
+  "seconds": 457.81
+}

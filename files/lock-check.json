@@ -1,0 +1,11 @@
+{
+  "label": "lock-check",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "sources:check"
+  ],
+  "exit": 0,
+  "seconds": 1.25
+}
