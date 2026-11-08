@@ -15,5 +15,23 @@
     42501646337
   ],
   "pr": null,
-  "landing_claim": false
+  "landing_claim": false,
+  "last_observed_verify": {
+    "conclusion": "failure",
+    "head_sha": "4c9460bbf65aa048896713d3c1f925809e64bd04",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42520664122",
+    "status": "completed"
+  },
+  "github_calls_used": 10,
+  "terminal_status": "BLOCKED",
+  "blockers": [
+    "Exact-SHA Verify failed: administration job 128853512663; explicitly excluded from lease.",
+    "Exact-SHA hosted-artifact job 128853512758 failed; archive retrieval invalid zip, annotations show exit 1 only, cause unqualified."
+  ],
+  "collaboration_job": {
+    "id": 128853512612,
+    "conclusion": "success"
+  },
+  "ready": false,
+  "pushed": true
 }

@@ -1,0 +1,11 @@
+{
+  "run_id": 42520664122,
+  "job_id": 128853512758,
+  "command": "gh run view 42520664122 --repo just-every/run-vector --job 128853512758 --log-failed",
+  "status": "failed",
+  "sanitized_diagnostic": "failed to get run log: zip: not a valid zip file",
+  "http_status": "unknown (not supplied by gh)",
+  "retries": 0,
+  "archive_stdout_bytes": 0,
+  "followup": "One final non-archive GraphQL annotation read returned only Process completed with exit code 1.; no blob download was retried."
+}

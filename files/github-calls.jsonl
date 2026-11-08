@@ -2,3 +2,9 @@
 {"time": 1794169690.4840634, "args": ["run", "view", "42515193427", "--repo", "just-every/run-vector", "--job", "128836857107", "--log-failed"]}
 {"time": 1794169854.603489, "args": ["api", "repos/just-every/run-vector/actions/runs?head_sha=0e8a686c06eddd55943ed1d2690df32a8fc82213&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"]}
 {"time": 1794169969.647031, "args": ["api", "repos/just-every/run-vector/actions/runs?head_sha=4c9460bbf65aa048896713d3c1f925809e64bd04&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"]}
+{"time": 1794170869.6888642, "args": ["api", "repos/just-every/run-vector/actions/runs/42520664122", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"time": 1794171174.6911368, "args": ["api", "repos/just-every/run-vector/actions/runs/42520664122", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"time": 1794171182.7043657, "args": ["api", "repos/just-every/run-vector/actions/runs/42520664122/jobs", "--jq", "{jobs:[.jobs[] | {id,name,status,conclusion,failed_steps:[.steps[]|select(.conclusion==\"failure\")|.name]}]}"]}
+{"time": 1794171191.5468307, "args": ["run", "view", "42520664122", "--repo", "just-every/run-vector", "--job", "128853512758", "--log-failed"]}
+{"time": 1794171191.5553126, "args": ["run", "view", "42520664122", "--repo", "just-every/run-vector", "--job", "128853512663", "--log-failed"]}
+{"time": 1794171255.3648548, "args": ["api", "graphql", "--input", "/tmp/vector-check-query.json", "--jq", ".data.repository.object.checkSuites.nodes[].checkRuns.nodes[] | select(.conclusion==\"FAILURE\")"]}

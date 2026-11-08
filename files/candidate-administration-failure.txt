@@ -1,0 +1,31 @@
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1446740Z not ok 1 - [OPS-003] empty workspace administration through real mobile browser
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1449974Z   ---
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1450582Z   duration_ms: 4666.112677
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1451261Z   type: 'test'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1452098Z   location: '/home/runner/work/run-vector/run-vector/tests/contract.ts:4:10'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1453218Z   failureType: 'testCodeFailure'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1454274Z   error: "Only URLs with a scheme in: file, data, and node are supported by the default ESM loader. Received protocol 'cloudflare:'"
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1455282Z   code: 'ERR_UNSUPPORTED_ESM_URL_SCHEME'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1455844Z   stack: |-
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1456499Z     throwIfUnsupportedURLScheme (node:internal/modules/esm/load:187:11)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1457302Z     defaultLoad (node:internal/modules/esm/load:82:3)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1458213Z     nextLoad (node:internal/modules/esm/hooks:748:28)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1459189Z     load (file:///home/runner/work/run-vector/run-vector/tests/e2e/integrations/typescript-loader.mjs:12:9)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1460081Z     nextLoad (node:internal/modules/esm/hooks:748:28)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1463224Z     Hooks.load (node:internal/modules/esm/hooks:385:26)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1464124Z     handleMessage (node:internal/modules/esm/worker:199:24)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1464862Z     Immediate.checkForMessages (node:internal/modules/esm/worker:141:28)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1465574Z     process.processImmediate (node:internal/timers:485:21)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.1466056Z   ...
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5214333Z 1..1
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5214813Z # tests 1
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5215178Z # suites 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5215534Z # pass 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5216508Z # fail 1
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5219444Z # cancelled 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5219857Z # skipped 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5220209Z # todo 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.5221338Z # duration_ms 5047.637124
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.6003981Z  ELIFECYCLE  Command failed with exit code 1.
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.6325256Z  ELIFECYCLE  Command failed with exit code 1.
+shards (administration, true, true, true)	Verify the independent shard	2026-11-08T20:34:35.6478546Z ##[error]Process completed with exit code 1.
