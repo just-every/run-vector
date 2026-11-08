@@ -1,0 +1,13 @@
+{
+  "assessment": "Exact-SHA Verify completed/success; ordinary READY. No generated-view exemption was needed.",
+  "blockers": "none",
+  "ready": true,
+  "head": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+  "run_id": 42490910222,
+  "workflow_status": "completed",
+  "workflow_conclusion": "success",
+  "github_calls": 6,
+  "minimum_call_interval_seconds": 300.0176167488098,
+  "landing_claim": false,
+  "PR": null
+}

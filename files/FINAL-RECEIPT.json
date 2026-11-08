@@ -1,0 +1,280 @@
+{
+  "tag": "sd-vector-c-f197-fix1",
+  "product": {
+    "repository": "just-every/run-vector",
+    "branch": "cloud/sd-vector-c-f197-fix1",
+    "head": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+    "parents": [
+      "091e707eee124b0a52421053e5c142f40f8178bf",
+      "243b843de99e0ed460e736a27aa2622c13a52ddd"
+    ],
+    "clean": true,
+    "push_status": "success",
+    "pushes": 1,
+    "PR": null,
+    "landed": false,
+    "source_head": "091e707eee124b0a52421053e5c142f40f8178bf",
+    "main_head": "243b843de99e0ed460e736a27aa2622c13a52ddd"
+  },
+  "ci": {
+    "conclusion": "success",
+    "head_branch": "cloud/sd-vector-c-f197-fix1",
+    "head_sha": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42490910222",
+    "id": 42490910222,
+    "name": "Verify",
+    "status": "completed",
+    "observed_at": "2026-11-08T15:05:05.612354+00:00"
+  },
+  "assessment": {
+    "assessment": "Exact-SHA Verify completed/success; ordinary READY. No generated-view exemption was needed.",
+    "blockers": "none",
+    "ready": true,
+    "head": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+    "run_id": 42490910222,
+    "workflow_status": "completed",
+    "workflow_conclusion": "success",
+    "github_calls": 6,
+    "minimum_call_interval_seconds": 300.0176167488098,
+    "landing_claim": false,
+    "PR": null
+  },
+  "checks": [
+    {
+      "label": "typecheck",
+      "command": [
+        "timeout",
+        "300",
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:33:08.399718+00:00",
+      "finished": "2026-11-08T14:33:21.947149+00:00",
+      "log": "typecheck.log"
+    },
+    {
+      "label": "ledger",
+      "command": [
+        "timeout",
+        "180",
+        "node",
+        "--test",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:33:21.988779+00:00",
+      "finished": "2026-11-08T14:33:22.968871+00:00",
+      "log": "ledger.log"
+    },
+    {
+      "label": "build",
+      "command": [
+        "timeout",
+        "600",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:33:36.529144+00:00",
+      "finished": "2026-11-08T14:33:55.355720+00:00",
+      "log": "build.log"
+    },
+    {
+      "label": "deployment-spec-write",
+      "command": [
+        "timeout",
+        "120",
+        "pnpm",
+        "integration:sync"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:34:08.587414+00:00",
+      "finished": "2026-11-08T14:34:08.873482+00:00",
+      "log": "deployment-spec-write.log"
+    },
+    {
+      "label": "deployment-spec-check",
+      "command": [
+        "timeout",
+        "120",
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:34:08.895488+00:00",
+      "finished": "2026-11-08T14:34:09.173253+00:00",
+      "log": "deployment-spec-check.log"
+    },
+    {
+      "label": "views-write",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "AUTO-004"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:35:02.868275+00:00",
+      "finished": "2026-11-08T14:35:02.940751+00:00",
+      "log": "views-write.log"
+    },
+    {
+      "label": "views-check",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "AUTO-004"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:35:02.962448+00:00",
+      "finished": "2026-11-08T14:35:03.033072+00:00",
+      "log": "views-check.log"
+    },
+    {
+      "label": "views-restored-check",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "AUTO-004"
+      ],
+      "exit": 1,
+      "started": "2026-11-08T14:35:03.067634+00:00",
+      "finished": "2026-11-08T14:35:03.135006+00:00",
+      "log": "views-restored-check.log"
+    },
+    {
+      "label": "lock-write",
+      "command": [
+        "timeout",
+        "120",
+        "pnpm",
+        "sources:lock"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:35:35.420038+00:00",
+      "finished": "2026-11-08T14:35:36.020640+00:00",
+      "log": "lock-write.log"
+    },
+    {
+      "label": "lock-check",
+      "command": [
+        "timeout",
+        "120",
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:35:36.045005+00:00",
+      "finished": "2026-11-08T14:35:36.691274+00:00",
+      "log": "lock-check.log"
+    },
+    {
+      "label": "sla-worker",
+      "command": [
+        "timeout",
+        "300",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/due-reminders.test.ts",
+        "tests/worker/data-http.test.ts",
+        "tests/worker/data-import-atomic.test.ts",
+        "tests/worker/role-matrix.test.ts"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:33:08.492529+00:00",
+      "finished": "2026-11-08T14:36:37.401050+00:00",
+      "log": "sla-worker.log"
+    },
+    {
+      "label": "sla-browser",
+      "command": [
+        "timeout",
+        "300",
+        "node",
+        ".artifacts/verification/sla-cloud-browser.mjs"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:38:11.677413+00:00",
+      "finished": "2026-11-08T14:39:05.868575+00:00",
+      "log": "sla-browser.log"
+    },
+    {
+      "label": "product-push",
+      "command": [
+        "python3",
+        "/home/agent/rer-consolidation/.tools/cloud-push.py",
+        "origin",
+        "cloud/sd-vector-c-f197-fix1"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T14:39:49.212681+00:00",
+      "finished": "2026-11-08T14:39:52.786156+00:00",
+      "log": "product-push.log"
+    }
+  ],
+  "clauses": {
+    "all_main_status_rows_preserved": true,
+    "rows": 272,
+    "summary": [
+      "| Published | 98 | 6 | 0 | 104 |",
+      "| Target and push further | 38 | 65 | 65 | 168 |",
+      "| All | 136 | 71 | 65 | 272 |"
+    ],
+    "AUTO-004_before": "partial",
+    "AUTO-004_after": "partial",
+    "status_changes": []
+  },
+  "migrations": {
+    "main_migrations_unchanged": true,
+    "core_migrations": 132,
+    "tail": [
+      {
+        "name": "0126_project_dependencies.sql",
+        "sha256": "baf72f4db62f57b1d93dce937e81f6576607a03a79411cae72ade11d43def487"
+      },
+      {
+        "name": "0127_custom_field_definitions.sql",
+        "sha256": "a35d44097182cdf275ef9c77f8bc4d2b43a50fa400b062831dc6bd1b8c2fc393"
+      },
+      {
+        "name": "0128_resolution_slas.sql",
+        "sha256": "f234c41b2fc37cd270a79df704c9928eb9cf966b7adf6a55a945a91821643103"
+      },
+      {
+        "name": "0129_sla_restore_holds.sql",
+        "sha256": "110964e88259c611aeca937cbd2599d9519291c02eea43b35fcde4ddad336f81"
+      },
+      {
+        "name": "0130_sla_label_start.sql",
+        "sha256": "b69e39917be327d2ba1000fd058e846f20702cff86c61d8893b3e1df47c0abfc"
+      },
+      {
+        "name": "0131_sla_import_admission.sql",
+        "sha256": "44e2c95542d4005a3f7e34fcfea7fafa24eb64130e7eb12c8730d3f4e858e21a"
+      },
+      {
+        "name": "0132_sla_team_archive.sql",
+        "sha256": "3b9734f2bb2f5a0d0c15015606293eaaec561d4fc8f214c6ddbb17989515bc16"
+      }
+    ],
+    "spec_write_changed_only": "management/integration/deployment-spec.json"
+  },
+  "github_calls_used": 6,
+  "publication_scan": "fleet Mac only; not run in cloud",
+  "cleanup_order": "Delete the successfully pushed product clone, including node_modules and all local runtime state, after evidence publication. Final terminal message confirms cleanup."
+}

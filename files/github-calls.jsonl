@@ -1,0 +1,6 @@
+{"call": 1, "timestamp": 1794148803.906598, "utc": "2026-11-08T14:40:03.906602+00:00", "args": ["api", "repos/just-every/run-vector/actions/runs?head_sha=162434f06698b04c918d3e3e1d060aa4ae5f6ec0&per_page=100", "--jq", "[.workflow_runs[] | {id,name,status,conclusion,head_sha,html_url,head_branch}]"]}
+{"call": 2, "timestamp": 1794149103.9266012, "utc": "2026-11-08T14:45:03.926604+00:00", "args": ["api", "repos/just-every/run-vector/actions/runs/42490910222", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"call": 3, "timestamp": 1794149403.944218, "utc": "2026-11-08T14:50:03.944221+00:00", "args": ["api", "repos/just-every/run-vector/actions/runs/42490910222", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"call": 4, "timestamp": 1794149703.9637117, "utc": "2026-11-08T14:55:03.963715+00:00", "args": ["api", "repos/just-every/run-vector/actions/runs/42490910222", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"call": 5, "timestamp": 1794150003.9915478, "utc": "2026-11-08T15:00:03.991551+00:00", "args": ["api", "repos/just-every/run-vector/actions/runs/42490910222", "--jq", "{status,conclusion,head_sha,html_url}"]}
+{"call": 6, "timestamp": 1794150304.0163698, "utc": "2026-11-08T15:05:04.016374+00:00", "args": ["api", "repos/just-every/run-vector/actions/runs/42490910222", "--jq", "{status,conclusion,head_sha,html_url}"]}

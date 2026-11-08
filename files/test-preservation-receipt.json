@@ -1,0 +1,23 @@
+{
+  "parents": [
+    {
+      "parent": "source",
+      "parent_test_files": 436,
+      "missing_test_files": [],
+      "removed_assertion_lines_by_line_diff": [
+        "-assert.ok(['all', 'current', 'planning', 'projects', 'agent-role-parity'].includes(journeyGroup), 'Unknown runtime journey partition');",
+        "- expect(approved.status).toBe(200);const code=new URL((await approved.json() as any).redirect).searchParams.get('code');",
+        "- expect(exchanged.status).toBe(200);const grant=await exchanged.json() as any;"
+      ],
+      "added_skip_or_todo": []
+    },
+    {
+      "parent": "main",
+      "parent_test_files": 445,
+      "missing_test_files": [],
+      "removed_assertion_lines_by_line_diff": [],
+      "added_skip_or_todo": []
+    }
+  ],
+  "assessment": "No new repair assertion deletion relative to main. The initial line-based audit flagged three source-parent lines changed by newer main tests: the core-runtime partition allow-list adds agent-events; two integration-api 200 assertions move into a grant helper reused by the expanded OAuth scope/refusal checks. Reviewed the actual diff: source assertions remain, main adds coverage. All parent test files remain; no skip/todo was added."
+}

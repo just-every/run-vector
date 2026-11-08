@@ -1,0 +1,69 @@
+{
+  "journey": "runResolutionSlaRuntime / exerciseResolutionSla",
+  "exit": 0,
+  "assertion_width": 1440,
+  "proof_widths": [
+    1440,
+    390
+  ],
+  "images": [
+    {
+      "file": "browser/resolution-sla/archive-countdown-1440.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "adbcbf89edac634d04e1258e44d4f55b311f21672875c8ca544c233840bedc16",
+      "bytes": 103213
+    },
+    {
+      "file": "browser/resolution-sla/archive-countdown-390.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "df184eaeb58414401b962166afdd24ceefde208471ba1e20c338dbe7d9f0841b",
+      "bytes": 59933
+    },
+    {
+      "file": "browser/resolution-sla/countdown-1440.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "2586de5485c902d3e48500e24c991d3db218ccda4b9d83e7d04ef6916ab90f0d",
+      "bytes": 106539
+    },
+    {
+      "file": "browser/resolution-sla/countdown-390.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "dc4133178748e0ed0629cff055933ce4368f047a51e498f74be160d6a53989b3",
+      "bytes": 62088
+    },
+    {
+      "file": "browser/resolution-sla/inbox-1440.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "edefb858cdedab51dda406c29226f00d84cd291906217038357c4ee0553013bc",
+      "bytes": 70496
+    },
+    {
+      "file": "browser/resolution-sla/inbox-390.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "f9b2db71ac73b5426010771a7f9aacee511f61ad2e0b0c8e41b72181a1827f93",
+      "bytes": 40552
+    },
+    {
+      "file": "browser/resolution-sla/settings-1440.png",
+      "width": 1440,
+      "height": 1000,
+      "sha256": "19fe6debabbe9575967d226e2f1e76c54c5a5a41c9173ccfaa20fb787cf0bbbd",
+      "bytes": 122365
+    },
+    {
+      "file": "browser/resolution-sla/settings-390.png",
+      "width": 390,
+      "height": 844,
+      "sha256": "46dff4e43101e396680ddd745985ec8c3c5b2b0112991d52fbb7ff56f1feedbd",
+      "bytes": 47344
+    }
+  ],
+  "fixture_only": true,
+  "native_runtime_and_browser_closed": true
+}

@@ -1,0 +1,32 @@
+{
+  "source": {
+    "commit": "091e707eee124b0a52421053e5c142f40f8178bf",
+    "core_migrations": 130,
+    "spec_migrations": 129,
+    "summary": [
+      "| Published | 98 | 6 | 0 | 104 |",
+      "| Target and push further | 38 | 64 | 66 | 168 |",
+      "| All | 136 | 70 | 66 | 272 |"
+    ]
+  },
+  "main": {
+    "commit": "243b843de99e0ed460e736a27aa2622c13a52ddd",
+    "core_migrations": 131,
+    "spec_migrations": 131,
+    "summary": [
+      "| Published | 98 | 6 | 0 | 104 |",
+      "| Target and push further | 38 | 65 | 65 | 168 |",
+      "| All | 136 | 71 | 65 | 272 |"
+    ]
+  },
+  "result": {
+    "commit": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+    "core_migrations": 132,
+    "spec_migrations": 132,
+    "summary": [
+      "| Published | 98 | 6 | 0 | 104 |",
+      "| Target and push further | 38 | 65 | 65 | 168 |",
+      "| All | 136 | 71 | 65 | 272 |"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "source_head": "091e707eee124b0a52421053e5c142f40f8178bf",
+  "main_head": "243b843de99e0ed460e736a27aa2622c13a52ddd",
+  "shallow": "false",
+  "contract_policy": "origin/main retained whole; AUTO-004 remains partial; no judgment changes",
+  "migration_policy": "four byte-identical source SLA migrations deduplicated against existing main 0128-0131; source-only 0130 archive migration renamed 0132; main migration bytes retained",
+  "generator_only_worktree_diff": [
+    "management/integration/deployment-spec.json"
+  ]
+}

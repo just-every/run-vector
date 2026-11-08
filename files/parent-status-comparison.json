@@ -1,0 +1,10 @@
+{
+  "parent_ids_preserved": 272,
+  "main_status_differences_from_source": [
+    {
+      "clause": "BASE-AGENT-010",
+      "source_candidate": "missing",
+      "fresh_main": "partial"
+    }
+  ]
+}

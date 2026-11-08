@@ -1,0 +1,592 @@
+diff --git a/docs/SLAS.md b/docs/SLAS.md
+index c1957800..883cc560 100644
+--- a/docs/SLAS.md
++++ b/docs/SLAS.md
+@@ -2,12 +2,12 @@
+ 
+ In Settings, open a team and its Automation tab. Resolution SLA accepts a priority, a label or both. Both selected filters must match. The target and advance warning are business minutes. Choose business days and a same-day working interval in the workspace timezone. Team owners and people admitted by the team's settings permission can save; workspace Owners and Admins always can. Guests and Viewers cannot.
+ 
+-A matching issue shows its remaining business minutes. Its persisted clock keeps the target, business hours and timezone under which it started. Later target edits apply to new clocks. Completion, cancellation, duplication, team movement, archival, filter withdrawal or disabling stops the original clock; reopening never resets its warning or breach. Resolution targets do not alter issue status, priority, assignment or due date.
++A matching issue shows its remaining business minutes. Its persisted clock keeps the target, business hours and timezone under which it started. Later target edits apply to new clocks. Completion, cancellation, duplication, team movement, archival, filter withdrawal or disabling stops the original clock; reopening never resets its warning or breach. Archiving the team stops its clocks immediately, including when it is restored before the next scheduler tick. Resolution targets do not alter issue status, priority, assignment or due date.
+ 
+ The real scheduler records one warning during the advance-warning interval and one breach at the target, with transactional occurrence receipts. A tick after the target records the breach without sending a late advance warning. Inbox goes to an eligible current assignee and current native triage-responsible person, with one row if they coincide. It excludes the event actor and respects current visibility, issue mutes and SLA-warning type mutes. Personal notification channel choices remain in effect. Muted or ineligible occurrences do not backfill.
+ 
+ An Owner or Admin can explicitly select SLA warning on an existing team Slack or Discord binding. The selected channel receives one identifier, a warning and an authenticated issue link. Private work uses the shared generic message. This uses the existing credential, privacy, restore and terminal-delivery checks. No issue description, title or customer details are sent by this producer. No new provider connection is required for Inbox.
+ 
+-Targets, clock snapshots, stops and occurrence history are portable domain data. Credentials stay excluded. Restored clocks retain their original rows under installation-local holds and historical delivery stays held; effect review never reconstructs old warnings. Forward migration `0128_resolution_slas.sql` retains prior preferences and event history; `0129_sla_restore_holds.sql` separates restoration holds from portable clock history; `0130_sla_label_start.sql` starts label clocks at the label application; `0131_sla_import_admission.sql` keeps imported snapshots free of unplanned publication effects. Compatible rollback must retain this schema and the shared delivery ledgers.
++Targets, clock snapshots, stops and occurrence history are portable domain data. Credentials stay excluded. Restored clocks retain their original rows under installation-local holds and historical delivery stays held; effect review never reconstructs old warnings. Forward migration `0128_resolution_slas.sql` retains prior preferences and event history; `0129_sla_restore_holds.sql` separates restoration holds from portable clock history; `0130_sla_label_start.sql` starts label clocks at the label application; `0131_sla_import_admission.sql` keeps imported snapshots free of unplanned publication effects; `0132_sla_team_archive.sql` retains team archive stops across restoration and upgrades. Compatible rollback must retain this schema and the shared delivery ledgers.
+ 
+ This native resolution slice does not implement customer tiers, triage-time targets, broader policy combinations or Insights charts. External Oncall and PagerDuty recipient qualification and hosted provider commissioning remain separate requirements in AUTO-004.
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index e82bf3cd..881fc54b 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -796,6 +796,12 @@
+       "name": "0131_sla_import_admission.sql",
+       "sha256": "44e2c95542d4005a3f7e34fcfea7fafa24eb64130e7eb12c8730d3f4e858e21a",
+       "sql": "-- Native creation starts after its real activity row. An imported snapshot\n-- acquires no unplanned clock while the import transaction is publishing it.\nDROP TRIGGER sla_issue_start;\nCREATE TRIGGER sla_issue_created AFTER INSERT ON issue_activity WHEN NEW.kind='issue.created' BEGIN\n INSERT OR IGNORE INTO issue_sla_clocks(issue_id,team_id,rule_json,timezone,started_at,observed_at,elapsed_minutes,revision)\n SELECT i.id,i.team_id,r.body_json,w.timezone,max(i.updated_at,r.created_at),max(i.updated_at,r.created_at),0,lower(hex(randomblob(16)))\n FROM issues i JOIN teams t ON t.id=i.team_id JOIN team_slas r ON r.team_id=i.team_id JOIN workspace_settings w ON w.id=t.workspace_id\n JOIN workflow_statuses st ON st.id=i.status_id\n WHERE i.id=NEW.issue_id AND json_extract(r.body_json,'$.enabled')=1 AND (json_extract(r.body_json,'$.priority') IS NULL OR json_extract(r.body_json,'$.priority')=i.priority)\n AND (json_extract(r.body_json,'$.labelId') IS NULL OR EXISTS(SELECT 1 FROM issue_labels l WHERE l.issue_id=i.id AND l.label_id=json_extract(r.body_json,'$.labelId')))\n AND t.archived_at IS NULL AND i.archived_at IS NULL AND st.category NOT IN ('completed','canceled','duplicate')\n AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)\n AND NOT EXISTS(SELECT 1 FROM rer_portability_state WHERE applying=1);\nEND;\nDROP TRIGGER sla_label_match;\nCREATE TRIGGER sla_label_match AFTER INSERT ON issue_labels BEGIN\n INSERT OR IGNORE INTO issue_sla_clocks(issue_id,team_id,rule_json,timezone,started_at,observed_at,elapsed_minutes,revision)\n SELECT i.id,i.team_id,r.body_json,w.timezone,max(NEW.created_at,r.created_at),max(NEW.created_at,r.created_at),0,lower(hex(randomblob(16)))\n FROM issues i JOIN teams t ON t.id=i.team_id JOIN team_slas r ON r.team_id=i.team_id JOIN workspace_settings w ON w.id=t.workspace_id\n JOIN workflow_statuses st ON st.id=i.status_id\n WHERE i.id=NEW.issue_id AND NOT EXISTS(SELECT 1 FROM vector_import_revisions imported WHERE imported.issue_id=i.id) AND json_extract(r.body_json,'$.enabled')=1 AND (json_extract(r.body_json,'$.priority') IS NULL OR json_extract(r.body_json,'$.priority')=i.priority)\n AND (json_extract(r.body_json,'$.labelId') IS NULL OR EXISTS(SELECT 1 FROM issue_labels l WHERE l.issue_id=i.id AND l.label_id=json_extract(r.body_json,'$.labelId')))\n AND t.archived_at IS NULL AND i.archived_at IS NULL AND st.category NOT IN ('completed','canceled','duplicate')\n AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)\n AND NOT EXISTS(SELECT 1 FROM rer_portability_state WHERE applying=1);\nEND;\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0132_sla_team_archive.sql",
++      "sha256": "3b9734f2bb2f5a0d0c15015606293eaaec561d4fc8f214c6ddbb17989515bc16",
++      "sql": "-- Team withdrawal stops every existing clock in the archive transaction, even\n-- when the team is restored before the next scheduled observation.\nCREATE TRIGGER sla_team_archived AFTER UPDATE OF archived_at ON teams\nWHEN NEW.archived_at IS NOT NULL\nBEGIN\n UPDATE issue_sla_clocks\n SET stopped_at=COALESCE(stopped_at,NEW.archived_at),\n     stop_reason=COALESCE(stop_reason,'stopped'),\n     revision=lower(hex(randomblob(16)))\n WHERE team_id=NEW.id AND stopped_at IS NULL;\nEND;\n\n-- Populate the same stop for teams already archived at upgrade. Retain all\n-- elapsed time, target snapshots and occurrence receipts without replay.\nUPDATE issue_sla_clocks\nSET stopped_at=(SELECT archived_at FROM teams WHERE id=issue_sla_clocks.team_id),\n    stop_reason='stopped',revision=lower(hex(randomblob(16)))\nWHERE stopped_at IS NULL\nAND EXISTS(SELECT 1 FROM teams WHERE id=issue_sla_clocks.team_id AND archived_at IS NOT NULL);\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/migrations/core/0132_sla_team_archive.sql b/migrations/core/0132_sla_team_archive.sql
+new file mode 100644
+index 00000000..f8637814
+--- /dev/null
++++ b/migrations/core/0132_sla_team_archive.sql
+@@ -0,0 +1,19 @@
++-- Team withdrawal stops every existing clock in the archive transaction, even
++-- when the team is restored before the next scheduled observation.
++CREATE TRIGGER sla_team_archived AFTER UPDATE OF archived_at ON teams
++WHEN NEW.archived_at IS NOT NULL
++BEGIN
++ UPDATE issue_sla_clocks
++ SET stopped_at=COALESCE(stopped_at,NEW.archived_at),
++     stop_reason=COALESCE(stop_reason,'stopped'),
++     revision=lower(hex(randomblob(16)))
++ WHERE team_id=NEW.id AND stopped_at IS NULL;
++END;
++
++-- Populate the same stop for teams already archived at upgrade. Retain all
++-- elapsed time, target snapshots and occurrence receipts without replay.
++UPDATE issue_sla_clocks
++SET stopped_at=(SELECT archived_at FROM teams WHERE id=issue_sla_clocks.team_id),
++    stop_reason='stopped',revision=lower(hex(randomblob(16)))
++WHERE stopped_at IS NULL
++AND EXISTS(SELECT 1 FROM teams WHERE id=issue_sla_clocks.team_id AND archived_at IS NOT NULL);
+diff --git a/sources.lock.json b/sources.lock.json
+index ecc86c22..9fc9b4d9 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -730,7 +730,7 @@
+       "executable": false
+     },
+     "docs/SLAS.md": {
+-      "sha256": "674104c29462563e10d4f94c4f8044575816d9274b9bf00e52574cb75ebadcfd",
++      "sha256": "9e2d0d957e1a6fd6c5bf7d4a2f765bcb0651c2c44bb8e9800269d587be098d19",
+       "executable": false
+     },
+     "docs/VERIFICATION.md": {
+@@ -2034,7 +2034,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "2403df7564e70838769e842e26989a06988c6ac5aa1dac7383a4adf921d32038",
++      "sha256": "94e3bca167f97b11438db985b77a54e00575d105696c62311e6dd976303253a6",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {
+@@ -2561,6 +2561,10 @@
+       "sha256": "44e2c95542d4005a3f7e34fcfea7fafa24eb64130e7eb12c8730d3f4e858e21a",
+       "executable": false
+     },
++    "migrations/core/0132_sla_team_archive.sql": {
++      "sha256": "3b9734f2bb2f5a0d0c15015606293eaaec561d4fc8f214c6ddbb17989515bc16",
++      "executable": false
++    },
+     "OPERATIONS.json": {
+       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
+       "executable": false
+@@ -8910,7 +8914,7 @@
+       "executable": false
+     },
+     "tests/e2e/resolution-sla-journey.mjs": {
+-      "sha256": "b63d007b4e301d38fc658160298ee51164d19f9181b71efc972a1c3e7c99dc0f",
++      "sha256": "9d44d7e9509015660ac7d5c52be0182d7426cec5fed47f3b68673c3351f37423",
+       "executable": false
+     },
+     "tests/e2e/restore-ui-journey.mjs": {
+@@ -9362,7 +9366,7 @@
+       "executable": false
+     },
+     "tests/worker/data-http.test.ts": {
+-      "sha256": "2bd4916ccdf2e5d9680fef131b8da39027ef72882ab5dff338a789319c6df60e",
++      "sha256": "e6ca462977e02f17e0918b57304d1fbd7391465f866d11a095d4045b071674ab",
+       "executable": false
+     },
+     "tests/worker/data-import-atomic.test.ts": {
+@@ -9809,12 +9813,20 @@
+       "sha256": "0c26194376375009c7c575620726d3bb29452a03684dd97952f4989cb572bc76",
+       "executable": false
+     },
++    "tests/worker/resolution-sla-recipient-scenario.ts": {
++      "sha256": "1e3ce22b7aa88fce9368454c96b488d8bdd7eae8298a7ab22e3209b3c2308660",
++      "executable": false
++    },
+     "tests/worker/resolution-sla-scenario.ts": {
+-      "sha256": "978c50835551dba1ce7e1615d9a527a556e347104d399b4e79036b897d307f15",
++      "sha256": "1cfb4a7d4dcaf64af47b44f8749f655c7bdbc92311b5d0a0f0f661c10c8d7047",
++      "executable": false
++    },
++    "tests/worker/resolution-sla-state-scenario.ts": {
++      "sha256": "07b1f5a92a010b2ea1cfdedeaa3d8e47db8feda668dd62356013494a2dd1b8cd",
+       "executable": false
+     },
+     "tests/worker/resolution-sla-upgrade.ts": {
+-      "sha256": "1df938cd1461d172de42b03f7cc6af89ab2fa656d3e238f141f04c7a80e73d73",
++      "sha256": "801d3fb7f7ab04e9fc2868dd778914e6115c0fb78d6544c5eebfac5d5c91c91a",
+       "executable": false
+     },
+     "tests/worker/role-door-journey.ts": {
+diff --git a/tests/e2e/resolution-sla-journey.mjs b/tests/e2e/resolution-sla-journey.mjs
+index 782a941c..169b5f4d 100644
+--- a/tests/e2e/resolution-sla-journey.mjs
++++ b/tests/e2e/resolution-sla-journey.mjs
+@@ -253,6 +253,30 @@ export async function exerciseResolutionSla({
+       ],
+     );
+     assert.equal((await notices()).length, 1);
++    // An archive and restoration between real scheduler requests is a durable
++    // withdrawal. The issue must show its stopped clock after native reload.
++    const archived = await send("/issues", "POST", {
++      title: "synthetic-vector-197", teamId: team.id, priority: "urgent",
++      assigneeOperatorId: owner.operatorId,
++    }, memberCookie);
++    await send(`/settings/teams/${team.id}`, "PATCH", { archived: true });
++    await send(`/settings/teams/${team.id}`, "PATCH", { archived: false });
++    const archiveStop = await send(`/issues/${archived.identifier}/sla`);
++    assert.equal(archiveStop.state, "stopped");
++    assert.ok(archiveStop.stoppedAt);
++    await tick(start + 122 * 60000);
++    const afterTick = await send(`/issues/${archived.identifier}/sla`);
++    assert.equal(afterTick.state, "stopped");
++    assert.equal(afterTick.remainingMinutes, archiveStop.remainingMinutes);
++    assert.equal(runtime.sql("SELECT count(*) n FROM issue_sla_occurrences WHERE issue_id='" + archived.id + "'")[0].n, 0);
++    for (const width of [1440, 390]) {
++      await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
++      await navigate(page, runtime.base + "/app/issues/" + archived.identifier);
++      const countdown = page.getByRole("note", { name: "Resolution SLA remaining time", exact: true });
++      await countdown.waitFor();
++      if (width === 1440) assert.match(await countdown.innerText(), /Stopped/);
++      await page.screenshot({ path: join(output, `archive-countdown-${width}.png`) });
++    }
+     assert.deepEqual(errors, [], "no hydration or browser errors");
+     const labelState = await send("/settings/labels", "POST", {
+       name: "synthetic-vector-193",
+diff --git a/tests/worker/data-http.test.ts b/tests/worker/data-http.test.ts
+index 0105bccd..8547bf54 100644
+--- a/tests/worker/data-http.test.ts
++++ b/tests/worker/data-http.test.ts
+@@ -113,6 +113,12 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
+  const preference=await f.call('/subscriptions','POST',{subjectType:'team',subjectId:f.team.id});expect(preference.status).toBe(201);
+  const pendingSubscriptionResponse=await request('/api/issues','POST',{teamId:f.team.id,title:'synthetic-vector-1776'},peer);expect(pendingSubscriptionResponse.status).toBe(201);
+  const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
++ const slaStoppedTeam=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-197',identifierPrefix:'SLAARC'})).teams.find(t=>t.identifierPrefix==='SLAARC')!;
++ expect((await f.call('/settings/teams/'+slaStoppedTeam.id+'/sla','PUT',{enabled:true,priority:'urgent',labelId:null,targetMinutes:2,warnBeforeMinutes:1,workingDays:[1,2,3,4,5,6,7],startsAt:'00:00',endsAt:'23:59'})).status).toBe(200);
++ const slaStoppedIssue=await f.create({teamId:slaStoppedTeam.id,priority:'urgent'});
++ expect((await f.call('/settings/teams/'+slaStoppedTeam.id,'PATCH',{archived:true})).status).toBe(200);
++ const slaStoppedAt=await env.DB.prepare('SELECT stopped_at FROM issue_sla_clocks WHERE issue_id=?').bind(slaStoppedIssue.id).first<string>('stopped_at');
++ expect(slaStoppedAt).toBeTruthy();
+  const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
+  const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
+  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
+@@ -191,6 +197,7 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
+  expect(await Promise.all(documentTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(documentHistory);
+  const restoredSla=await Promise.all(slaTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+  expect(restoredSla).toEqual(slaHistory);
++ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT stopped_at FROM issue_sla_clocks WHERE issue_id=?').bind(slaStoppedIssue.id).first('stopped_at')).toBe(slaStoppedAt);
+  for(const clock of restoredSla[1])expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT 1 FROM issue_sla_restore_holds WHERE issue_id=?').bind(clock.issue_id).first()).not.toBeNull();
+ 
+  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);
+@@ -302,6 +309,11 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
+  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision')).toBe(subscriptionRevision);
+  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT subscription_revision FROM vector_restore_status WHERE id=1').first<number>('subscription_revision')).toBe(subscriptionRevision);
+  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
++ expect((await targetCall('/api/settings/teams/'+slaStoppedTeam.id,'PATCH',{archived:false},historical)).status).toBe(200);
++ const restoredStop=await targetCall('/api/issues/'+slaStoppedIssue.identifier+'/sla','GET',undefined,historical);
++ expect(restoredStop.status).toBe(200);expect(await restoredStop.json()).toMatchObject({state:'stopped',stoppedAt:slaStoppedAt});
++ await advanceSlas({...targetBindings,DB:destination.ARCHIVE_TARGET_DB},new Date('2034-01-01T00:00:00Z'));
++ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM issue_sla_occurrences ORDER BY 1,2').all()).results).toEqual(slaHistory[2]);
+  const reportAfter=(await (await targetCall('/api/settings/report-exports','GET',undefined,historical)).json() as any).schedules.find((row:any)=>row.id===reportProfile.id);
+  expect(reportAfter).toMatchObject({requiresReentry:true,enabled:true,kind:'bucket',configuration:{team:f.team.id}});
+  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_report_export_runs WHERE export_id=? ORDER BY id').bind(reportProfile.id).all()).results).toEqual(reportRuns);
+diff --git a/tests/worker/resolution-sla-recipient-scenario.ts b/tests/worker/resolution-sla-recipient-scenario.ts
+new file mode 100644
+index 00000000..30799eb6
+--- /dev/null
++++ b/tests/worker/resolution-sla-recipient-scenario.ts
+@@ -0,0 +1,145 @@
++import { env } from "cloudflare:workers";
++import { expect, vi } from "vitest";
++import { request } from "./base-auth-fixture";
++import type { setupAdministration } from "./administration-fixture";
++
++/** Both selected filters gate the clock. Current recipients are deduplicated,
++ * and an actor who is both assignee and responsible still receives nothing. */
++export async function resolutionSlaRecipientJourney(
++  f: Awaited<ReturnType<typeof setupAdministration>> & {
++    bob: string;
++    bobCookie: string;
++    cara: string;
++    caraCookie: string;
++  },
++  tick: (at: string) => Promise<void>,
++) {
++  vi.setSystemTime(new Date("2026-11-03T11:00:00Z"));
++  expect((await f.call("/settings", "PATCH", { timezone: "UTC" })).status).toBe(
++    200,
++  );
++  const team = (
++    await f.mutate("/settings/teams", "POST", {
++      name: "synthetic-vector-198",
++      identifierPrefix: "SLARECIP",
++    })
++  ).teams.find((row) => row.identifierPrefix === "SLARECIP")!;
++  const response = await f.call("/settings/labels", "POST", {
++    name: "synthetic-vector-198",
++    color: "#4f46e5",
++  });
++  expect(response.status).toBe(200);
++  const label = (
++    (await response.json()) as { labels: { id: string; name: string }[] }
++  ).labels.find((row) => row.name === "synthetic-vector-198")!;
++  expect(
++    (
++      await f.call(`/settings/teams/${team.id}/sla`, "PUT", {
++        enabled: true,
++        priority: "urgent",
++        labelId: label.id,
++        targetMinutes: 10,
++        warnBeforeMinutes: 5,
++        workingDays: [1, 2, 3, 4, 5],
++        startsAt: "09:00",
++        endsAt: "17:00",
++      })
++    ).status,
++  ).toBe(200);
++  for (const member of [f.bob, f.cara])
++    expect(
++      (
++        await f.call(`/settings/teams/${team.id}/members/${member}`, "PUT", {
++          role: "member",
++        })
++      ).status,
++    ).toBe(200);
++  const rotation = async (operator: string) => {
++    expect(
++      (
++        await f.call(`/settings/teams/${team.id}/triage-rotation`, "PUT", {
++          startsLocal: "2026-11-03T11:00",
++          operatorIds: [operator, f.bob],
++        })
++      ).status,
++    ).toBe(200);
++  };
++  const warnings = async (cookie: string, identifier: string) => {
++    const response = await request(
++      "/api/notifications?limit=50",
++      "GET",
++      undefined,
++      cookie,
++    );
++    expect(response.status).toBe(200);
++    return (
++      (await response.json()) as {
++        items: { identifier: string; causes: string[] }[];
++      }
++    ).items.filter(
++      (row) =>
++        row.identifier === identifier && row.causes.includes("sla_warning"),
++    );
++  };
++  const excluded = [
++    await f.create({ teamId: team.id, priority: "low", labelIds: [label.id] }),
++    await f.create({ teamId: team.id, priority: "urgent" }),
++  ];
++  const self = await f.create({
++    teamId: team.id,
++    priority: "urgent",
++    labelIds: [label.id],
++    assigneeOperatorId: f.owner,
++  });
++  await rotation(f.owner);
++  await tick("2026-11-03T11:05:00Z");
++  for (const issue of excluded) {
++    expect(
++      await (await f.call(`/issues/${issue.identifier}/sla`)).json(),
++    ).toBeNull();
++    expect(
++      await env.DB.prepare(
++        "SELECT count(*) n FROM issue_sla_clocks WHERE issue_id=?",
++      )
++        .bind(issue.id)
++        .first("n"),
++    ).toBe(0);
++  }
++  expect(
++    await env.DB.prepare(
++      "SELECT count(*) n FROM issue_sla_occurrences WHERE issue_id=? AND kind='warning'",
++    )
++      .bind(self.id)
++      .first("n"),
++  ).toBe(1);
++  expect(await warnings(f.cookie, self.identifier)).toHaveLength(0);
++  const reassigned = await f.create({
++    teamId: team.id,
++    priority: "urgent",
++    labelIds: [label.id],
++    assigneeOperatorId: f.bob,
++  });
++  vi.setSystemTime(new Date("2026-11-03T11:07:00Z"));
++  expect(
++    (
++      await f.call(`/issues/${reassigned.identifier}`, "PATCH", {
++        expectedVersion: reassigned.version,
++        assigneeOperatorId: f.cara,
++      })
++    ).status,
++  ).toBe(200);
++  await rotation(f.cara);
++  await Promise.all([
++    tick("2026-11-03T11:10:00Z"),
++    tick("2026-11-03T11:10:00Z"),
++  ]);
++  expect(await warnings(f.caraCookie, reassigned.identifier)).toHaveLength(1);
++  expect(await warnings(f.bobCookie, reassigned.identifier)).toHaveLength(0);
++  await tick("2026-11-03T11:11:00Z");
++  expect(await warnings(f.caraCookie, reassigned.identifier)).toHaveLength(1);
++  vi.setSystemTime(new Date("2026-11-02T16:26:00Z"));
++  expect(
++    (await f.call("/settings", "PATCH", { timezone: "America/New_York" }))
++      .status,
++  ).toBe(200);
++}
+diff --git a/tests/worker/resolution-sla-scenario.ts b/tests/worker/resolution-sla-scenario.ts
+index a0d35d3f..bd8f35a2 100644
+--- a/tests/worker/resolution-sla-scenario.ts
++++ b/tests/worker/resolution-sla-scenario.ts
+@@ -1,4 +1,6 @@
+ import { resolutionSlaUpgrade } from "./resolution-sla-upgrade";
++import { resolutionSlaStateJourney } from "./resolution-sla-state-scenario";
++import { resolutionSlaRecipientJourney } from "./resolution-sla-recipient-scenario";
+ import { env } from "cloudflare:workers";
+ import { expect, vi } from "vitest";
+ import type { setupAdministration } from "./administration-fixture";
+@@ -349,6 +351,8 @@ export async function resolutionSlaJourney(
+       viewerCookie,
+       guestCookie,
+     });
++    await resolutionSlaStateJourney(f, tick);
++    await resolutionSlaRecipientJourney(f, tick);
+     // A late completion before the first tick cannot generate an early warning.
+     const resolved = await f.create({ priority: "urgent" });
+     await tick("2026-11-02T16:27:00Z");
+diff --git a/tests/worker/resolution-sla-state-scenario.ts b/tests/worker/resolution-sla-state-scenario.ts
+new file mode 100644
+index 00000000..3705bcb1
+--- /dev/null
++++ b/tests/worker/resolution-sla-state-scenario.ts
+@@ -0,0 +1,96 @@
++import { env } from "cloudflare:workers";
++import { expect, vi } from "vitest";
++import type { setupAdministration } from "./administration-fixture";
++
++/** Exercise clock custody through the same native configuration and issue doors
++ * as the main SLA journey, including a withdrawal between scheduler ticks. */
++export async function resolutionSlaStateJourney(
++  f: Awaited<ReturnType<typeof setupAdministration>>,
++  tick: (at: string) => Promise<void>,
++) {
++  vi.setSystemTime(new Date("2026-11-03T10:00:00Z"));
++  expect((await f.call("/settings", "PATCH", { timezone: "UTC" })).status).toBe(
++    200,
++  );
++  const team = (
++    await f.mutate("/settings/teams", "POST", {
++      name: "synthetic-vector-197",
++      identifierPrefix: "SLASTOP",
++    })
++  ).teams.find((row) => row.identifierPrefix === "SLASTOP")!;
++  const path = `/settings/teams/${team.id}/sla`;
++  const rule = {
++    enabled: true,
++    priority: "urgent",
++    labelId: null,
++    targetMinutes: 10,
++    warnBeforeMinutes: 5,
++    workingDays: [1, 2, 3, 4, 5],
++    startsAt: "09:00",
++    endsAt: "17:00",
++  };
++  expect((await f.call(path, "PUT", rule)).status).toBe(200);
++  const issue = await f.create({
++    teamId: team.id,
++    priority: "urgent",
++    assigneeOperatorId: f.owner,
++  });
++  const read = async () => {
++    const response = await f.call(`/issues/${issue.identifier}/sla`);
++    expect(response.status).toBe(200);
++    return response.json() as Promise<Record<string, unknown>>;
++  };
++  await tick("2026-11-03T10:03:00Z");
++  // Editing the active target and workspace timezone must not rewrite a clock.
++  expect(
++    (await f.call(path, "PUT", { ...rule, targetMinutes: 20 })).status,
++  ).toBe(200);
++  expect(
++    (await f.call("/settings", "PATCH", { timezone: "Pacific/Honolulu" }))
++      .status,
++  ).toBe(200);
++  expect(await read()).toMatchObject({
++    state: "running",
++    remainingMinutes: 7,
++    targetMinutes: 10,
++    timezone: "UTC",
++  });
++  vi.setSystemTime(new Date("2026-11-03T10:04:00Z"));
++  expect(
++    (await f.call(`/settings/teams/${team.id}`, "PATCH", { archived: true }))
++      .status,
++  ).toBe(200);
++  vi.setSystemTime(new Date("2026-11-03T10:06:00Z"));
++  expect(
++    (await f.call(`/settings/teams/${team.id}`, "PATCH", { archived: false }))
++      .status,
++  ).toBe(200);
++  // No scheduled observation took place while the team was archived.
++  expect(await read()).toMatchObject({
++    state: "stopped",
++    stoppedAt: "2026-11-03T10:04:00.000Z",
++    remainingMinutes: 6,
++  });
++  await tick("2026-11-03T10:30:00Z");
++  await tick("2026-11-03T10:31:00Z");
++  expect(await read()).toMatchObject({ state: "stopped", remainingMinutes: 6 });
++  expect(
++    await env.DB.prepare(
++      "SELECT count(*) n FROM issue_sla_occurrences WHERE issue_id=?",
++    )
++      .bind(issue.id)
++      .first("n"),
++  ).toBe(0);
++  expect(
++    await env.DB.prepare(
++      "SELECT count(*) n FROM notifications WHERE issue_id=? AND causes_json='[\"sla_warning\"]'",
++    )
++      .bind(issue.id)
++      .first("n"),
++  ).toBe(0);
++  vi.setSystemTime(new Date("2026-11-02T16:26:00Z"));
++  expect(
++    (await f.call("/settings", "PATCH", { timezone: "America/New_York" }))
++      .status,
++  ).toBe(200);
++}
+diff --git a/tests/worker/resolution-sla-upgrade.ts b/tests/worker/resolution-sla-upgrade.ts
+index 2f37e38c..65148aee 100644
+--- a/tests/worker/resolution-sla-upgrade.ts
++++ b/tests/worker/resolution-sla-upgrade.ts
+@@ -64,7 +64,34 @@ export async function resolutionSlaUpgrade() {
+       ),
+     );
+   const before = await rows();
+-  await applyD1Migrations(db, latest);
++  await applyD1Migrations(
++    db,
++    latest.filter((m) => m.name < "0132_sla_team_archive.sql"),
++  );
++  const archived = await populatedArchiveClock(db, at);
++  await applyD1Migrations(
++    db,
++    latest.filter((m) => m.name >= "0132_sla_team_archive.sql"),
++  );
++  expect(
++    await db
++      .prepare("SELECT * FROM issue_sla_clocks WHERE issue_id=?")
++      .bind(archived.issue)
++      .first(),
++  ).toEqual({
++    ...archived.clock,
++    stopped_at: archived.at,
++    stop_reason: "stopped",
++    revision: expect.any(String),
++  });
++  expect(
++    (
++      await db
++        .prepare("SELECT * FROM issue_sla_occurrences WHERE issue_id=?")
++        .bind(archived.issue)
++        .all()
++    ).results,
++  ).toEqual(archived.receipts);
+   expect(await rows()).toEqual(before);
+   await db
+     .prepare(
+@@ -83,3 +110,71 @@ export async function resolutionSlaUpgrade() {
+     ).results.map((m) => m.name),
+   ).toEqual(migrations.map((m) => m.name).sort());
+ }
++
++/** The previous schema could miss an archive between scheduler observations.
++ * Upgrade stops its populated clock while retaining the target and receipts. */
++async function populatedArchiveClock(db: D1Database, at: string) {
++  const team = (await db
++    .prepare("SELECT id,identifier_prefix FROM teams LIMIT 1")
++    .first<{ id: string; identifier_prefix: string }>())!;
++  const status = await db
++    .prepare(
++      "SELECT id FROM workflow_statuses WHERE team_id=? AND category='unstarted'",
++    )
++    .bind(team.id)
++    .first<string>("id");
++  const issue = createUlid(new Date(at));
++  await db
++    .prepare(
++      `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,status_id,priority,created_at,updated_at)
++    VALUES(?,?,?,1,?,'synthetic-vector-197',?,'urgent',?,?)`,
++    )
++    .bind(
++      issue,
++      team.identifier_prefix + "-1",
++      team.identifier_prefix,
++      team.id,
++      status,
++      at,
++      at,
++    )
++    .run();
++  const rule = JSON.stringify({
++    enabled: true,
++    priority: "urgent",
++    labelId: null,
++    targetMinutes: 10,
++    warnBeforeMinutes: 5,
++    workingDays: [1, 2, 3, 4, 5],
++    startsAt: "09:00",
++    endsAt: "17:00",
++  });
++  await db
++    .prepare(
++      `INSERT INTO issue_sla_clocks(issue_id,team_id,rule_json,timezone,started_at,observed_at,elapsed_minutes,revision)
++    VALUES(?,?,?,'UTC',?,?,3,'synthetic-vector-197')`,
++    )
++    .bind(issue, team.id, rule, at, at)
++    .run();
++  await db
++    .prepare(
++      "INSERT INTO issue_sla_occurrences(issue_id,kind,event_id,created_at) VALUES(?,'warning',?,?)",
++    )
++    .bind(issue, crypto.randomUUID(), at)
++    .run();
++  const clock = await db
++    .prepare("SELECT * FROM issue_sla_clocks WHERE issue_id=?")
++    .bind(issue)
++    .first();
++  const receipts = (
++    await db
++      .prepare("SELECT * FROM issue_sla_occurrences WHERE issue_id=?")
++      .bind(issue)
++      .all()
++  ).results;
++  await db
++    .prepare("UPDATE teams SET archived_at=?,updated_at=? WHERE id=?")
++    .bind(at, at, team.id)
++    .run();
++  return { issue, at, clock, receipts };
++}

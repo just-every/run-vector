@@ -1,0 +1,35 @@
+{
+  "main_migrations_unchanged": true,
+  "core_migrations": 132,
+  "tail": [
+    {
+      "name": "0126_project_dependencies.sql",
+      "sha256": "baf72f4db62f57b1d93dce937e81f6576607a03a79411cae72ade11d43def487"
+    },
+    {
+      "name": "0127_custom_field_definitions.sql",
+      "sha256": "a35d44097182cdf275ef9c77f8bc4d2b43a50fa400b062831dc6bd1b8c2fc393"
+    },
+    {
+      "name": "0128_resolution_slas.sql",
+      "sha256": "f234c41b2fc37cd270a79df704c9928eb9cf966b7adf6a55a945a91821643103"
+    },
+    {
+      "name": "0129_sla_restore_holds.sql",
+      "sha256": "110964e88259c611aeca937cbd2599d9519291c02eea43b35fcde4ddad336f81"
+    },
+    {
+      "name": "0130_sla_label_start.sql",
+      "sha256": "b69e39917be327d2ba1000fd058e846f20702cff86c61d8893b3e1df47c0abfc"
+    },
+    {
+      "name": "0131_sla_import_admission.sql",
+      "sha256": "44e2c95542d4005a3f7e34fcfea7fafa24eb64130e7eb12c8730d3f4e858e21a"
+    },
+    {
+      "name": "0132_sla_team_archive.sql",
+      "sha256": "3b9734f2bb2f5a0d0c15015606293eaaec561d4fc8f214c6ddbb17989515bc16"
+    }
+  ],
+  "spec_write_changed_only": "management/integration/deployment-spec.json"
+}

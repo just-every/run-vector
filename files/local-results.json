@@ -1,0 +1,50 @@
+{
+  "passed_local_checks": [
+    "typecheck",
+    "ledger",
+    "build",
+    "deployment-spec-write",
+    "deployment-spec-check",
+    "views-write",
+    "views-check",
+    "lock-write",
+    "lock-check",
+    "sla-worker",
+    "sla-browser",
+    "product-push"
+  ],
+  "expected_restored_view_failure": [
+    {
+      "label": "views-restored-check",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "AUTO-004"
+      ],
+      "exit": 1,
+      "started": "2026-11-08T14:35:03.067634+00:00",
+      "finished": "2026-11-08T14:35:03.135006+00:00",
+      "log": "views-restored-check.log"
+    }
+  ],
+  "sla_worker_files": 4,
+  "sla_worker_tests": 13,
+  "sla_worker_skipped": 0,
+  "browser_widths": [
+    1440,
+    390
+  ],
+  "browser_screens": [
+    "settings",
+    "countdown",
+    "inbox",
+    "archive-countdown"
+  ],
+  "test_deletions": 0,
+  "weakened_assertions": 0,
+  "initial_setup_exit": 4,
+  "retried_setup_exit": 0
+}

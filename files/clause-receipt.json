@@ -1,0 +1,12 @@
+{
+  "all_main_status_rows_preserved": true,
+  "rows": 272,
+  "summary": [
+    "| Published | 98 | 6 | 0 | 104 |",
+    "| Target and push further | 38 | 65 | 65 | 168 |",
+    "| All | 136 | 71 | 65 | 272 |"
+  ],
+  "AUTO-004_before": "partial",
+  "AUTO-004_after": "partial",
+  "status_changes": []
+}

@@ -1,0 +1,1 @@
+{"conclusion":"success","head_sha":"162434f06698b04c918d3e3e1d060aa4ae5f6ec0","html_url":"https://github.com/just-every/run-vector/actions/runs/42490910222","status":"completed"}

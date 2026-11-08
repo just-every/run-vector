@@ -1,0 +1,5 @@
+{
+  "command": "cloud_run timeout 600 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+  "exit": 4,
+  "private_log": "/tmp/sd-vector-setup.log (not selected for publication)"
+}

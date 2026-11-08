@@ -1,0 +1,10 @@
+{
+  "conclusion": "success",
+  "head_branch": "cloud/sd-vector-c-f197-fix1",
+  "head_sha": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42490910222",
+  "id": 42490910222,
+  "name": "Verify",
+  "status": "completed",
+  "observed_at": "2026-11-08T15:05:05.612354+00:00"
+}
