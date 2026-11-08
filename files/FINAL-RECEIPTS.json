@@ -1,0 +1,114 @@
+{
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "checks": [
+    {
+      "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/issue-types.test.ts",
+        "tests/worker/issue-types-upgrade.test.ts",
+        "tests/worker/jira-import.test.ts"
+      ],
+      "exit": 0,
+      "seconds": 84.73,
+      "log": "CANDIDATE-WORKER.log",
+      "sha256": "af946a1a5e8a9dfee0ec786e2ed9e6cb9d7d4083c7ee3020e637a8ab00ce51c1"
+    },
+    {
+      "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "seconds": 18.0,
+      "log": "CANDIDATE-TYPECHECK.log",
+      "sha256": "ce7cf7ea63d80f204e2f366cedacdab91fc893b8c93fe3c874cff00dc9a40cf6"
+    },
+    {
+      "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+      "command": [
+        "pnpm",
+        "exec",
+        "rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0,
+      "seconds": 0.83,
+      "log": "CANDIDATE-FIRST-PARTY.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+      "command": [
+        "node",
+        "--test",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "seconds": 0.86,
+      "log": "CANDIDATE-MIGRATIONS.log",
+      "sha256": "456961db34abaea4554a241021bdbe7e42763bfac2a9e092a75e556770c472a7"
+    },
+    {
+      "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+      "command": [
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0,
+      "seconds": 0.71,
+      "log": "CANDIDATE-LOCK.log",
+      "sha256": "c58a60b3f9afd9a0b09b0919ca97cd855de233c90fb22858d3070fc4b6c23522"
+    }
+  ],
+  "schema": 1,
+  "tag": "sd-vector-c-f201",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201",
+  "product_pushed": true,
+  "main_landed": false,
+  "pr": null,
+  "ci_calls": 3,
+  "claim": "partial",
+  "fully_closed_points": [],
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "verify": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42507520062",
+    "id": 42507520062,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "views": {
+    "write": "node scripts/contract-docs.mjs write ISSUE-021",
+    "check": "node scripts/contract-docs.mjs check ISSUE-021",
+    "exit": 0,
+    "generated_files_restored": true
+  },
+  "publication_scan": {
+    "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+    "complete": false,
+    "historyScanned": false,
+    "findings": null,
+    "status": "not run in cloud; fleet custody"
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f201",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201",
+  "head": "6ccfe6f2cf60de86d58437fe266777a6a775fca3",
+  "product_pushed": true,
+  "main_landed": false,
+  "pr": null,
+  "ci_calls": 1,
+  "verify": {
+    "id": 42505719499,
+    "name": "Verify",
+    "event": "push",
+    "head_sha": "6ccfe6f2cf60de86d58437fe266777a6a775fca3",
+    "status": "in_progress",
+    "conclusion": null,
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42505719499"
+  },
+  "source_status": "missing",
+  "claim": "partial",
+  "fully_closed_points": [],
+  "counts_before": {
+    "done": 136,
+    "partial": 71,
+    "missing": 65
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 71,
+    "missing": 65
+  },
+  "commits": [
+    {
+      "head": "1b8a924c8435ae463972d72c7369f7f835d73d2b",
+      "subject": "Add team issue type admission and reviewed Jira mapping [skip ci]"
+    },
+    {
+      "head": "92d21c91ed0ae7314b088f3eaf3b388044d02d59",
+      "subject": "Qualify issue type custody and preserve legacy activity records"
+    },
+    {
+      "head": "2ba0e558313ea368c586085b63a9f9f00d911781",
+      "subject": "Merge main and preserve both additive domain upgrades"
+    },
+    {
+      "head": "074c4350aa80f2a5a778e5142f277cc3f25f0750",
+      "subject": "Retain batched issue projections and qualify allowed typed writers"
+    },
+    {
+      "head": "6ccfe6f2cf60de86d58437fe266777a6a775fca3",
+      "subject": "Preserve pre-type Jira review and source compatibility"
+    }
+  ],
+  "checks": [
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write ISSUE-021",
+      "exit": 0,
+      "generated_files_restored": true
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check ISSUE-021",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-types.test.ts tests/worker/issue-types-upgrade.test.ts tests/worker/jira-import.test.ts tests/worker/release-notes.test.ts",
+      "exit": 0,
+      "tests": 4
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-types.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "note": "Includes safe and refused bulk and agent writes, requirement interleaving and private-team assertions."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/jira-import.test.ts",
+      "exit": 0,
+      "tests": 1,
+      "note": "Final runtime Jira compatibility code; later change only aligns its TypeScript review type."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-copy.test.ts tests/worker/bulk-commands.test.ts",
+      "exit": 0,
+      "tests": 3
+    },
+    {
+      "command": "node scripts/api-coverage.mjs",
+      "exit": 1,
+      "note": "Diagnostic of existing held API-003 scope. Exact coverage result equals origin/main; not a required gate."
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "WORKER.log",
+      "bytes": 491,
+      "sha256": "e44a2890077bb7274b837a99c8cce5eff69594baf167a336dab52ab15eecc66c"
+    },
+    {
+      "file": "WRITERS.log",
+      "bytes": 420,
+      "sha256": "dd1d0b87b29b9588f1dc193b17e9940417e37c3d29b0eae9ac5c11dd20a0eefc"
+    },
+    {
+      "file": "JIRA.log",
+      "bytes": 420,
+      "sha256": "4c6196b727d4811a539964d5ce988138674ac2ca2c6ef00f91755fc6125f14aa"
+    },
+    {
+      "file": "COPY-BULK.log",
+      "bytes": 455,
+      "sha256": "8995129f7c43df04ff087aabff56bbaf53993ee15e52b2f3d5ba0c9fbcdaf340"
+    },
+    {
+      "file": "MIGRATIONS.log",
+      "bytes": 243,
+      "sha256": "78a547608a4397ae2fb65cdc6af2aea561f49d122da06a499ecb1fac6adeef0e"
+    },
+    {
+      "file": "TYPECHECK.log",
+      "bytes": 205,
+      "sha256": "8f5e907f3e85ae9b5f1e7f5d789a7e701f8705f3532c666234ca6656c8290896"
+    }
+  ],
+  "publication_scan": {
+    "head": "6ccfe6f2cf60de86d58437fe266777a6a775fca3",
+    "complete": false,
+    "historyScanned": false,
+    "findings": null,
+    "status": "fleet gate; not run in cloud"
+  },
+  "new_interface_proof": "not supplied; required Opus implementation and independent gate remain outstanding"
+}

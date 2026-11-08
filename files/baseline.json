@@ -1,0 +1,16 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201",
+  "initial_main": "162434f06698b04c918d3e3e1d060aa4ae5f6ec0",
+  "merged_main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "status_table_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "status_rows": 272,
+  "source_status": "missing",
+  "proposed_status": "partial",
+  "generated_views_committed_by_builder": false,
+  "clause_status_cells_changed_by_builder": false
+}
