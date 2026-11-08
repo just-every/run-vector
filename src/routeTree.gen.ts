@@ -23,6 +23,7 @@ import { Route as AppIssuesRouteImport } from './routes/app.issues'
 import { Route as AppMyWorkRouteImport } from './routes/app.my-work'
 import { Route as AppNewRouteImport } from './routes/app.new'
 import { Route as AppNewIssueRouteImport } from './routes/app.new-issue'
+import { Route as AppRoadmapRouteImport } from './routes/app.roadmap'
 import { Route as AppSearchRouteImport } from './routes/app.search'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppTriageRouteImport } from './routes/app.triage'
@@ -144,6 +145,11 @@ const AppNewRoute = AppNewRouteImport.update({
 const AppNewIssueRoute = AppNewIssueRouteImport.update({
   id: '/new-issue',
   path: '/new-issue',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRoadmapRoute = AppRoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSearchRoute = AppSearchRouteImport.update({
@@ -433,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/app/my-work': typeof AppMyWorkRouteWithChildren
   '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
+  '/app/roadmap': typeof AppRoadmapRoute
   '/app/search': typeof AppSearchRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/triage': typeof AppTriageRoute
@@ -497,6 +504,7 @@ export interface FileRoutesByTo {
   '/app/insights': typeof AppInsightsRoute
   '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
+  '/app/roadmap': typeof AppRoadmapRoute
   '/app/search': typeof AppSearchRoute
   '/app/triage': typeof AppTriageRoute
   '/docs/$slug': typeof DocsSlugRoute
@@ -565,6 +573,7 @@ export interface FileRoutesById {
   '/app/my-work': typeof AppMyWorkRouteWithChildren
   '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
+  '/app/roadmap': typeof AppRoadmapRoute
   '/app/search': typeof AppSearchRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/triage': typeof AppTriageRoute
@@ -635,6 +644,7 @@ export interface FileRouteTypes {
     | '/app/my-work'
     | '/app/new'
     | '/app/new-issue'
+    | '/app/roadmap'
     | '/app/search'
     | '/app/settings'
     | '/app/triage'
@@ -699,6 +709,7 @@ export interface FileRouteTypes {
     | '/app/insights'
     | '/app/new'
     | '/app/new-issue'
+    | '/app/roadmap'
     | '/app/search'
     | '/app/triage'
     | '/docs/$slug'
@@ -766,6 +777,7 @@ export interface FileRouteTypes {
     | '/app/my-work'
     | '/app/new'
     | '/app/new-issue'
+    | '/app/roadmap'
     | '/app/search'
     | '/app/settings'
     | '/app/triage'
@@ -928,6 +940,13 @@ declare module '@tanstack/react-router' {
       path: '/new-issue'
       fullPath: '/app/new-issue'
       preLoaderRoute: typeof AppNewIssueRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/roadmap': {
+      id: '/app/roadmap'
+      path: '/roadmap'
+      fullPath: '/app/roadmap'
+      preLoaderRoute: typeof AppRoadmapRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/search': {
@@ -1457,6 +1476,7 @@ interface AppRouteChildren {
   AppMyWorkRoute: typeof AppMyWorkRouteWithChildren
   AppNewRoute: typeof AppNewRoute
   AppNewIssueRoute: typeof AppNewIssueRoute
+  AppRoadmapRoute: typeof AppRoadmapRoute
   AppSearchRoute: typeof AppSearchRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppTriageRoute: typeof AppTriageRoute
@@ -1489,6 +1509,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMyWorkRoute: AppMyWorkRouteWithChildren,
   AppNewRoute: AppNewRoute,
   AppNewIssueRoute: AppNewIssueRoute,
+  AppRoadmapRoute: AppRoadmapRoute,
   AppSearchRoute: AppSearchRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
   AppTriageRoute: AppTriageRoute,

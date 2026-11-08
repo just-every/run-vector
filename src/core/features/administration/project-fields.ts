@@ -19,7 +19,23 @@ export function projectLabelWrites(ctx: AdministrationContext, id: string, label
     ...labels.map(label => ctx.db.prepare('INSERT INTO project_labels(project_id,label_id,created_at) VALUES(?,?,?)').bind(id, label, ctx.at)),
   ];
 }
-export function projectFieldActivity(ctx: AdministrationContext, id: string, previous: Record<string, unknown>, next: Record<string, unknown>) {
-  return ['startDate','targetDate','priority','labelIds','color','icon'].filter(key => JSON.stringify(previous[key]) !== JSON.stringify(next[key]))
-    .map(key => projectActivity(ctx, id, `project.${key}_changed`, previous[key], next[key]));
+export function projectFieldActivity(ctx: AdministrationContext, id: string, previous: Record<string, unknown>, next: Record<string, unknown>, combineDates = false) {
+  const keys = ['startDate','targetDate','priority','labelIds','color','icon'].filter(key => JSON.stringify(previous[key]) !== JSON.stringify(next[key]));
+  const dates = keys.filter(key => key === 'startDate' || key === 'targetDate');
+  return [
+    ...(combineDates && dates.length ? [projectActivity(ctx, id, 'project.dates_changed', {startDate:previous.startDate,targetDate:previous.targetDate}, {startDate:next.startDate,targetDate:next.targetDate})] : []),
+    ...keys.filter(key => !combineDates || key !== 'startDate' && key !== 'targetDate').map(key => projectActivity(ctx, id, `project.${key}_changed`, previous[key], next[key])),
+  ];
 }
+
+// Activity identity gives planning edits a durable revision without changing
+// historical records or the existing per-field activity contract.
+export async function projectFieldRevision(db: D1Database, id: string) {
+  return (await db.prepare("SELECT count(*) || ':' || coalesce(max(id),'') AS revision FROM project_activity WHERE project_id=?").bind(id).first<string>('revision'))!;
+}
+export async function projectFieldVersion(row: Record<string, unknown>, labels: string[], revision: string) {
+  const fields = ['id','name','description','lead_operator_id','start_date','target_date','priority','color','icon','lifecycle','archived_at','updated_at'];
+  const bytes = new TextEncoder().encode(JSON.stringify([fields.map(key => row[key]), labels, revision]));
+  return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), byte => byte.toString(16).padStart(2,'0')).join('');
+}
+
