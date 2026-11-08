@@ -1,3 +1,4 @@
+import {changeHierarchy,hierarchySchema} from "../sub-teams/hierarchy";
 import {createSlackChannel} from '../integrations/channels/settings';
 import {integrationOwner} from '../integrations/authority';
 import {setTeamPrivacy} from '../team-membership/privacy';
@@ -87,6 +88,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
       createTeam(c.env.DB, c.get("operatorId"), b, b.createSlackChannel ? await createSlackChannel(c.env,await integrationOwner(c.env,c.req.raw),b.identifierPrefix,'team') : undefined).then(() => {}),
     ),
   );
+  app.put("/settings/teams/:id/hierarchy",mutation(hierarchySchema,(c,b)=>changeHierarchy(c.env.DB,c.get("operatorId"),c.req.param("id")!,b)));
   app.patch(
     "/settings/teams/:id",
     mutation(schema.teamUpdateSchema, (c, b) =>

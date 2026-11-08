@@ -1,3 +1,4 @@
+import {changeHierarchy,hierarchySchema} from "../sub-teams/hierarchy";
 import {addIssueTemplateRoutes} from '../issue-templates/routes';
 import {createIssueFromRequest} from '../issue-templates/application';
 import {createTeam} from "../administration/teams";
@@ -85,6 +86,12 @@ export function createIntegrationApi(){
   try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
+ });
+ app.put('/teams/:id/hierarchy',async c=>{
+  const input=parse(hierarchySchema,await readRequestJson(c.req.raw));
+  await changeHierarchy(c.env.DB,c.get('operatorId'),c.req.param('id'),input);
+  const data=await readAdministration(c.env.DB,c.get('operatorId'));
+  return c.json(data.teams.find(team=>team.id===c.req.param('id')));
  });
  app.put('/teams/:id/privacy',async c=>{
   const input=parse(teamPrivacySchema,await readRequestJson(c.req.raw));

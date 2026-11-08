@@ -1,3 +1,5 @@
+import { hierarchy, hierarchyAuthority, hierarchyFence, validHierarchy, type HierarchyTeam } from "../sub-teams/hierarchy";
+import { workflowRows, workflowDescendantWrites, statusFence } from "../sub-teams/workflow";
 import { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import { statusRemovalNotifications } from "../notifications/status-removal";
@@ -31,6 +33,7 @@ type Status = {
   name: string;
   category: string;
   position: number;
+  inherited_from: string | null;
 };
 export async function createTeam(
   db: D1Database,
@@ -40,6 +43,12 @@ export async function createTeam(
 ) {
   const ctx = await administrationContext(db, actor),
     id = createUlid(new Date(ctx.at));
+  const graph=await hierarchy(ctx), parent=input.parentTeamId?graph.find(t=>t.id===input.parentTeamId):undefined;
+  if(input.parentTeamId&&!parent)throw new SettingsError("not_found","Parent team is unavailable.",404);
+  const newTeam:HierarchyTeam={id,name:input.name,parent_team_id:parent?.id??null,workflow_inherited:Number(!!parent),permissions_inherited:Number(!!parent),hierarchy_version:1,settings_permission:parent?.settings_permission??"team_owners",planning_permission:parent?.planning_permission??"all_members"};
+  validHierarchy([...graph,newTeam]);
+  const parentAuthority=parent?await hierarchyAuthority(ctx,[parent.id]):null;
+  const parentWorkflow=parent?await workflowRows(ctx,parent.id):[];
   const categories = [
     "intake",
     "backlog",
@@ -50,9 +59,11 @@ export async function createTeam(
     "duplicate",
   ];
   await commit(ctx, [
+    hierarchyFence(ctx,graph),
+    ...(parentAuthority?[parentAuthority,statusFence(ctx,parent!.id,parentWorkflow)]:[]),
     ctx.db
       .prepare(
-        "INSERT INTO teams(id,workspace_id,name,identifier_prefix,created_at,updated_at,is_private) VALUES(?,?,?,?,?,?,?)",
+        "INSERT INTO teams(id,workspace_id,name,identifier_prefix,created_at,updated_at,is_private,parent_team_id,workflow_inherited,permissions_inherited,settings_permission,planning_permission) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
       )
       .bind(
         id,
@@ -62,8 +73,9 @@ export async function createTeam(
         ctx.at,
         ctx.at,
         Number(input.isPrivate ?? false),
+        newTeam.parent_team_id,newTeam.workflow_inherited,newTeam.permissions_inherited,newTeam.settings_permission,newTeam.planning_permission,
       ),
-    ...categories.map((category, position) =>
+    ...(parent?parentWorkflow.map(status=>ctx.db.prepare("INSERT INTO workflow_statuses(id,team_id,name,category,position,inherited_from,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)").bind(createUlid(new Date(ctx.at)),id,status.name,status.category,status.position,status.id,ctx.at,ctx.at)) : categories.map((category, position) =>
       ctx.db
         .prepare(
           "INSERT INTO workflow_statuses(id,team_id,name,category,position,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
@@ -77,7 +89,7 @@ export async function createTeam(
           ctx.at,
           ctx.at,
         ),
-    ),
+    )),
     // ROLE-007: whoever creates a team is its first team owner.
     ctx.db
       .prepare("INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) VALUES(?,?,'owner',?,?)")
@@ -143,6 +155,9 @@ export async function updateTeam(
 }
 async function workflow(ctx: AdministrationContext, teamId: string) {
   await ownedRow<Team>(ctx, "teams", teamId);
+  const team=(await hierarchy(ctx)).find(t=>t.id===teamId)!;
+  if(team.workflow_inherited)throw new SettingsError("workflow_inherited","Override the inherited workflow before editing it.",409);
+  if(team.parent_team_id)await hierarchyAuthority(ctx,[teamId,team.parent_team_id]);
   return (
     await ctx.db
       .prepare(
@@ -152,17 +167,20 @@ async function workflow(ctx: AdministrationContext, teamId: string) {
       .all<Status>()
   ).results;
 }
-function workflowGuard(
+async function workflowGuard(
   ctx: AdministrationContext,
   teamId: string,
   statuses: Status[],
 ) {
-  return guard(
+  const team=(await hierarchy(ctx)).find(t=>t.id===teamId)!;
+  if(team.workflow_inherited)throw new SettingsError("workflow_inherited","Override the inherited workflow before editing it.",409);
+  const permissions=team.parent_team_id?await hierarchyAuthority(ctx,[teamId,team.parent_team_id]):guard(ctx.db,"1");
+  return [permissions,guard(ctx.db,"EXISTS(SELECT 1 FROM main.teams WHERE id=? AND hierarchy_version=? AND workflow_inherited=0)",teamId,team.hierarchy_version),guard(
     ctx.db,
     `(SELECT json_group_array(json_array(id,name,category,position)) FROM (SELECT * FROM workflow_statuses WHERE team_id=? ORDER BY position,id))=?`,
     teamId,
     JSON.stringify(statuses.map((s) => [s.id, s.name, s.category, s.position])),
-  );
+  )];
 }
 export async function createStatus(
   db: D1Database,
@@ -174,7 +192,7 @@ export async function createStatus(
     statuses = await workflow(ctx, teamId),
     id = createUlid(new Date(ctx.at));
   await commit(ctx, [
-    workflowGuard(ctx, teamId, statuses),
+    ...await workflowGuard(ctx, teamId, statuses),
     ctx.db
       .prepare(
         "INSERT INTO workflow_statuses(id,team_id,name,category,position,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
@@ -188,6 +206,7 @@ export async function createStatus(
         ctx.at,
         ctx.at,
       ),
+    ...await workflowDescendantWrites(ctx,teamId,[...statuses,{id,team_id:teamId,name:input.name,category:input.category,position:Math.max(...statuses.map(s=>s.position))+1,inherited_from:null}]),
     ...audit(ctx, "workflow.status_created", id, input.name, null, {
       teamId,
       ...input,
@@ -206,10 +225,11 @@ export async function renameStatus(
     old = statuses.find((s) => s.id === id);
   if (!old) throw new SettingsError("not_found", "Status is unavailable.", 404);
   await commit(ctx, [
-    workflowGuard(ctx, teamId, statuses),
+    ...await workflowGuard(ctx, teamId, statuses),
     ctx.db
       .prepare("UPDATE workflow_statuses SET name=?,updated_at=? WHERE id=?")
       .bind(name, ctx.at, id),
+    ...await workflowDescendantWrites(ctx,teamId,statuses.map(s=>s.id===id?{...s,name}:s)),
     ...audit(
       ctx,
       "workflow.status_renamed",
@@ -241,7 +261,7 @@ export async function reorderStatuses(
   const offset =
     Math.max(...statuses.map((s) => s.position), statuses.length) + 1;
   await commit(ctx, [
-    workflowGuard(ctx, teamId, statuses),
+    ...await workflowGuard(ctx, teamId, statuses),
     ...ids.map((id, i) =>
       ctx.db
         .prepare("UPDATE workflow_statuses SET position=? WHERE id=?")
@@ -254,6 +274,7 @@ export async function reorderStatuses(
         )
         .bind(i, ctx.at, id),
     ),
+    ...await workflowDescendantWrites(ctx,teamId,ids.map((id,position)=>({...statuses.find(s=>s.id===id)!,position}))),
     ...audit(
       ctx,
       "workflow.reordered",
@@ -285,7 +306,7 @@ export async function removeStatus(
   const operationId = createUlid(new Date(ctx.at));
   const notifications = statusRemovalNotifications(ctx.db, operationId);
   await commit(ctx, [
-    workflowGuard(ctx, teamId, statuses),
+    ...await workflowGuard(ctx, teamId, statuses),
     ctx.db
       .prepare(
         `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?||':'||id,id,?,'workflow.status_removed',json_object('statusId',status_id),json_object('statusId',?),?,? FROM issues WHERE team_id=? AND status_id=?`,
@@ -299,6 +320,7 @@ export async function removeStatus(
       .bind(destination, ctx.at, teamId, id),
     ctx.db.prepare("DELETE FROM workflow_statuses WHERE id=?").bind(id),
     ...notifications.finalize,
+    ...await workflowDescendantWrites(ctx,teamId,statuses.filter(s=>s.id!==id),new Map([[id,destination]])),
     ...audit(
       ctx,
       "workflow.status_removed",

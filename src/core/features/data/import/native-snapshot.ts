@@ -1,3 +1,4 @@
+// Hierarchy lives on teams and workflows. Issue import snapshots keep the original team and status identity; hierarchy edits never rewrite issue identifiers.
 import inventory from '../archive-inventory.json';
 import type { Json, D1Sql } from '../../../../../vendor/base/import-kit/src/d1/index';
 

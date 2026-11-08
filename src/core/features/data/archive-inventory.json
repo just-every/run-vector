@@ -1030,7 +1030,11 @@
     "membership_mode",
     "requests_enabled",
     "is_private",
-    "cycles_enabled"
+    "cycles_enabled",
+    "parent_team_id",
+    "workflow_inherited",
+    "permissions_inherited",
+    "hierarchy_version"
   ],
   "vector_auth_operators": [
     "auth_id",
@@ -1203,7 +1207,8 @@
     "category",
     "position",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "inherited_from"
   ],
   "workspace_bootstrap": [
     "id",

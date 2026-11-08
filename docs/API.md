@@ -690,3 +690,30 @@ or remove a direct blocker through the same native door. Project-list editing,
 roadmap connectors, timeline conflict flags, Linear import and broader
 notification-channel qualification remain owed under PROJ-015 and its
 receiving clauses.
+
+### Sub-team configuration
+
+Create a sub-team with an optional `parentTeamId` on `POST /api/v1/teams`.
+The new team retains its own prefix and membership. It starts with inherited
+workflow and permission values. Creation requires the existing team-creation
+permission and team-setting authority on the parent.
+
+`PUT /api/v1/teams/ID/hierarchy` requires `teams:write` and the current
+`version` from the team's `hierarchyVersion`. It accepts `parentTeamId`
+(null detaches), `workflowInherited`, `permissionsInherited`, and custom
+`settingsPermission` and `planningPermission` values when permission inheritance
+is disabled. Each permission value is `team_owners` or `all_members`.
+Reparenting preserves issue identifiers. The child and all affected parents
+require team-setting authority; Owners and Admins always pass, while Guests
+and Viewers are refused. Stale versions return 409 without changing storage.
+
+Inherited workflows retain team-local status identities. Override a child's
+workflow explicitly before editing it. Parent status removal maps inherited
+issues through the chosen same-category destination in the same transaction.
+Restoring inheritance maps existing issues into the parent's workflow while
+preserving their category.
+
+A team-filtered issue list accepts `includeSubTeams=true` (default `false`).
+Counts, paging and current visibility use the same descendant predicate.
+The choice can be stored in issue-list preferences or a saved issue view.
+Hierarchy configuration screens and their browser qualification remain pending.

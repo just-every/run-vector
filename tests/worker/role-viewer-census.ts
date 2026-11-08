@@ -1,3 +1,4 @@
+import {hierarchySchema} from "../../src/core/features/sub-teams/hierarchy";
 import {generateReleaseNotes,editReleaseNotes} from '../../src/core/features/releases/notes/schema';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
@@ -200,6 +201,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/settings/notifications/slack/lookup',undefined);native('POST','/settings/notifications/slack/link',{slackUserId});
   native('PUT','/settings/teams/creation',{membersMayCreate:false});both('POST','/settings/teams','/teams',{name:'synthetic-vector-31044',identifierPrefix:'SYNNEW'});both('PUT','/settings/teams/:id/privacy','/teams/:id/privacy',{isPrivate:false},tp);
   native('POST','/teams/:teamId/join',undefined,{teamId:destinationTeam.id});native('POST','/teams/:teamId/leave',undefined,teamId);native('PUT','/settings/teams/:id/members/:operatorId',{role:'member'},{...tp,operatorId:w.lead.id});native('DELETE','/settings/teams/:id/members/:operatorId',undefined,{...tp,operatorId:w.lead.id});native('PUT','/settings/teams/:id/membership',{mode:'invite_only',requestsEnabled:true},tp);native('POST','/settings/teams/:id/requests/:requesterId/decision',{decision:'approved'},{id:requestTeam.id,requesterId});native('POST','/teams/:teamId/requests',undefined,{teamId:requestTeam.id});
+  const hierarchyTeam=(await call(owner,'/settings/administration')).teams.find((row:any)=>row.id===w.team.id);
+  both('PUT','/settings/teams/:id/hierarchy','/teams/:id/hierarchy',{version:hierarchyTeam.hierarchyVersion,workflowInherited:false},tp);
   native('PUT','/settings/teams/:id/permissions',{settings:'team_owners',planning:'all_members'},tp);native('PATCH','/settings/teams/:id',{name:'synthetic-vector-31045'},tp);
   native('PUT','/settings/teams/:id/sla',{enabled:true,priority:'high',labelId:null,targetMinutes:60,warnBeforeMinutes:15,workingDays:[1,2,3,4,5],startsAt:'09:00',endsAt:'17:00'},tp);
   const housekeeping={closeAfterDays:30,archiveAfterDays:60,exemptBugs:true};native('PUT','/settings/teams/:id/housekeeping',housekeeping,tp);native('POST','/settings/teams/:id/housekeeping/preview',housekeeping,tp);
@@ -255,6 +258,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'PATCH /settings/report-exports/:id':changeSchedule,
    'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,
    'POST /settings/teams':administrationInput.teamCreateSchema,
+   'PUT /settings/teams/:id/hierarchy':hierarchySchema,
    'PUT /settings/teams/:id/privacy':administrationInput.teamPrivacySchema,
    'PATCH /settings/teams/:id':administrationInput.teamUpdateSchema,
    'POST /settings/teams/:id/statuses':administrationInput.statusCreateSchema,

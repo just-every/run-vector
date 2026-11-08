@@ -117,7 +117,12 @@ export function browseWhere(
   }
   if (query.assignee === "unassigned") conditions.push("a.id IS NULL");
   else if (query.assignee !== "all") equal("a.id", query.assignee);
-  if (query.team !== "all") equal("t.id", query.team);
+  if (query.team !== "all") {
+    if(query.includeSubTeams==="true") {
+      conditions.push("t.id IN (WITH RECURSIVE family(id) AS (SELECT id FROM teams WHERE id=? UNION ALL SELECT child.id FROM main.teams child JOIN family ON child.parent_team_id=family.id) SELECT id FROM family)");
+      values.push(query.team);
+    } else equal("t.id",query.team);
+  }
   for (const [value, column] of [
     [query.project, "i.project_id"],
     [query.cycle, "i.cycle_id"],

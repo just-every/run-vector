@@ -390,6 +390,19 @@
               "type": "string",
               "format": "date"
             }
+          },
+          {
+            "name": "includeSubTeams",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "false",
+                "true"
+              ],
+              "default": "false"
+            },
+            "description": "Include visible descendants when team names a parent team"
           }
         ]
       },
@@ -3190,6 +3203,16 @@
                   "identifierPrefix": {
                     "type": "string",
                     "pattern": "^[A-Z]{2,10}$"
+                  },
+                  "parentTeamId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                  },
+                  "isPrivate": {
+                    "type": "boolean"
                   }
                 },
                 "required": [
@@ -5232,6 +5255,101 @@
                   "type": "integer"
                 },
                 "description": "Seconds until the next minute"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teams/{id}/hierarchy": {
+      "put": {
+        "summary": "Set a team's parent and workflow or permission inheritance",
+        "x-scopes": [
+          "teams:write"
+        ],
+        "x-operation": "update",
+        "responses": {
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          },
+          "200": {
+            "description": "Updated native team, including hierarchyVersion"
+          }
+        },
+        "operationId": "teams_hierarchy_put",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-object": "teams",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "version"
+                ],
+                "additionalProperties": false,
+                "minProperties": 2,
+                "properties": {
+                  "version": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "parentTeamId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+                  },
+                  "workflowInherited": {
+                    "type": "boolean"
+                  },
+                  "permissionsInherited": {
+                    "type": "boolean"
+                  },
+                  "settingsPermission": {
+                    "type": "string",
+                    "enum": [
+                      "team_owners",
+                      "all_members"
+                    ]
+                  },
+                  "planningPermission": {
+                    "type": "string",
+                    "enum": [
+                      "team_owners",
+                      "all_members"
+                    ]
+                  }
+                }
               }
             }
           }

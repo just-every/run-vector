@@ -43,9 +43,9 @@ export function labelTextColor(color: string): "#000000" | "#ffffff" {
 export const teamCreationPermissionSchema = z.object({membersMayCreate:z.boolean()}).strict();
 export const teamPrivacySchema = z.object({isPrivate:z.boolean()}).strict();
 export const teamCreateSchema = z
-  .object({ name, identifierPrefix: prefix, createSlackChannel: z.boolean().optional(), isPrivate:z.boolean().optional() })
+  .object({ name, identifierPrefix: prefix, createSlackChannel: z.boolean().optional(), isPrivate:z.boolean().optional(), parentTeamId:administrationId.nullable().optional() })
   .strict();
-export const teamUpdateSchema = teamCreateSchema.omit({createSlackChannel:true,isPrivate:true})
+export const teamUpdateSchema = teamCreateSchema.omit({createSlackChannel:true,isPrivate:true,parentTeamId:true})
   .partial()
   .extend({ archived: z.boolean().optional(), cyclesEnabled: z.boolean().optional(), autoCycleStarted: z.boolean().optional(), autoCycleCompleted: z.boolean().optional() })
   .strict()
@@ -173,6 +173,10 @@ export const administrationSchema = z.object({
       issueCount: z.number().int().nonnegative().nullable(),
       archivedAt: z.string().nullable(),
       prefixEditable: z.boolean(),
+      parentTeamId: z.string().nullable(),
+      workflowInherited: z.boolean(),
+      permissionsInherited: z.boolean(),
+      hierarchyVersion: z.number().int(),
       cyclesEnabled: z.boolean(),
       autoCycleStarted: z.boolean(),
       autoCycleCompleted: z.boolean(),

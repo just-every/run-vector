@@ -43,6 +43,10 @@ export const teams = sqliteTable('teams', {
   workspaceId: text('workspace_id').notNull(),
   name: text('name').notNull(),
   identifierPrefix: text('identifier_prefix').notNull(),
+  parentTeamId: text('parent_team_id'),
+  workflowInherited: integer('workflow_inherited', { mode: 'boolean' }).notNull().default(false),
+  permissionsInherited: integer('permissions_inherited', { mode: 'boolean' }).notNull().default(false),
+  hierarchyVersion: integer('hierarchy_version').notNull().default(1),
   isPrivate: integer('is_private', { mode: 'boolean' }).notNull().default(false),
   archivedAt: text('archived_at'),
   cyclesEnabled: integer('cycles_enabled', { mode: 'boolean' }).notNull().default(true),
@@ -53,6 +57,7 @@ export const teams = sqliteTable('teams', {
 ])
 
 export const workflowStatuses = sqliteTable('workflow_statuses', {
+  inheritedFrom: text('inherited_from'),
   id: text('id').primaryKey(),
   teamId: text('team_id').notNull(),
   name: text('name').notNull(),

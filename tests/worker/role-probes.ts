@@ -99,6 +99,15 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     }},
     "teams.join": { session: async (_who, actor) => { const id = await team(`Directory team ${unique()}`, "DIR"); return () => actor.call(`/teams/${id}/join`, "POST", {}); } },
     "teams.settings": { permission: "settings", session: async (_who, actor, id) => { const value = unique() % 2 === 0; return () => actor.call(`/settings/teams/${id}`, "PATCH", { autoCycleStarted: value, cyclesEnabled: true }); } },
+    "teams.hierarchy": {permission:"settings",session:async (_who,actor,id)=>{
+      const state=await json<{teams:{id:string;hierarchyVersion:number}[]}>(owner.call("/settings/administration"));
+      const team=state.teams.find(t=>t.id===id)!;
+      return ()=>actor.call(`/settings/teams/${id}/hierarchy`,"PUT",{version:team.hierarchyVersion,permissionsInherited:false});
+    },api:async (_who,actor,id)=>{
+      const state=await json<{teams:{id:string;hierarchyVersion:number}[]}>(owner.call("/settings/administration"));
+      const team=state.teams.find(t=>t.id===id)!;
+      return ()=>actor.api(`/teams/${id}/hierarchy`,"PUT",{version:team.hierarchyVersion,permissionsInherited:false});
+    }},
     "teams.workflow": { permission: "settings", session: async (_who, actor, id) => { const status = await backlog(id), name = `Backlog ${unique()}`; return () => actor.call(`/settings/teams/${id}/statuses/${status}`, "PATCH", { name }); } },
     // FIELD-001: defining a team field is a team setting, checked under both permission values.
     "custom-fields.team": { permission: "settings", session: async (_who, actor, id) => { const name = `synthetic-vector-field-${unique()}`;

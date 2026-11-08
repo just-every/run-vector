@@ -33,6 +33,7 @@ export const issueListQuerySchema = z
       .default("all"),
     assignee: z.union([z.enum(["all", "unassigned"]), id]).default("all"),
     team: target,
+    includeSubTeams: z.enum(["false","true"]).default("false"),
     project: nullableTarget,
     cycle: nullableTarget,
     label: nullableTarget,
