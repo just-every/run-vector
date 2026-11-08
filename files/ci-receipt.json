@@ -1,19 +1,19 @@
 {
   "head": "b129d446e12236048b21c1f5942fb184db29bbb1",
-  "github_calls_used": 9,
+  "github_calls_used": 10,
   "last_discovery_epoch": 1794171821.5915825,
   "runs": [
     {
-      "conclusion": null,
+      "conclusion": "failure",
       "created_at": "2026-11-08T21:03:28Z",
       "event": "push",
       "head_sha": "b129d446e12236048b21c1f5942fb184db29bbb1",
       "html_url": "https://github.com/just-every/run-vector/actions/runs/42523231752",
       "id": 42523231752,
       "name": "Verify",
-      "status": "in_progress"
+      "status": "completed"
     }
   ],
-  "last_poll_epoch": 1794173070.4434583,
-  "last_poll_utc": "2026-11-08T21:24:30.443465+00:00"
+  "last_poll_epoch": 1794173550.4895356,
+  "last_poll_utc": "2026-11-08T21:32:30.489542+00:00"
 }

@@ -1,6 +1,6 @@
 # Vector INIT-004 continuation: sd-vector-c-f199-pc1
 
-The saved head's failing core-runtime shard was reproduced and repaired without changing an assertion or a product request limit. The duplicate project-membership invocation was removed from the shared Current phase; the entire project, initiative and leadership proof still runs once in Current's existing fresh-install phase. The missing leadership metadata categories were also added to the existing email and Slack outbound declarations. No sender behavior, permission, provider endpoint, contract requirement or held scope changed in this continuation.
+The saved head's failing core-runtime shard was reproduced and repaired locally without changing an assertion or a product request limit. The forward candidate's new exact-SHA Verify has completed with failure, so this continuation is BLOCKED and makes no READY claim. The duplicate project-membership invocation was removed from the shared Current phase; the entire project, initiative and leadership proof still runs once in Current's existing fresh-install phase. The missing leadership metadata categories were also added to the existing email and Slack outbound declarations. No sender behavior, permission, provider endpoint, contract requirement or held scope changed in this continuation.
 
 Product repository: https://github.com/just-every/run-vector
 Branch: `cloud/sd-vector-c-f199-pc1`
@@ -10,7 +10,7 @@ Repair save: `a50160b9e990196df16a00b993f987deb0a38714`
 Comparison main: `0e8a686c06eddd55943ed1d2690df32a8fc82213`
 PR: none; the repository starts Verify on the named branch's push.
 
-Verify: push run **42523231752**, exact candidate SHA, **in progress at the latest observation**. This report does not claim CI green yet.
+Verify: push run **42523231752**, exact candidate SHA, **completed with failure**. Failed-job details are unestablished because the supplied ten-call GitHub budget was exhausted by the terminal observation. No CI green or READY is claimed.
 
 ## Plan and results
 
@@ -18,7 +18,7 @@ Verify: push run **42523231752**, exact candidate SHA, **in progress at the late
 2. Established prior Verify run 42506503396 and failed shard job 128810444261. Read its failed log once. That command returned no bytes; the follow-up artifact redirect was Forbidden. Ran the exact failed command at the saved SHA, Node 22.20.0 and the shard environment before editing. It failed on native invitation confirmation with `429 !== 303`.
 3. Removed the duplicate invocation, keeping every assertion and the fresh-install proof. Pushed the first repair save through the fleet guard. Ran the same shard on main and on the repair in separate worktrees on this VM: both passed, with 59 shared checks and 54 project checks. The repaired project phase also reached the new leadership helper and captured its changed screens at 1440 and 390. Added only the minimal metadata declarations needed to describe the already selected outbound fields. Rechecked native scheduled delivery, typecheck and first-party validation.
 4. Fetched main and merged forward mechanically; main was already an ancestor and unchanged. Generated and checked INIT-004's contract views, restored both generated files whole from origin main, staged the final source and regenerated the source lock last. Lock, integration metadata and migration-ledger checks passed. Built the final committed candidate successfully. Inspected every candidate author, committer and trailer, including side parents, then pushed only the named product branch. Remote branch equality was verified; checkout was clean and full-history.
-5. Discovered exact-SHA Verify through REST. Await its result within the API budget, complete the actual CI receipt, and publish only the explicitly selected non-secret packet through the separate evidence ref. Publication scan, guarded landing and Run site remain fleet custody. Dispose of owned worktrees after preserving the packet and successful transfer.
+5. Discovered and polled exact-SHA Verify through REST. It completed with failure at the terminal observation, exhausting the ten-call GitHub budget. Published the selected non-secret packet through the separate evidence ref and updated it with the terminal CI receipt. No further edit was guessed without reproducing the new failing command. Publication scan, guarded landing and Run site remain fleet custody. Dispose of owned worktrees after preserving the packet and successful transfer.
 
 ## Failure and repair receipt
 
@@ -34,7 +34,7 @@ Transport evidence: `gh run view 42506503396 --repo just-every/run-vector --job 
 
 ## Acceptance and selected scope proof
 
-The clause has one acceptance sentence: scheduled delivery to mail and Slack fixtures, one digest per subscriber, omitting a private team's project for a non-member. The following frozen rubric separates its selected native outcomes from the unchanged held requirements. CI conclusion for each loaded native row remains pending until exact-SHA Verify completes.
+The clause has one acceptance sentence: scheduled delivery to mail and Slack fixtures, one digest per subscriber, omitting a private team's project for a non-member. The following frozen rubric separates its selected native outcomes from the unchanged held requirements. Exact-SHA push Verify 42523231752 completed with failure. All local native results below remain accurately recorded, but they do not establish the candidate's full CI gate.
 
 | Row | Outcome and public door | Proof and local result |
 | --- | --- | --- |
@@ -64,9 +64,9 @@ The full clause is claimed PARTIAL. The table records pass, hold or pending rath
 
 | Rider | Result |
 | --- | --- |
-| 1 | PASS selected native outcomes in R1–R6 locally; full scope HELD in R7. Exact-SHA Verify pending. |
+| 1 | PASS selected native outcomes in R1–R6 locally; full scope HELD in R7. Exact-SHA Verify failed; failed-job diagnostics were not obtained within the API budget. |
 | 2 | PASS: populated public-door fixtures inspect delivered content, positive authorized inclusion and unsafe omission, withdrawal and erasure outcomes. |
-| 3 | PENDING: new exact-SHA push Verify 42523231752 loads worker tests and the normal Current browser path. Prior run is honestly red. |
+| 3 | FAIL: exact-SHA push Verify 42523231752 completed with failure. The new failed jobs and assertions are unknown under the exhausted API budget; neither a flake nor another repair is claimed. Prior run remains red. |
 | 4 | PASS local provenance: source SHA recorded for each run. The browser helper and full projects phase were rerun on the exact final candidate. Between the earlier complete repaired shard and the candidate, only descriptive outbound metadata and its lock changed; application, style and test bytes are identical. Candidate Verify reruns the full proof. |
 | 5 | INSPECTED: no receiving requirement or inheritance was rewritten. Existing clause names ROLE-002 and PROJ-016. No full inherited-duty DONE claim. |
 | 6 | PASS generation: write and check passed, generated views restored from main. Status, Gap, Evidence and all 272 source rows remain main's text; judgment-cell bookkeeping belongs to the lander. |
@@ -76,7 +76,7 @@ The full clause is claimed PARTIAL. The table records pass, hold or pending rath
 | 10 | HELD for a full DONE: preserve the prior conservative, explicit personal opt-in. No new policy default in this continuation and no ct approval invented. |
 | 11 | PENDING LANDER: branch only; main equality, complete publication scan and Run site are not claimed. |
 
-Pre-ready check 1: local public-door outcomes pass; exact-SHA CI pending. Check 2: no assertion removed or weakened, no new test registration, one duplicate invocation removed while the complete normal path remains. Check 3: credentials, visibility, withdrawal, erasure and restore fences passed the scheduled and archive proofs. Check 4: no product screen changed in this continuation; relevant existing labeled controls were inspected at 1440 and 390, with text at least 13px, Settings placement, no icon-only control introduced and a border on all sides of the rounded panel. Check 5: final build, source lock, contract generator, integration metadata and migration ledger passed; publication scan and Run site are fleet gates.
+Pre-ready check 1: local public-door outcomes pass; exact-SHA CI failed. READY is withheld. Check 2: no assertion removed or weakened, no new test registration, one duplicate invocation removed while the complete normal path remains. Check 3: credentials, visibility, withdrawal, erasure and restore fences passed the scheduled and archive proofs. Check 4: no product screen changed in this continuation; relevant existing labeled controls were inspected at 1440 and 390, with text at least 13px, Settings placement, no icon-only control introduced and a border on all sides of the rounded panel. Check 5: final build, source lock, contract generator, integration metadata and migration ledger passed; publication scan and Run site are fleet gates.
 
 ## Mechanical and custody receipts
 
@@ -98,3 +98,13 @@ GAP INIT-004: Teams, Paused-category integration, human update status and stated
 PROBE INIT-004 scheduled: native initiative, project, milestone, subscription and personal-channel mutations followed by real scheduled export -> one digest per selected channel and weekly slot, deduplication, exact native metadata and current private omission asserted.
 PROBE INIT-004 custody: withdrawal, unlinking, disabled installation, definite rejection, uncertain acknowledgement, restore and erasure around transport -> no unauthorized later effect, finite retry and no duplicate or resurrected receipt.
 PROBE INIT-004 browser: Subscribe, both channel choices, reload and keyboard Space withdrawal -> persisted choices, successful withdrawal and 1440 and 390 captures through the normal Verify path.
+
+## Terminal blocker and next required action
+
+BLOCKED branch=cloud/sd-vector-c-f199-pc1 head=b129d446e12236048b21c1f5942fb184db29bbb1 reason=Verify-42523231752-completed-failure; failed-job diagnostics unavailable within the exhausted ten-call GitHub budget.
+
+The remaining calls were spent on status observations rather than retaining capacity for another failed-job read. The terminal run is known red, but its failing job IDs, assertions and commands are unknown. Do not classify it as a flake or claim it reproduced from the older run. One forward repair was attempted in this continuation; its local full shard and the comparison main shard passed, while its new CI gate did not. No second repair was attempted. The next authorized continuation must inspect the completed run's jobs and read each failed job archive once, then reproduce its exact command at this SHA before editing. All product commits are already pushed; no published history was rewritten.
+
+GAP INIT-004: The selected native implementation also lacks a successful exact-SHA Verify on this forward candidate; new failure diagnosis remains required.
+
+Actual final REST observation: `{"conclusion": "failure", "created_at": "2026-11-08T21:03:28Z", "event": "push", "head_sha": "b129d446e12236048b21c1f5942fb184db29bbb1", "html_url": "https://github.com/just-every/run-vector/actions/runs/42523231752", "id": 42523231752, "name": "Verify", "status": "completed"}`. GitHub calls used: 10.
