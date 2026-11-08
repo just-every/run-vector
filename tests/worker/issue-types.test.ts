@@ -59,6 +59,7 @@ it('team issue types retain identity, enforce required Severity at every native 
  expect(raced.status,await raced.clone().text()).toBe(400)
  expect(concurrent).toBeDefined();expect(await snapshot(tables)).toEqual(concurrent)
  await json(owner.call(base+'/'+feature.id,'PATCH',{expectedVersion:2,requiredFieldIds:[]}))
+ expect(await json(member.call('/issues/bulk','POST',{issues:[{identifier:typed.identifier,expectedVersion:withSeverity.version}],changes:{issueTypeId:feature.id,customFields:fields}}))).toMatchObject({changed:1})
  // Setting a type follows ordinary issue-edit cells, including invited Guests.
  const roleIssue=await json(owner.call('/issues','POST',{title:'synthetic-vector-role-type',teamId:w.team.id}),201)
  const guestType=await json(guest.call('/issues/'+roleIssue.identifier,'PATCH',{expectedVersion:roleIssue.version,issueTypeId:enabled.types[2].id}))
@@ -84,6 +85,11 @@ it('team issue types retain identity, enforce required Severity at every native 
  const created=await tool('vector.issue.creation',{title:'synthetic-vector-agent-bug',teamId:w.team.id,issueTypeId:bug.id,idempotency_key:crypto.randomUUID()})
  // Tool names and the offered schema are exercised by the existing agent suite too.
  expect(JSON.stringify(created.body)).toContain('invalid_option');expect(await snapshot(tables)).toEqual(beforeTool)
+ const minor=severity.options[0].id
+ await tool('vector.issue.concurrent_edits',{identifier:issue.identifier,change:{expectedVersion:issue.version,customFields:{[severity.id]:minor}},expected_revision:issue.version,idempotency_key:crypto.randomUUID()})
+ const agentWritten=await json(member.call('/issues/'+issue.identifier))
+ expect(agentWritten.customFields).toEqual({[severity.id]:minor});expect(agentWritten.version).toBe(issue.version+1)
+ issue.version=agentWritten.version;fields[severity.id]=minor
  const copyBody={expectedVersion:issue.version}
  const same=await json(owner.call('/issues/'+issue.identifier+'/copy','POST',copyBody),201)
  expect(same.issue).toMatchObject({issueTypeId:bug.id,customFields:fields});expect(same.droppedValues).toEqual([])
