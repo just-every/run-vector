@@ -57,7 +57,7 @@ const verificationGroups = {
     browser: true,
     // The high-volume intake fixture has its own installation and operator;
     // sharing it with keyboard journeys spends their normal request budget.
-    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'test:wave-b', 'test:base-auth'],
+    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }],
   },
   'hosted-artifact': {
     browser: true,
@@ -93,7 +93,12 @@ export const verificationShards = {
   imports: combineGroups(['worker-1', 'imports']),
   portability: combineGroups(['worker-3', 'portability']),
   'core-runtime': verificationGroups['core-runtime'],
-  'core-runtime-planning': verificationGroups['core-runtime-planning'],
+  // Owner claim and authentication each create their own installation.
+  // Run them with planning so administration fits the existing job budget.
+  'core-runtime-planning': {
+    ...verificationGroups['core-runtime-planning'],
+    commands: [...verificationGroups['core-runtime-planning'].commands, 'test:wave-b', 'test:base-auth'],
+  },
   administration: combineGroups(['administration', 'ownership']),
   collaboration: combineGroups(['collaboration', 'runtime']),
   'worker-2': combineGroups(['worker-2', 'development']),

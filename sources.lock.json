@@ -3578,7 +3578,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "a4341321d5ff860405dcd9b62a3557bf6f51e865ec71e627c891d9c8946037c4",
+      "sha256": "8f02ca8a9b465ca0e3bbb22344589ab94220baaa6c644eb70e33399f84d8b7f6",
       "executable": false
     },
     "scripts/verify.mjs": {
