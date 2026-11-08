@@ -1,0 +1,13 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f206",
+  "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "remoteBranchHead": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "observedMain": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "mainEqualsCandidate": false,
+  "worktreeClean": true,
+  "contractUnchanged": true,
+  "publicationScan": "owned by guarded lander",
+  "runSite": "owned by guarded lander",
+  "pr": null
+}

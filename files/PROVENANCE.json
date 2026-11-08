@@ -1,0 +1,19 @@
+{
+  "branch": "cloud/sd-vector-c-f206",
+  "publishedExistingHead": "7334487bdc9102011b9b646e37fe60da45ebf338",
+  "integratedSaveHead": "82722b23bb3e004ebb989b007821d43ed56d618e",
+  "initialPush": {
+    "command": "git push --porcelain origin HEAD:refs/heads/cloud/sd-vector-c-f206",
+    "result": "non-fast-forward; resolved by merging the existing published branch without rewriting history",
+    "http": "unknown (not supplied by Git)",
+    "bundle": "/home/agent/rer-consolidation/work/push-rescue/cloud_sd-vector-c-f206-20261108T191347Z-a3ac1b78d64d.bundle",
+    "sha256": "485cc76e9fb36ec656322fa98f586ba0c9d5b6e232912ef42cc488cd6600f26e",
+    "verified": true
+  },
+  "statusCellsChanged": false,
+  "generatedViewsCommitted": false,
+  "candidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "branchPushSucceeded": true,
+  "unpublishedWorkLost": false,
+  "mainPushed": false
+}

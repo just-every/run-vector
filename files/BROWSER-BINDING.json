@@ -1,0 +1,55 @@
+{
+  "candidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "focusedBrowserHead": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "focusedBrowserExit": 0,
+  "assertionWidth": 1440,
+  "captureWidths": [
+    1440,
+    390
+  ],
+  "workerRunHead": "282ebf58245de557da451e6c8730e7a3afead23c",
+  "workerInputsUnchanged": [
+    {
+      "path": "src",
+      "workerTreeOrBlob": "694c176a632e9054ec7ce379c554e6fbb01d85d5",
+      "candidateTreeOrBlob": "694c176a632e9054ec7ce379c554e6fbb01d85d5",
+      "equal": true
+    },
+    {
+      "path": "migrations",
+      "workerTreeOrBlob": "a61df79728cc40661047587456756d3339d0f736",
+      "candidateTreeOrBlob": "a61df79728cc40661047587456756d3339d0f736",
+      "equal": true
+    },
+    {
+      "path": "tests/worker",
+      "workerTreeOrBlob": "9534e60c4eb8c65747d8fd158aa4ac6a927af2c8",
+      "candidateTreeOrBlob": "9534e60c4eb8c65747d8fd158aa4ac6a927af2c8",
+      "equal": true
+    },
+    {
+      "path": "seed.json",
+      "workerTreeOrBlob": "ea86fe46345563820f1f2435881b241095845394",
+      "candidateTreeOrBlob": "ea86fe46345563820f1f2435881b241095845394",
+      "equal": true
+    },
+    {
+      "path": "package.json",
+      "workerTreeOrBlob": "5d231204ab51e9cf7874b3e2d94b29af8666e704",
+      "candidateTreeOrBlob": "5d231204ab51e9cf7874b3e2d94b29af8666e704",
+      "equal": true
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "workerTreeOrBlob": "ccf7f06dfaf06ecd617cc5a61a45df5e3913a69c",
+      "candidateTreeOrBlob": "ccf7f06dfaf06ecd617cc5a61a45df5e3913a69c",
+      "equal": true
+    }
+  ],
+  "broaderIntegrationRun": {
+    "startedHead": "82722b23bb3e004ebb989b007821d43ed56d618e",
+    "exit": 0,
+    "receipt": "INTEGRATION-BROWSER.json"
+  },
+  "note": "The focused browser proof runs on the exact final candidate. Worker and compiler inputs are unchanged from the passed 11-test run; the later commit changes only screen capture and the source lock."
+}

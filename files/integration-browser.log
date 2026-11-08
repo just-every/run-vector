@@ -1,0 +1,65 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE AUTO-004 browser: native team Settings -> persistent target, countdown and one Inbox warning at 1440 and 390; real fixed-clock scheduler -> no early warning and one breach.
+API-005 local compiled intake example: persisted title and identifier, insufficient scope, stale write and revocation passed.
+PROBE DOCS-001 Loom: authorized named link -> fixed oEmbed request, controllable restricted player; explicit load, 1440 and 390 proof.
+PROBE DOCS-001 YouTube: authorized named link -> fixed oEmbed request, controllable restricted player; provider failure and redirect refused visibly.
+ERROR-001 browser setup, signed first webhook, explicit provider resolution and one regression passed; screens at 1440 and 390.
+API-004 OAuth browser authorization, personal-token isolation, recovery and Admin revocation passed.
+PROBE REPORT-005 issues: real local GET /report-exports/issues with limit=1 -> 2 exact stable IDs, total=2, no duplicates.
+PROBE REPORT-005 history: real local GET /report-exports/history with limit=1 -> 3 exact stable IDs, total=3, no duplicates.
+PROBE REPORT-005 cycles: real local GET /report-exports/cycles with limit=1 -> 2 exact stable IDs, total=2, no duplicates.
+PROBE REPORT-005 projects: real local GET /report-exports/projects with limit=1 -> 2 exact stable IDs, total=2, no duplicates.
+PROBE REPORT-005 issues: real local GET /report-exports/issues with limit=1 -> 2 exact stable IDs, total=2, no duplicates.
+PROBE REPORT-005 history: real local GET /report-exports/history with limit=1 -> 3 exact stable IDs, total=3, no duplicates.
+PROBE REPORT-005 cycles: real local GET /report-exports/cycles with limit=1 -> 2 exact stable IDs, total=2, no duplicates.
+PROBE REPORT-005 projects: real local GET /report-exports/projects with limit=1 -> 2 exact stable IDs, total=2, no duplicates.
+PROBE REPORT-005 oauth-client: real local consent and exchange -> read-only traversal; insufficient grant and mutation -> 403 unchanged; revoked grant and captured cursor -> 401 unchanged.
+REPORT-005 local warehouse consumer passed; revoked access refused.
+PROBE REPORT-005 scheduled-client: real local Settings and emitted cron -> two signed bucket exports (second: four changed records) and two Google batch updates (changed title retained, departed row blank); repeated hour emits no additional transfer.
+TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+INIT-001 approval outcome {"width":1440,"status":201,"text":"Channel approved. Members who can edit that initiative may now bind it there.","top":487.078125,"bottom":487.328125,"focused":true}
+INIT-001 approval outcome {"width":1440,"status":201,"text":"Already approved.","top":487.078125,"bottom":487.328125,"focused":true}
+INIT-001 approval options {"width":1440,"unfilteredDiscord":2,"offeredDiscord":1,"kept":"01M6Y9T7MDHNKCCM6A7MN1S7WT","excluded":"01M6Y9T8C0Z6N2W7W7B1VKPXRA"}
+INIT-001 concurrent withdrawal {"width":1440,"text":"This approval was already withdrawn.","remaining":0}
+INIT-001 approval geometry {"width":1440,"documentWidth":1440,"fields":[{"label":"Initiative to approve for","width":576,"scrollWidth":576,"border":"1px","height":46.375,"options":[{"text":"Choose an initiative","scrollWidth":0,"clientWidth":0,"textWidth":143.8242950439453,"availableWidth":524.8},{"text":"synthetic-vector-1851-1440","scrollWidth":0,"clientWidth":0,"textWidth":197.87245178222656,"availableWidth":524.8}]},{"label":"Existing channel","width":576,"scrollWidth":576,"border":"1px","height":46.375,"options":[{"text":"Choose an existing channel","scrollWidth":0,"clientWidth":0,"textWidth":201.02438354492188,"availableWidth":524.8},{"text":"#member-delivery-1440 · Slack","scrollWidth":0,"clientWidth":0,"textWidth":227.08851623535156,"availableWidth":524.8},{"text":"#gate-c45p-src-south · Discord","scrollWidth":0,"clientWidth":0,"textWidth":231.072509765625,"availableWidth":524.8}]}],"detail":"Bound to: synthetic-vector-1852-1440"}
+INIT-001 approval outcome {"width":1440,"status":404,"text":"Choose an existing Discord destination configured in Settings.","top":487.078125,"bottom":487.328125,"focused":true}
+notification-channel-controls.mjs exerciseNotificationChannelControls passed at 1440
+notification-channel-controls.mjs inspectMemberNotificationChannels passed at 1440
+PROBE INTEG-002 no-event 1440: Browser repository 1440 reads "No GitHub event received yet" with no time beside 1 other GitHub rows
+PROBE INTEG-002 receipt 1440: Browser repository 1440 reads "Last GitHub event received Nov 9, 2026, 5:23 AM" for 2026-11-08T19:23:11.717Z; replay 200, wrong signature 401, reload and 1 other rows unchanged, Tab and Enter reach its setup, no hydration errors
+PROBE INTEG-002 revoked 1440: Browser repository 1440 refused a signed delivery with 401 and still reads "Last GitHub event received Nov 9, 2026, 5:23 AM"
+Git rule saves 1440: first message=Saved second PATCH=200
+Git concurrent stale saves 1440: 200/409 PASS
+Git Teams cell a: Member who owns the team saved under Team owners only
+Git Teams cell b: ordinary Member saved under All team members
+Git Teams cell c: next GET omitted the team, save refused 403 with visible error, and the next Teams screen hid the editor
+Git Teams cell e: Member Integrations has personal API controls and no workspace setup
+Git Teams refusal: guest has no editor and both native doors refuse 403
+Git Teams refusal: viewer has no editor and both native doors refuse 403
+Git Teams permissions: team owner, ordinary Member, revocation, stale save, Admin, Guest, Viewer and personal Integrations PASS
+TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+INIT-001 approval outcome {"width":390,"status":201,"text":"Channel approved. Members who can edit that initiative may now bind it there.","top":330,"bottom":437.21875,"focused":true}
+INIT-001 approval outcome {"width":390,"status":201,"text":"Already approved.","top":356,"bottom":462.40625,"focused":true}
+INIT-001 approval options {"width":390,"unfilteredDiscord":3,"offeredDiscord":1,"kept":"01M6YA22Q85X61SV6V88SCEAKE","excluded":"01M6YA23DW02PREE6ESABFPGW8"}
+INIT-001 concurrent withdrawal {"width":390,"text":"This approval was already withdrawn.","remaining":0}
+INIT-001 approval geometry {"width":390,"documentWidth":390,"fields":[{"label":"Initiative to approve for","width":320,"scrollWidth":320,"border":"1px","height":46.375,"options":[{"text":"Choose an initiative","scrollWidth":0,"clientWidth":0,"textWidth":125.84550476074219,"availableWidth":280},{"text":"synthetic-vector-1851-1440","scrollWidth":0,"clientWidth":0,"textWidth":173.13731384277344,"availableWidth":280},{"text":"synthetic-vector-1851-390","scrollWidth":0,"clientWidth":0,"textWidth":168.9793243408203,"availableWidth":280}]},{"label":"Existing channel","width":320,"scrollWidth":320,"border":"1px","height":46.375,"options":[{"text":"Choose an existing channel","scrollWidth":0,"clientWidth":0,"textWidth":175.89532470703125,"availableWidth":280},{"text":"#member-delivery-1440 · Slack","scrollWidth":0,"clientWidth":0,"textWidth":198.701171875,"availableWidth":280},{"text":"#member-delivery-390 · Slack","scrollWidth":0,"clientWidth":0,"textWidth":194.54318237304688,"availableWidth":280},{"text":"#gate-c45p-src-south · Discord","scrollWidth":0,"clientWidth":0,"textWidth":202.18719482421875,"availableWidth":280}]}],"detail":"Bound to: synthetic-vector-1852-390"}
+INIT-001 approval outcome {"width":390,"status":404,"text":"Choose an existing Discord destination configured in Settings.","top":343,"bottom":449.8125,"focused":true}
+notification-channel-controls.mjs exerciseNotificationChannelControls passed at 390
+notification-channel-controls.mjs inspectMemberNotificationChannels passed at 390
+PROBE INTEG-002 no-event 390: Browser repository 390 reads "No GitHub event received yet" with no time beside 3 other GitHub rows
+PROBE INTEG-002 receipt 390: Browser repository 390 reads "Last GitHub event received Nov 9, 2026, 5:27 AM" for 2026-11-08T19:27:29.356Z; replay 200, wrong signature 401, reload and 3 other rows unchanged, Tab and Enter reach its setup, no hydration errors
+PROBE INTEG-002 revoked 390: Browser repository 390 refused a signed delivery with 401 and still reads "Last GitHub event received Nov 9, 2026, 5:27 AM"
+Git rule saves 390: first message=Saved second PATCH=200
+Git concurrent stale saves 390: 200/409 PASS
+[SLACK-003 SLACK-004 NOTIFY-007] Native channel bindings, Slack creation and delivery, Discord, member-linked Slack direct messages, per-event email choices and workspace defaults passed at 1440 and 390.

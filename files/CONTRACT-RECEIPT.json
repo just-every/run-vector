@@ -1,0 +1,26 @@
+{
+  "before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "clause": "SLACK-002",
+  "startingStatus": "missing",
+  "sourceStatusUnchanged": true,
+  "claim": "PARTIAL",
+  "selectedPoints": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}

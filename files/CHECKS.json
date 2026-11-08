@@ -1,0 +1,133 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f206",
+  "checks": [
+    {
+      "command": "pnpm test:worker tests/worker/outbound-broken-destination.test.ts tests/worker/discussion-threads.test.ts",
+      "exit": 0,
+      "result": "10 tests passed, including signed Slack thread sync, uninstall, token revocation, populated upgrade, archive round-trip and discussion regression",
+      "log": "/tmp/sd-vector-worker-merged.log"
+    },
+    {
+      "command": "pnpm test:worker tests/worker/outbound-broken-destination.test.ts tests/worker/data-import-atomic.test.ts",
+      "exit": 0,
+      "result": "9 tests passed, including mapped imported-issue rollback refusal and retained discussion",
+      "log": "/tmp/sd-vector-worker-import.log"
+    },
+    {
+      "command": "pnpm test:worker tests/worker/outbound-broken-destination.test.ts -t 'Signed Slack Events'",
+      "exit": 0,
+      "result": "1 test passed with identical and distinct concurrent source captures, preserved source author and erased queued reply",
+      "log": "/tmp/sd-vector-concurrent-roots.log"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "log": "/tmp/sd-vector-typecheck-merged.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "/tmp/sd-vector-build.log"
+    },
+    {
+      "command": "cloud_run pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "result": "completed without stdout",
+      "log": "/tmp/sd-vector-first-party.log"
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "result": "1 test passed; additive ledger, retained guards and repeat without writes",
+      "log": "/tmp/sd-vector-migration-ledger.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write SLACK-002; node scripts/contract-docs.mjs check SLACK-002",
+      "exit": 0,
+      "result": "write and check passed; generated views restored from origin/main",
+      "log": "/tmp/sd-vector-views-merged.log"
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "exit": 0,
+      "result": "merge save fresh; final regeneration follows last test edit",
+      "log": "/tmp/sd-vector-lock-merged.log"
+    },
+    {
+      "command": "pnpm test:worker tests/worker/outbound-broken-destination.test.ts tests/worker/discussion-threads.test.ts tests/worker/data-import-atomic.test.ts",
+      "head": "282ebf58245de557da451e6c8730e7a3afead23c",
+      "exit": 0,
+      "result": "11 tests passed in 3 files",
+      "log": "/tmp/sd-vector-final-worker.log"
+    },
+    {
+      "command": "pnpm typecheck",
+      "head": "282ebf58245de557da451e6c8730e7a3afead23c",
+      "exit": 0,
+      "log": "/tmp/sd-vector-final-typecheck.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write SLACK-002; node scripts/contract-docs.mjs check SLACK-002",
+      "exit": 0,
+      "result": "write and check passed; ACCEPTANCE.md and docs/CLAIMS.md restored from origin/main",
+      "log": "/tmp/sd-vector-final-views.log"
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "head": "282ebf58245de557da451e6c8730e7a3afead23c",
+      "exit": 0,
+      "result": "regenerated after last test edit and fresh-main merge; lock committed",
+      "log": "/tmp/sd-vector-final-lock.log"
+    },
+    {
+      "command": "cloud_run perl -e alarm-1800 node --import /tmp/cloud-playwright.mjs --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/integration-runtime.mjs",
+      "exit": 0,
+      "result": "broader integration runtime passed, widths 1440 and 390; no captured credentials, fixture provider only",
+      "receipt": "INTEGRATION-BROWSER.json"
+    },
+    {
+      "command": "cloud_run perl -e alarm-1200 node --import ./tests/e2e/integrations/register-loader.mjs /tmp/sd-vector-browser-focused.mjs",
+      "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+      "exit": 0,
+      "result": "signed Slack transport and native mapped discussion passed at 1440, with both screens captured at 1440 and 390; no hydration errors",
+      "receipt": "BROWSER-FOCUSED.json"
+    },
+    {
+      "command": "pnpm sources:check",
+      "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+      "exit": 0,
+      "log": "sources-check.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write SLACK-002; node scripts/contract-docs.mjs check SLACK-002",
+      "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+      "exit": 0,
+      "log": "views.log",
+      "generatedViewsRestored": true
+    }
+  ],
+  "ci": {
+    "priorPublishedHead": "7334487bdc9102011b9b646e37fe60da45ebf338",
+    "priorVerifyRun": 42510098606,
+    "priorConclusion": "success",
+    "githubCalls": 5,
+    "run": 42515472271,
+    "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+    "status": "in_progress",
+    "conclusion": null,
+    "previousCandidateRun": 42514706072,
+    "previousCandidateHead": "282ebf58245de557da451e6c8730e7a3afead23c",
+    "event": "push",
+    "url": "https://github.com/just-every/run-vector/actions/runs/42515472271"
+  },
+  "publicationScan": {
+    "status": "not-run-in-cloud",
+    "reason": "guarded fleet lander owns exact-tree full-history publication scan"
+  },
+  "landing": {
+    "status": "not-landed",
+    "runSite": "not-run-in-cloud"
+  },
+  "candidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8"
+}

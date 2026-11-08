@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "assertionWidth": 1440,
+  "captureWidths": [
+    1440,
+    390
+  ],
+  "signedEvents": true,
+  "liveProvider": false,
+  "source": "tests/e2e/integrations/slack-threads.mjs#exerciseSlackThreads",
+  "identifier": "FLW-843",
+  "hydrationErrors": 0
+}
