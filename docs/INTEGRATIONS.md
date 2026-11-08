@@ -486,3 +486,48 @@ so previously accepted mentions cannot recreate issues.
 This installation remains partial: the hosted real-workspace installation needs
 the owner's Slack console setup and reinstallation with the generated scopes and
 URLs. The recorded acceptance uses Slack API fixtures, not a hosted provider.
+
+
+## Figma native protocol
+
+The Settings API at `GET /api/settings/integrations/figma` supplies the exact
+installation callback, fixed `file_content:read` scope and plugin manifest.
+An Owner or Admin posts only `clientId` and `clientSecret` to that same path.
+Replacing the app invalidates all existing Figma member connections and pending
+states. App credentials, member grants and pending states are sealed in the
+installation vault, excluded from archives and never returned in Settings reads.
+The saved non-secret configuration history survives restore and requests re-entry.
+
+Members start their own OAuth connection with `POST /api/settings/figma/connect`.
+The returned authorization URL carries a random, one-use, ten-minute state bound
+to that member, their current native session and the configured app. Expired
+access tokens require reconnection. Disconnect through `DELETE /api/settings/figma`;
+revoke the provider grant in Figma to remove provider access too. Removing the app
+through `DELETE /api/settings/integrations/figma` retires every local grant.
+
+Authorized issue readers explicitly request a named link's `figma-preview` route
+with `X-Vector-Load-Player: true`. Unconnected readers receive a null preview and
+cause no provider call. A connected reader receives a frame title, last-modified
+time and a same-origin `figma-image` route; fetch that image with the same explicit
+header. Only that reader's Figma bearer crosses the fixed file and image API
+endpoints. The image CDN receives no bearer. All responses have deadlines and
+size bounds; redirects and foreign hosts are refused. Session, issue access,
+link identity and current connection are rechecked before releasing results.
+No preview cache or provider HTML is retained.
+
+`GET /api/settings/figma/manifest` downloads a plugin manifest whose only allowed
+network domain is the configured installation origin. Native plugin intake is
+`POST /api/v1/integrations/figma/issues`, authenticated with the requesting
+member's personal token and `issues:write` scope. It accepts `captureId`, `title`,
+`teamId` and a validated `figmaUrl`. The current native issue-write permission
+applies. Issue, named backlink and durable capture receipt commit atomically.
+Replaying the same member capture returns the original identifier; changed or
+retired captures refuse rather than creating another issue. OAuth consent grants
+are not accepted at this plugin door. Its CORS preflight permits only the Figma
+web origin, Figma's opaque plugin origin and this installation; cookies never
+authorize intake, and no credentialed browser CORS grant is returned.
+
+This protocol work does not supply Settings controls, the personal connection
+screen or a rendered frame component. Those screens, browser qualification,
+actual Figma commissioning and private organization plugin publication remain
+unqualified; existing video previews are unchanged.

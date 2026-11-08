@@ -1,3 +1,5 @@
+import { exerciseFigmaArchive } from './figma-archive';
+import { exerciseFigma } from './figma-journey';
 import { exerciseVideoPreviews } from "./video-preview-journey";
 import { env } from 'cloudflare:workers'
 import { applyD1Migrations } from 'cloudflare:test'
@@ -36,4 +38,10 @@ it('[ISSUE-008][ISSUE-009] named video links load only authorized oEmbed players
   assert.equal((await env.DB.prepare("SELECT COUNT(*) n FROM audit_records WHERE subject_id=? AND action='link.deleted'").bind(linkId).first<{ n: number }>())!.n, 1)
   assert.equal((await request(path + '/links', 'POST', { name: 'Cannot resurrect', url: 'https://vector-link.invalid/new', commentId: comment.id })).status, 404)
   await exerciseVideoPreviews()
+})
+
+it('Figma member connections isolate frame previews and personal-token captures survive replay and credential-free restore', { timeout: 180000 }, async () => {
+  await applyD1Migrations(env.DB, inject('migrations'))
+  await ensureSampleData(env.DB, new Date())
+  await exerciseFigmaArchive(await exerciseFigma())
 })

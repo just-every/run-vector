@@ -1,3 +1,5 @@
+import { addFigmaPluginPreflight, figmaPluginCors, figmaPluginOrigin } from './figma/plugin-cors';
+import { addFigmaPluginRoute } from './figma/plugin';
 import {addIssueTemplateRoutes} from '../issue-templates/routes';
 import {createIssueFromRequest} from '../issue-templates/application';
 import {createTeam} from "../administration/teams";
@@ -65,6 +67,7 @@ export function createIntegrationApi(){
   console.error(error);
   return c.json({error:'integration_unavailable'},503);
  });
+ addFigmaPluginPreflight(app);
  app.use('*',async(c,next)=>{
   const path=c.req.path.replace(/^\/api\/v1/,''),method=c.req.method;
   const route=apiRoute(path,method);
@@ -74,8 +77,10 @@ export function createIntegrationApi(){
   const scopes=route.scopes;
   // Cookie-authenticated browsers may not turn another origin into a bearer
   // write. Server clients omit Origin; if supplied it must be the saved origin.
-  if(c.req.header('Origin')&&c.req.header('Origin')!==c.env.APP_ORIGIN)throw new IntegrationError(403,'origin_refused');
+  if(path==='/integrations/figma/issues')figmaPluginCors(c);
+  if(c.req.header('Origin')&&(path==='/integrations/figma/issues'?!figmaPluginOrigin(c.req.header('Origin')!,c.env.APP_ORIGIN):c.req.header('Origin')!==c.env.APP_ORIGIN))throw new IntegrationError(403,'origin_refused');
   const raw=c.env.DB,actor=await authorizeToken(raw,c.req.raw,scopes,method+':'+path),predicate=tokenPredicate(actor);
+  if(path==='/integrations/figma/issues'&&actor.namespace.startsWith('oauth:'))throw new IntegrationError(403,'figma_personal_token_required');
   if(!await admitRate(raw,'api-v1:'+actor.workspace+':'+actor.tokenId,300,60000))return c.json({error:'rate_limited'},429,{'Retry-After':String(Math.max(1,Math.ceil((60000-Date.now()%60000)/1000))),'Cache-Control':'no-store'});
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
   // ROLE-001: a token acts with its member's current role, never a copied one.
@@ -117,6 +122,7 @@ export function createIntegrationApi(){
   return c.json({...value,issues,nextCursor:offset<value.total?nextCursor(offset,value.revision,scope):null});
  });
  app.get('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier'));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const value=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json(value);});
+ addFigmaPluginRoute(app);
  app.post('/issues',async c=>c.json(await createIssueFromRequest(c.env.DB,c.get('operatorId'),await readRequestJson(c.req.raw)),201));
  app.patch('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(updateIssueSchema,await readRequestJson(c.req.raw));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const state=await updateIssueRecord(c.env.DB,id,c.get('operatorId'),input),issue=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return state==='stale'?c.json({error:'stale_version',version:issue?.version},409):c.json(issue);});
  app.post('/issues/:identifier/comments',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(comment,await readRequestJson(c.req.raw)),issue=await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json({id:await addComment(c.env.DB,issue.id,c.get('operatorId'),input.body)},201);});

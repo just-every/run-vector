@@ -2334,5 +2334,17 @@
     "sources_json",
     "source_release_version",
     "created_at"
+  ],
+  "vector_figma_installations": [
+    "workspace_id",
+    "configured_at"
+  ],
+  "vector_figma_captures": [
+    "workspace_id",
+    "operator_id",
+    "capture_id",
+    "fingerprint",
+    "issue_id",
+    "created_at"
   ]
 }

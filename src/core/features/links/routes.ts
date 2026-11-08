@@ -1,3 +1,4 @@
+import { addFigmaPreviewRoutes } from '../integrations/figma/preview';
 import { addVideoPreviewRoute } from "./preview-route";
 import type { Hono } from "hono";
 import { z } from "zod";
@@ -15,6 +16,7 @@ const query = z.object({}).strict();
 /** Must be registered inside the existing protected /api app. */
 export function addLinkRoutes(app: Hono<AppEnvironment>) {
   addVideoPreviewRoute(app);
+  addFigmaPreviewRoutes(app);
   for (const path of [
     "/issues/:identifier/links",
     "/issues/:identifier/links/:linkId",

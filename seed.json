@@ -310,6 +310,22 @@
       "adapters": [
         "vector.google-sheets.v1"
       ]
+    },
+    {
+      "id": "figma-member-previews",
+      "required": false,
+      "why": "DESIGN-001: a member explicitly connects their own Figma account and loads a linked frame; app credentials are entered by an Owner or Admin in Settings.",
+      "data": [
+        "OAuth app client ID and secret at the fixed token endpoint",
+        "one-use authorization code and callback URL",
+        "member Figma access token",
+        "Figma file key and node ID",
+        "bounded frame image request"
+      ],
+      "adapters": [
+        "vector.figma-oauth.v1",
+        "vector.figma-file-images.v1"
+      ]
     }
   ],
   "env": [

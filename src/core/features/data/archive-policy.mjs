@@ -1,3 +1,6 @@
+// Figma capture receipts and configuration history are portable; all Figma app,
+// member and pending OAuth credentials use excluded vector_integration_secret_keys.
+// Restored installations require app re-entry and a fresh member connection.
 // Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.
 // Actor names and mail remain in native identity custody; notes retain opaque references.
 // Human edits and issue-title text follow DATA-011's existing free-text boundary.

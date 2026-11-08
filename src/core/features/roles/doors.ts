@@ -233,6 +233,7 @@ export const doors: Door[] = [
   ...(['/issues/:identifier/dependencies', '/issues/:identifier/links', '/issues/:identifier/subissues', '/issues/:identifier/duplicate', '/issues/:identifier/description-restore'] as const)
     .map((path): Door => ({ method: 'POST', path, row: 'issues.write', teams: issue })),
   { method: 'DELETE', path: '/issues/:identifier/dependencies', row: 'issues.write', teams: issue },
+  ...(['figma-preview','figma-image'] as const).map((suffix): Door => ({method:'GET',path:'/issues/:identifier/links/:linkId/'+suffix,row:'work.read',teams:issue})),
   { method: 'GET', path: '/issues/:identifier/links/:linkId/preview', row: 'work.read', teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/links/:linkId', row: 'issues.write', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/parent', row: 'issues.write', teams: issue },
@@ -290,6 +291,12 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/views/:id', row: async request => (await view(request))?.shared ? 'views.edit-shared' : 'views.private' },
   { method: 'POST', path: '/views/:id/duplicate', row: async request => (await view(request))?.shared ? 'views.open-shared' : 'views.private', teams: viewTeams },
   // Integrations and API
+  ...(['GET','POST','DELETE'] as const).map((method): Door => ({method,path:'/settings/integrations/figma',row:'integrations.manage'})),
+  {method:'GET',path:'/settings/figma',row:null,page:'account'},
+  {method:'GET',path:'/settings/figma/manifest',row:null,page:'account'},
+  {method:'POST',path:'/settings/figma/connect',row:'identity.personal'},
+  {method:'GET',path:'/settings/figma/callback',row:'identity.personal',workMutation:true},
+  {method:'DELETE',path:'/settings/figma',row:null,page:'account'},
   ...([['GET', '/settings/integrations/errors'], ['POST', '/settings/integrations/errors'], ['DELETE', '/settings/integrations/errors/:id'], ['POST', '/settings/integrations/errors/:id/link'], ['POST', '/settings/integrations/errors/:id/resolve'], ['GET', '/settings/integrations'], ['GET', '/settings/integrations/channels'], ['POST', '/settings/integrations/delivery'], ['POST', '/settings/integrations/destinations'],
     ['PUT', '/settings/integrations/destinations/:id/subscriptions'], ['POST', '/settings/integrations/destinations/:id/test'], ['POST', '/settings/integrations/destinations/:id/reenter'], ['DELETE', '/settings/integrations/destinations/:id'],
     ['POST', '/settings/integrations/github'], ['POST', '/settings/integrations/github/:id/reenter'], ['DELETE', '/settings/integrations/github/:id'],
@@ -315,6 +322,7 @@ export const doors: Door[] = [
 
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
+  {method:'POST',path:'/integrations/figma/issues',row:'issues.write',teams:bodyTeam},
   ...(['issues','history','cycles','projects'] as const).map(resource => ({method:'GET' as const,path:'/report-exports/'+resource,row:'reports.export' as const})),
   ...issueTemplateDoors,
   {method:'POST',path:'/initiatives',row:'initiatives.write'},

@@ -662,7 +662,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "570879f16f798cc5cf7dd636b7c6c320ce73493c03d1130563b94df04fba8942",
+      "sha256": "0645dbd6ac46779dc8b985dd274b1ed67c2d18e8d048eca7d1202ce6d323eb8d",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -2569,6 +2569,10 @@
       "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
       "executable": false
     },
+    "migrations/core/0134_figma.sql": {
+      "sha256": "1ebdfbb20c5224d0d4a2f9764d76111ab5bb5fdd973e847859f8fe95c61199fb",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -2666,7 +2670,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "2f8030b300b5f98193b7b2f520382b19e1311bdf42c603c90f3ce377783d1dfd",
+      "sha256": "db4bc52cd3ae6b161548f2c64b9f5df5fbcc876262e8ced204721d8710aa7d1e",
       "executable": false
     },
     "schema/importers.schema.json": {
@@ -3606,7 +3610,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "29bdca1b5e58aad6acd74dd1520e9e29425d8c33b2e056fd7697ead751e3e164",
+      "sha256": "782468faab0e5bd01e98fa3eb8cc1cdd2eb7b1e06b7d017fd842ad4b74543c5a",
       "executable": false
     },
     "src/base/contract-filter.ts": {
@@ -4690,7 +4694,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "1ebbfca4ef24c0f49c8c4dfe653c8d804ffe6d642e7216b5b17732366216af95",
+      "sha256": "2b7d5158a0605477c46e94430fa90c57132abf12acb5f882a54eec8d869454d4",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4702,7 +4706,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "f1db34a1cb6af991e8ae672d1421949f21fdb7562e848a739c4742c1dedc31ec",
+      "sha256": "d423bfad6748824f1cfb79bbd84516cb4b9b43a850f04fd1fe3919896d2c2927",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -5362,7 +5366,7 @@
       "executable": false
     },
     "src/core/features/integrations/api.ts": {
-      "sha256": "1474b39aedaec95df3ff2e68f0e17f5c2e9f13f78e1c0b67c823ac0d3a021b52",
+      "sha256": "c71fb5ae96dbcc44bc7467a42c49417e76c5080b67c39d3bb37ccb81ca26e72e",
       "executable": false
     },
     "src/core/features/integrations/authority.ts": {
@@ -5418,7 +5422,7 @@
       "executable": false
     },
     "src/core/features/integrations/config-routes.ts": {
-      "sha256": "ccd806a79611ede4d158babd83e6f19e51802febe7f2934c83b6a538c500c12a",
+      "sha256": "61b4f99f2a11aebbeb9946f937649f6b204468031f5fe0295fb16a78cf2ef791",
       "executable": false
     },
     "src/core/features/integrations/config-storage.ts": {
@@ -5481,6 +5485,38 @@
       "sha256": "c635e3893429463831210e0c818f925a1a9411e0146fef8b10d54f71a9959e4f",
       "executable": false
     },
+    "src/core/features/integrations/figma/client.ts": {
+      "sha256": "9d34e9c7f6055fe3266865d5e7b833a6e7916f05f5d0d3efa9d2fd3f2b568289",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/configuration.ts": {
+      "sha256": "b7ce7b22edf6b7c794b2304a3fd24e8c02844af7d32e2161de8e1e0d02d3cf1d",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/connection.ts": {
+      "sha256": "8162f2710d676b2e9461d759986583668cb501a3dfa607f011882e29d56c3e5e",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/plugin-cors.ts": {
+      "sha256": "433a100f356d9483c3b3e085e230add39b45473b155566cd6d5e1935d094eab7",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/plugin.ts": {
+      "sha256": "7a452f7eae64c5101828815d757f659b73ccdae17d92b8b94002cc2f0dcc2661",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/preview.ts": {
+      "sha256": "b7ad094852627baa9cea0dda19a812d92a6613e6d5c140e7d0596b63d46a6464",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/routes.ts": {
+      "sha256": "1eab4a8f6fb02a3778599b76103b78b668662049ba6345f5ed929283b75cc0b2",
+      "executable": false
+    },
+    "src/core/features/integrations/figma/urls.ts": {
+      "sha256": "c6c1a503d6baa6cb5615c35bd034aa9499e40ca169795e66f117669ebdde6efc",
+      "executable": false
+    },
     "src/core/features/integrations/github-read.ts": {
       "sha256": "2d5953908201bc472010e9dc19f05ce159e6593651cf1673ac8cd0cbfab39537",
       "executable": false
@@ -5534,11 +5570,11 @@
       "executable": false
     },
     "src/core/features/integrations/native-egress.d.mts": {
-      "sha256": "9282992c071a7631a049aff1431b531977ea7eef290b5d8231e4fc36afcceb78",
+      "sha256": "76829048c45e769b9316e756d506c60cf1d507d3d45a72f158859683ef5bd233",
       "executable": false
     },
     "src/core/features/integrations/native-egress.mjs": {
-      "sha256": "7a5d3eea96a413944985fd68f2a62319351c1f5425d6e9077b2cf356f5214b15",
+      "sha256": "d51363427704ea423cb96de888ab16b96adc8e076d1e634218e003bfa6cfd639",
       "executable": false
     },
     "src/core/features/integrations/outbound-repository.ts": {
@@ -6310,7 +6346,7 @@
       "executable": false
     },
     "src/core/features/links/routes.ts": {
-      "sha256": "2686636a8135c23eb88c6d544c6ca9d1dd1716026096a3e2c84f28e5a00e8076",
+      "sha256": "a6024851a458af9f6039cf1a29d8bfdf38a06db98cfdcc4e0b97ce4300efb8a4",
       "executable": false
     },
     "src/core/features/links/schema.ts": {
@@ -7022,7 +7058,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "19ae35c39cb29d84bfbe3ec0799a13cafd935e8f8a4c62f0e8d56eb7f58837a6",
+      "sha256": "928bea308d16374603b15e11aa56c0528bbe0df05e88ca166a34aac16d866f10",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -9489,6 +9525,14 @@
       "sha256": "3fc589c1890b5f344e411d4659fedef0ae1d5cd77c0f989faf6627b2c19e6208",
       "executable": false
     },
+    "tests/worker/figma-archive.ts": {
+      "sha256": "d4c64a65e82d28e43ad18a8ebd9b7ff4c218b58cd6e5db4dc196eead79b5a0de",
+      "executable": false
+    },
+    "tests/worker/figma-journey.ts": {
+      "sha256": "9ee82224ab6363de0347bdabc7d833460c3ab3f8992c0faa2aece83983f78b0a",
+      "executable": false
+    },
     "tests/worker/first-run.test.ts": {
       "sha256": "f0afa863e8f006662e8777ffbabafcd945af9a682d4f0efff02368b8b8e8ea85",
       "executable": false
@@ -9666,7 +9710,7 @@
       "executable": false
     },
     "tests/worker/link-cascade.test.ts": {
-      "sha256": "52ff4b31a67ea11b7c7aba38b55e93b0816a2230b002242c379a2f599f475392",
+      "sha256": "dfe9fbd7861bd41f59ea3ef5feaddc245073f41ed5665045fea940ea8ad62c41",
       "executable": false
     },
     "tests/worker/managed-mail.test.ts": {
@@ -9778,7 +9822,7 @@
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
-      "sha256": "bad5b89065feed7f6565b5cf16c3406f6e1a1b9b11f6e85aa72744c0264c15fc",
+      "sha256": "03b59fe1b7375e586ce0cc71c0059aeea25f79f00a59a1989223bba61dfe0e64",
       "executable": false
     },
     "tests/worker/project-fields.test.ts": {
@@ -9902,7 +9946,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "e3e0ac6eaefdf1307773c0c115d5fb8db42dfc9271827a2ff8fc59a8d070df01",
+      "sha256": "33c5228b6db060ab40ca49a0f15a04b0c9bdad6e53b0e0f842172504380f92e3",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

@@ -5237,6 +5237,45 @@
           }
         }
       }
+    },
+    "/integrations/figma/issues": {
+      "post": {
+        "operationId": "figma_capture",
+        "summary": "Create one issue from an explicit Figma plugin capture using a personal token",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "issues:write"
+        ],
+        "x-object": "issues",
+        "x-operation": "create",
+        "responses": {
+          "201": {
+            "description": "Issue created with Figma link"
+          },
+          "200": {
+            "description": "Capture replay; same issue"
+          },
+          "400": {
+            "description": "Invalid capture"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Current role or credential type refused"
+          },
+          "404": {
+            "description": "Team or issue unavailable"
+          },
+          "409": {
+            "description": "Capture changed or retired"
+          }
+        }
+      }
     }
   },
   "components": {
