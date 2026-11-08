@@ -15,7 +15,7 @@ export async function paginationAndRemoval({
 }) {
   await clause(
     "NOTIFY-003",
-    "native Inbox pagination ordering and cached rows clear after suspension while personal history stays retained",
+    "native Inbox pagination ordering and cached rows clear after suspension while personal choices stay retained",
     async () => {
       for (let index = 1; index <= 31; index++)
         await comment(`Real pagination comment ${index}.`);
@@ -65,8 +65,8 @@ export async function paginationAndRemoval({
           "31 actual native UI comments; no synthetic Inbox response or row fixture",
         paginationRows: expected.length,
       });
-      const retainedTables = ['notifications', 'issue_followers', 'issue_notification_mutes', 'notification_type_mutes', 'notification_preferences'];
-      const retainedRows = (table) => runtime.sql(`SELECT * FROM ${table} WHERE ${table === 'notifications' ? 'recipient_id' : 'operator_id'}='${operator.id}' ORDER BY 1,2`);
+      const retainedTables = ['issue_followers', 'issue_notification_mutes', 'notification_type_mutes', 'notification_preferences'];
+      const retainedRows = (table) => runtime.sql(`SELECT * FROM ${table} WHERE operator_id='${operator.id}' ORDER BY 1,2`);
       const retained = Object.fromEntries(retainedTables.map(table => [table, retainedRows(table)]));
       await navigate(page, runtime.base + "/app/settings/people/" + operator.id);
       await page
@@ -108,8 +108,9 @@ export async function paginationAndRemoval({
         "revocation clears old Inbox unread count",
       );
       await peerCapture("inbox-revoked-session-clears-all-pages");
-      assert.equal(runtime.sql(`SELECT count(*) n FROM notification_deliveries WHERE recipient_id='${operator.id}'`)[0].n, 0,
-        'suspension cancels personal mail delivery');
+      for (const table of ['notifications', 'notification_deliveries'])
+        assert.equal(runtime.sql(`SELECT count(*) n FROM ${table} WHERE recipient_id='${operator.id}'`)[0].n, 0,
+          table + ' recipient custody cleared on suspension');
       for (const table of retainedTables)
         assert.deepEqual(retainedRows(table), retained[table], table + ' personal history retained during suspension');
       assert.equal(
