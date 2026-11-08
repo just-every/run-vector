@@ -1,0 +1,15 @@
+{
+  "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "branch": "cloud/sd-vector-c-f199",
+  "event": "workflow_dispatch",
+  "dispatch_exit": 0,
+  "reason": "All preservation commits carry skip-ci; exact-SHA discovery found no Verify run. Started exactly one Verify without creating an empty commit.",
+  "dispatched_at": "2026-11-08T17:45:04Z",
+  "status": "in_progress",
+  "conclusion": null,
+  "head_sha": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42506503396",
+  "id": 42506503396,
+  "name": "Verify",
+  "last_observed_at": "2026-11-08T17:56:57.052065+00:00"
+}

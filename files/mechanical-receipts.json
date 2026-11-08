@@ -1,0 +1,36 @@
+{
+  "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "base": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "views": [
+    {
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "INIT-004"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "INIT-004"
+      ],
+      "exit": 0
+    }
+  ],
+  "restored_views": [
+    "ACCEPTANCE.md",
+    "docs/CLAIMS.md"
+  ],
+  "status_rows": 272,
+  "status_rows_equal_to_main": true,
+  "contract_diff_from_main": "",
+  "full_history": true,
+  "migrations_added": [
+    "0134_leadership_digests.sql",
+    "0135_leadership_restore_holds.sql"
+  ]
+}

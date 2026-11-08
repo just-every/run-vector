@@ -1,0 +1,56 @@
+{
+  "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "command": [
+    "timeout",
+    "1200",
+    "node",
+    "tests/e2e/core-runtime.mjs",
+    "projects"
+  ],
+  "exit": 0,
+  "passed": true,
+  "runtime_checks": 54,
+  "leadership_marker": "INIT-004 leadershipDigestJourney: subscription and both channels persist, keyboard withdrawal succeeds; screens 1440 and 390",
+  "captures": [
+    {
+      "path": "leadership-initiative-subscription-1440.png",
+      "bytes": 31202,
+      "sha256": "124c9c644710dff1a80fb1d044da15ab4cd3c774caec8e3152df3b16611959a9",
+      "image_width": 1036,
+      "image_height": 271,
+      "captured_at": "2026-11-08T17:40:23.044333+00:00"
+    },
+    {
+      "path": "leadership-initiative-subscription-390.png",
+      "bytes": 26620,
+      "sha256": "d66510619d41d88e5791f7c34ac7b8d7dbf26477c9dbe6ec02cca34d7b0ac02a",
+      "image_width": 358,
+      "image_height": 300,
+      "captured_at": "2026-11-08T17:40:23.340332+00:00"
+    },
+    {
+      "path": "leadership-digest-channels-1440.png",
+      "bytes": 36514,
+      "sha256": "7216e942a87e8910b92346a55d8f510f26e8aefab81fcca995c2ad380dc6e7c8",
+      "image_width": 658,
+      "image_height": 390,
+      "captured_at": "2026-11-08T17:40:25.392327+00:00"
+    },
+    {
+      "path": "leadership-digest-channels-390.png",
+      "bytes": 34007,
+      "sha256": "675f632880ee6c54d13e0d55698a86a9eb4e8113bd461cc55d5f86a559f7ed8a",
+      "image_width": 324,
+      "image_height": 454,
+      "captured_at": "2026-11-08T17:40:25.956326+00:00"
+    }
+  ],
+  "log_sha256": "14b11fd89738f1558d97ce45cdef991802fa13fe96296937ccddfc63910e5063",
+  "browser": "Chromium at /usr/bin/chromium; headless; no-sandbox",
+  "viewports": [
+    1440,
+    390
+  ],
+  "assertion_viewport": 1440,
+  "scope": "Existing initiative subscription and personal Settings channel controls, saved state, reload, keyboard opt-out, accessibility and overflow."
+}
