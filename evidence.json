@@ -7,16 +7,22 @@
       "sha256": "d52571d96229bff6253ce2a86347ae291f251613247bcbf89ec228f212cee768"
     },
     {
-      "blob": "100095b2f953bc63d313c999cd19f3a4f79bbaaa",
-      "bytes": 268,
+      "blob": "aef0756e16b3506a5c8f6d710e7e2265c8ab2984",
+      "bytes": 450,
       "path": "BROWSER-FOCUSED.json",
-      "sha256": "40190032a0bfe29a3ee25d9a91eddbb8bc4c131d176ae619201db0bc8ca62bbe"
+      "sha256": "cbc1238ff960e27dd497aaa1fdec87794c11a96cfeeecb43fe34b23e9948c106"
     },
     {
-      "blob": "b7cc2eb5ecee30c9dba963e83da6b414e8f5b020",
-      "bytes": 5416,
+      "blob": "e2cb3d01f95ba8deaf5f96b5efae8e940cf9b2a2",
+      "bytes": 5702,
       "path": "CHECKS.json",
-      "sha256": "5641a865eede4c1e4a2943c6152148ab3f2c4ed7d685b605ab8a361e05493b80"
+      "sha256": "0946c0f66958bab628745cdc72f786ff5f027af55a625b64e85ec6e200dae95b"
+    },
+    {
+      "blob": "0f123fee1012644f6ca2822966214a46a1415f1f",
+      "bytes": 685,
+      "path": "CI-RECEIPT.json",
+      "sha256": "0c54566956df609ec46ab154c322b06dc142388983e250d93c3ea074007c4842"
     },
     {
       "blob": "c0843abdf3694e99d97321e3bf6ea0789a9c37fa",
@@ -37,10 +43,10 @@
       "sha256": "ba8d715efc630b0fd4f91f6bced929ae29f0a0292bad2c8d8128317425c97b23"
     },
     {
-      "blob": "e79efcef0e5b951ed6c16c8860af9cc5b96d6837",
-      "bytes": 452,
+      "blob": "c9641a1bbe5df94cfac69c93a519dfb076be1807",
+      "bytes": 559,
       "path": "PRODUCT-CUSTODY.json",
-      "sha256": "d5a9752f6c7fe26ebb24deea921446313911ad103baadb5645d5238b433e2047"
+      "sha256": "7df78000c366943cb4b7fcc7c1de7e704e1a0f1870b220011eeb0fff9c830a27"
     },
     {
       "blob": "9f4ab3c503cc3af7f624f31a5664a46918c9c2c4",
@@ -49,10 +55,10 @@
       "sha256": "e5077075d1cfc85f7e01eac05440f3b30c33d042bf8f2bbb10fbeaa94dec30da"
     },
     {
-      "blob": "ec6ecb3c2eda3d90b38f5ff88390d06fa7d15d99",
-      "bytes": 15554,
+      "blob": "aa5811aa18d0ad83ae9ecaaf1f333269166b7c4f",
+      "bytes": 16679,
       "path": "REPORT.md",
-      "sha256": "658e5bf8bb1a11c224b528a6297bf91c7a49895c6517cb33dd3adc378d953874"
+      "sha256": "fee6d478663c3b8bb34063492ca73633bc57b8a58b841574d9d7b13e90afd247"
     },
     {
       "blob": "290a8c8a0ad76620253975174533385c2a3cc570",

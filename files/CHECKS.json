@@ -81,13 +81,13 @@
       "log": "/tmp/sd-vector-final-lock.log"
     },
     {
-      "command": "cloud_run perl -e alarm-1800 node --import /tmp/cloud-playwright.mjs --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/integration-runtime.mjs",
+      "command": "cloud_run perl -e 'alarm 1800; exec @ARGV' -- node --import /tmp/cloud-playwright.mjs --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/integration-runtime.mjs",
       "exit": 0,
       "result": "broader integration runtime passed, widths 1440 and 390; no captured credentials, fixture provider only",
       "receipt": "INTEGRATION-BROWSER.json"
     },
     {
-      "command": "cloud_run perl -e alarm-1200 node --import ./tests/e2e/integrations/register-loader.mjs /tmp/sd-vector-browser-focused.mjs",
+      "command": "cloud_run perl -e 'alarm 1200; exec @ARGV' -- node --import ./tests/e2e/integrations/register-loader.mjs /tmp/sd-vector-browser-focused.mjs",
       "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
       "exit": 0,
       "result": "signed Slack transport and native mapped discussion passed at 1440, with both screens captured at 1440 and 390; no hydration errors",
@@ -111,7 +111,7 @@
     "priorPublishedHead": "7334487bdc9102011b9b646e37fe60da45ebf338",
     "priorVerifyRun": 42510098606,
     "priorConclusion": "success",
-    "githubCalls": 5,
+    "githubCalls": 8,
     "run": 42515472271,
     "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
     "status": "in_progress",
@@ -119,15 +119,22 @@
     "previousCandidateRun": 42514706072,
     "previousCandidateHead": "282ebf58245de557da451e6c8730e7a3afead23c",
     "event": "push",
-    "url": "https://github.com/just-every/run-vector/actions/runs/42515472271"
+    "url": "https://github.com/just-every/run-vector/actions/runs/42515472271",
+    "lastObservationUtc": "2026-11-08T19:51:32.228569+00:00"
   },
   "publicationScan": {
     "status": "not-run-in-cloud",
-    "reason": "guarded fleet lander owns exact-tree full-history publication scan"
+    "reason": "guarded fleet lander owns exact-tree full-history publication scan",
+    "commit": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+    "complete": false,
+    "historyScanned": false,
+    "findings": null
   },
   "landing": {
     "status": "not-landed",
     "runSite": "not-run-in-cloud"
   },
-  "candidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8"
+  "candidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "fullGitHistoryAvailable": true,
+  "handoff": "PUSHED"
 }

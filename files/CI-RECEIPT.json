@@ -1,0 +1,16 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f206",
+  "head": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "run": 42515472271,
+  "event": "push",
+  "conclusion": null,
+  "head_sha": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42515472271",
+  "status": "in_progress",
+  "observedAtUtc": "2026-11-08T19:51:32.228569+00:00",
+  "githubCallsUsed": 8,
+  "githubCallBudget": 10,
+  "handoff": "PUSHED",
+  "note": "Exact-head Verify is still running. No green conclusion, publication scan, acceptance or landing is claimed. Remaining API calls are reserved for completed failure diagnostics."
+}

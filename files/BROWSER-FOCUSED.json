@@ -9,5 +9,8 @@
   "liveProvider": false,
   "source": "tests/e2e/integrations/slack-threads.mjs#exerciseSlackThreads",
   "identifier": "FLW-843",
-  "hydrationErrors": 0
+  "hydrationErrors": 0,
+  "candidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "command": "node --import ./tests/e2e/integrations/register-loader.mjs /tmp/sd-vector-browser-focused.mjs",
+  "exit": 0
 }

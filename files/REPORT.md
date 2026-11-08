@@ -64,7 +64,7 @@ These rows describe the selected native scope and its supplied duties. Local Wor
 |---|---|---|
 | 1 | PARTIAL for full clause; selected native scope locally met | P1–P5 and thread-duty register above. Held media, actors, customer and provider outcomes are unproved. |
 | 2 | PASS for selected scope | Supported signed captures and actual native writes complete; unsigned, stale, unlinked, unmapped, withdrawn and held attempts are made and stored state is compared. |
-| 3 | Exact-SHA CI recorded in CHECKS.json | The existing push Verify loads the Worker registration and integration runtime. No green run from the prior head is substituted. |
+| 3 | NOT ESTABLISHED: exact-SHA Verify still running | The existing push Verify loads the Worker registration and integration runtime. No green run from the prior head is substituted. |
 | 4 | PASS for local candidate binding | Worker suite inputs are byte-identical to the candidate; the focused browser runs on the candidate. BROWSER-BINDING.json proves relevant app, migration and browser trees unchanged since the browser run began. |
 | 5 | PASS, unchanged source duties | SLACK-002 already names ISSUE-008 and ROLE-002; the mapping and current privacy duties are implemented without adding or narrowing acceptance. |
 | 6 | Mechanical PASS; source judgments retained | Touched generator write and check pass, then generated views are restored; Status, Gap and Evidence remain the lander's responsibility. |
@@ -104,3 +104,12 @@ MECHANICAL lock=pnpm sources:check exit=0; views=node scripts/contract-docs.mjs 
 Remote read custody was re-established after one authentication rejection by refreshing the launcher, reinstalling the bundle helper and using the guard's command-scope helper and header resets. The exact branch ref matches f2f92d8297107b0f690da10efb778a0dd9e2cce8; the default branch was not changed.
 
 Exact-candidate Verify: push run 42515472271, currently in progress on f2f92d8297107b0f690da10efb778a0dd9e2cce8. Earlier green run 42510098606 belongs only to 7334487bdc9102011b9b646e37fe60da45ebf338 and is not substituted. Final observation is recorded in CHECKS.json.
+
+
+## Terminal custody
+
+Product handoff is PUSHED. Exact-head push Verify run 42515472271 was still in progress at the final permitted observation recorded in CI-RECEIPT.json. Eight of ten GitHub calls were used; two remain reserved for completed failure diagnostics. No real failure was observed and no BLOCKED line is asserted. The earlier successful Verify is not used for this head. Full-history scanning, exact-main equality, Run site and guarded landing remain fleet work.
+
+All local proof is complete: the 11 touched Worker tests pass with unchanged Worker inputs on this candidate, focused signed Slack browser proof passes on this exact candidate, both mapped and resolved screens are captured at 1440 and 390, typecheck and build pass, the first-party profile and migration ledger pass, the touched contract generator write and check pass, generated views are restored and the source lock is fresh. The complete actual non-secret packet, including earlier receipts under prior, is published on the separate evidence ref.
+
+PUSHED branch=cloud/sd-vector-c-f206 head=f2f92d8297107b0f690da10efb778a0dd9e2cce8

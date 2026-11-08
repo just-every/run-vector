@@ -9,5 +9,9 @@
   "contractUnchanged": true,
   "publicationScan": "owned by guarded lander",
   "runSite": "owned by guarded lander",
-  "pr": null
+  "pr": null,
+  "state": "PUSHED",
+  "verifyRun": 42515472271,
+  "verifyStatus": "in_progress",
+  "readyClaimed": false
 }
