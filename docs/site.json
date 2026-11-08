@@ -531,6 +531,10 @@
     {
       "source": "docs/SLAS.md",
       "reason": "Native resolution SLA behavior, portable clocks and implementation qualification."
+    },
+    {
+      "source": "docs/AUTOMATION-RULES.md",
+      "reason": "Native label workflow API and safety reference for maintainers; the Settings interface remains pending qualification."
     }
   ]
 }

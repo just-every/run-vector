@@ -158,6 +158,15 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const bind=(route:string,params:Record<string,string>)=>route.replace(/:([A-Za-z]+)/g,(_,name)=>{expect(params[name],route+' parameter '+name).toBeTruthy();return params[name];});
   const add=(surface:Surface,method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>{const id=method+' '+route;expect(plans[surface].has(id),id+' duplicate fixture').toBe(false);plans[surface].set(id,{path:path??bind(route,params),body});};
   const native=(method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>add('native',method,route,body,params,path);
+  const automationBinding=await call(owner,'/settings/integrations/channels','POST',{scope:'team',objectId:w.team.id,provider:'slack',channelId:'CAUTORULE',channelName:'synthetic-vector-rules',events:['automation.rule']});
+  const automationInput={name:'synthetic-vector-rule-census',labelId:label.id,priority:'urgent',destinationId:automationBinding.id,monthlyBudget:10,enabled:false};
+  for(const base of ['/settings/automation-rules','/settings/teams/:id/automation-rules']) {
+    const actual=base.replace(':id',w.team.id);
+    const rule=await call(owner,actual,'POST',{...automationInput,expectedVersion:0});
+    native('POST',base,{...automationInput,expectedVersion:0},{id:w.team.id});
+    native('POST',base+'/dry-run',automationInput,{id:w.team.id});
+    native('PATCH',base+'/:ruleId',{...automationInput,expectedVersion:rule.version},{id:w.team.id,ruleId:rule.id});
+  }
   const reportExport=await call(owner,'/settings/report-exports','POST',bucketScheduleInput);
   native('POST','/settings/report-exports',bucketScheduleInput);
   native('PATCH','/settings/report-exports/:id',{expectedVersion:1,enabled:true,consent:true},{id:reportExport.id});

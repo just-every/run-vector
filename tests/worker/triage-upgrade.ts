@@ -5,7 +5,7 @@ import { insertHistoricalSample } from "./historical-sample-fixture";
 /**
  * Columns a later migration adds to a table that already held rows, with the value an
  * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1;
- * 0135 leaves every existing operator unsuspended with no suspending actor.
+ * 0136 leaves every existing operator unsuspended with no suspending actor.
  */
 const addedAfterBoundary: Record<string, Record<string, unknown>> = {
   teams: { cycles_enabled: 1 },

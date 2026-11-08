@@ -1,3 +1,4 @@
+import {addAutomationRuleRoutes} from '../features/automation-rules/routes';
 import {addSlaRoutes} from '../features/slas/routes';
 import {addProjectDependencyRoutes} from '../features/project-dependencies/routes';
 import {addTriageResponsibilityRoutes} from '../features/triage-responsibility/routes';
@@ -402,6 +403,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addCustomFieldRoutes(app);
   addProjectDependencyRoutes(app);
   addTriageResponsibilityRoutes(app);
+  addAutomationRuleRoutes(app);
   addSlaRoutes(app);
   addTeamMembershipRoutes(app);
   addIssueCopyRoutes(app);

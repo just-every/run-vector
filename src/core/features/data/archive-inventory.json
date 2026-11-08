@@ -2369,6 +2369,44 @@
     "held",
     "created_at"
   ],
+  "automation_rules": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "owner_operator_id",
+    "name",
+    "label_id",
+    "priority",
+    "destination_id",
+    "monthly_budget",
+    "enabled",
+    "version",
+    "failure",
+    "failure_notified_at",
+    "created_at",
+    "updated_at"
+  ],
+  "automation_rule_runs": [
+    "id",
+    "rule_id",
+    "rule_version",
+    "event_id",
+    "issue_id",
+    "state",
+    "changes_json",
+    "reason",
+    "created_at",
+    "completed_at",
+    "completion_token"
+  ],
+  "automation_rule_usage": [
+    "rule_id",
+    "month",
+    "runs"
+  ],
+  "automation_rule_restore_holds": [
+    "rule_id"
+  ],
   "member_lifecycle_events": [
     "id",
     "operator_id",

@@ -15,7 +15,7 @@ export async function slackThreadUpgrade(){
  const before=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
  await applyD1Migrations(db,migrations.slice(boundary));
  const after=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
- // 0135 adds nullable suspension metadata; every pre-existing value remains exact.
+ // 0136 adds nullable suspension metadata; every pre-existing value remains exact.
  for(let n=0;n<tables.length;n++)expect(after[n].results,tables[n].name).toEqual(
   before[n].results.map(row=>tables[n].name==='operators'?{...row,suspended_at:null,suspended_by:null}:row));
  for(const table of ['vector_slack_threads','vector_slack_thread_messages','vector_slack_thread_events'])expect(await db.prepare('SELECT count(*) n FROM '+table).first<number>('n')).toBe(0);

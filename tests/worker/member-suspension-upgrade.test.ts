@@ -3,7 +3,7 @@ import { env } from 'cloudflare:workers';
 import { provePopulatedUpgrade } from './populated-upgrade';
 
 it('populated pre-suspension stores retain legacy removals, credentials and all history through the additive lifecycle upgrade', {timeout:120_000}, async () => {
-  await provePopulatedUpgrade('0135_member_suspension.sql',{
+  await provePopulatedUpgrade('0136_member_suspension.sql',{
     added:['table member_lifecycle_events','index member_lifecycle_member'],removed:[],
     changed:['table operators','trigger vector_operator_auth_remove','trigger notification_channel_member_erasure','trigger subscription_operator_removed','trigger subscription_operator_suspended'],
   },['issues','issue_comments','issue_files','operators','oa_sessions'], async () => {
