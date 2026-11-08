@@ -8,7 +8,7 @@ import type { ImportDiagnostic,ImportInput } from './types';
 export type JiraOccurrence={row:number;sourceId:string;sourceKey:string;column:number;value:string;action:'planned'|'not_imported'|'error'|'review_only';reason:string;metadata?:{time:string;author:string;body?:string;filename?:string;url?:string}};
 export type JiraConcept={name:string;headers:{name:string;column:number}[];action:string;rowCount:number;rows:number[];valueCount:number;values:{value:string;count:number;rows:number[]}[];occurrences:JiraOccurrence[];dispositions:{action:JiraOccurrence['action'];reason:string;rows:number[];rowCount:number;valueCount:number}[]};
 export type JiraConfirmation={source:string;rows:number[];categories:string[];suggestion:string|null;target:string|null};
-export type JiraReview={concepts:JiraConcept[];statuses:JiraConfirmation[];priorities:JiraConfirmation[];issueTypes:JiraConfirmation[];unresolved:(ImportDiagnostic&{sourceId:string;sourceKey:string;value:string})[];policies:string[]};
+export type JiraReview={concepts:JiraConcept[];statuses:JiraConfirmation[];priorities:JiraConfirmation[];issueTypes?:JiraConfirmation[];unresolved:(ImportDiagnostic&{sourceId:string;sourceKey:string;value:string})[];policies:string[]};
 const actions:Record<string,string>={
  rank:'Team manual order, ascending by source rank; ties use the new identifier. Existing ranked work stays ahead of this imported block.',
  'custom field (rank)':'Team manual order, ascending by source rank; ties use the new identifier. Existing ranked work stays ahead of this imported block.',

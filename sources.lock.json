@@ -4810,11 +4810,11 @@
       "executable": false
     },
     "src/core/features/data/import/jira-review.ts": {
-      "sha256": "5f2be16e59e3b15f734616cfcde619e0e3b794b1dfd1ef421690bc58aa537846",
+      "sha256": "cd24e991f9d0b030ba85e0585fd24e90798a1f3ab633ab4baf92746a55ca90cf",
       "executable": false
     },
     "src/core/features/data/import/jira.ts": {
-      "sha256": "802de7f5315145252c460c59a2b8d7e26e16f7ce3d762178c0e1570802d2f3a0",
+      "sha256": "0aaf11a1f5ff36dde6dca08180990055ea6e6b568ccf1b35321615b30b9fc9d4",
       "executable": false
     },
     "src/core/features/data/import/linear.ts": {
@@ -4966,7 +4966,7 @@
       "executable": false
     },
     "src/core/features/data/ui/jira-review-schema.ts": {
-      "sha256": "79d4cb30befe2498681c05af51c4ac213f9aec8371d7bb20507eac730c7d5769",
+      "sha256": "9daf2677139ff18b7940f977082f8fc15217911b074bfd81e6ba16099ece70c4",
       "executable": false
     },
     "src/core/features/data/ui/restore-panel.tsx": {

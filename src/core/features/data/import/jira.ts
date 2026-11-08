@@ -39,7 +39,7 @@ export function readJiraCsv(csv:{headers:string[];rows:{row:number;values:string
       if(field)payload[field]=detected.values.get(row.row+':'+column)??raw;
     }
     const values=(name:string)=>headers.flatMap((header,index)=>header===name&&row.values[index]?.trim()?[row.values[index].trim()]:[]);
-    payload.issueType=values('issue type')[0]??'';
+    if(input.jira?.issueTypes)payload.issueType=values('issue type')[0]??'';
     payload.labels=[...new Set([...values('labels'),...(values('issue type').some(value=>value.toLowerCase()==='epic')&&!input.jira?.issueTypes?['epic']:[])])];
     payload.cycle=values('sprint').at(-1)??'';
     payload.$jiraMetadata=csv.headers.flatMap((header,index)=>{
