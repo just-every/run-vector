@@ -1,0 +1,186 @@
+{
+  "tag": "sd-vector-c-f206-fix1",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f206-fix1",
+  "head": "442b61455234c57befcb642bf4afdaa2dc459922",
+  "baseline": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "history": {
+    "shallow": false,
+    "clone": "git clone --filter=blob:none https://github.com/just-every/run-vector.git /workspace/run-vector",
+    "merge": "git merge --no-commit --no-ff origin/main",
+    "mergeResult": "Already up to date; fresh main is an ancestor",
+    "candidateIdentityAudit": {
+      "commits": 8,
+      "allFleet": true,
+      "trailers": []
+    },
+    "productPushes": 1,
+    "push": "PUSH_OK on first attempt",
+    "pr": null
+  },
+  "probes": [
+    {
+      "finding": "A shortcut bot source",
+      "repro": {
+        "http": 200,
+        "mappedRoots": 0,
+        "humanControlRoots": 1
+      },
+      "fixedAsserted": {
+        "http": 200,
+        "mappedRoots": 1,
+        "humanControlRoots": 1,
+        "replayHttp": 409
+      }
+    },
+    {
+      "finding": "B thread_broadcast",
+      "repro": {
+        "http": 200,
+        "mappedReplies": 0
+      },
+      "fixedAsserted": {
+        "http": 200,
+        "mappedReplies": 1,
+        "replayHttp": 409,
+        "messageChangedWrites": 0
+      }
+    },
+    {
+      "finding": "C authorized Guest reply",
+      "repro": {
+        "http": 201,
+        "guestPosts": 0,
+        "ownerPosts": 1,
+        "guestLedger": null
+      },
+      "fixedAsserted": {
+        "http": 201,
+        "guestPosts": 1,
+        "ownerPosts": 1,
+        "guestLedger": {
+          "state": "accepted",
+          "attempts": 1
+        },
+        "postsAfterGuestWithdrawal": 0
+      }
+    }
+  ],
+  "checks": [
+    {
+      "command": "cloud_run timeout 180 pnpm exec vitest run --config vitest.config.ts tests/worker/outbound-broken-destination.test.ts -t 'Signed Slack Events'",
+      "phase": "head source with added probes before fixes",
+      "exit": 1,
+      "receipt": "repro.log"
+    },
+    {
+      "command": "cloud_run timeout 180 pnpm exec vitest run --config vitest.config.ts tests/worker/outbound-broken-destination.test.ts -t 'Signed Slack Events'",
+      "phase": "fixed source",
+      "exit": 0,
+      "receipt": "probe.log"
+    },
+    {
+      "command": "cloud_run timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/outbound-broken-destination.test.ts",
+      "exit": 0,
+      "testsPassed": 8,
+      "testsSkipped": 0,
+      "receipt": "slack-suite.log",
+      "includes": "signed Slack doors, thread upgrade, archive and recovery"
+    },
+    {
+      "command": "cloud_run timeout 180 pnpm typecheck",
+      "exit": 0,
+      "receipt": "typecheck.log"
+    },
+    {
+      "command": "cloud_run timeout 180 node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "receipt": "ledger.log"
+    },
+    {
+      "command": "cloud_run timeout 600 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "receipt": "private log excluded; no settings or databases published"
+    },
+    {
+      "command": "cloud_run timeout 600 npx -y @runeditrun/rer build",
+      "exit": 0,
+      "receipt": "private log excluded; result observed from subreaper exit"
+    },
+    {
+      "command": "node sdk/generate.mjs --check",
+      "exit": 0,
+      "operations": 56,
+      "regenerated": false
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write SLACK-002",
+      "exit": 0,
+      "receipt": "views.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check SLACK-002",
+      "exit": 0,
+      "receipt": "views.log",
+      "then": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md"
+    },
+    {
+      "command": "cloud_run timeout 120 pnpm integration:sync",
+      "exit": 0,
+      "receipt": "spec.log",
+      "changedFiles": []
+    },
+    {
+      "command": "cloud_run timeout 120 pnpm integration:check",
+      "exit": 0,
+      "receipt": "spec.log"
+    },
+    {
+      "command": "cloud_run timeout 180 pnpm sources:lock",
+      "exit": 0,
+      "receipt": "lock.log",
+      "order": "after all product staging and generators"
+    },
+    {
+      "command": "cloud_run timeout 180 pnpm sources:check",
+      "exit": 0,
+      "receipt": "lock-check.log"
+    },
+    {
+      "command": "cloud_run timeout 180 npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "receipt": "check.log"
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit": 0
+    }
+  ],
+  "runtime": {
+    "shellToolchainNode": "24.19.0",
+    "rerPinnedNode": "22.20.0",
+    "pnpm": "10.12.4"
+  },
+  "scope": {
+    "implementationFiles": 3,
+    "testScenarioFiles": 1,
+    "sourceLockFiles": 1,
+    "uiChanges": false,
+    "deletedSkippedOrWeakenedTests": false,
+    "contractJudgmentChanges": false,
+    "generatedViewsCommitted": false,
+    "deployed": false,
+    "landed": false
+  },
+  "ci": {
+    "runId": 42520783647,
+    "conclusion": "success",
+    "head_sha": "442b61455234c57befcb642bf4afdaa2dc459922",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42520783647",
+    "status": "completed"
+  },
+  "githubCallsUsed": 7,
+  "custody": "READY (product pushed, exact-SHA Verify completed/success; no landing claim)",
+  "blockers": []
+}

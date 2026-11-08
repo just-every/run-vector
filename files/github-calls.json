@@ -1,0 +1,72 @@
+[
+  {
+    "time": 1794170050.3369582,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=442b61455234c57befcb642bf4afdaa2dc459922&per_page=100",
+      "--jq",
+      "[.workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}]"
+    ]
+  },
+  {
+    "time": 1794170351.3657522,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42520783647",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "time": 1794170652.4006,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42520783647",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "time": 1794170953.4323573,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42520783647",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "time": 1794171254.4662127,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42520783647",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "time": 1794171555.4914377,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42520783647",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "time": 1794171856.5262682,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42520783647",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  }
+]

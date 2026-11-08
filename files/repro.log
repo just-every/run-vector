@@ -1,0 +1,154 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE B status=200 mappedReplies=0
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE C status=201 guestPosts=0 ownerPosts=1
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE A status=200 mappedRoots=0 humanControlRoots=1
+
+ ❯ tests/worker/outbound-broken-destination.test.ts (8 tests | 1 failed | 7 skipped) 4154ms
+   × [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake 4152ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: expected { ok: true, ignored: true } to match object { identifier: 'BASE-1', …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "identifier": "BASE-1",
+-   "rootCommentId": "01M6YDKP08V00M1F728M4XKZ2A",
++   "ignored": true,
++   "ok": true,
+  }
+
+ ❯ slackThreadSync tests/worker/slack-thread-scenario.ts:30:31
+     28|  const broadcastReplies=(await discussion()).filter(c=>c.body==='Broad…
+     29|  console.log('GATE_PROBE B status=200 mappedReplies='+broadcastReplies…
+     30|  expect.soft(broadcastResult).toMatchObject({identifier,rootCommentId:…
+       |                               ^
+     31|  expect.soft(broadcastReplies).toHaveLength(1);
+     32|  if(broadcastReplies.length){await read(await send({...broadcast,event…
+ ❯ slackEventIntake tests/worker/slack-events-scenario.ts:43:2
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:24
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ slackThreadSync tests/worker/slack-thread-scenario.ts:31:32
+     29|  console.log('GATE_PROBE B status=200 mappedReplies='+broadcastReplies…
+     30|  expect.soft(broadcastResult).toMatchObject({identifier,rootCommentId:…
+     31|  expect.soft(broadcastReplies).toHaveLength(1);
+       |                                ^
+     32|  if(broadcastReplies.length){await read(await send({...broadcast,event…
+     33|  const ignoredBefore=await snapshot();
+ ❯ slackEventIntake tests/worker/slack-events-scenario.ts:43:2
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:24
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ slackThreadSync tests/worker/slack-thread-scenario.ts:53:26
+
+ ❯ slackEventIntake tests/worker/slack-events-scenario.ts:43:2
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:24
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: expected null to match object { state: 'accepted', attempts: 1 }
+
+- Expected:
+{
+  "attempts": 1,
+  "state": "accepted",
+}
+
++ Received:
+null
+
+ ❯ slackThreadSync tests/worker/slack-thread-scenario.ts:54:170
+
+ ❯ slackEventIntake tests/worker/slack-events-scenario.ts:43:2
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:24
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ slackThreadSync tests/worker/slack-thread-scenario.ts:136:24
+
+ ❯ slackEventIntake tests/worker/slack-events-scenario.ts:43:2
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:24
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: expected undefined to match object { …(2) }
+
+- Expected:
+{
+  "actor_operator_id": "01M6YDKNX3XJ76MBZ702ZVQ9DJ",
+  "body": StringContaining "Bot-authored shortcut source",
+}
+
++ Received:
+undefined
+
+ ❯ slackThreadSync tests/worker/slack-thread-scenario.ts:137:27
+    135|  console.log('GATE_PROBE A status='+botResponse.status+' mappedRoots='…
+    136|  expect.soft(botRoots).toHaveLength(1);
+    137|  expect.soft(botRoots[0]).toMatchObject({actor_operator_id:shortcutRoo…
+       |                           ^
+    138|  if(botRoots.length){const saved=await snapshot();expect((await signSh…
+    139|  await slackThreadImport(f,intake);
+ ❯ slackEventIntake tests/worker/slack-events-scenario.ts:43:2
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:24
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  20:29:07
+   Duration  11.84s (transform 3.24s, setup 0ms, import 7.19s, tests 4.15s, environment 0ms)
+

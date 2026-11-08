@@ -1,0 +1,26 @@
+{
+  "before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "allStatusRowsRetained": true,
+  "slack002": {
+    "sourceBefore": "missing",
+    "sourceAfter": "missing",
+    "briefCandidateJudgment": "PARTIAL",
+    "promotion": false
+  },
+  "migration": {
+    "mainHighest": "0133_release_notes.sql",
+    "candidate": "0134_slack_threads.sql",
+    "collision": false
+  }
+}

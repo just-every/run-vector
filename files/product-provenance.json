@@ -1,0 +1,11 @@
+{
+  "branch": "cloud/sd-vector-c-f206-fix1",
+  "head": "442b61455234c57befcb642bf4afdaa2dc459922",
+  "remoteHead": "442b61455234c57befcb642bf4afdaa2dc459922",
+  "clean": true,
+  "shallow": false,
+  "originalCandidate": "f2f92d8297107b0f690da10efb778a0dd9e2cce8",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "commit": "Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\nFix Slack shortcut sources, broadcast replies and Guest thread delivery",
+  "fixStat": "sources.lock.json                                  |  8 ++---\n .../features/integrations/slack-app/shortcut.ts    |  4 ++-\n .../integrations/slack-app/thread-delivery.ts      |  4 ++-\n .../integrations/slack-app/thread-mapping.ts       |  2 +-\n tests/worker/slack-thread-scenario.ts              | 38 +++++++++++++++++++++-\n 5 files changed, 48 insertions(+), 8 deletions(-)"
+}
