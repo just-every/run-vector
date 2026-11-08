@@ -1,0 +1,21 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f202",
+  "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "firstSave": "abd0cfd8485c4973839b1362c076ff47001e0cb9",
+  "candidateCommits": [
+    "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+    "abd0cfd8485c4973839b1362c076ff47001e0cb9"
+  ],
+  "productPush": "PUSH_OK",
+  "pr": null,
+  "verifyRun": 42505077963,
+  "verifyState": "in_progress",
+  "publicationScan": {
+    "complete": false,
+    "historyScanned": "unestablished in cloud",
+    "findings": "unestablished; retained fleet scan required"
+  },
+  "landing": "not performed in cloud"
+}

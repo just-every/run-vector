@@ -1,0 +1,30 @@
+{
+  "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "branch": "cloud/sd-vector-c-f202",
+  "merged_main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "status_rows": 272,
+  "contract_builder_diff": false,
+  "generated_views_committed_by_builder": false,
+  "source_lock": {
+    "command": "pnpm sources:check",
+    "exit": 0
+  },
+  "views": {
+    "write": "node scripts/contract-docs.mjs write INIT-003",
+    "check": "node scripts/contract-docs.mjs check INIT-003",
+    "exit": 0,
+    "restored_from": "origin/main"
+  },
+  "first_party": {
+    "command": "npx -y @runeditrun/rer check --profile first-party",
+    "exit": 0
+  },
+  "ledger": "none; no migration authored by this builder",
+  "view_007_sources_and_assertions_unchanged": true,
+  "at": "2026-11-08T17:29:32.268201+00:00"
+}

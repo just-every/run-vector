@@ -1,0 +1,118 @@
+{
+  "files": [
+    {
+      "blob": "0ebb1c38fb3f77d2583b895ccf61daff0ce5bd99",
+      "bytes": 17357,
+      "path": "REPORT.md",
+      "sha256": "cbea34646f3bbefe58d754c2879a2507d4d63b278fb8401acad9f3cf470f744e"
+    },
+    {
+      "blob": "c1d85a84ffa7c0d31439089e809008326a9bfa85",
+      "bytes": 2262,
+      "path": "browser-receipt.json",
+      "sha256": "683da0b2990c8324c0dc5479c87ae7357a22059dd2d0aa8535f05d0de64e63b8"
+    },
+    {
+      "blob": "91d3c131274a01a82f790c82e272109a2d61e03b",
+      "bytes": 482,
+      "path": "browser-results.txt",
+      "sha256": "93f1820e64cf5ac827a3f58bfc35fd85161ac4bf974078040c83732c12931c5b"
+    },
+    {
+      "blob": "5f8ab2e0c167eb79a5e32665e549ff64faa959f5",
+      "bytes": 224,
+      "path": "candidate-ci-discovery.jsonl",
+      "sha256": "4a608faa707d06c3d298ca1996291350f000293e7bbcfbde1e120856ccee1814"
+    },
+    {
+      "blob": "5f6713acd362c22e01ebf6a0d0aed98be407ce41",
+      "bytes": 176,
+      "path": "candidate-ci-final.json",
+      "sha256": "c2a3af364373486e99ebb887da32c0e4ca192940e20879b6fecab0665b0b84e9"
+    },
+    {
+      "blob": "911901a9d95c5f76135c11ccaa0848eb2275dbcd",
+      "bytes": 74,
+      "path": "contract-views.txt",
+      "sha256": "4a7034866cc48c4cb57609bcd42677600123fca734e7bc97da5e1df882b5468f"
+    },
+    {
+      "blob": "ffa037f1323f97d4437eb621d07ca202d5bb2ab3",
+      "bytes": 1148,
+      "path": "main-ci.jsonl",
+      "sha256": "5d89e3fc0157afdd3f8e7d22ef3121843bb07281f1e6a78ebf26b7b916f86704"
+    },
+    {
+      "blob": "6d23dca259d9e190b6e6643d876e216dfed65bb0",
+      "bytes": 864,
+      "path": "mechanical-receipt.json",
+      "sha256": "dafa8eae73fab3a262e15413efc99683fa053b5d1ae959a5f29d2b0be206dc2c"
+    },
+    {
+      "blob": "2d8dda81837ed5c565b741fd2e4373e90f5cea82",
+      "bytes": 675,
+      "path": "product-provenance.json",
+      "sha256": "0797afff1972a14df2651054396bf6a71b63f38126e3b021e33a234a736356d2"
+    },
+    {
+      "blob": "7e99e1efc9490d93322c20804acb6bf91564146f",
+      "bytes": 932,
+      "path": "product-push.txt",
+      "sha256": "b38a3cf029e179eca3087d78241ad15729724338537aec98ce587e568363cc47"
+    },
+    {
+      "blob": "71822ec640d6aa7be443711566b6a0150ffcd2a4",
+      "bytes": 123881,
+      "path": "roadmap-dark-1440.png",
+      "sha256": "86ce071485c81413411abeadfe6910d01bb5f4519f916f938683dad035dcbb62"
+    },
+    {
+      "blob": "503715d816d556bbc9b45cb20e3d6e95bdae6595",
+      "bytes": 120246,
+      "path": "roadmap-four-placements-1440.png",
+      "sha256": "9872136000e62c1e64c228895559fea582bb43ea808f04db87d1c2c93de28dfa"
+    },
+    {
+      "blob": "c6f78bc2ac3d7c43d4f689ce20c9da90a5f3118d",
+      "bytes": 58030,
+      "path": "roadmap-guest-390.png",
+      "sha256": "4c67f7e5b85057cfe55bdaea36b8c133ebc62efa62ed1c8fb36a8c7a383abd48"
+    },
+    {
+      "blob": "79461ce3169d785d4da9c0833c8037dbe7547621",
+      "bytes": 123368,
+      "path": "roadmap-light-1440.png",
+      "sha256": "7b603549f51f69617b5b7586f6edf83047a1998dc770f19ab1b14cac39bcccb0"
+    },
+    {
+      "blob": "b621972fc488f829dd26b295ac89252ff6eaba79",
+      "bytes": 64286,
+      "path": "roadmap-list-390.png",
+      "sha256": "98b6bdcb8671e1ff998815e20db4085c485f81bbf8850a059012ae86377c5b88"
+    },
+    {
+      "blob": "edebe1b516881afe2a1191fa1eb0344c29e3a4c7",
+      "bytes": 62360,
+      "path": "roadmap-viewer-390.png",
+      "sha256": "2a06472b78e3b097f1cc80f2d1c94095719ab14c07ef8967183c8c41b9e72c72"
+    },
+    {
+      "blob": "9200ddeb89a4f4684b3d4420404976eac2a5ab91",
+      "bytes": 405,
+      "path": "worker-receipt.json",
+      "sha256": "2a54bf0350abd96aca5747012fd80a4279cff9b6c3c3c83925232d634be1bdee"
+    },
+    {
+      "blob": "5a98cda32d53dd07f11dbdbefc18835ac713d1a5",
+      "bytes": 345,
+      "path": "worker-results.txt",
+      "sha256": "7304bd714409ec30c0644666a750be6922012a12c780f3f2d7670db35ca6389b"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f202",
+  "product_head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "ref": "refs/heads/evidence/sd-vector-c-f202",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f202"
+}

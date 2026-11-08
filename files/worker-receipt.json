@@ -1,0 +1,9 @@
+{
+  "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/roadmap.test.ts tests/worker/project-fields.test.ts tests/worker/project-membership.test.ts",
+  "exit": 0,
+  "filesPassed": 3,
+  "testsPassed": 7,
+  "logSha256": "ae20e75f211b9624babe1d5b1767dabe7868c5602978e3648b458f24c89f6aaa",
+  "at": "2026-11-08T17:31:05.592835+00:00"
+}

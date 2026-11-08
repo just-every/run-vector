@@ -1,0 +1,31 @@
+{
+  "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "sourceSha256": {
+    "src/core/app/api.ts": "fe9e4ab7dc093dccf19575c65446ffac4ea90ef6423f420abf3470ac1a049c2a",
+    "src/core/app/page-resources.server.ts": "b864bb4507f76baa72defb1015297f996af64ba65571925cd645ef8ef9e86d7c",
+    "src/core/app/ui/app-shell.tsx": "2cb34cd3bd3020d52ece743e09edeea9d4caeddb1928bb8f0d4a8bee36a17ab3",
+    "src/core/features/administration/project-fields.ts": "ec05d651ffa334b0bc44d312682e2a5f80055a79b2629a9cf28005315a962558",
+    "src/core/features/administration/projects.ts": "923c447833ebdecb43c3116712cae836aa2db764b616c368d491fdca41411f6c",
+    "src/core/features/administration/schema.ts": "73da960d53a28605e0a47641f11c6ac9755a4b2da01bb6e5c05cead9ed0b4add",
+    "src/core/features/projects/ui/project-activity.tsx": "47cf413ac283840b7ffa0769e4a3fda71540b76ee250fb89b9a42bfd4a1aa958",
+    "src/core/features/roadmap/editor.tsx": "86c7712541b6f4a5579b7a775e18fe5c6ea6bd0fca7020af6ab5436618d489fe",
+    "src/core/features/roadmap/page.tsx": "7a2515994d9b88b4b52863fa73b6e8ccbf0b68fa7b14fdf28abf733c12c476d1",
+    "src/core/features/roadmap/placement.ts": "433cc87f96a042fbdffc75fc32b0c54da78c3c9f091d3ed3aa79e18b3e6631f1",
+    "src/core/features/roadmap/read.ts": "c2d0689b2e075699145f649a3c2a88b55181783d5c14771e366a39e71aac6782",
+    "src/core/features/roadmap/roadmap.css": "c3a7b033522cd49f0dda7bc4dfed8335ea6b4dc9e86debe5a40ab45464f77437",
+    "src/core/features/roadmap/routes.ts": "603420acc5bb890eb220a3b2d7b7b855c46152de6c1c504bd04aa7813c041b5a",
+    "src/core/features/roadmap/schema.ts": "df458953010314b4760f312edf228cd5b91d79769f0aa89702eba54bae3d009c",
+    "src/core/features/roles/doors.ts": "f14a357b7bb70b8ac6584ec207c1d1fcd945745dcfe0cd306bb6a54db8c64761",
+    "tests/e2e/core-project-membership-journey.mjs": "11e7de00ab1809794c9845e21403b80052317abfe97472c10ee9c216fc1afd32",
+    "tests/e2e/roadmap-journey.mjs": "4905108287d5f8566e0158aa05f498af2d29bfe24f5745bc822172d5c82dc225",
+    "tests/worker/roadmap.test.ts": "f60217f69deba4cfbd692cdf7355eb1bb3664e91199d116956cf916e6470b1f6"
+  },
+  "test": "roadmapJourney",
+  "status": "passed",
+  "widths": [
+    1440,
+    390
+  ],
+  "runtime": "mounted built Worker",
+  "at": "2026-11-08T17:30:15.791Z"
+}

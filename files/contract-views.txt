@@ -1,0 +1,2 @@
+Contract views generated for INIT-003
+Contract views checked for INIT-003

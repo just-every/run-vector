@@ -1,0 +1,12 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f202/run-vector
+
+
+ Test Files  3 passed (3)
+      Tests  7 passed (7)
+   Start at  17:28:14
+   Duration  65.25s (transform 7.16s, setup 0ms, import 30.82s, tests 31.21s, environment 1ms)
+
