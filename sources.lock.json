@@ -8838,7 +8838,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-threads.mjs": {
-      "sha256": "f582c8c76b7004f4f3eac4ebf083672728a30d5666ef6d21ab4ce20825817820",
+      "sha256": "4e08b3ece9e03d026605cdd6515bcf3ad60cec03a675b2113e7fd211fb90afec",
       "executable": false
     },
     "tests/e2e/integrations/typescript-loader.mjs": {
