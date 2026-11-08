@@ -1,17 +1,14 @@
+import {slackMessage} from './thread-mapping';
+import {intakeSlackMessage} from './thread-intake';
 import {unfurlSlackLinks,linkSharedEvent} from './unfurl';
 import {providerUninstall} from './retire';
 import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
-import {mutationDatabase} from '../../auth/mutation-database';
-import {actionAuthority} from '../../roles/enforcement';
-import {visibilityDatabase} from '../../roles/visibility-database';
-import {createIssueRecord} from '../../issues/repository';
-import {createIssueInputSchema} from '../../issues/input';
 import {signedInstallation} from '../slack-dm/signing';
 import {rawIntegrationBody} from '../raw-body';
 import {IntegrationError} from '../errors';
-const callback=z.object({type:z.literal('event_callback'),team_id:z.string().max(100),event_id:z.string().min(1).max(200),event:z.union([linkSharedEvent,z.object({type:z.literal('app_mention'),user:z.string().max(100),channel:z.string().max(100),text:z.string().max(100_000),bot_id:z.string().optional(),subtype:z.string().optional()})])});
+const callback=z.object({type:z.literal('event_callback'),team_id:z.string().max(100),event_id:z.string().min(1).max(200),event:z.union([linkSharedEvent,slackMessage.extend({type:z.enum(['app_mention','message'])})])});
 /** The signature identifies the installation; neither an untrusted team ID nor
  * a browser session selects it. No request state is written before admission. */
 export async function receiveSlackEvent(env:WorkerBindings,request:Request){
@@ -27,32 +24,15 @@ export async function receiveSlackEvent(env:WorkerBindings,request:Request){
  if(verification.success)return {challenge:verification.data.challenge};
  const uninstall=z.object({type:z.literal('event_callback'),event:z.object({type:z.enum(['app_uninstalled','tokens_revoked'])})}).safeParse(payload);
  if(uninstall.success)return providerUninstall(env,signer);
+ const echoed=z.object({event:z.object({type:z.enum(['message','app_mention']),bot_id:z.string().optional(),subtype:z.string().optional()})}).safeParse(payload);
+ if(echoed.success&&(echoed.data.event.bot_id||echoed.data.event.subtype))return {ok:true,ignored:true};
  const parsed=callback.safeParse(payload);
  if(!parsed.success)throw new IntegrationError(400,'slack_event_unsupported');
  const {event,event_id,team_id}=parsed.data;
- if(event.type==='app_mention'&&(event.bot_id||event.subtype))throw new IntegrationError(400,'slack_event_unsupported');
- const key=await sha256(event_id),existing=()=>env.DB.prepare('SELECT identifier FROM vector_slack_event_receipts WHERE workspace_id=? AND event_key=?').bind(signer.workspace,key).first<{identifier:string}>();
- if(await existing())throw new IntegrationError(409,'slack_event_replayed');
- if(event.type==='link_shared')return unfurlSlackLinks(env,signer,team_id,event,key);
- // Only an explicit, unambiguous team channel binding is an intake mapping.
- // Project/view destinations cannot grant a route into their teams.
- const mappings=(await env.DB.prepare("SELECT b.destination_id,b.object_id FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.enabled=1 AND d.revoked_at IS NULL JOIN teams t ON t.id=b.object_id AND t.archived_at IS NULL WHERE b.workspace_id=? AND b.channel_id=? AND b.scope='team' AND d.kind='slack' AND b.suspended_reason IS NULL").bind(signer.workspace,event.channel).all<{destination_id:string;object_id:string}>()).results;
- if(mappings.length!==1)throw new IntegrationError(403,'slack_channel_unmapped');
- if(await env.DB.prepare('SELECT slack_team_id FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(signer.workspace).first<string>('slack_team_id')!==team_id)throw new IntegrationError(403,'slack_workspace_mismatch');
- const link=await env.DB.prepare("SELECT l.operator_id,l.linked_at FROM vector_slack_member_links l JOIN operators o ON o.id=l.operator_id AND o.workspace_id=l.workspace_id AND o.removed_at IS NULL JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE l.workspace_id=? AND l.slack_team_id=? AND l.slack_user_id=?").bind(signer.workspace,team_id,event.user).first<{operator_id:string;linked_at:string}>();
- if(!link)throw new IntegrationError(403,'slack_member_not_linked');
- const title=event.text.replace(/^\s*<@[A-Z0-9]+>\s*/,'').trim();
- const input=createIssueInputSchema.safeParse({teamId:mappings[0].object_id,title});
- if(!input.success)throw new IntegrationError(400,'slack_issue_invalid');
- const authority=await actionAuthority(env.DB,link.operator_id,'POST','/issues',{},input.data);
- if(!authority.fence)throw new IntegrationError(403,'slack_member_forbidden');
- const access={sql:`EXISTS(SELECT 1 FROM vector_slack_installations s JOIN vector_integration_secret_keys k ON k.identity='slack-signing:'||s.workspace_id AND k.slot='current' WHERE s.workspace_id=? AND s.enabled=1 AND k.encrypted=?)
- AND EXISTS(SELECT 1 FROM vector_slack_member_links WHERE operator_id=? AND workspace_id=? AND slack_team_id=? AND slack_user_id=? AND linked_at=?)
- AND EXISTS(SELECT 1 FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id WHERE b.destination_id=? AND b.workspace_id=? AND b.object_id=? AND b.channel_id=? AND b.scope='team' AND b.suspended_reason IS NULL AND d.enabled=1 AND d.revoked_at IS NULL)
- AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)`,values:[signer.workspace,signer.encrypted,link.operator_id,signer.workspace,team_id,event.user,link.linked_at,mappings[0].destination_id,signer.workspace,input.data.teamId,event.channel]};
- const now=new Date(),db=mutationDatabase(visibilityDatabase(env.DB,link.operator_id),link.operator_id,undefined,access,authority.fence);
- try{
-  const issue=await createIssueRecord(db,{actorOperatorId:link.operator_id,input:input.data,now,commitStatements:(transaction,identifier)=>[transaction.prepare('INSERT INTO vector_slack_event_receipts(workspace_id,event_key,identifier,received_at) VALUES(?,?,?,?)').bind(signer.workspace,key,identifier,now.toISOString())]});
-  return {ok:true,identifier:issue.identifier};
- }catch(error){if(await existing())throw new IntegrationError(409,'slack_event_replayed');throw error;}
+ if(event.type==='link_shared'){
+  const key=await sha256(event_id);
+  if(await env.DB.prepare('SELECT 1 FROM vector_slack_event_receipts WHERE workspace_id=? AND event_key=?').bind(signer.workspace,key).first())throw new IntegrationError(409,'slack_event_replayed');
+  return unfurlSlackLinks(env,signer,team_id,event,key);
+ }
+ return intakeSlackMessage(env,signer,team_id,event,event_id,event.type==='app_mention');
 }

@@ -1,3 +1,4 @@
+import {threadReplyIntent} from '../integrations/slack-app/thread-mapping';
 import { validDescriptionAnchor, type DescriptionAnchorInput } from "./anchors";
 import { DescriptionAnchorError } from "./anchor-error";
 import { issueReferenceStatements } from "../issue-references/repository";
@@ -130,6 +131,7 @@ export async function addComment(
     activity(db, actor, "comment.created", issueId, id, now, activityId),
     ...commentStatements(db,event), ...mentionStatements(db,event,body,id), ...issueReferenceStatements(db,event,body,{kind:"comment",id}), ...finalizeEvent(db,event),
     ...(onCommit?.(db,id) ?? []),
+    ...threadReplyIntent(db,issueId,thread,id,actor,now),
   ]);
   } catch (error) {
     if (!anchorInput || isMutationAccessError(error) || error instanceof RestoreReservationError) throw error;
