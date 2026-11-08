@@ -92,5 +92,13 @@ export async function subTeamList() {
   expect(
     ((await (await read("&includeSubTeams=false")).json()) as any).total,
   ).toBe(1);
-}
 
+  // A public child does not disclose the identity of a hidden private parent.
+  expect((await w.call(`/settings/teams/${parent.id}/privacy`,"PUT",{isPrivate:true})).status).toBe(200);
+  expect((await w.call(`/settings/teams/${parent.id}/members/${w.member.id}`,"DELETE")).status).toBe(200);
+  const metadata=await (await w.member.call("/settings/administration")).json() as any;
+  expect(metadata.teams.find((t:any)=>t.id===parent.id)).toBeUndefined();
+  expect(metadata.teams.find((t:any)=>t.id===a.id).parentTeamId).toBeNull();
+  expect((await (await read("&includeSubTeams=true")).json() as any).total).toBe(0);
+  expect((await (await w.member.call("/issues?team="+a.id)).json() as any).total).toBe(52);
+}

@@ -253,4 +253,3 @@ export async function subTeamHierarchy() {
     (await target.prepare("PRAGMA foreign_key_check").all()).results,
   ).toEqual([]);
 }
-

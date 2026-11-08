@@ -24,7 +24,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         .first(),
       db
         .prepare(
-          `SELECT t.id,t.name,t.parent_team_id AS parentTeamId,t.workflow_inherited AS workflowInherited,t.permissions_inherited AS permissionsInherited,t.hierarchy_version AS hierarchyVersion,CASE WHEN ${visibleTeam('reader','t.id')} THEN t.identifier_prefix ELSE '' END AS identifierPrefix,t.is_private AS isPrivate,${visibleTeam('reader','t.id')} AS canRead,
+          `SELECT t.id,t.name,CASE WHEN reader.role IN('owner','admin') OR EXISTS(SELECT 1 FROM teams visible_parent WHERE visible_parent.id=t.parent_team_id) THEN t.parent_team_id ELSE NULL END AS parentTeamId,t.workflow_inherited AS workflowInherited,t.permissions_inherited AS permissionsInherited,t.hierarchy_version AS hierarchyVersion,CASE WHEN ${visibleTeam('reader','t.id')} THEN t.identifier_prefix ELSE '' END AS identifierPrefix,t.is_private AS isPrivate,${visibleTeam('reader','t.id')} AS canRead,
       CASE WHEN reader.role IN('owner','admin') OR ${visibleTeam('reader','t.id')} THEN (SELECT count(*) FROM main.issues i WHERE i.team_id=t.id) ELSE NULL END AS issueCount,t.archived_at AS archivedAt,t.cycles_enabled AS cyclesEnabled,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
       CASE WHEN t.is_private=1 THEN 'invite_only' ELSE t.membership_mode END AS membershipMode,t.requests_enabled AS requestsEnabled,t.settings_permission AS settingsPermission,t.planning_permission AS planningPermission,
       NOT EXISTS(SELECT 1 FROM team_issue_history h WHERE h.team_id=t.id) AS prefixEditable
