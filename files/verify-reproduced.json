@@ -1,0 +1,29 @@
+[
+  {
+    "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+    "job": 128824388910,
+    "command": "pnpm verify:ci --shard imports",
+    "test": "tests/worker/issue-session-projection.test.ts: stale edit, accept and return projection deny native signout",
+    "exit": 1,
+    "failure": "AssertionError: expected false to be true // Object.is equality at tests/worker/issue-session-projection.test.ts:79:25",
+    "repair": "Recognize the activity actor projection with or without its table alias; retain projected, fired, 401, private-denial and unchanged-storage assertions.",
+    "after_command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-session-projection.test.ts",
+    "after_exit": 0,
+    "after_tests_passed": 3,
+    "baseline_head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "baseline_exit": 0,
+    "baseline_tests_passed": 3
+  },
+  {
+    "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+    "job": 128824388750,
+    "command": "pnpm integration:check",
+    "test": "Hosted-artifact shard failing integration:check subcommand",
+    "exit": 1,
+    "failure": "Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+    "repair": "Regenerate through pnpm integration:sync after the production build, adding the omitted 0134 rule migration.",
+    "after_command": "pnpm integration:sync && pnpm integration:check",
+    "after_exit": 0,
+    "scope": "The failing subcommand was reproduced; the full hosted-artifact shard was not rerun locally."
+  }
+]

@@ -1,0 +1,14 @@
+
+> vector@0.4.1 integration:check /home/agent/rer-consolidation/work/sd-vector-c-f208/run-vector
+> node scripts/sync-integration.mjs --check
+
+file:///home/agent/rer-consolidation/work/sd-vector-c-f208/run-vector/scripts/sync-integration.mjs:26
+      throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+            ^
+
+Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+    at integrationRecipe (file:///home/agent/rer-consolidation/work/sd-vector-c-f208/run-vector/scripts/sync-integration.mjs:26:13)
+    at async file:///home/agent/rer-consolidation/work/sd-vector-c-f208/run-vector/scripts/sync-integration.mjs:34:3
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.

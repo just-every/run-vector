@@ -1,0 +1,25 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ []
+- [
+-   'BFHFDBHA-1',
+-   'CFHFDBHA-1'
+- ]
+
+    at rows (file:///home/agent/rer-consolidation/work/sd-vector-c-f208/main-baseline/tests/e2e/core-boolean-filter-journey.mjs:49:12)
+    at async booleanFilterJourney (file:///home/agent/rer-consolidation/work/sd-vector-c-f208/main-baseline/tests/e2e/core-boolean-filter-journey.mjs:106:5)
+    at async withInvitedOperator (file:///home/agent/rer-consolidation/work/sd-vector-c-f208/main-baseline/tests/e2e/core-operator-journey.mjs:37:6)
+    at async keyboardJourney (file:///home/agent/rer-consolidation/work/sd-vector-c-f208/main-baseline/tests/e2e/core-keyboard-journey.mjs:56:3)
+    at async withInvitedOperator (file:///home/agent/rer-consolidation/work/sd-vector-c-f208/main-baseline/tests/e2e/core-operator-journey.mjs:37:6)
+    at async file:///home/agent/rer-consolidation/work/sd-vector-c-f208/main-baseline/tests/e2e/core-runtime.mjs:747:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [ 'BFHFDBHA-1', 'CFHFDBHA-1' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.

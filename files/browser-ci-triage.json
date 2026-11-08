@@ -1,0 +1,30 @@
+{
+  "ci_run": 42511092094,
+  "ci_job": 128824388714,
+  "ci_head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "ci_failure": "page.waitForFunction: Timeout 30000ms exceeded at tests/e2e/core-stream-controls-journey.mjs:47, called from line 92",
+  "command": "pnpm verify:ci --shard core-runtime",
+  "head_at_start": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "exit": 124,
+  "hard_timeout_seconds": 1200,
+  "node": "22.20.0",
+  "chromium": "/usr/bin/chromium with --no-sandbox",
+  "corresponding_ci_outcome": "not_reproduced",
+  "current_phase": {
+    "passed": true,
+    "checks": 59,
+    "actual_result_file": "core-runtime-current-results.json"
+  },
+  "full_command": "did_not_finish_within_timeout",
+  "phase_at_timeout": "independent project installation, project membership and releases",
+  "main_comparison": {
+    "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "command": "pnpm verify:ci --shard core-runtime",
+    "exit": 1,
+    "failure": "Expected values to be strictly deep-equal: actual [], expected [BFHFDBHA-1, CFHFDBHA-1] at tests/e2e/core-boolean-filter-journey.mjs:49, called from line 106",
+    "log": "main-core-failure.txt",
+    "same_as_ci_failure": false
+  },
+  "repair": "none; no speculative control edit and no workflow rerun",
+  "process_cleanup": "Subreaper completed; no running core-runtime or verification-shard child remains."
+}

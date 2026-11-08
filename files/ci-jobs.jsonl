@@ -1,0 +1,11 @@
+{"conclusion":"success","id":128824114090,"name":"plan","status":"completed","steps":[]}
+{"conclusion":"success","id":128824157030,"name":"build","status":"completed","steps":[]}
+{"conclusion":"failure","id":128824388714,"name":"shards (core-runtime, true, true, true)","status":"completed","steps":[{"conclusion":"failure","name":"Verify the independent shard"}]}
+{"conclusion":"success","id":128824388727,"name":"shards (collaboration, true, true, true)","status":"completed","steps":[]}
+{"conclusion":"success","id":128824388746,"name":"shards (core-runtime-planning, true, true, true)","status":"completed","steps":[]}
+{"conclusion":"failure","id":128824388750,"name":"shards (hosted-artifact, true, true, false)","status":"completed","steps":[{"conclusion":"failure","name":"Verify the independent shard"}]}
+{"conclusion":"success","id":128824388779,"name":"shards (portability, true, true, true)","status":"completed","steps":[]}
+{"conclusion":"success","id":128824388792,"name":"shards (worker-2, true, true, true)","status":"completed","steps":[]}
+{"conclusion":"success","id":128824388906,"name":"shards (administration, true, true, true)","status":"completed","steps":[]}
+{"conclusion":"failure","id":128824388910,"name":"shards (imports, true, true, true)","status":"completed","steps":[{"conclusion":"failure","name":"Verify the independent shard"}]}
+{"conclusion":"failure","id":128830616762,"name":"verify","status":"completed","steps":[{"conclusion":"failure","name":"Require the complete verification wall"}]}

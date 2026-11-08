@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f208",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f208",
+  "product_head": "f3e81c3f7e1fbba2c21fc9ab5756c51ec0f23de2",
+  "main_at_final_fetch": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "new_product_commits_this_round": 1,
+  "source_changes_this_round": [
+    "management/integration/deployment-spec.json",
+    "sources.lock.json",
+    "tests/worker/issue-session-projection.test.ts"
+  ],
+  "contract_status_changes": [],
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "note": "Ran through cloud_run; temporary setup application stopped by setup. Private setup log excluded."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/automation-rules.test.ts tests/worker/role-matrix.test.ts tests/worker/project-fields-upgrade.test.ts",
+      "exit": 0,
+      "test_files_passed": 3,
+      "tests_passed": 8,
+      "head_at_start": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "relevant_feature_code_and_named_tests_unchanged_on_saved_head": true,
+      "log": "worker-tests.log",
+      "node": "24.19.0"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "log": "final-typecheck.log",
+      "node": "22.20.0"
+    },
+    {
+      "command": "npx -y @runeditrun/rer check --profile first-party",
+      "exit": 0,
+      "log": "first-party-check.log",
+      "node": "22.20.0"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build-before-repair.log",
+      "note": "Built predecessor before reproducing the generated inventory failure."
+    },
+    {
+      "command": "pnpm verify:ci --shard imports",
+      "exit": 1,
+      "head_at_start": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "log": "reproduce-imports.log",
+      "ci_failures_reproduced": 3,
+      "additional_local_setup_fixture_failures": 1,
+      "test_files": 19,
+      "tests_passed": 43,
+      "tests_failed": 4,
+      "execution_conditions": "Node 22.20.0, UTC, one Worker; original exact predecessor prebuilt SHA."
+    },
+    {
+      "command": "pnpm integration:check",
+      "exit": 1,
+      "log": "reproduce-integration.log",
+      "failure": "Stale integration management/integration/deployment-spec.json"
+    },
+    {
+      "command": "pnpm integration:sync",
+      "exit": 0,
+      "log": "integration-repair.log"
+    },
+    {
+      "command": "pnpm integration:check",
+      "exit": 0,
+      "log": "integration-repair.log"
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-session-projection.test.ts",
+      "exit": 0,
+      "tests_passed": 3,
+      "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+      "log": "main-session-projection.log",
+      "note": "Main baseline before repair; original hook still recognizes main projection."
+    },
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-session-projection.test.ts",
+      "exit": 0,
+      "tests_passed": 3,
+      "log": "repaired-session-projection.log",
+      "note": "Ran after the one-line hook repair; all existing refusal and no-write assertions retained."
+    },
+    {
+      "command": "pnpm test:worker --shard=4/6",
+      "exit": 0,
+      "head": "f3e81c3f7e1fbba2c21fc9ab5756c51ec0f23de2",
+      "test_files_passed": 19,
+      "tests_passed": 47,
+      "log": "repaired-worker-shard.log",
+      "note": "Clean detached worktree with no local setup variables; includes all three repaired cases and first-run fixture. Node 22.20.0, UTC, one worker."
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write AUTO-002",
+      "exit": 0,
+      "log": "views.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check AUTO-002",
+      "exit": 0,
+      "log": "views.log",
+      "generated_views_restored_to_origin_main": true
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "log": "lock.log",
+      "note": "Regenerated last after source edits and checked again after rebase."
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "log": "lock.log",
+      "sources_lock_sha256": "7ff79ff58b60720807795f7fe033e6ef8a29a3208e4c19b1473fcc1ebb562e42"
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests_passed": 1,
+      "log": "migration-ledger.log"
+    },
+    {
+      "command": "pnpm verify:ci --shard core-runtime",
+      "exit": 1,
+      "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+      "log": "main-core-failure.txt",
+      "note": "Main comparison failed at a different existing boolean-filter assertion, not the CI stream-control reset timeout."
+    },
+    {
+      "command": "pnpm verify:ci --shard core-runtime",
+      "head_at_start": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "exit": 124,
+      "hard_timeout_seconds": 1200,
+      "current_phase_checks_passed": 59,
+      "current_phase_receipt": "core-runtime-current-results.json",
+      "full_command_passed": false,
+      "ci_timeout_reproduced": false,
+      "triage": "browser-ci-triage.json"
+    }
+  ],
+  "ci_observation": {
+    "run_id": 42511092094,
+    "name": "Verify",
+    "event": "push",
+    "head_sha": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+    "head_branch": "cloud/sd-vector-c-f204",
+    "status": "completed",
+    "conclusion": "failure",
+    "observation": "Initial exact-SHA REST discovery; green not claimed.",
+    "failed_assertion_jobs": [
+      128824388714,
+      128824388750,
+      128824388910
+    ],
+    "aggregate_job": 128830616762
+  },
+  "publication_scan": {
+    "commit": "f3e81c3f7e1fbba2c21fc9ab5756c51ec0f23de2",
+    "complete": false,
+    "historyScanned": null,
+    "findings": null,
+    "reason": "Cloud execution delegates scan to the fleet lander; no scan result claimed."
+  },
+  "browser_proof": {
+    "status": "not_run",
+    "reason": "Selected workflow rule Settings interface is absent and its implementation is reserved for Claude Opus."
+  },
+  "pr": null,
+  "new_defaults": [],
+  "held_scope": "All supplied held triggers, conditions, actions, due-soon rules, provider and actor qualification remain unchanged.",
+  "predecessor_head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "product_commit_message": "Repair rule deployment inventory and session race coverage [skip ci]",
+  "preservation_save": true,
+  "ready": false,
+  "saved_head_ci": {
+    "head": "f3e81c3f7e1fbba2c21fc9ab5756c51ec0f23de2",
+    "observed_at": "2026-11-08T19:21:22.884108+00:00",
+    "api_calls_used": 7,
+    "runs": [],
+    "note": "Published preservation save carries [skip ci]; no workflow dispatch or rerun."
+  },
+  "git_identity": {
+    "candidate_commits": 4,
+    "author_and_committer": "Run Edit Run fleet",
+    "author_and_committer_email": "fleet@runeditrun.com",
+    "trailers": "absent",
+    "openai_coauthors": 0,
+    "result": "pass",
+    "log": "identity-audit.log"
+  },
+  "product_push": {
+    "exit": 0,
+    "attempts": 1,
+    "guard": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f208",
+    "remote_head_observed": "f3e81c3f7e1fbba2c21fc9ab5756c51ec0f23de2",
+    "log": "product-push.log"
+  },
+  "api_calls_used": 7,
+  "verify_repairs": [
+    {
+      "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "job": 128824388910,
+      "command": "pnpm verify:ci --shard imports",
+      "test": "tests/worker/issue-session-projection.test.ts: stale edit, accept and return projection deny native signout",
+      "exit": 1,
+      "failure": "AssertionError: expected false to be true // Object.is equality at tests/worker/issue-session-projection.test.ts:79:25",
+      "repair": "Recognize the activity actor projection with or without its table alias; retain projected, fired, 401, private-denial and unchanged-storage assertions.",
+      "after_command": "pnpm exec vitest run --config vitest.config.ts tests/worker/issue-session-projection.test.ts",
+      "after_exit": 0,
+      "after_tests_passed": 3,
+      "baseline_head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+      "baseline_exit": 0,
+      "baseline_tests_passed": 3
+    },
+    {
+      "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "job": 128824388750,
+      "command": "pnpm integration:check",
+      "test": "Hosted-artifact shard failing integration:check subcommand",
+      "exit": 1,
+      "failure": "Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+      "repair": "Regenerate through pnpm integration:sync after the production build, adding the omitted 0134 rule migration.",
+      "after_command": "pnpm integration:sync && pnpm integration:check",
+      "after_exit": 0,
+      "scope": "The failing subcommand was reproduced; the full hosted-artifact shard was not rerun locally."
+    }
+  ],
+  "blockers": [
+    {
+      "dependency": "Claude Opus execution for the reserved Settings interface and independent gate",
+      "evidence": "No Opus model among callable agent models or service tools; claude executable absent. No unlisted provider key sought."
+    },
+    {
+      "dependency": "CI stream-control reset timeout was not reproduced in the corresponding local outcomes; no speculative repair or workflow rerun performed",
+      "run": 42511092094,
+      "job": 128824388714,
+      "status": "Original stream-reset CI timeout not reproduced; current phase passed 59 checks, full command hit 1200-second bound during later independent project phase. Main failed a different assertion. No guess fix."
+    }
+  ],
+  "no_existing_assertion_removed_skipped_or_narrowed": true,
+  "new_permanent_tests": 0,
+  "deleted_tests": [],
+  "actual_focused_and_repaired_checks_passed": true,
+  "full_verify_green": false,
+  "all_started_processes_stopped": true,
+  "full_contract_claim": "PARTIAL",
+  "points_reaffirmed": [
+    2
+  ],
+  "points_newly_closed_by_feature_implementation": []
+}

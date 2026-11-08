@@ -1,0 +1,148 @@
+{
+  "explicit_file_selection": true,
+  "selected_regular_files": 28,
+  "credentials_environment_dumps_private_gate_material_or_symlinks_selected": false,
+  "logs_sanitization": "Injected bundle values, private header lines and entry links only; command outcomes preserved. GitHub archive step environment sections were removed before this check.",
+  "files": [
+    {
+      "file": "REPORT.md",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "local-receipts.json",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "worker-tests.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "typecheck.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "final-typecheck.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "views.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "lock.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "first-party-check.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "ci-observation.json",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "ci-jobs.jsonl",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "ci-job-128824388714.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "ci-job-128824388750.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "ci-job-128824388910.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "build-before-repair.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "reproduce-imports.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "reproduce-integration.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "main-session-projection.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "integration-repair.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "repaired-session-projection.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "migration-ledger.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "identity-audit.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "product-push.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "save-ci-observation.json",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "verify-reproduced.json",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "main-core-failure.txt",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "core-runtime-current-results.json",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "repaired-worker-shard.log",
+      "regular": true,
+      "redactions": 0
+    },
+    {
+      "file": "browser-ci-triage.json",
+      "regular": true,
+      "redactions": 0
+    }
+  ]
+}
