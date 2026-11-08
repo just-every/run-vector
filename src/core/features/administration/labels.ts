@@ -1,3 +1,4 @@
+import {labelMergedStatements} from '../automation-rules/triggers';
 import { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import { labelCreateSchema, labelUpdateSchema } from "./schema";
@@ -233,6 +234,7 @@ export async function mergeLabel(db: D1Database, actor: string, source: string, 
     ...changed.map(view=>ctx.db.prepare("UPDATE saved_views SET filters_json=?,updated_at=? WHERE id=?").bind(view.next,ctx.at,view.id)),
     ctx.db.prepare("UPDATE list_preferences SET filters_json=json_set(filters_json,'$.label',?),updated_at=? WHERE surface='projects' AND operator_id IN(SELECT id FROM operators WHERE workspace_id=?) AND json_extract(filters_json,'$.label')=?").bind(destination,ctx.at,ctx.workspace,source),
     ctx.db.prepare("DELETE FROM labels WHERE id=?").bind(source),
+    ...labelMergedStatements(ctx.db,actor,ctx.at,destination),
     ...audit(ctx,"label.merged",source,old.name,{id:source,name:old.name},{id:destination,name:target.name}),
   ]);
 }

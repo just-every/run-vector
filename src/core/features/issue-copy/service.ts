@@ -1,3 +1,4 @@
+import {labelAddedStatements} from '../automation-rules/triggers';
 import { issueReferenceStatements } from "../issue-references/repository";
 import {
   mutationDatabase,
@@ -173,6 +174,7 @@ export async function copyIssue(
           ),
       );
     writes.push(...issueReferenceStatements(db, { id: copiedActivityId, issueId: id, actor, at }, row.description));
+    writes.push(...labelAddedStatements(db,{id:copiedActivityId,issueId:id,actor,at},mapped.labels));
     if (input.includeLinks)
       writes.push(
         db

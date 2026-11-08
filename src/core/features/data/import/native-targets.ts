@@ -66,6 +66,7 @@ export const nativeTargets: D1TargetAdapter = {
     }
     for(const clock of value.slaClocks??[])statements.push(insertNative('issue_sla_clocks',clock));
     for(const receipt of value.slaOccurrences??[])statements.push(insertNative('issue_sla_occurrences',receipt));
+    for(const receipt of value.automationRuns??[])statements.push(insertNative('automation_rule_runs',receipt));
     for (const related of value.related ?? []) {
       statements.push(guard('EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=?)',related.second_issue_id,row.destination),insertNative('issue_relations',related));
     }

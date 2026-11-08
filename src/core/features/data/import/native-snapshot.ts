@@ -31,7 +31,7 @@ export const nativeRelations = {
   personalReminders:['issue_reminders','issue_id','id'],
   notificationCandidates:['notification_candidates','issue_id','event_id'],
 } as const;
-export type NativeIssueValue = { issue: Record<string,Json>; manualOrder?: Record<string,Json>[]; related?: Record<string,Json>[]; slaClocks?: Record<string,Json>[]; slaOccurrences?: Record<string,Json>[] } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
+export type NativeIssueValue = { issue: Record<string,Json>; manualOrder?: Record<string,Json>[]; related?: Record<string,Json>[]; slaClocks?: Record<string,Json>[]; slaOccurrences?: Record<string,Json>[]; automationRuns?: Record<string,Json>[] } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
 const quote = (value: string) => '"'+value.replaceAll('"','""')+'"';
 const columns = (table: string) => {
   const value=(inventory as Record<string,string[]>)[table];
@@ -75,7 +75,11 @@ const orderedSnapshotExpression = `CASE WHEN EXISTS(SELECT 1 FROM issue_relation
 const slaSnapshotPatch = `CASE WHEN EXISTS(SELECT 1 FROM issue_sla_clocks WHERE issue_id=i.id)
  THEN json_object('slaClocks',json(${relation('issue_sla_clocks','issue_id','issue_id')}),'slaOccurrences',json(${relation('issue_sla_occurrences','issue_id','kind')})) ELSE json('{}') END`;
 export const legacyWithSlaSnapshotExpression = `json_patch(${legacySnapshotExpression},${slaSnapshotPatch})`;
-export const snapshotExpression = `json_patch(${orderedSnapshotExpression},${slaSnapshotPatch})`;
+// Imports never emit rule intents. If a native edit has created one, its once
+// receipt participates in rollback admission rather than being silently lost.
+const automationPatch = `CASE WHEN EXISTS(SELECT 1 FROM automation_rule_runs WHERE issue_id=i.id)
+ THEN json_object('automationRuns',json(${relation('automation_rule_runs','issue_id','id')})) ELSE json('{}') END`;
+export const snapshotExpression = `json_patch(json_patch(${orderedSnapshotExpression},${slaSnapshotPatch}),${automationPatch})`;
 
 export function emptyIssueValue(issue: Record<string,Json>): NativeIssueValue {
   return { issue,...Object.fromEntries(Object.keys(nativeRelations).map(name=>[name,[]])) } as NativeIssueValue;

@@ -1,3 +1,4 @@
+import {eligibleDestination,liveRule,effectsAllowed,ownerReadsIssue} from '../../automation-rules/policy';
 import {channelBindingSource} from './subjects';
 import {scopedBindingLive} from './initiative-approval';
 import {checkBoundChannel,suspendChannel,suspendedSlackResponses} from './channel-safety';
@@ -26,6 +27,13 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
   return Boolean(await env.DB.prepare("SELECT 1 FROM initiatives n JOIN operators o ON o.workspace_id=n.workspace_id JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE n.id=? AND n.workspace_id=? AND o.id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member')").bind(event.initiativeId,workspace,event.actorId).first());
  }
  if(event.initiativeId)return false;
+ if(event.eventKind==='automation.rule'&&!await env.DB.prepare(`SELECT 1 FROM automation_rules r
+   JOIN automation_rule_runs run ON run.rule_id=r.id JOIN issues i ON i.id=run.issue_id JOIN teams t ON t.id=i.team_id
+   WHERE r.id=? AND r.version=? AND r.destination_id=? AND r.enabled=1 AND r.failure IS NULL
+   AND run.id=? AND run.state IN ('pending','succeeded') AND r.workspace_id=? AND i.id=?
+   AND NOT EXISTS(SELECT 1 FROM automation_rule_restore_holds h WHERE h.rule_id=r.id)
+   AND ${liveRule()} AND ${eligibleDestination} AND ${ownerReadsIssue} AND ${effectsAllowed}`)
+   .bind(event.ruleId,event.ruleVersion,id,event.runId,workspace,event.issueId).first())return false;
  if(event.eventKind==='sla.warning'&&!await env.DB.prepare("SELECT 1 FROM vector_channel_bindings b WHERE b.destination_id=? AND EXISTS(SELECT 1 FROM json_each(b.events) WHERE value='sla.warning')").bind(id).first())return false;
  if(event.eventKind==='sla.warning'&&!await env.DB.prepare(`SELECT 1 FROM issue_sla_occurrences occurrence
    JOIN issue_sla_clocks clock ON clock.issue_id=occurrence.issue_id JOIN issues i ON i.id=clock.issue_id

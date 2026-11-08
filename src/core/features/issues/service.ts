@@ -35,7 +35,10 @@ export function issueDetailReadStatements(binding: D1Database, issueId: string) 
     evidenceMetadataStatement(binding, issueId),
     binding
       .prepare(
-        "SELECT id,actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL",
+        `SELECT a.id,CASE WHEN json_extract(a.next_value_json,'$.automationRuleId') IS NOT NULL
+          THEN a.actor_name||' · Owner: '||COALESCE(CASE WHEN owner.removed_at IS NULL THEN owner.name END,'Removed operator')
+          ELSE a.actor_name END actor_name FROM issue_activity a LEFT JOIN operators owner ON owner.id=a.actor_operator_id
+          WHERE a.issue_id=? AND a.actor_name IS NOT NULL`,
       )
       .bind(issueId),
     parentRelationsStatement(binding, issueId),
