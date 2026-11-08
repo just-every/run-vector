@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+  "branch": "cloud/sd-vector-c-f206",
+  "commands": [
+    {
+      "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/outbound-broken-destination.test.ts",
+      "exit": 0,
+      "log": "vector-worker-finalsha.log",
+      "sha256": "3102bf47f71a9bd48df2ab51a96c9cb1f48e56355e4113bd0a542ce75aa6a877"
+    },
+    {
+      "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "vector-build-finalsha.log",
+      "sha256": "d776b80989033b046ad4947f7e32828e9357d820c47b038e93004be39f370495"
+    },
+    {
+      "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+      "command": "timeout 1200 node /tmp/vector-browser-proof.mjs (Chromium /usr/bin/chromium, --no-sandbox)",
+      "exit": 0,
+      "log": "vector-browser-finalsha.log",
+      "sha256": "061dbc798801ba72aba22e1a94633cd956c5c42612d0f58d6fc002f88363def1"
+    },
+    {
+      "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+      "command": "pnpm exec rer check --profile first-party --json",
+      "exit": 0,
+      "log": "vector-check-finalsha.log",
+      "sha256": "27b4b48fad7e757043a5ad9e764d3ca8cea3d3a0ad21bf100ad88fb4f6dc4eac"
+    },
+    {
+      "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "log": "vector-lock-finalsha.log",
+      "sha256": "16ddcedad6359252fe0e9fd7d3d3b2a89fcb5d6a8a0205382c018462897380d2"
+    },
+    {
+      "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "log": "vector-ledger-finalsha.log",
+      "sha256": "c9835436cec7cc6ff175dc45322e5ad23743d3fa40638a0c7167bf88f13407f6"
+    }
+  ],
+  "worker": {
+    "registrations": 8,
+    "passed": 8,
+    "new_registrations": 0
+  },
+  "first_party": {
+    "passed": 1139,
+    "failed": 0
+  },
+  "browser": {
+    "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+    "passed": true,
+    "widths": [
+      1440,
+      390
+    ],
+    "publicDoor": "signed Slack Events and native issue discussion",
+    "provider": "synthetic Slack Web API fixture"
+  },
+  "views": {
+    "write_exit": 0,
+    "check_exit": 0,
+    "touched": [
+      "SLACK-002"
+    ],
+    "committed": false
+  },
+  "status_counts": {
+    "before": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "after": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    }
+  },
+  "publication_scan": {
+    "commit": "7334487bdc9102011b9b646e37fe60da45ebf338",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custody": "Mac lander"
+  },
+  "live_provider": false
+}

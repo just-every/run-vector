@@ -1,0 +1,10 @@
+{
+  "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+  "passed": true,
+  "widths": [
+    1440,
+    390
+  ],
+  "publicDoor": "signed Slack Events and native issue discussion",
+  "provider": "synthetic Slack Web API fixture"
+}

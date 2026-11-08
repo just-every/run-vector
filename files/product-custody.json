@@ -1,0 +1,14 @@
+{
+  "head": "7334487bdc9102011b9b646e37fe60da45ebf338",
+  "branch": "cloud/sd-vector-c-f206",
+  "pushed": true,
+  "remote_refs": {
+    "refs/heads/cloud/sd-vector-c-f206": "7334487bdc9102011b9b646e37fe60da45ebf338",
+    "refs/heads/main": "0e8a686c06eddd55943ed1d2690df32a8fc82213"
+  },
+  "main_equals_candidate": false,
+  "shallow": false,
+  "identity_check": "all candidate author and committer identities are Run Edit Run fleet with fleet address; no co-author trailers",
+  "product_status_diff": "",
+  "pr": null
+}
