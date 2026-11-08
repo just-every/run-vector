@@ -87,6 +87,7 @@ export async function removeOperator(
       )
       .bind(target, id, target, id, id, at, target, id),
   ];
+  statements.push(db.prepare(`DELETE FROM team_join_requests WHERE requester_id=? AND ${receipt}`).bind(target,id));
   // Cancel queued personal delivery while retaining personal choices, follows
   // and history. Active-recipient predicates also fence future admission.
   for (const table of ["issue_reminders", "notification_candidates", "notification_deliveries"]) {

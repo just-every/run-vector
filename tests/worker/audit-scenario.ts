@@ -1,3 +1,4 @@
+import { env } from 'cloudflare:workers';
 import { expect } from 'vitest';
 import {channelEdge} from './channel-edge-fixture';
 import { createServerApp } from '../../src/core/app/server';

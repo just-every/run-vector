@@ -2570,7 +2570,7 @@
       "executable": false
     },
     "migrations/core/0134_member_suspension.sql": {
-      "sha256": "863eec9592bcf3ee331a0db60deb6967ec295fcb1e98dfdb9ef01bb0a98b9528",
+      "sha256": "be42aea7504808466e56d5f65e7e6b95f8b71f81d54e1be3fa4850b5b3627387",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -7154,7 +7154,7 @@
       "executable": false
     },
     "src/core/features/settings/removal.ts": {
-      "sha256": "1979b40c5646df399e6439b68c89ee82e6d9a9fc4a90a1abdde126601b7aab70",
+      "sha256": "22a5139c0bb3d53d88f2a649b91212e3aa1207a12e2c0e0f11befafb830da81d",
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
@@ -8290,7 +8290,7 @@
       "executable": false
     },
     "tests/e2e/admin-access-journey.mjs": {
-      "sha256": "e05d4838149d7acbbc1d817334276ef7103ceb67b20012d3e7ad14f470aab122",
+      "sha256": "bc0757db7310e25eeeb8f6d9a965475e6a2b9a055497d3a190577857024c62ca",
       "executable": false
     },
     "tests/e2e/admin-archive-team-journey.mjs": {
@@ -8346,7 +8346,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "0597fa85ec9743fe28c1ed234bd7988a6b36388bac57c66fa94b365e11f08b6d",
+      "sha256": "65bf80e6453b6198482278e0207081e38cc92a1d1fb9e6a2f929d573c95c9ddf",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
@@ -8398,7 +8398,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-pagination.mjs": {
-      "sha256": "63d30dcc532215481b7bad580600b050e0e2ef24437d702e6df3589f744ed785",
+      "sha256": "d44b91f19032fb124ceec0e95145278942eb771e7cad1b1908abdc106bb693fe",
       "executable": false
     },
     "tests/e2e/collaboration-preferences.mjs": {
@@ -9082,7 +9082,7 @@
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
-      "sha256": "07fa6615c95a65f53edf98f150e66d47f62237a25715b92b9bd88fe179b1b37b",
+      "sha256": "ca2fd88bbabd121f8de8f98835c24e17da976d41c911878cf4e457ba67794730",
       "executable": false
     },
     "tests/e2e/warehouse-export-client.mjs": {
@@ -9270,7 +9270,7 @@
       "executable": false
     },
     "tests/worker/audit-scenario.ts": {
-      "sha256": "e0ece7fa65d8bdf612f60f5b6ffb8f4c89cfa9ec3149ef8742e75b8e66fe491e",
+      "sha256": "6380414bc54062967200a6d4e6990872e944a2252fa4461fa5af18545256a590",
       "executable": false
     },
     "tests/worker/base-auth-fixture.ts": {
@@ -9326,7 +9326,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "96baf4bde2d219ab9b27f5127747eb770fa1416c1571e0949496172ef72a2ae9",
+      "sha256": "08cc0722fc0aa7b7d897b9b674628cef4bdc1aca8f571236f0a01bc82ac571ce",
       "executable": false
     },
     "tests/worker/current-disjoint.test.ts": {
@@ -9578,7 +9578,7 @@
       "executable": false
     },
     "tests/worker/imported-person-erasure.test.ts": {
-      "sha256": "5a64a7fc0ccf8d839f52427880ee3ddb84576e3adb5a904cdf3927757c6d3f73",
+      "sha256": "871af6bebbfd632e219f749be55a1eb998cb6cf19f059a78144158246de19167",
       "executable": false
     },
     "tests/worker/initiatives-scenario.ts": {
@@ -9698,11 +9698,11 @@
       "executable": false
     },
     "tests/worker/member-suspension-upgrade.test.ts": {
-      "sha256": "fc3670c2002ba618774361fb16d020ec6218beed4a7512e4d817ad30e421a740",
+      "sha256": "5b594fe496d79d9dbfccdc2ea7d773c28423965a889970e8305529c35035fd9e",
       "executable": false
     },
     "tests/worker/member-suspension.test.ts": {
-      "sha256": "1d636e2c5facda9576183ee818e31967f4d651b3685c53021187afc07635f754",
+      "sha256": "5f47027c0dfc018550ea0171be89d8dc7f1d186015e26fb722a9da8fb8033f62",
       "executable": false
     },
     "tests/worker/my-work-tabs.test.ts": {
@@ -9926,7 +9926,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "e3e0ac6eaefdf1307773c0c115d5fb8db42dfc9271827a2ff8fc59a8d070df01",
+      "sha256": "a34866047afb163e07262dcf7cfe788be0470ba553d014a9d80eced7ec10363c",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
@@ -9966,7 +9966,7 @@
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {
-      "sha256": "8c05ce25989dceea27e2231ddad783483544ad45eea1c105c814bfe08bdedd49",
+      "sha256": "f026cc658d618e7d94d8b598e15d605b720cde4f57af28b3734d9d728857dbcc",
       "executable": false
     },
     "tests/worker/slack-events-scenario.ts": {

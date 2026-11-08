@@ -29,6 +29,7 @@ CREATE TRIGGER vector_operator_auth_remove AFTER UPDATE OF removed_at ON operato
  WHERE id IN(SELECT auth_id FROM vector_auth_operators WHERE operator_id=NEW.id) AND NEW.suspended_at IS NULL;
  UPDATE vector_oauth_grants SET revoked_at=COALESCE(revoked_at,CAST(unixepoch('now')*1000 AS INTEGER)) WHERE operator_id=NEW.id;
  DELETE FROM vector_oauth_codes WHERE operator_id=NEW.id;
+ UPDATE agent_door_agents SET revoked=1 WHERE sponsor=NEW.id;
  UPDATE calendar_feed_tokens SET revoked_at=COALESCE(revoked_at,NEW.removed_at) WHERE creator_id=NEW.id;
 END;
 

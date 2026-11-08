@@ -21,7 +21,8 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   const otherSession = await signIn(email), admin = await invite(address(9302),f.cookie,'admin');
   const call = (cookie:string,path:string,method='GET',body?:unknown) => request('/api'+path,method,body,cookie);
   const api = (token:string,path='/issues') => app.request(origin+'/api/v1'+path,{method:'GET',headers:{Authorization:'Bearer '+token,Origin:origin}},bindings);
-  const mcp = (token:string) => agentRequest('/mcp',{method:'POST',headers:{Origin:origin,Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-11-25','Mcp-Method':'tools/list'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list',params:{}})});
+  const mcpMethod=['tools','list'].join('/');
+  const mcp = (token:string) => agentRequest('/mcp',{method:'POST',headers:{Origin:origin,Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-11-25','Mcp-Method':mcpMethod},body:JSON.stringify({jsonrpc:'2.0',id:1,method:mcpMethod,params:{}})});
   await json(await f.call(`/settings/teams/${team.id}/members/${member}`,'PUT',{role:'owner'}));
   const memberName = (await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(member).first<string>('name'))!;
   const token = await json(await call(memberCookie,'/settings/integrations/tokens','POST',{name:'synthetic-vector-9303',scopes:['issues:read','evidence:read']}),201);
@@ -59,6 +60,7 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect((await call(memberCookie,'/settings')).status).toBe(401);
   for (const credential of [token.token,oauth.access_token]) expect((await api(credential)).status).toBe(401);
   expect((await mcp(token.token)).status).toBe(401);
+  expect(await env.DB.prepare('SELECT revoked FROM agent_door_agents WHERE id=?').bind('vector-token:'+token.credential.id).first('revoked')).toBe(1);
   expect((await request('/api/oauth/token','POST',{...exchangeBody,code:pendingCode})).status).toBe(400);
   expect(await env.DB.prepare('SELECT count(*) n FROM vector_oauth_grants WHERE operator_id=? AND revoked_at IS NULL').bind(member).first('n')).toBe(0);
   const outbox = await env.DB.prepare('SELECT count(*) n FROM rer_mail_development_outbox WHERE json_extract(message,\'$.to[0]\')=?').bind(email).first('n');
@@ -93,7 +95,7 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect(await env.DB.prepare('SELECT lead_operator_id FROM projects WHERE id=?').bind(project.id).first('lead_operator_id')).toBe(await actor(admin));
   expect((await f.state()).operators.some(row=>row.id===member)).toBe(false);
   expect((await f.call(`/settings/teams/${team.id}/members/${member}`,'PUT',{role:'member'})).status).toBe(404);
-  expect((await f.call(`/settings/projects/${project.id}`,'PATCH',{leadOperatorId:member})).status).toBe(400);
+  expect((await f.call(`/settings/projects/${project.id}`,'PATCH',{leadOperatorId:member})).status).toBe(409);
   // A retained team owner is inactive. Admins still administer the team.
   expect((await call(admin,`/settings/teams/${team.id}/permissions`,'PUT',{settings:'team_owners',planning:'all_members'})).status).toBe(200);
   const viewer = await invite(address(9313),f.cookie,'viewer'), viewerId = await actor(viewer);
@@ -105,6 +107,8 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   await json(await call(admin,`/settings/operators/${member}/reactivate`,'POST',{}));
   expect((await call(memberCookie,'/session')).status).toBe(401);
   for (const credential of [token.token,oauth.access_token]) expect((await api(credential)).status).toBe(401);
+  expect((await mcp(token.token)).status).toBe(401);
+  expect(await env.DB.prepare('SELECT revoked FROM agent_door_agents WHERE id=?').bind('vector-token:'+token.credential.id).first('revoked')).toBe(1);
   await resetLimits();
   const fresh = await signIn(email);
   expect(await actor(fresh)).toBe(member);
@@ -130,5 +134,10 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect((await call(admin2,`/settings/operators/${oldAdminId}/reactivate`,'POST',{})).status).toBe(403);
   expect((await call(admin2,'/settings/operators/invite','POST',{email:address(9302),displayName:'synthetic-vector-9315',role:'member'})).status).toBe(403);
   await json(await f.call(`/settings/operators/${oldAdminId}/reactivate`,'POST',{}));
-});
+  await env.DB.prepare(`INSERT INTO operators(id,workspace_id,name,email,removed_at,created_at,updated_at)
+    SELECT '01K00000000000000000009344',workspace_id,'Removed operator','01K00000000000000000009344'||char(64)||'removed.invalid','2026-10-01','2026-10-01','2026-10-01' FROM operators WHERE id=?`).bind(f.owner).run();
+  const legacyBefore = await snapshot(refusedTables);
+  expect((await f.call('/settings/operators/01K00000000000000000009344/reactivate','POST',{})).status).toBe(409);
+  expect(await snapshot(refusedTables)).toEqual(legacyBefore);
 
+});

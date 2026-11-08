@@ -153,6 +153,8 @@ export async function slackDirectMessages(f:Awaited<ReturnType<typeof setupInteg
   await env.DB.prepare("UPDATE oa_operators SET status='active' WHERE id=?").bind(nativePeer).run();
   await queued();expect((await f.call('/settings/operators/'+peer,'DELETE')).status).toBe(200);await dispatchWebhooks(current);expect(dms()).toHaveLength(count);
   expect(await env.DB.prepare('SELECT count(*) AS n FROM vector_slack_member_links WHERE operator_id=?').bind(peer).first<number>('n')).toBe(0);
+  expect(await env.DB.prepare('SELECT suspended_at FROM operators WHERE id=?').bind(peer).first('suspended_at')).not.toBeNull();
+  await f.create({description:'synthetic-vector-9342 '+mention(peer,'Peer')});await dispatchWebhooks(current);expect(dms()).toHaveLength(count);
   expect((await slackDoor(action(slackPeer,{action_id:'vector_assign_me',value:issue.identifier+':'+(afterAssign.version+1)}))).status).toBe(403);
   // Failures are visible to the recipient, and an uncertain send is never repeated.
   const cara=await invite('cara-'+suffix+'@vector.test',f.cookie),caraId=await actor(cara);edge.users('cara-'+suffix+'@vector.test','UCARA1','Cara');

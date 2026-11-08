@@ -1,7 +1,5 @@
 import { expect, it } from 'vitest';
 import { env } from 'cloudflare:workers';
-import { request } from './base-auth-fixture';
-import { sampleBindings } from './sample-auth-fixture';
 import { provePopulatedUpgrade } from './populated-upgrade';
 
 it('populated pre-suspension stores retain legacy removals, credentials and all history through the additive lifecycle upgrade', {timeout:120_000}, async () => {
@@ -11,10 +9,8 @@ it('populated pre-suspension stores retain legacy removals, credentials and all 
   },['issues','issue_comments','issue_files','operators','oa_sessions'], async () => {
     await env.DB.prepare(`INSERT INTO operators(id,workspace_id,name,email,removed_at,created_at,updated_at)
       SELECT '01K00000000000000000009344',id,'Removed operator','01K00000000000000000009344'||char(64)||'removed.invalid','2026-10-01','2026-10-01','2026-10-01' FROM workspace_settings`).run();
-  }, async cookie => {
+  }, async () => {
     const legacy = await env.DB.prepare("SELECT name,removed_at,suspended_at FROM operators WHERE id='01K00000000000000000009344'").first();
     expect(legacy).toEqual({name:'Removed operator',removed_at:'2026-10-01',suspended_at:null});
-    expect((await request('/api/settings/operators/01K00000000000000000009344/reactivate','POST',{},cookie,sampleBindings)).status).toBe(409);
-    await env.DB.prepare('DELETE FROM access_rate_limits').run();
   });
 });
