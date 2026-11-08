@@ -149,6 +149,14 @@ export async function inheritedWorkflowWrites(
           "UPDATE issues SET status_id=?,version=version+1,updated_at=? WHERE team_id=? AND status_id=?",
         )
         .bind(target.id, ctx.at, childId, status.id),
+      // The status FK clears automation targets on deletion. Move configured
+      // rules to the same replacement as issues before removing the old row;
+      // advance the version so an open editor cannot overwrite that remap.
+      ctx.db
+        .prepare(
+          "UPDATE github_automation_rules SET status_id=?,version=version+1,updated_at=? WHERE team_id=? AND status_id=?",
+        )
+        .bind(target.id, ctx.at, childId, status.id),
       ctx.db
         .prepare("DELETE FROM workflow_statuses WHERE id=?")
         .bind(status.id),

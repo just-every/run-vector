@@ -7,7 +7,14 @@ import { insertHistoricalSample } from "./historical-sample-fixture";
  * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1.
  */
 const addedAfterBoundary: Record<string, Record<string, unknown>> = {
-  teams: { cycles_enabled: 1 },
+  teams: {
+    cycles_enabled: 1,
+    parent_team_id: null,
+    workflow_inherited: 0,
+    permissions_inherited: 0,
+    hierarchy_version: 1,
+  },
+  workflow_statuses: { inherited_from: null },
 };
 /** A populated prior head retains every value, including queued candidates and mutes. */
 export async function triageUpgrade() {

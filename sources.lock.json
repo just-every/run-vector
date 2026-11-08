@@ -2034,7 +2034,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
+      "sha256": "486da42f309f7145da4db94b67d5b554246f821aed6e5a1e865f56f63bab632b",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -7634,11 +7634,11 @@
       "executable": false
     },
     "src/core/features/sub-teams/hierarchy.ts": {
-      "sha256": "f368f04f4051f57e16270e82a2f0075f987af79bb25a046226a1a52f545e27a1",
+      "sha256": "5284c214d2b32c4074b6b9e26bd3720c75beb654b1979219078939119bfa1f03",
       "executable": false
     },
     "src/core/features/sub-teams/workflow.ts": {
-      "sha256": "7a91cd797d0f244ee16f3670a4bd85085e53b182ab6d164b9d3e5d9e07389f24",
+      "sha256": "f05b528c151af57c0798cf108f06a185ecae7e5e76c85d30f4e419b09eeb139c",
       "executable": false
     },
     "src/core/features/subissues/access.ts": {
@@ -9434,7 +9434,7 @@
       "executable": false
     },
     "tests/worker/dependencies.test.ts": {
-      "sha256": "b10ee7d744d1107544cb018ed67579a7ef91395cb5362e000c4c5864b228fb20",
+      "sha256": "14da343b9576f827c9403941c4cf0485936a193bda4beec34b6c1c9b4aed586a",
       "executable": false
     },
     "tests/worker/description-history.test.ts": {
@@ -9990,7 +9990,7 @@
       "executable": false
     },
     "tests/worker/sub-teams.test.ts": {
-      "sha256": "40c80e8b38d7226eda4660e8168e7feca4a2c153fc5e023091515a698f191dd3",
+      "sha256": "2c108d88f0cd9fc7b6be538849a8d5fb7d221b5999a27c5b1694a00288601fa4",
       "executable": false
     },
     "tests/worker/subissues-access.test.ts": {
@@ -10014,7 +10014,7 @@
       "executable": false
     },
     "tests/worker/team-cycles-journey.ts": {
-      "sha256": "13deb5f74063c307671d781e8d01df61f9ab6f2225ff4e59f3d11a05ece23cd4",
+      "sha256": "9b4d6302b1689f6677f67c0679771b2aab330bec1d62dc6aa454e696d6b3e9df",
       "executable": false
     },
     "tests/worker/team-membership-journey.ts": {
@@ -10026,7 +10026,7 @@
       "executable": false
     },
     "tests/worker/triage-upgrade.ts": {
-      "sha256": "e5f71a4de946053df4b0283b44ddae50066685f38c4f02f71d3dd156a00e2e6a",
+      "sha256": "8374d0c795cf4cef2c6c84f77edda82c986395ccf2c422c10a63bddf359b1021",
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {

@@ -70,10 +70,11 @@ export function hierarchyFence(
 export async function hierarchyAuthority(
   ctx: AdministrationContext,
   ids: string[],
+  row: "teams.hierarchy" | "teams.permissions" = "teams.hierarchy",
 ) {
   const teams = [...new Set(ids)],
     authority = await loadAuthority(ctx.db, ctx.actor, teams);
-  const question = { row: "teams.hierarchy" as const, teams };
+  const question = { row, teams };
   if (!authority || decide(authority, question) !== "allow")
     throw new SettingsError(
       "forbidden",
@@ -194,6 +195,12 @@ export async function changeHierarchy(
       (v): v is string => !!v,
     ),
   ]);
+  // Permission values keep ROLE-009's team-owner authority even when every
+  // member may edit ordinary team settings through the hierarchy door.
+  const permissionsAllowed =
+    input.settingsPermission !== undefined || input.planningPermission !== undefined
+      ? [await hierarchyAuthority(ctx, [id], "teams.permissions")]
+      : [];
   const graphFence = hierarchyFence(ctx, teams);
   validHierarchy(teams.map((t) => (t.id === id ? next : t)));
   next.settings_permission = next.permissions_inherited
@@ -214,6 +221,7 @@ export async function changeHierarchy(
       ];
   await commit(ctx, [
     allowed,
+    ...permissionsAllowed,
     graphFence,
     ctx.db
       .prepare(

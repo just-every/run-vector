@@ -808,6 +808,12 @@
       "name": "0133_release_notes.sql",
       "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
       "sql": "-- Historical releases keep unknown ownership; only native creation supplies it.\nALTER TABLE releases ADD COLUMN owner_operator_id TEXT REFERENCES operators(id);\n\nCREATE TABLE release_note_drafts (\n release_id TEXT PRIMARY KEY REFERENCES releases(id) ON DELETE CASCADE,\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n version INTEGER NOT NULL CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n erased_at TEXT\n);\n\nCREATE TABLE release_note_revisions (\n release_id TEXT NOT NULL REFERENCES releases(id) ON DELETE CASCADE,\n version INTEGER NOT NULL CHECK(version>0),\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n created_at TEXT NOT NULL,\n PRIMARY KEY(release_id,version)\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0134_sub_teams.sql",
+      "sha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
+      "sql": "-- Forward-only hierarchy. Existing teams remain independent roots.\nALTER TABLE teams ADD COLUMN parent_team_id TEXT;\nALTER TABLE teams ADD COLUMN workflow_inherited INTEGER NOT NULL DEFAULT 0 CHECK(workflow_inherited IN (0,1));\nALTER TABLE teams ADD COLUMN permissions_inherited INTEGER NOT NULL DEFAULT 0 CHECK(permissions_inherited IN (0,1));\nALTER TABLE teams ADD COLUMN hierarchy_version INTEGER NOT NULL DEFAULT 1;\nALTER TABLE workflow_statuses ADD COLUMN inherited_from TEXT;\nCREATE INDEX teams_parent_idx ON teams(parent_team_id);\nCREATE UNIQUE INDEX workflow_inherited_idx ON workflow_statuses(team_id,inherited_from) WHERE inherited_from IS NOT NULL;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

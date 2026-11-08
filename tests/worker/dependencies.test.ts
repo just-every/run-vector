@@ -412,7 +412,7 @@ it("[REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclos
       timestamp,
       timestamp,
     ),
-    env.DB.prepare("INSERT INTO workflow_statuses VALUES(?,?,?,?,?,?,?)").bind(
+    env.DB.prepare("INSERT INTO workflow_statuses(id,team_id,name,category,position,created_at,updated_at) VALUES(?,?,?,?,?,?,?)").bind(
       status,
       team,
       "Foreign Todo",

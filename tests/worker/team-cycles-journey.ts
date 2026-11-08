@@ -126,8 +126,8 @@ export async function proveTeamCyclesUpgrade() {
   const commitments=(await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results;
   await applyD1Migrations(db,migrations.slice(boundary));
   const after=(await db.prepare('SELECT * FROM teams ORDER BY id').all()).results;
-  expect(after.map(({cycles_enabled,...team})=>team)).toEqual(before);
-  expect(after.every(t=>t.cycles_enabled===1)).toBe(true);
+  expect(after).toEqual(before.map(team=>({...team,cycles_enabled:1,
+    parent_team_id:null,workflow_inherited:0,permissions_inherited:0,hierarchy_version:1})));
   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).results).toEqual(cycles);
   expect((await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results).toEqual(commitments);
   expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
