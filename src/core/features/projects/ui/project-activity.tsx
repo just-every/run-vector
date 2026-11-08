@@ -2,8 +2,12 @@ import { useDateFormat } from '../../../shared/date-format';
 import { projectIcon } from '../appearance';
 import type { ProjectDetailData } from './data';
 import { dependencyActivityText } from '../../project-dependencies/ui/text';
-const fields:Record<string,string>={color:'Color',icon:'Icon',startDate:'Start date',targetDate:'Target date',priority:'Priority',labelIds:'Labels',name:'Name',description:'Description',leadOperatorId:'Lead',lifecycle:'Lifecycle',archivedAt:'Archive'};
+const fields:Record<string,string>={dates:'Dates',color:'Color',icon:'Icon',startDate:'Start date',targetDate:'Target date',priority:'Priority',labelIds:'Labels',name:'Name',description:'Description',leadOperatorId:'Lead',lifecycle:'Lifecycle',archivedAt:'Archive'};
 function value(value:unknown,field:string,formatInstant:(value:string)=>string,formatDate:(value:string)=>string) {
+  if(field==='Dates' && value && typeof value==='object') {
+    const dates=value as {startDate?:string|null;targetDate?:string|null};
+    return (dates.startDate?formatDate(dates.startDate):'No start date')+' → '+(dates.targetDate?formatDate(dates.targetDate):'No target date');
+  }
   if(field==='Icon') {
     const emoji = projectIcon.safeParse(value);
     return emoji.success ? emoji.data : 'Not set';

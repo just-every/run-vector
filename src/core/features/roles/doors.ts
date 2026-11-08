@@ -157,6 +157,8 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/dashboards/:id', row: 'dashboards.write' },
   { method: 'GET', path: '/calendar/events', row: 'work.read' },
   { method: 'GET', path: '/calendar/timeline', row: 'work.read' },
+  { method: 'GET', path: '/roadmap', row: 'work.read' },
+  { method: 'PATCH', path: '/roadmap/projects/:id', row: 'projects.write' },
   { method: 'GET', path: '/calendar/feeds', row: 'calendar.feeds' },
   { method: 'POST', path: '/calendar/feeds', row: 'calendar.feeds' },
   { method: 'POST', path: '/calendar/feeds/:id/rotate', row: 'calendar.feeds' },

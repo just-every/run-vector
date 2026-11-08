@@ -1,10 +1,11 @@
 import { captureDailyReports } from "../project-report/capture";
 import { z } from "zod";
-import { validateProjectDates, projectActivity as activity, readProjectLabelIds, projectLabelWrites, projectFieldActivity } from "./project-fields";
+import { validateProjectDates, projectActivity as activity, readProjectLabelIds, projectLabelWrites, projectFieldActivity, projectFieldRevision, projectFieldVersion } from "./project-fields";
 import { createUlid } from "../../shared/ids";
 import { projectCreateSchema, projectUpdateSchema } from "./schema";
 import {
   administrationContext,
+  SettingsError,
   ownedRow,
   guard,
   commit,
@@ -24,6 +25,7 @@ type Project = {
   priority: string;
   lifecycle: string;
   archived_at: string | null;
+  updated_at: string;
 };
 function leadGuard(ctx: AdministrationContext, id: string) {
   return guard(
@@ -76,10 +78,14 @@ export async function updateProject(
   actor: string,
   id: string,
   input: z.infer<typeof projectUpdateSchema>,
+  options: {combineDates?: boolean} = {},
 ) {
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Project>(ctx, "projects", id);
   const oldLabels = await readProjectLabelIds(ctx, id);
+  const revision = await projectFieldRevision(ctx.db, id);
+  if (input.expectedVersion && input.expectedVersion !== await projectFieldVersion(old, oldLabels, revision))
+    throw new SettingsError('stale_project', 'This project changed. Refresh before trying again.', 409);
   const previous = {
     name: old.name,
     description: old.description,
@@ -133,6 +139,7 @@ export async function updateProject(
       old.lifecycle,
       old.archived_at,
     ),
+    guard(ctx.db, "(SELECT count(*) || ':' || coalesce(max(id),'') FROM project_activity WHERE project_id=?)=?", id, revision),
     guard(ctx.db, "(SELECT json_group_array(label_id) FROM (SELECT label_id FROM project_labels WHERE project_id=? ORDER BY label_id))=?", id, JSON.stringify(oldLabels)),
     leadGuard(ctx, next.leadOperatorId),
     ctx.db
@@ -154,7 +161,7 @@ export async function updateProject(
         id,
       ),
     ...(input.labelIds === undefined ? [] : projectLabelWrites(ctx, id, next.labelIds)),
-    ...projectFieldActivity(ctx, id, previous, next),
+    ...projectFieldActivity(ctx, id, previous, next, options.combineDates),
     ...(['name','description','leadOperatorId','lifecycle','archivedAt'].some(key => previous[key as keyof typeof previous] !== next[key as keyof typeof next]) ? [activity(ctx,id,"project.updated",previous,next)] : []),
   ]);
 }

@@ -3734,7 +3734,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "72d6ce80da3770ac9bca14fc01a4e23b0679cec76ebb69c3e0b57e3c532da16a",
+      "sha256": "fe9e4ab7dc093dccf19575c65446ffac4ea90ef6423f420abf3470ac1a049c2a",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3794,7 +3794,7 @@
       "executable": false
     },
     "src/core/app/page-resources.server.ts": {
-      "sha256": "927334e1d6c1688a9e0eb437bb86b39d9d34e5509d9a2d15bac70bd31d64ad6e",
+      "sha256": "b864bb4507f76baa72defb1015297f996af64ba65571925cd645ef8ef9e86d7c",
       "executable": false
     },
     "src/core/app/public-paths.ts": {
@@ -4130,7 +4130,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
-      "sha256": "6d8e3c6abc12d45e5fc0aa9a4979d988b95103c87004ed84f51b29ca13e5796c",
+      "sha256": "2cb34cd3bd3020d52ece743e09edeea9d4caeddb1928bb8f0d4a8bee36a17ab3",
       "executable": false
     },
     "src/core/app/ui/label-chip.tsx": {
@@ -4206,7 +4206,7 @@
       "executable": false
     },
     "src/core/features/administration/project-fields.ts": {
-      "sha256": "dc654de5c2de31f6e795bc86ad143afc46856b263ebbe0d5e7cbcdd45c58ad45",
+      "sha256": "ec05d651ffa334b0bc44d312682e2a5f80055a79b2629a9cf28005315a962558",
       "executable": false
     },
     "src/core/features/administration/project-milestones.ts": {
@@ -4214,7 +4214,7 @@
       "executable": false
     },
     "src/core/features/administration/projects.ts": {
-      "sha256": "0d0ce165ea5c1e3564e66b139e314e859d9f8635e369b2a1a221f52c6972f70c",
+      "sha256": "923c447833ebdecb43c3116712cae836aa2db764b616c368d491fdca41411f6c",
       "executable": false
     },
     "src/core/features/administration/read.ts": {
@@ -4226,7 +4226,7 @@
       "executable": false
     },
     "src/core/features/administration/schema.ts": {
-      "sha256": "8b25eab8a89c376ca37a773905070c40cc82666835dbc58e4d33b1ad6521e89a",
+      "sha256": "73da960d53a28605e0a47641f11c6ac9755a4b2da01bb6e5c05cead9ed0b4add",
       "executable": false
     },
     "src/core/features/administration/teams.ts": {
@@ -6830,7 +6830,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-activity.tsx": {
-      "sha256": "a8ce41ff5dfdd57c7f697ffd975cd5d5e4e6c03960dc346e1729883d70ff1ddc",
+      "sha256": "47cf413ac283840b7ffa0769e4a3fda71540b76ee250fb89b9a42bfd4a1aa958",
       "executable": false
     },
     "src/core/features/projects/ui/project-administration.tsx": {
@@ -6981,12 +6981,40 @@
       "sha256": "cfaacc8a7489550c38c4bebd46576cd933c41b53856c99d87516776fc4853abd",
       "executable": false
     },
+    "src/core/features/roadmap/editor.tsx": {
+      "sha256": "e89afb09bab7341b67ec291ad6aec2a5963b7b2c848e89012920e4c486868306",
+      "executable": false
+    },
+    "src/core/features/roadmap/page.tsx": {
+      "sha256": "3bed3b2e376a1ab6f19adc09c483f7f3ca1e554278e68d681b5fb2b42fa1fb28",
+      "executable": false
+    },
+    "src/core/features/roadmap/placement.ts": {
+      "sha256": "433cc87f96a042fbdffc75fc32b0c54da78c3c9f091d3ed3aa79e18b3e6631f1",
+      "executable": false
+    },
+    "src/core/features/roadmap/read.ts": {
+      "sha256": "3e64b69e51e90b4da62e366d1eb4f7462c79f266cf8f48a849d00d4d737b59fa",
+      "executable": false
+    },
+    "src/core/features/roadmap/roadmap.css": {
+      "sha256": "07db95808fb347869f60def99405316442b40f12c24245e425fdd1c03a079bfc",
+      "executable": false
+    },
+    "src/core/features/roadmap/routes.ts": {
+      "sha256": "603420acc5bb890eb220a3b2d7b7b855c46152de6c1c504bd04aa7813c041b5a",
+      "executable": false
+    },
+    "src/core/features/roadmap/schema.ts": {
+      "sha256": "df458953010314b4760f312edf228cd5b91d79769f0aa89702eba54bae3d009c",
+      "executable": false
+    },
     "src/core/features/roles/authority.ts": {
       "sha256": "879ac7455ae55c0400f746e09d93044f0388958156be5b3e8920d26f27f24d93",
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "4d7b04472e21e7604a98602e3ed6d4c6c236e2f425298ae7e2204f66f0fd62b6",
+      "sha256": "9bdd2ad2aad7174249e47a0cdfe5ad531f83ac127d590cc52d0b4858ed672358",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -8033,6 +8061,10 @@
       "sha256": "9919e281e056bd3e532b546cdd22e7d65d11196ffcb62655f06c18187535b01c",
       "executable": false
     },
+    "src/routes/app.roadmap.tsx": {
+      "sha256": "18e27cdaaffbd15d3418607a6e46a83a6cd13c890ce3316607dad2bcd6d87972",
+      "executable": false
+    },
     "src/routes/app.search.tsx": {
       "sha256": "aa3fabaf2d0242bc75e8f6a44ca9fa2cbe3b0cd7f0028cd71ce20ecbec3b6db1",
       "executable": false
@@ -8162,7 +8194,7 @@
       "executable": false
     },
     "src/routeTree.gen.ts": {
-      "sha256": "21e498dbd600892ae64780bdb5e0940ece6a7a0c44fa0bcda72a8b68d81e30fb",
+      "sha256": "705996386dc9465909551e4e94452c419a1edc8ba3966b6bae882ee4dcefe793",
       "executable": false
     },
     "src/site/document.tsx": {
@@ -8498,7 +8530,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "e97cd29aea2674003004ba2de79b0ff341df66329d381915d8dba1aefa66c2c9",
+      "sha256": "11e7de00ab1809794c9845e21403b80052317abfe97472c10ee9c216fc1afd32",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
@@ -8919,6 +8951,10 @@
     },
     "tests/e2e/restore-ui-journey.mjs": {
       "sha256": "2feed11949aa160ceccc9918f6a83cc8ef20077d09bd9c9b496ad3e2e5146d6a",
+      "executable": false
+    },
+    "tests/e2e/roadmap-journey.mjs": {
+      "sha256": "e5c923c358ff70ab43ee0ed69b7760b898db9a4b7ec91315d496d6064728d939",
       "executable": false
     },
     "tests/e2e/role-access-census.mjs": {
@@ -9827,6 +9863,10 @@
     },
     "tests/worker/resolution-sla-upgrade.ts": {
       "sha256": "801d3fb7f7ab04e9fc2868dd778914e6115c0fb78d6544c5eebfac5d5c91c91a",
+      "executable": false
+    },
+    "tests/worker/roadmap.test.ts": {
+      "sha256": "82c086ae7c7a4502acc171fd194b5bebf984850018cbe46f6dc46382d3417d4d",
       "executable": false
     },
     "tests/worker/role-door-journey.ts": {

@@ -1,3 +1,4 @@
+import {roadmapJourney} from './roadmap-journey.mjs';
 import { projectDependenciesJourney } from './core-project-dependencies-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {initiativesJourney} from './initiatives-journey.mjs';
@@ -38,6 +39,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
     const { token } = await minted.json();
     await contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId:member.operatorId});
     await projectDependenciesJourney({page,memberPage,memberContext,base,api,capture,memberId:member.operatorId,team});
+    await roadmapJourney({page,memberPage,memberContext,base,api,capture,memberId:member.operatorId,team});
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
       await memberPage.setViewportSize({ width, height: 1000 });
