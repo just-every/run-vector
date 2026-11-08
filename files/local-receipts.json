@@ -94,5 +94,13 @@
     "findings": null,
     "custody": "Mac lander"
   },
-  "live_provider": false
+  "live_provider": false,
+  "verify": {
+    "id": 42510098606,
+    "event": "push",
+    "head_sha": "7334487bdc9102011b9b646e37fe60da45ebf338",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42510098606"
+  }
 }

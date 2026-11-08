@@ -1,15 +1,15 @@
 {
-  "github_calls_used": 5,
+  "github_calls_used": 9,
   "budget": 10,
   "run": {
-    "conclusion": null,
+    "conclusion": "success",
     "event": "push",
     "head_sha": "7334487bdc9102011b9b646e37fe60da45ebf338",
     "html_url": "https://github.com/just-every/run-vector/actions/runs/42510098606",
     "id": 42510098606,
     "name": "Verify",
-    "status": "in_progress"
+    "status": "completed"
   },
-  "last_observed": "2026-11-08T18:37:25Z",
+  "last_observed": "2026-11-08T18:57:27.000214+00:00",
   "minimum_poll_seconds": 300
 }

@@ -50,7 +50,7 @@ Worker rows R1 to R13 run in the existing push Verify worker path. Browser row R
 
 1. PARTIAL for the whole clause: the selected native outcomes have public-door proof, while H1 to H3 and the supplied held remainder prevent a whole-clause DONE claim.
 2. PASS locally for selected work: seeded roots, real discussion reads, actual fixture posts and unchanged whole-database refusal snapshots cover both allowed and denied paths.
-3. Pending exact-candidate Verify until the recorded run completes. Local worker and browser runs are not substituted for CI.
+3. PASS: push Verify 42510098606 completed successfully on exact candidate 7334487bdc9102011b9b646e37fe60da45ebf338. Its existing Worker and hosted-artifact paths reach the selected journeys; local worker and browser receipts are additional proof.
 4. PASS for local proof: final-head receipts name the candidate; no earlier-SHA evidence is silently promoted.
 5. INSPECTED: the existing clause names ISSUE-008 mapping, private-team behavior and the held receiving duties. Existing SEC-001 credential custody is preserved; no acceptance text was rewritten.
 6. PASS mechanically: touched-clause generator write and check pass; generated views are restored whole from main and omitted from commits. Status judgments remain lander-owned.
@@ -58,7 +58,7 @@ Worker rows R1 to R13 run in the existing push Verify worker path. Browser row R
 8. PASS locally for the selected native authority boundary: invalid signatures, unlinked and withdrawn actors, current private access and in-flight unlink are refused; storage assertions remain intact.
 9. PASS as an honest boundary: only signed network-edge Slack fixtures and native local archives are claimed. No hosted Slack workspace commissioning or real provider receipt is claimed.
 10. PARTIAL policy boundary: restored mappings stay permanently held and linking generations are not automatically reused. This conservative default follows the supplied standing scope policy; the clause is not counted DONE.
-11. Pending fleet landing: main still names the baseline; exact candidate publication scan, guarded landing and candidate Run site are not cloud receipts.
+11. Pending fleet landing: the latest main observation is 0e8a686c06eddd55943ed1d2690df32a8fc82213; exact candidate publication scan, guarded landing and candidate Run site remain fleet custody.
 
 ## Pre-ready self-check and mechanics
 
@@ -76,8 +76,12 @@ DEFAULT SLACK-002: Only an active linked native Member, Admin or Owner may intak
 
 GAP SLACK-002: Held emoji filing, request channels, Slack and Vector media under ISSUE-024, checklist projection under ISSUE-025, no-seat or unlinked requesters under ROLE-006, customer and request integration under CUST-006 and CUST-008, template and form filing under ISSUE-016 and TRIAGE-004, reactions under ISSUE-017, Teams parity, synced-thread erasure under SEC-003 and hosted SLACK-001 commissioning remain owed. INIT-001, RELEASE-001, ISSUE-008 and WEBHOOK-002 holds remain unchanged. Independent Claude Opus interface qualification and guarded landing remain fleet work.
 
-No product blocker is known from the completed local checks. Missing or pending CI, publication scan, independent gate and landing receipts are reported as unestablished, never as completed acceptance.
+No product blocker is known from local checks or the successful exact-head Verify. Publication scan, independent gate, landing and candidate Run site receipts remain unestablished, never claimed as completed acceptance.
 
-## Candidate CI observation
+## Candidate CI result
 
-Verify 42510098606 was discovered from the push event on the exact candidate head. Its observed status is in_progress; no conclusion was supplied. It was not dispatched or rerun. The watcher makes at most one API call per 300 seconds for this run.
+Push Verify 42510098606 completed with success on exact candidate 7334487bdc9102011b9b646e37fe60da45ebf338, observed 2026-11-08T18:57:27Z. The workflow was started by the product push; it was neither dispatched nor rerun. Nine of the ten API calls were used, with at least 300 seconds between run observations. `candidate-ci.json`, `ci-receipt.json` and the numbered observation files preserve the actual responses. No red-job repair round was needed.
+
+The final product branch is pushed and local proof is complete. PR: none required. A READY handoff authorizes only the existing fleet's exact-tree scan, independent gate and guarded landing. The source Status row and counts remain unchanged in this candidate.
+
+READY branch=cloud/sd-vector-c-f206 head=7334487bdc9102011b9b646e37fe60da45ebf338
