@@ -43,9 +43,9 @@ export async function saveWorkspaceTime({ page, runtime, clause, capture }) {
     assert.equal(await reminder.inputValue(), initial.reminderTime);
     await page.goto(runtime.base + "/app/settings/people");
     await page.getByRole("link", { name: new RegExp(runtime.config.FIRST_OWNER_NAME) }).first().click();
-    await page.getByText("The last Owner cannot be removed.", { exact: true }).waitFor();
+    await page.getByText("The last Owner cannot be suspended.", { exact: true }).waitFor();
     assert.equal(await page.getByRole("button", {
-      name: /^(Remove|Leave)/,
+      name: /^(Remove|Suspend|Leave)/,
     }).count(), 0, "the sole operator cannot be removed from Settings");
     await open();
     await submit(changedTimezone);

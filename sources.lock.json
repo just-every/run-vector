@@ -4290,7 +4290,7 @@
       "executable": false
     },
     "src/core/features/audit/csv.ts": {
-      "sha256": "c26daf80acf96802ed1dc1b4b7cf260c01d1ad68e54b5459669be1c0023995e7",
+      "sha256": "3b74ea2c2677a57d875954c995a5f37e6094c4143aa786013020d4a78e5a4a5a",
       "executable": false
     },
     "src/core/features/audit/producer.ts": {
@@ -4298,7 +4298,7 @@
       "executable": false
     },
     "src/core/features/audit/repository.ts": {
-      "sha256": "3af34490a539f48799aa3725514605c3f4b62b2c8e31a5a15db623080abfb0c0",
+      "sha256": "22d9fbd8256530763157111bfc72381c8c22eae3fd1d9d5099c5202b98d209a8",
       "executable": false
     },
     "src/core/features/audit/routes.ts": {
@@ -4306,7 +4306,7 @@
       "executable": false
     },
     "src/core/features/audit/schema.ts": {
-      "sha256": "934bb9ac71c13740b647656293cb0b857ad1a03e3482801d5181e67671e1177e",
+      "sha256": "6cf189ff004bae943ba6a399709407bf4fa75f0c9783bc7a6e3272bd6199774f",
       "executable": false
     },
     "src/core/features/audit/ui/audit-labels.ts": {
@@ -8342,7 +8342,7 @@
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
-      "sha256": "e61333b6bec01a3eb7b039c336b9cb63e5477676f58cb9115f3af525f22fa8cc",
+      "sha256": "2cd9649bc3868d4a534191b0967bbb35cd615502d253ade85d91ddceee835a2b",
       "executable": false
     },
     "tests/e2e/archive-audit-history.mjs": {
@@ -9710,7 +9710,7 @@
       "executable": false
     },
     "tests/worker/member-suspension.test.ts": {
-      "sha256": "6e1686b108a452c5cfd18803e61914bbd7c615bba46186b3a996c0e9c9ad587d",
+      "sha256": "13b94950a05746dcca666f865870cfe6b1ba2742182d38e69fa1f934da99618f",
       "executable": false
     },
     "tests/worker/my-work-tabs.test.ts": {
@@ -9974,7 +9974,7 @@
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {
-      "sha256": "f026cc658d618e7d94d8b598e15d605b720cde4f57af28b3734d9d728857dbcc",
+      "sha256": "21e6a03af91281928f68ca2e051d61f66f051cbde6657ab1ecccb37fa0b92db8",
       "executable": false
     },
     "tests/worker/slack-events-scenario.ts": {

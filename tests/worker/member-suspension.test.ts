@@ -27,6 +27,7 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   await json(await f.call(`/settings/teams/${team.id}/members/${member}`,'PUT',{role:'owner'}));
   const memberName = (await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(member).first<string>('name'))!;
   const token = await json(await call(memberCookie,'/settings/integrations/tokens','POST',{name:'synthetic-vector-9303',scopes:['issues:read','evidence:read']}),201);
+  const readerToken = await json(await f.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-9372',scopes:['issues:read','comments:read']}),201);
   const redirect = 'https://synthetic-vector-9304.example.test/callback';
   const client = await json(await f.call('/settings/oauth-apps','POST',{name:'synthetic-vector-9304',redirectUris:[redirect],scopes:['issues:read']}),201);
   const verifier = 'synthetic-vector-9305-abcdefghijklmnopqrstuvwxyz0123456789';
@@ -85,6 +86,10 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   const comments = await json(await f.call(`/issues/${issue.identifier}/discussion`));
   expect(comments.comments).toHaveLength(2);
   expect(comments.comments.every((row:any)=>row.actor===memberName+' (Suspended)')).toBe(true);
+  const apiComments = await json(await api(readerToken.token,'/comments?issue='+issue.identifier));
+  expect(apiComments.comments).toHaveLength(2);
+  expect(apiComments.comments.every((row:any)=>row.author.id===member && row.author.displayName===memberName+' (Suspended)')).toBe(true);
+  expect((await json(await api(readerToken.token,'/issues/'+issue.identifier))).assignee).toMatchObject({id:member,suspended:true});
   const completed = await json(await f.call('/issues/'+finished.identifier));
   expect(completed.activity.some((row:any)=>row.actor===memberName+' (Suspended)')).toBe(true);
   const revisions = await json(await f.call(`/issues/${issue.identifier}/description-history`));
@@ -137,6 +142,7 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect(await actor(fresh)).toBe(member);
   expect((await json(await call(fresh,'/views/'+privateView.id))).name).toBe('synthetic-vector-9310');
   expect((await json(await call(fresh,`/issues/${issue.identifier}/discussion`))).comments.map((row:any)=>row.actor)).toEqual([memberName,memberName]);
+  expect((await json(await api(readerToken.token,'/comments?issue='+issue.identifier))).comments.map((row:any)=>row.author.displayName)).toEqual([memberName,memberName]);
   expect((await env.DB.prepare('SELECT * FROM team_members WHERE operator_id=? ORDER BY team_id').bind(member).all()).results).toEqual(teamsBefore.results);
   // Repeated offboarding is a new receipt. Re-inviting preserves the old role.
   await json(await call(admin,`/settings/operators/${member}/suspend`,'POST',{assignments:'unassign'}));
@@ -150,6 +156,25 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect(events).toEqual([{action:'suspended',method:'settings'},{action:'reactivated',method:'settings'},{action:'suspended',method:'settings'},{action:'reactivated',method:'invitation'}]);
   expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE subject_id=? AND action IN('operator.suspended','operator.reactivated')").bind(member).first('n')).toBe(4);
   expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE subject_id=? AND action='operator.left'").bind(viewerId).first('n')).toBe(1);
+  const auditEntries = (await json(await f.call('/settings/audit?subject='+member))).entries
+    .filter((entry:any)=>['operator.suspended','operator.reactivated'].includes(entry.action));
+  const adminId = await actor(admin);
+  expect(auditEntries).toHaveLength(4);
+  expect(auditEntries.filter((entry:any)=>entry.action==='operator.suspended')).toEqual([
+    expect.objectContaining({actorRef:'person:'+adminId,method:'settings'}),
+    expect.objectContaining({actorRef:'person:'+adminId,method:'settings'}),
+  ]);
+  expect(auditEntries.filter((entry:any)=>entry.action==='operator.reactivated')).toEqual(expect.arrayContaining([
+    expect.objectContaining({actorRef:'person:'+adminId,method:'settings'}),
+    expect.objectContaining({actorRef:'person:'+f.owner,method:'invitation'}),
+  ]));
+  const leaveAudit = (await json(await f.call('/settings/audit?subject='+viewerId))).entries.find((entry:any)=>entry.action==='operator.left');
+  expect(leaveAudit).toMatchObject({actorRef:'person:'+viewerId,actorName:expect.stringContaining('(Suspended)'),method:'self'});
+  const auditCsv = await f.call('/settings/audit.csv?action=operator.reactivated&subject='+member);
+  expect(auditCsv.status).toBe(200);
+  const csvRows=(await auditCsv.text()).trim().split('\r\n');
+  expect(csvRows).toHaveLength(3);
+  expect(csvRows.slice(1).map(row=>row.split(',').at(-1))).toEqual(expect.arrayContaining(['"settings"','"invitation"']));
   expect((await api(token.token)).status).toBe(401);
   const oldAdminId = await actor(admin);
   await json(await f.call(`/settings/operators/${oldAdminId}/suspend`,'POST',{assignments:'keep'}));
