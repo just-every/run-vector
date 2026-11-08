@@ -41,6 +41,7 @@ type CreateIssueRecordInput = {
   actorOperatorId: string
   input: CreateIssueInput
   now: Date
+  allocation?: { prefix: string; sequence: number; writes: D1PreparedStatement[] }
   commitStatements?: (db: D1Database, identifier: string) => D1PreparedStatement[]
 }
 
@@ -83,7 +84,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
   // FIELD-001: one typed boundary for every creating door; untyped legacy keys pass unchanged.
   const fields = await admitFieldValues(binding, team.id, {}, request.input.customFields)
 
-  const allocation = await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)
+  const allocation = request.allocation ?? await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)
   const sequenceNumber = allocation.sequence
   const identifier = `${allocation.prefix}-${sequenceNumber}`
   const issueId = createUlid(request.now)
@@ -145,7 +146,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
   const labelWrites = request.input.labelIds.length === 0
     ? []
     : [db.insert(issueLabels).values(request.input.labelIds.map((labelId) => ({ issueId, labelId, createdAt: now })))]
-  const writes = [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, { ...request.input, fieldValues: fields.checked }, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
+  const writes = [...(request.allocation?.writes ?? []), creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, { ...request.input, fieldValues: fields.checked }, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
     }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...(request.commitStatements?.(binding,identifier) ?? [])]

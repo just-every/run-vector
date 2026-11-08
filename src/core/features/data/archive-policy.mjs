@@ -1,5 +1,6 @@
 // Team hierarchy, inheritance choices and materialized workflow identities are portable domain state.
 // Restore retains these values without reconciling statuses or granting parent membership.
+// Slack mapped roots and source receipts are portable history; restored mappings and deliveries stay permanently held.
 // Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.
 // Actor names and mail remain in native identity custody; notes retain opaque references.
 // Human edits and issue-title text follow DATA-011's existing free-text boundary.

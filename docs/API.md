@@ -705,13 +705,22 @@ permission and team-setting authority on the parent.
 is disabled. Each permission value is `team_owners` or `all_members`.
 Reparenting preserves issue identifiers. The child and all affected parents
 require team-setting authority; Owners and Admins always pass, while Guests
-and Viewers are refused. Stale versions return 409 without changing storage.
+and Viewers are refused. Changing permission values additionally requires the
+same team-owner authority as the normal permission endpoint. Stale versions
+return 409 without changing storage.
 
 Inherited workflows retain team-local status identities. Override a child's
 workflow explicitly before editing it. Parent status removal maps inherited
 issues through the chosen same-category destination in the same transaction.
 Restoring inheritance maps existing issues into the parent's workflow while
-preserving their category.
+preserving their category. Configured Git automation targets follow the same
+replacement status, and their versions advance so stale editors cannot overwrite
+the remap.
+
+Apply `migrations/core/0135_sub_teams.sql` after unchanged
+`0134_slack_threads.sql`. Existing teams remain roots with independent workflows
+and permissions; existing statuses retain their identities. Keep this additive
+schema on compatible-source rollback.
 
 A team-filtered issue list accepts `includeSubTeams=true` (default `false`).
 Counts, paging and current visibility use the same descendant predicate.
