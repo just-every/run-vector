@@ -802,6 +802,12 @@
       "name": "0132_sla_team_archive.sql",
       "sha256": "3b9734f2bb2f5a0d0c15015606293eaaec561d4fc8f214c6ddbb17989515bc16",
       "sql": "-- Team withdrawal stops every existing clock in the archive transaction, even\n-- when the team is restored before the next scheduled observation.\nCREATE TRIGGER sla_team_archived AFTER UPDATE OF archived_at ON teams\nWHEN NEW.archived_at IS NOT NULL\nBEGIN\n UPDATE issue_sla_clocks\n SET stopped_at=COALESCE(stopped_at,NEW.archived_at),\n     stop_reason=COALESCE(stop_reason,'stopped'),\n     revision=lower(hex(randomblob(16)))\n WHERE team_id=NEW.id AND stopped_at IS NULL;\nEND;\n\n-- Populate the same stop for teams already archived at upgrade. Retain all\n-- elapsed time, target snapshots and occurrence receipts without replay.\nUPDATE issue_sla_clocks\nSET stopped_at=(SELECT archived_at FROM teams WHERE id=issue_sla_clocks.team_id),\n    stop_reason='stopped',revision=lower(hex(randomblob(16)))\nWHERE stopped_at IS NULL\nAND EXISTS(SELECT 1 FROM teams WHERE id=issue_sla_clocks.team_id AND archived_at IS NOT NULL);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0133_release_notes.sql",
+      "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+      "sql": "-- Historical releases keep unknown ownership; only native creation supplies it.\nALTER TABLE releases ADD COLUMN owner_operator_id TEXT REFERENCES operators(id);\n\nCREATE TABLE release_note_drafts (\n release_id TEXT PRIMARY KEY REFERENCES releases(id) ON DELETE CASCADE,\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n version INTEGER NOT NULL CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n erased_at TEXT\n);\n\nCREATE TABLE release_note_revisions (\n release_id TEXT NOT NULL REFERENCES releases(id) ON DELETE CASCADE,\n version INTEGER NOT NULL CHECK(version>0),\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n created_at TEXT NOT NULL,\n PRIMARY KEY(release_id,version)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

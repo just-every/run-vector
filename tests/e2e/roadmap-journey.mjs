@@ -3,6 +3,10 @@ import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mj
 import {contrastFailures,canvasLuminance} from './theme-contrast.mjs';
 
 export async function roadmapJourney({page,memberPage,memberContext,base,api,capture,memberId,team}) {
+  const runtimeErrors=[];
+  const onError=error=>runtimeErrors.push(error.message);
+  const onConsole=message=>{if(message.type()==='error'&&/hydrat|Minified React|React error/i.test(message.text()))runtimeErrors.push(message.text());};
+  memberPage.on('pageerror',onError);memberPage.on('console',onConsole);
   const day=(date,delta)=>new Date(Date.parse(date+'T00:00:00Z')+delta*86400000).toISOString().slice(0,10);
   const today=(await api('/roadmap')).today;
   const read=id=>api('/projects/'+id);
@@ -44,7 +48,7 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
   await capture('INIT-003','roadmap-four-placements-1440',memberPage);
 
   async function geometry(){
-    const data=await api('/roadmap'),dates=[data.today,...data.projects.flatMap(p=>[p.placement.start,p.placement.end,...p.milestones.map(m=>m.targetDate)].filter(Boolean)),...data.initiatives.flatMap(n=>[n.placement.start,n.placement.end].filter(Boolean))].map(d=>Date.parse(d+'T00:00:00Z')/86400000);
+    const data=await (await memberContext.request.get(base+'/api/roadmap')).json(),dates=[data.today,...data.projects.flatMap(p=>[p.placement.start,p.placement.end,...p.milestones.map(m=>m.targetDate)].filter(Boolean)),...data.initiatives.flatMap(n=>[n.placement.start,n.placement.end].filter(Boolean))].map(d=>Date.parse(d+'T00:00:00Z')/86400000);
     const first=Math.min(...dates)-7,span=Math.max(21,Math.max(...dates)+14-first);return {first,span};
   }
   async function dragTo(source,track,date){
@@ -59,15 +63,26 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
     await memberPage.mouse.move(box.x+box.width*fraction+1,box.y+box.height/2);await memberPage.mouse.up();
     assert.equal((await pending).status(),200);await memberPage.locator('[data-roadmap-ready="true"]').waitFor();
   }
+  console.log('Roadmap placements and milestone rendered');
   let before=await read(target.id);
   await dragTo(row(target.id).getByRole('button',{name:/^Move /}),row(target.id).locator('.roadmap-track'),day(today,18));
   let after=await read(target.id);assert.equal(after.startDate,null);assert.equal(after.targetDate,day(today,18));assert.equal(after.activity.length,before.activity.length+1);
   assert.equal(after.activity.filter(entry=>entry.kind==='project.dates_changed').length,1);
+  console.log('Roadmap target diamond drag accepted');
   before=await read(none.id);
   await dragTo(memberPage.getByRole('button',{name:'Schedule '+none.name,exact:true}),memberPage.getByLabel('Schedule an Unscheduled project',{exact:true}),day(today,2));
   after=await read(none.id);assert.equal(after.startDate,day(today,2));assert(after.targetDate>after.startDate);assert.equal(after.activity.length,before.activity.length+1);
   assert.equal(after.activity.filter(entry=>entry.kind==='project.dates_changed').length,1);
   await row(none.id).waitFor();
+  console.log('Roadmap Unscheduled drag accepted');
+  for(const project of [target,none]){
+    await beforePrivateNavigation(page,base+'/app/projects/'+project.id);await page.goto(base+'/app/projects/'+project.id);
+    await page.getByRole('heading',{name:project.name,exact:true,level:1}).waitFor();
+    await page.getByText('Dates changed',{exact:true}).waitFor();
+    assert.equal(await page.getByText('Dates changed',{exact:true}).count(),1,'one visible activity for the date gesture');
+  }
+  await beforePrivateNavigation(page,base+'/app/roadmap');await page.goto(base+'/app/roadmap');await settleReads(page);
+
   // Body movement retains the interval's duration. Each endpoint changes only
   // its own date. All three gestures use the same native checked writer.
   before=await read(both.id);const originalDuration=Date.parse(before.targetDate)-Date.parse(before.startDate);
@@ -80,6 +95,7 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
   before=after;
   await dragTo(row(both.id).getByRole('button',{name:'Drag target date for '+both.name,exact:true}),row(both.id).locator('.roadmap-track'),day(before.targetDate,1));
   after=await read(both.id);assert.equal(after.startDate,before.startDate);assert.equal(after.targetDate,day(before.targetDate,1));assert.equal(after.activity.length,before.activity.length+1);
+  console.log('Roadmap body and endpoint drags accepted');
   await memberPage.getByRole('button',{name:'Week',exact:true}).click();
   before=after;const body=row(both.id).getByRole('button',{name:/^Move /});await body.focus();
   const keyboard=memberPage.waitForResponse(r=>new URL(r.url()).pathname==='/api/roadmap/projects/'+both.id&&r.request().method()==='PATCH');
@@ -104,10 +120,42 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
   await memberPage.getByRole('alert').filter({hasText:'Your edit was not saved'}).waitFor();
   assert.deepEqual((await read(both.id)).activity,raced.activity);assert.equal((await read(both.id)).targetDate,raced.targetDate);
   await go();
+  const visible=await (await memberContext.request.get(base+'/api/roadmap')).json();
+  const span=visible.initiatives.find(n=>n.id===initiative.id).placement;
+  const hiddenTeamState=await api('/settings/teams','POST',{name:'synthetic-vector-2046',identifierPrefix:'SYNROADUI',isPrivate:true});
+  const privateTeam=hiddenTeamState.teams.find(t=>t.name==='synthetic-vector-2046');
+  const privateProjectState=await api('/settings/projects','POST',{name:'synthetic-vector-2047',leadOperatorId:memberId,startDate:day(today,-100),targetDate:day(today,100)});
+  const hidden=privateProjectState.projects.find(p=>p.name==='synthetic-vector-2047');
+  await api('/issues','POST',{teamId:privateTeam.id,projectId:hidden.id,title:'synthetic-vector-2048'});
+  const node=await api('/initiatives/'+initiative.id);
+  await api('/initiatives/'+initiative.id+'/projects','PUT',{expectedVersion:node.version,projectIds:[...named.map(p=>p.id),hidden.id]});
+  async function hiddenProjection(){
+    const projection=await (await memberContext.request.get(base+'/api/roadmap')).json();
+    assert(!JSON.stringify(projection).includes(hidden.id));assert(!JSON.stringify(projection).includes(hidden.name));
+    assert.deepEqual(projection.initiatives.find(n=>n.id===initiative.id).placement,span);
+    const html=await (await memberContext.request.get(base+'/app/roadmap')).text();
+    assert(!html.includes(hidden.id));assert(!html.includes(hidden.name));
+  }
+  await hiddenProjection();
+  await api('/settings/teams/'+privateTeam.id+'/members/'+memberId,'PUT',{role:'member'});
+  await go();assert((await (await memberContext.request.get(base+'/api/roadmap')).json()).projects.some(p=>p.id===hidden.id));
+  await api('/settings/teams/'+privateTeam.id+'/members/'+memberId,'DELETE');await go();await hiddenProjection();
+  console.log('Roadmap keyboard and fields accepted; stale edit refused');
   for(const theme of ['light','dark']){
     await memberContext.request.patch(base+'/api/settings/appearance',{headers:{Origin:base},data:{theme}}).then(response=>assert.equal(response.status(),200));
     await go();assert.equal((await canvasLuminance(memberPage))<.2,theme==='dark');
     assert.deepEqual(await contrastFailures(memberPage),[],theme+' roadmap AA contrast');
+    const marks=await memberPage.evaluate(()=>{
+      const {parse,behind,ratio}=window.__nonText;
+      return [...document.querySelectorAll('.roadmap-mark,.roadmap-span,.roadmap-today,.roadmap-milestone')].map(element=>{
+        const style=getComputedStyle(element),isText=element.matches('.roadmap-mark--diamond,.roadmap-span--diamond,.roadmap-milestone');
+        const ink=isText?style.color:element.matches('.roadmap-today')?style.backgroundColor:style.borderTopColor;
+        return {mark:element.className,contrast:ratio(parse(ink),behind(element.parentElement))};
+      }).filter(mark=>mark.contrast<3);
+    });
+    assert.deepEqual(marks,[],theme+' roadmap marks meet 3:1');
+    const accessibility=await memberPage.evaluate(async()=> (await window.axe.run(document)).violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})));
+    assert.deepEqual(accessibility,[],theme+' roadmap has no serious accessibility violations');
     await capture('INIT-003','roadmap-'+theme+'-1440',memberPage);
   }
   await memberContext.request.patch(base+'/api/settings/appearance',{headers:{Origin:base},data:{theme:'system'}}).then(response=>assert.equal(response.status(),200));
@@ -132,5 +180,7 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
     await capture('INIT-003','roadmap-'+role+'-390',memberPage);
     await api('/settings/operators/'+memberId+'/role','PATCH',{role:'member'});
   }
+  memberPage.off('pageerror',onError);memberPage.off('console',onConsole);
+  assert.deepEqual(runtimeErrors,[],'roadmap hydrates without runtime errors');
   console.log('INIT-003 roadmapJourney PASS: placements, spans, milestones, diamond and Unscheduled drag, body and ends, keyboard, planning fields, stale refusal, roles, phone, themes and AA');
 }

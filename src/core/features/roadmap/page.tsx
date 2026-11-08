@@ -83,11 +83,11 @@ export function RoadmapPage() {
               <div className="roadmap-axis"><span>Initiatives and projects</span><div>{geometry.ticks.map(tick=><time key={tick} dateTime={tick} style={{left:geometry.position(tick)+'%'}}>{tick}</time>)}</div></div>
               {data.initiatives.map(node=><div className="roadmap-row roadmap-initiative" key={node.id} data-roadmap-initiative={node.id} data-date-kind={node.placement.kind}>
                 <div className="roadmap-label"><a href={'/app/initiatives/'+node.id}>{node.name}</a><span>Initiative · {node.projectIds.length} visible projects</span></div>
-                <div className="roadmap-track">{node.placement.start?<span className={'roadmap-span roadmap-span--'+node.placement.kind} style={position(node.placement)} aria-label={'Initiative '+node.name+' '+node.placement.start+' to '+node.placement.end}>{node.placement.kind==='diamond'?'◆':''}</span>:<span className="roadmap-no-dates">Unscheduled</span>}</div>
+                <div className="roadmap-track">{node.placement.start?<span role="img" className={'roadmap-span roadmap-span--'+node.placement.kind} style={position(node.placement)} aria-label={'Initiative '+node.name+' '+node.placement.start+' to '+node.placement.end}>{node.placement.kind==='diamond'?'◆':''}</span>:<span className="roadmap-no-dates">Unscheduled</span>}</div>
               </div>)}
               {data.projects.filter(p=>p.placement.kind!=='unscheduled').map(project=><article className="roadmap-row" key={project.id} data-roadmap-project={project.id} data-date-kind={project.placement.kind} data-start-date={project.startDate??''} data-target-date={project.targetDate??''}>
                 {label(project)}
-                <div className="roadmap-track" onDragOver={event=>{if(drag.current&&!busy)event.preventDefault();}} onDrop={drop} aria-label={'Timeline dates for '+project.name}>
+                <div className="roadmap-track" onDragOver={event=>{if(drag.current&&!busy)event.preventDefault();}} onDrop={drop} role="group" aria-label={'Timeline dates for '+project.name}>
                   <span className="roadmap-today" style={{left:geometry.position(data.today)+'%'}} role="img" aria-label={'Today '+data.today}/>
                   <div className={'roadmap-mark roadmap-mark--'+project.placement.kind+' roadmap-mark--'+project.lifecycle} style={position(project.placement)}>
                     {data.canEdit?<>
@@ -99,7 +99,7 @@ export function RoadmapPage() {
                   {project.milestones.filter(m=>m.targetDate).map(m=><Tooltip key={m.id} label={m.name+' · '+m.targetDate+(m.completed?' · Complete':'')}><span className="roadmap-milestone" tabIndex={0} role="img" aria-label={'Milestone '+m.name+' '+m.targetDate} style={{left:geometry.position(m.targetDate!)+'%'}}>◇</span></Tooltip>)}
                 </div>
               </article>)}
-              <div className="roadmap-drop-row"><span>Schedule a project</span><div className="roadmap-track" aria-label="Schedule an Unscheduled project" onDragOver={event=>{if(drag.current&&!busy)event.preventDefault();}} onDrop={drop}>Drop an Unscheduled project here</div></div>
+              <div className="roadmap-drop-row"><span>Schedule a project</span><div className="roadmap-track" role="group" aria-label="Schedule an Unscheduled project" onDragOver={event=>{if(drag.current&&!busy)event.preventDefault();}} onDrop={drop}>Drop an Unscheduled project here</div></div>
             </div>
           </div>
           <aside className="roadmap-unscheduled" aria-label="Unscheduled projects"><h2>Unscheduled</h2>{data.projects.filter(p=>p.placement.kind==='unscheduled').map(project=><article key={project.id} data-unscheduled-project={project.id}>

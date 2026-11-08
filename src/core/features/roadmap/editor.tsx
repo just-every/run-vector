@@ -12,7 +12,7 @@ export function RoadmapEditor({project,labels,busy,save,close}:{project:RoadmapP
       <button disabled={busy}>Save dates</button>
     </form>
     <form aria-label="Project priority" onSubmit={event=>{event.preventDefault();void save({priority});}}>
-      <label>Priority<select value={priority} onChange={e=>setPriority(e.target.value as RoadmapProject['priority'])} disabled={busy}>
+      <label>Priority<select aria-label="Priority" value={priority} onChange={e=>setPriority(e.target.value as RoadmapProject['priority'])} disabled={busy}>
         {(['none','low','medium','high','urgent'] as const).map(value=><option key={value} value={value}>{value[0]!.toUpperCase()+value.slice(1)}</option>)}
       </select></label><button disabled={busy}>Save priority</button>
     </form>

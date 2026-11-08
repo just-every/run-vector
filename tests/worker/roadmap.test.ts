@@ -84,18 +84,29 @@ it('roadmap places visible projects and initiatives and fences every planning ch
     const member=await read(f.member);
     expect(JSON.stringify(member)).not.toContain(hidden.id);expect(JSON.stringify(member)).not.toContain(hidden.name);
     expect(member.initiatives.find(n=>n.id===initiative.id)?.placement).toEqual({kind:'interval',start:'2027-02-03',end:'2027-02-22'});
+    expect((await f.call('/settings/teams/'+privateTeam.id+'/members/'+f.member.id,'PUT',{role:'member'})).status).toBe(200);
+    expect((await read(f.member)).projects.some(p=>p.id===hidden.id)).toBe(true);
+    expect((await f.call('/settings/teams/'+privateTeam.id+'/members/'+f.member.id,'DELETE')).status).toBe(200);
+    expect(JSON.stringify(await read(f.member))).not.toContain(hidden.id);
     const foreign='01K00000000000000000002031',missing='01K00000000000000000002032';
     await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES('synthetic-vector-2033','synthetic-vector-2033','UTC','2027-01-01','2027-01-01')").run();
     await env.DB.prepare("INSERT INTO projects(id,workspace_id,name,description,lead_operator_id,lifecycle,created_at,updated_at) VALUES(?,'synthetic-vector-2033','synthetic-vector-2034','',?,'planned','2027-01-01','2027-01-01')").bind(foreign,f.owner).run();
     const isolated=new Hono().route('/api',createApiApp());
+    const refusals:unknown[]=[];
     for(const id of [hidden.id,foreign,missing]){
       const before=await snapshot(['projects','project_activity','project_labels']);
       const response=await isolated.request(bindings.APP_ORIGIN+'/api/roadmap/projects/'+id,{method:'PATCH',headers:{origin:bindings.APP_ORIGIN,cookie:f.member.cookie,'content-type':'application/json',host:new URL(bindings.APP_ORIGIN).host},body:JSON.stringify({expectedVersion:current.version,priority:'urgent'})},bindings);
       expect(response.status,await response.clone().text()).toBe(404);
       expect(await snapshot(['projects','project_activity','project_labels'])).toEqual(before);
-      expect(await response.text()).not.toContain(id);
+      const body=await response.json();refusals.push(body);expect(JSON.stringify(body)).not.toContain(id);
     }
+    expect(refusals[0]).toEqual(refusals[1]);expect(refusals[1]).toEqual(refusals[2]);
     await env.DB.prepare('DELETE FROM projects WHERE id=?').bind(foreign).run();
     await env.DB.prepare("DELETE FROM workspace_settings WHERE id='synthetic-vector-2033'").run();
+    expect((await f.call('/settings/operators/'+f.member.id,'DELETE')).status).toBe(200);
+    const removedState=await snapshot(['projects','project_activity','project_labels']);
+    expect((await f.member.call('/roadmap')).status).toBe(401);
+    expect((await f.member.call('/roadmap/projects/'+both.id,'PATCH',{expectedVersion:current.version,priority:'urgent'})).status).toBe(401);
+    expect(await snapshot(['projects','project_activity','project_labels'])).toEqual(removedState);
   } finally {vi.useRealTimers();}
 },120_000);

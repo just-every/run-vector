@@ -1,3 +1,4 @@
+import {generateReleaseNotes,editReleaseNotes} from '../../src/core/features/releases/notes/schema';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -179,6 +180,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    const releasePath=method==='POST'?'/releases':method==='PATCH'?'/releases/:id':'/releases/:id/scope';
    both(method,releasePath,releasePath,method==='POST'?{name:'synthetic-vector-31039',teamId:w.team.id}:method==='PATCH'?{expectedVersion:release.version,description:'synthetic-vector-31040'}:{expectedVersion:release.version,issueIdentifiers:[issue.identifier],projectIds:[project.id]},{id:release.id});
   }
+  native('POST','/releases/:id/notes',{expectedReleaseVersion:release.version},{id:release.id});
+  native('PATCH','/releases/:id/notes',{expectedReleaseVersion:release.version,expectedVersion:1,body:'synthetic-vector-9232'},{id:release.id});
   native('POST','/documents',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31102',body:'synthetic-vector-31102'});
   native('PATCH','/documents/:documentId',{expectedVersion:document.version,body:'synthetic-vector-31103'},{documentId:document.id});
   native('POST','/documents/:documentId/comments',{body:'synthetic-vector-31104'},{documentId:document.id});
@@ -276,6 +279,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'PUT /settings/notifications/channel-defaults':channelDefaultsInputSchema,
    'POST /documents':documentInput,'PATCH /documents/:documentId':documentEdit,'POST /documents/:documentId/comments':documentComment,'PUT /issues/:identifier/specification':specificationInput,
    'POST /initiatives':initiativeInput,'PATCH /initiatives/:id':initiativeEdit,'PUT /initiatives/:id/projects':initiativeProjects,
+   'POST /releases/:id/notes':generateReleaseNotes,'PATCH /releases/:id/notes':editReleaseNotes,
    'POST /releases':releaseInput,'PATCH /releases/:id':releaseEdit,'PUT /releases/:id/scope':releaseScope,
    'POST /issue-templates':issueTemplateInputSchema,
    'POST /views':createViewSchema,'PATCH /views/:id':updateViewSchema,'POST /views/:id/duplicate':duplicateViewSchema,
