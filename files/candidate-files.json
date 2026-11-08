@@ -1,0 +1,109 @@
+{
+  "head": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+  "files": [
+    {
+      "path": "docs/INTEGRATIONS.md",
+      "sha256": "0645dbd6ac46779dc8b985dd274b1ed67c2d18e8d048eca7d1202ce6d323eb8d"
+    },
+    {
+      "path": "migrations/core/0134_figma.sql",
+      "sha256": "1ebdfbb20c5224d0d4a2f9764d76111ab5bb5fdd973e847859f8fe95c61199fb"
+    },
+    {
+      "path": "schema/api-v1.json",
+      "sha256": "db4bc52cd3ae6b161548f2c64b9f5df5fbcc876262e8ced204721d8710aa7d1e"
+    },
+    {
+      "path": "seed.json",
+      "sha256": "782468faab0e5bd01e98fa3eb8cc1cdd2eb7b1e06b7d017fd842ad4b74543c5a"
+    },
+    {
+      "path": "sources.lock.json",
+      "sha256": "bbee7e3000a8e0855809e6e10916921475c10a019967a1813c6c3348c6e73cac"
+    },
+    {
+      "path": "src/core/features/data/archive-inventory.json",
+      "sha256": "2b7d5158a0605477c46e94430fa90c57132abf12acb5f882a54eec8d869454d4"
+    },
+    {
+      "path": "src/core/features/data/archive-policy.mjs",
+      "sha256": "d423bfad6748824f1cfb79bbd84516cb4b9b43a850f04fd1fe3919896d2c2927"
+    },
+    {
+      "path": "src/core/features/integrations/api.ts",
+      "sha256": "c71fb5ae96dbcc44bc7467a42c49417e76c5080b67c39d3bb37ccb81ca26e72e"
+    },
+    {
+      "path": "src/core/features/integrations/config-routes.ts",
+      "sha256": "61b4f99f2a11aebbeb9946f937649f6b204468031f5fe0295fb16a78cf2ef791"
+    },
+    {
+      "path": "src/core/features/integrations/figma/client.ts",
+      "sha256": "a55ac302616d42361090a14c8929906a8188a51832c6abde3b6d017bc61e3a3f"
+    },
+    {
+      "path": "src/core/features/integrations/figma/configuration.ts",
+      "sha256": "03b56b2fbe5df1a200bef756b86ff0502ef5a5b1af4ed37e018863099c97b5c7"
+    },
+    {
+      "path": "src/core/features/integrations/figma/connection.ts",
+      "sha256": "78dafa1e28c2c10948d2d64f3f2d641cfb9580013e9f17f02dd8bd3d2fbf8d8f"
+    },
+    {
+      "path": "src/core/features/integrations/figma/plugin-cors.ts",
+      "sha256": "3545d5076e03e6828c903d6f88dcc1b446ae2e2fb75f705a029a2e7a8877b042"
+    },
+    {
+      "path": "src/core/features/integrations/figma/plugin.ts",
+      "sha256": "710d4e9f54477f8b9cdab929d7c654381010fc5603709ea9c1b10a9feae89c48"
+    },
+    {
+      "path": "src/core/features/integrations/figma/preview.ts",
+      "sha256": "7f61021bb8f73cc88740962de519795fa5a080cbc1df42c15003929adce43019"
+    },
+    {
+      "path": "src/core/features/integrations/figma/routes.ts",
+      "sha256": "10da6979291aa105b47abb84e7e3a4147cf87d15918c595b40ff32f863b29d6d"
+    },
+    {
+      "path": "src/core/features/integrations/figma/urls.ts",
+      "sha256": "c079303acfeef52c2bbde65eb02c30c2e6dc2bc89c8024c8b57489139b8c955e"
+    },
+    {
+      "path": "src/core/features/integrations/native-egress.d.mts",
+      "sha256": "76829048c45e769b9316e756d506c60cf1d507d3d45a72f158859683ef5bd233"
+    },
+    {
+      "path": "src/core/features/integrations/native-egress.mjs",
+      "sha256": "d51363427704ea423cb96de888ab16b96adc8e076d1e634218e003bfa6cfd639"
+    },
+    {
+      "path": "src/core/features/links/routes.ts",
+      "sha256": "a6024851a458af9f6039cf1a29d8bfdf38a06db98cfdcc4e0b97ce4300efb8a4"
+    },
+    {
+      "path": "src/core/features/roles/doors.ts",
+      "sha256": "928bea308d16374603b15e11aa56c0528bbe0df05e88ca166a34aac16d866f10"
+    },
+    {
+      "path": "tests/worker/figma-archive.ts",
+      "sha256": "e245b290b0f6bee57f117f0279c2fe6a905a47eb5a0db1bf82654e0859753f63"
+    },
+    {
+      "path": "tests/worker/figma-journey.ts",
+      "sha256": "a93ca419e4b49e855a1ef3cd108b042ddacfeeab451095296cc6a8f25ee44d18"
+    },
+    {
+      "path": "tests/worker/link-cascade.test.ts",
+      "sha256": "dfe9fbd7861bd41f59ea3ef5feaddc245073f41ed5665045fea940ea8ad62c41"
+    },
+    {
+      "path": "tests/worker/project-fields-upgrade.test.ts",
+      "sha256": "03b59fe1b7375e586ce0cc71c0059aeea25f79f00a59a1989223bba61dfe0e64"
+    },
+    {
+      "path": "tests/worker/role-viewer-census.ts",
+      "sha256": "33c5228b6db060ab40ca49a0f15a04b0c9bdad6e53b0e0f842172504380f92e3"
+    }
+  ]
+}

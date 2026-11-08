@@ -1,0 +1,20 @@
+{
+  "head": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+  "base": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "fullHistory": true,
+  "contractUnchanged": true,
+  "contractSha256": "1a5b293a26e913b7192b65fd1e49af75cd98c8eee7e3fefeb393cb4ad3ee9e7d",
+  "statusRows": 272,
+  "statusCounts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "generatedViewsCommitted": false,
+  "worktreeClean": true,
+  "sourceLockCheckExit": 0,
+  "contractWriteExit": 0,
+  "contractCheckExit": 0,
+  "structuralCheckExit": 0,
+  "migrationLedgerExit": 0
+}

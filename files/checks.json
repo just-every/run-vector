@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f203",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f203",
+  "head": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+  "base": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "checkedAt": "2026-11-08T18:28:54.070919+00:00",
+  "checks": [
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": "cloud_run pnpm exec vitest run --config vitest.config.ts tests/worker/link-cascade.test.ts tests/worker/project-fields-upgrade.test.ts tests/worker/role-matrix.test.ts",
+      "exit": 0,
+      "files": 3,
+      "tests": 9,
+      "log": "touched-tests.log"
+    },
+    {
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log"
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "log": "migration-ledger.log"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write DESIGN-001; node scripts/contract-docs.mjs check DESIGN-001",
+      "exit": 0,
+      "log": "views.log",
+      "generatedFilesRestored": true
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    }
+  ],
+  "ci": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42510175033",
+      "id": 42510175033,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "githubApiCalls": 2,
+  "push": {
+    "status": "PUSH_OK",
+    "attempts": 1,
+    "remote": "origin",
+    "ref": "refs/heads/cloud/sd-vector-c-f203"
+  },
+  "publicationScan": {
+    "commit": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+    "complete": null,
+    "historyScanned": null,
+    "findings": null,
+    "custodian": "Mac lander"
+  },
+  "browser": {
+    "status": "NOT_RUN",
+    "reason": "Selected interface implementation and independent gate retain Claude Opus; no such executor is available in this session."
+  },
+  "contractStatusChange": null,
+  "claim": {
+    "id": "DESIGN-001",
+    "status": "PARTIAL",
+    "points": [
+      2,
+      3
+    ]
+  },
+  "counts": {
+    "before": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64
+    },
+    "after": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64
+    }
+  }
+}
