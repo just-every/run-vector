@@ -4,12 +4,102 @@ import { Buffer } from 'node:buffer';
 import { setupLinearWorkspace } from './linear-workspace-fixture';
 import { setupErasureRollbackTeams } from './erasure-rollback-fixture';
 import { generateLinearWorkspace } from '../fixtures/import/linear/generate.mjs';
-import { destination, finalBody, freshTarget, httpExport, stageArchive, targetCall } from './http-archive-fixture';
+import { archiveRows, destination, finalBody, freshTarget, httpExport, stageArchive, targetCall } from './http-archive-fixture';
 import { holders } from './sentinel-scan';
+import { expandCompressedPlan } from '../../vendor/base/import-kit/src/d1/compressed-plan';
+import { nativeTargets } from '../../src/core/features/data/import/native-targets';
+import type { ImportPlan } from '../../vendor/base/import-kit/src/d1/index';
 import type { ImportInput } from '../../src/core/features/data/import/types';
 
 const STRANGER = 'Quentin Erasewell', NEEDLES = ['quentin erasewell', 'maya chen', 'maya@base.test'];
 const count = async (sql: string, ...params: unknown[]) => (await env.DB.prepare(sql).bind(...params).first<number>('n')) ?? 0;
+
+
+/** Exact structured endpoints must leave custody through the same native doors
+ * as imported authors. Decode the downloaded plan, including chunk envelopes. */
+async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWorkspace>>) {
+  const person = 'Synthetic Vector Absent Endpoint Person', similar = person + ' II';
+  const mapping = { sourceId: 'sourceId', title: 'title', team: 'team', status: 'status', dependencies: 'dependencies' };
+  const row = (sourceId: string, title: string, dependencies: string | string[] = '') => ({ sourceId, title, team: f.team.name, status: f.status.name, dependencies });
+  const input = (rows: unknown[], source: string): ImportInput => ({ format: 'json', source, name: 'endpoint.json', mapping, base64: Buffer.from(JSON.stringify(rows)).toString('base64') });
+  const original = input([
+    row('SYNTHETIC-GATE-ERASE-42', 'Retain the delivery plan', 'source:' + person),
+    row(person, 'Earlier supplied endpoint'),
+  ], 'synthetic-vector-erasure-endpoint');
+  const review = await f.preview(original);expect(review.ready).toBe(true);
+  const operation = 'synthetic-endpoint-original';
+  const applied = await f.apply(original, review, operation);expect(applied.status, await applied.clone().text()).toBe(200);
+  let run = await applied.json() as Awaited<ReturnType<typeof f.createRun>>;
+  while (run.progress.unfinished) run = await f.resume(run);
+  expect(run.state).toBe('completed');
+  const controls = input([
+    row(similar, 'Keep the similarly named source'),
+    row('SYNTHETIC-CONTROL', 'Keep the unrelated dependency', 'source:' + similar),
+  ], 'synthetic-vector-erasure-control');
+  let control = await f.createRun(controls, await f.preview(controls));
+  while (control.progress.unfinished) control = await f.resume(control);
+  const controlReport = await f.call('/data/import/runs/' + control.id + '/report');expect(controlReport.status).toBe(200);
+  const controlIds = (await controlReport.json() as { mapping: { identifier: string }[] }).mapping.map(row => row.identifier);
+  const controlIssue = async () => {
+    const response = await f.call('/issues/' + controlIds[1]);expect(response.status).toBe(200);
+    return response.json() as Promise<{ version: number; title: string; dependencies: { identifier: string }[] }>;
+  };
+  const beforeControl = await controlIssue(), editedTitle = 'Keep this native edit and dependency';
+  expect(beforeControl.dependencies.map(row => row.identifier)).toEqual([controlIds[0]]);
+  expect((await f.call('/issues/' + controlIds[1], 'PATCH', { expectedVersion: beforeControl.version, title: editedTitle })).status).toBe(200);
+  const pendingInput = input([
+    row(person, 'Unpublished personal endpoint'),
+    row('SYNTHETIC-PENDING-ARRAY', 'Unpublished array link', ['source:' + person]),
+    row('SYNTHETIC-PENDING-LIST', 'Unpublished comma link', 'source:' + person + ', source:SYNTHETIC-PENDING-CONTROL'),
+    row('SYNTHETIC-PENDING-CONTROL', 'Publish the unaffected pending record'),
+  ], 'synthetic-vector-erasure-pending');
+  let pending = await f.createRun(pendingInput, await f.preview(pendingInput));
+  expect(pending.progress.unfinished).toBe(true);
+  const shown = await f.call('/data/erasure/preview', 'POST', { names: [person] });expect(shown.status).toBe(200);
+  const { confirmation } = await shown.json() as { confirmation: string };
+  expect((await f.call('/data/erasure', 'POST', { subject: { names: [person] }, confirmation: 'erase someone' })).status).toBe(400);
+  const erased = await f.call('/data/erasure', 'POST', { subject: { names: [person] }, confirmation });
+  expect(erased.status, await erased.clone().text()).toBe(200);
+  const receipt = await erased.json() as { journal: { receiptId: string } };
+  const archive = await httpExport(f.call), jobs = archiveRows(archive, 'ik_jobs'), chunks = archiveRows(archive, 'ik_d1_plan_chunks');
+  const decoded = (id: string): ImportPlan => {
+    const job = jobs.find(row => row.id === id)!;
+    let body = String(job.plan_json), envelope = JSON.parse(body);
+    if (envelope.d1Plan === 1) {
+      body = chunks.filter(row => row.job_id === id).sort((a, b) => Number(a.ordinal) - Number(b.ordinal)).map(row => row.body).join('');
+      envelope = JSON.parse(body);
+    }
+    return [2, 3].includes(envelope.d1Plan) ? expandCompressedPlan(body, nativeTargets.planCodec) : envelope;
+  };
+  const archived = decoded(run.id);
+  const retainedEndpoint = archived.entries.some(entry => JSON.stringify(entry.source.payload).includes('source:' + person));
+  console.info('source-endpoint-erasure-proof', JSON.stringify({ importState: run.state, erasureStatus: erased.status, archiveDownloaded: true, erasedEndpointRetainedInArchivedPlan: retainedEndpoint }));
+  expect(retainedEndpoint).toBe(false);
+  expect(archived.entries.every(entry => entry.erased)).toBe(true);
+  expect(decoded(control.id).entries.every(entry => !entry.erased)).toBe(true);
+  expect(JSON.stringify(decoded(control.id))).toContain('source:' + similar);
+  const afterControl = await controlIssue();expect(afterControl.title).toBe(editedTitle);
+  expect(afterControl.dependencies).toEqual(beforeControl.dependencies);
+  expect(decoded(pending.id).entries.filter(entry => !entry.erased).map(entry => entry.source.sourceId)).toEqual(['SYNTHETIC-PENDING-CONTROL']);
+  const originals = await f.call('/data/import/runs/' + run.id + '/originals');expect(originals.status).toBe(200);
+  const retainedOriginals = await originals.json() as { original: { status: string; reason?: string } }[];
+  expect(retainedOriginals.length).toBeGreaterThan(0);
+  expect(retainedOriginals.every(row => row.original.status === 'unavailable' && row.original.reason === 'unavailable-after-erasure')).toBe(true);
+  while (pending.progress.unfinished) pending = await f.resume(pending);
+  expect(pending.state).toBe('completed');
+  const report = await f.call('/data/import/runs/' + pending.id + '/report');expect(report.status).toBe(200);
+  const mappingRows = (await report.json() as { mapping: { row: number; identifier: string | null }[] }).mapping;
+  expect(mappingRows.filter(row => row.identifier).map(row => row.row)).toEqual([4]);
+  const survivor = await f.call('/issues/' + mappingRows[3].identifier);expect(survivor.status).toBe(200);
+  expect((await survivor.json() as { dependencies: unknown[] }).dependencies).toEqual([]);
+  const replay = await f.apply(original, review, operation);expect(replay.status).toBe(400);
+  const repeat = await f.preview(original);expect(repeat.ready).toBe(false);
+  expect(repeat.errors.filter(error => error.code === 'source_erased')).toHaveLength(2);
+  const refused = await f.apply(original, review, 'synthetic-endpoint-fresh-operation');expect(refused.status).toBe(400);
+  const journal = await f.call('/data/erasure/journal');expect(journal.status).toBe(200);
+  expect((await journal.json() as { entries: { receiptId: string }[] }).entries.some(entry => entry.receiptId === receipt.journal.receiptId)).toBe(true);
+  console.info('source-endpoint-controls-proof', JSON.stringify({ similarSourceRetained: true, unrelatedDependencyRetained: true, pendingState: pending.state, pendingSurvivors: 1, replayState: replay.status, freshApplyRefused: refused.status, journalRetained: true }));
+}
 
 it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivors, clears applied and pending custody, and fences older archives', async () => {
   const f = await setupLinearWorkspace(10);
@@ -199,4 +289,5 @@ it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivor
   const finalized = await targetCall('/api/portability/imports/' + restored + '/finalize', 'POST', finalBody(later), cookie);
   expect(finalized.status, await finalized.clone().text()).toBe(200);
   expect(await holders(destination.ARCHIVE_TARGET_DB, NEEDLES, destination.ARCHIVE_TARGET_FILES)).toEqual({});
+  await sourceEndpointErasure(f);
 }, 600000);

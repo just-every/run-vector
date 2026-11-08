@@ -7,12 +7,13 @@ import { TeamPeople } from './team-people';
 import { TeamPlanning } from './team-planning';
 import { TeamTabs, teamTabs, type TeamTab } from './team-tabs';
 import { TeamWorkflow } from './team-workflow';
+import { TeamFields } from '../../../custom-fields/ui/team-fields';
 import { useAdministration } from '../admin/administration';
 
 const back = { label: 'Teams', to: '/app/settings/teams' } as const;
 
 /**
- * One team in the pane, under "Teams › name": a meta line and five tabs, each at its own path. Automation is for whoever
+ * One team in the pane, under "Teams › name": a meta line and six tabs, each at its own path. Automation is for whoever
  * may change the team's settings (Owners, Admins, and a Member the team's permission admits) and is absent for everyone
  * else, never greyed; an unknown team or tab gets one plain line.
  */
@@ -32,6 +33,7 @@ export function TeamRecord({ teamId, tab }: { teamId: string; tab?: string }) {
     <div className="team-tab-body">
       {current === 'details' && <TeamDetails data={data} team={team} />}
       {current === 'workflow' && <TeamWorkflow data={data} team={team} />}
+      {current === 'fields' && <TeamFields data={data} team={team} />}
       {current === 'people' && <TeamPeople data={data} team={team} />}
       {current === 'planning' && <TeamPlanning data={data} team={team} />}
       {current === 'automation' && <TeamAutomation data={data} team={team} />}

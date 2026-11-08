@@ -523,6 +523,14 @@
     {
       "source": "ADOPTING.md",
       "reason": "Contributor instructions for dependency-key schema and private installation custody; not an installed application guide."
+    },
+    {
+      "source": "docs/PROJECT-FORECASTS.md",
+      "reason": "Native project forecast method, capacity assumptions and current numerical acceptance boundaries for maintainers and API consumers."
+    },
+    {
+      "source": "docs/SLAS.md",
+      "reason": "Native resolution SLA behavior, portable clocks and implementation qualification."
     }
   ]
 }

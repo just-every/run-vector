@@ -4,8 +4,8 @@
 .field-head label { color: inherit; }
 legend.field-head { float: none; margin: 0 0 0.4rem; }
 .field-saved { min-width: 3rem; font-size: var(--app-text-small); color: var(--app-muted); }
-.field-saved:not(:empty) { animation: field-saved 2.2s ease forwards; }
-@keyframes field-saved { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+.field-saved:not(:empty) { animation: field-saved 2.2s step-end forwards; }
+@keyframes field-saved { from { visibility: visible; } to { visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .field-saved:not(:empty) { animation: none; } }
 .field-hint { margin: 0; font-size: var(--app-text-small); line-height: 1.5; color: var(--app-body); }
 .field-failure { display: grid; gap: 0.1rem; margin: 0; font-size: var(--app-text-small); line-height: 1.5; color: var(--app-danger); }

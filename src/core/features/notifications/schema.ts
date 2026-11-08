@@ -7,6 +7,7 @@ export const notificationKinds = [
   "thread_reopened",
   "intake_return",
   "triage",
+  "sla_warning",
   "unblocked",
   "due_reminder",
   "status",
@@ -26,6 +27,7 @@ export type InboxItem = {
   eventId: string;
   identifier: string;
   documentId?: string | null;
+  projectId?: string | null;
   title: string;
   actor: string | null;
   causes: NotificationKind[];

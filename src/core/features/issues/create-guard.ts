@@ -1,6 +1,7 @@
 import type { CreateIssueInput } from "./input";
 import { IssueMutationError } from "./errors";
 import { isMutationAccessError } from "../auth/mutation-database";
+import { currentFieldValues } from "../custom-fields/validation";
 
 export function creationGuard(
   db: D1Database,
@@ -8,7 +9,7 @@ export function creationGuard(
   workspace: string,
   teamId: string,
   statusId: string,
-  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null },
+  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null; fieldValues?: Record<string, string> },
   category: string,
   allocatedPrefix: string,
 ) {
@@ -49,6 +50,11 @@ export function creationGuard(
       "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=?)",
     );
     values.push(id, workspace);
+  }
+  // FIELD-001: typed values admitted before the write must still be this team's options.
+  if (input.fieldValues && Object.keys(input.fieldValues).length) {
+    conditions.push(currentFieldValues("?"));
+    values.push(JSON.stringify(input.fieldValues), teamId);
   }
   return db
     .prepare(
