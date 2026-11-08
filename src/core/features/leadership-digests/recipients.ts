@@ -11,7 +11,7 @@ export async function leadershipRecipient(db: D1Database, id: string, channel: L
     WHERE o.id=? AND o.role<>'guest' AND ${effectsAllowed}
     AND p.${channel === 'email' ? 'email_enabled' : 'slack_enabled'}=1
     ${channel === 'email' ? `AND COALESCE((SELECT email_enabled FROM notification_preferences WHERE operator_id=o.id),1)=1` : ''}
-    ${channel === 'slack' ? `AND l.slack_user_id IS NOT NULL AND EXISTS(SELECT 1 FROM vector_slack_installations s WHERE s.workspace_id=o.workspace_id AND s.enabled=1)` : ''}`)
+    ${channel === 'slack' ? `AND l.slack_user_id IS NOT NULL AND EXISTS(SELECT 1 FROM vector_slack_installations s WHERE s.workspace_id=o.workspace_id AND s.enabled=1 AND s.slack_team_id=l.slack_team_id)` : ''}`)
     .bind(id).first<{email: string; revision: string; slackUserId: string|null}>();
   return row ? {...clock,...row} : null;
 }

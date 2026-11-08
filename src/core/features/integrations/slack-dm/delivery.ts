@@ -66,7 +66,7 @@ const refused=(reason:string):WireResponse=>({status:409,headers:{'vector-dm-ref
 /** conversations.open, then chat.postMessage. Admission is repeated before each provider call. */
 export async function sendDirect(env:WorkerBindings,workspace:string,wire:WireRequest):Promise<WireResponse>{
  const id=wire.headers['vector-dm-event'],headers={...wire.headers};delete headers['vector-dm-event'];delete headers['vector-dm-at'];
- const digest=await env.DB.prepare("SELECT * FROM leadership_digest_receipts WHERE id=? AND workspace_id=? AND channel='slack'").bind(id,workspace).first<LeadershipReceipt>();
+ const digest=id.startsWith('leadership-')?await env.DB.prepare("SELECT * FROM leadership_digest_receipts WHERE id=? AND workspace_id=? AND channel='slack'").bind(id,workspace).first<LeadershipReceipt>():null;
  if(digest)return sendLeadershipDirect(env,digest,wire,new Date(Number(wire.headers['vector-dm-at'])));
  const send=async()=>{
   const target=wire.body==='{}'?null:await directTarget(env,workspace,id);

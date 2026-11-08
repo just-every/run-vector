@@ -16,12 +16,12 @@ export function LeadershipDigestControls({slackReason}:{slackReason?:string}) {
     } catch (cause) {setError(cause instanceof Error?cause.message:'Unable to save leadership digest channels.');}
     finally {setBusy(false);}
   }
-  return <section aria-label="Weekly leadership digest">
+  return <section className="leadership-digest-controls" aria-label="Weekly leadership digest">
     <h3>Weekly leadership digest</h3>
     <p>For initiatives you own or subscribe to, receive status, date changes, new computed risks and completed milestones once each week during <Link to="/app/settings/profile">your working days and hours</Link>.</p>
     {data.data && <fieldset disabled={busy || Boolean(data.error)}><legend>Send my weekly leadership digest by</legend>
       <label><input type="checkbox" checked={data.data.email} onChange={e=>void choose('email',e.target.checked)}/>Email leadership digest</label>
-      <label><input type="checkbox" checked={data.data.slack} disabled={Boolean(slackReason)} onChange={e=>void choose('slack',e.target.checked)}/>Slack direct message leadership digest</label>
+      <label><input type="checkbox" checked={data.data.slack} disabled={Boolean(slackReason) && !data.data.slack} onChange={e=>void choose('slack',e.target.checked)}/>Slack direct message leadership digest</label>
     </fieldset>}
     {slackReason && <p>{slackReason}</p>}
     {busy && <p role="status">Saving leadership digest channels…</p>}

@@ -2569,6 +2569,10 @@
       "sha256": "e55023996653e28dfb2da239f4f3d9b13c2724eadfc097232a9d9d395d8dfe12",
       "executable": false
     },
+    "migrations/core/0134_leadership_restore_holds.sql": {
+      "sha256": "b542023a0770a8882ccecbffc2380b5bf177f0094efa653dab398d56a1bd8a6b",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -5606,7 +5610,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-dm/delivery.ts": {
-      "sha256": "c730f4700521fc2aef833a55cc97887cb72f0e7d3991b22e6f697483bf4f66c2",
+      "sha256": "eea766aedc327ec32ec49c2039dcea87df43bd612d25608c33075ac103816ed7",
       "executable": false
     },
     "src/core/features/integrations/slack-dm/intent.ts": {
@@ -6314,11 +6318,11 @@
       "executable": false
     },
     "src/core/features/leadership-digests/recipients.ts": {
-      "sha256": "babfd235106d14026bdeb67d3b4ea61f76f10210d51ee696ad8b9cb0a85da9a7",
+      "sha256": "02e1fb61beaf8a664c5b81da55d4008391a1ce8880775803ab98cbf170345f1a",
       "executable": false
     },
     "src/core/features/leadership-digests/scheduled.ts": {
-      "sha256": "c35b26fd58bd90800ba8acaccc12080b0846a0e687949f91a17416e3bbf8e252",
+      "sha256": "96c769f745f71b47e878c9731e65a543a7a43e9d1ce300cdb3b059ae94ecce16",
       "executable": false
     },
     "src/core/features/leadership-digests/schema.ts": {
@@ -6490,7 +6494,7 @@
       "executable": false
     },
     "src/core/features/notifications/digest-calendar.ts": {
-      "sha256": "4eaf88c38f1ff4232163de2459c657b66f9d2fb80c5d3e5e4817d4a50b33eb6a",
+      "sha256": "05304018f83e69f5ab5083df3924158703c4f08ae33aceffb8ca46d7a3dd5d7d",
       "executable": false
     },
     "src/core/features/notifications/digest-repository.ts": {
@@ -6614,7 +6618,7 @@
       "executable": false
     },
     "src/core/features/notifications/ui/leadership-digest.tsx": {
-      "sha256": "fb72c90cecb08ab91fe6883d13e2ee115d5f3e75b6d4926918482116fd2153e9",
+      "sha256": "dcecf6d4677cd0a8b3358c5cadcfda7ab2d5e4b4c8091b21e1697e9fd74f1e8a",
       "executable": false
     },
     "src/core/features/notifications/ui/mention-editor-state.ts": {
@@ -6630,7 +6634,7 @@
       "executable": false
     },
     "src/core/features/notifications/ui/notification-channels.css": {
-      "sha256": "e4025c740c1e6bbda10f8b5d4671667a12cd6185394874ebaabccb9e118fb0f3",
+      "sha256": "b76605ef32930afe4157f7ad24fd306f5ab2ee3f1d2e7f452bc1038b6567a912",
       "executable": false
     },
     "src/core/features/notifications/ui/notification-channels.tsx": {
@@ -8554,7 +8558,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "5c5ee245d25dfa1a106a29452e780990b1489d0a88cde684b7128c075bb5a754",
+      "sha256": "4ab90ab9da691510066abbd1daf473afe59356a05247b87ebad969016c6c25f1",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8726,7 +8730,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "0a3f1ba7ad4701d0d9bcccd874204d393a04c2728d2779b77df8f0f944cb8504",
+      "sha256": "8c7e566a7059f0ac392e20654f626d4aa1779aa614dbdef7b88b96d310160131",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
@@ -8867,6 +8871,10 @@
     },
     "tests/e2e/jira-status-controls.mjs": {
       "sha256": "5b43710137473fbb08772e35a0755eaa0af4bed08168c974d4306f861d73ffac",
+      "executable": false
+    },
+    "tests/e2e/leadership-digest-journey.mjs": {
+      "sha256": "8d213d74725f85e8532c962af25004c91bdf0471ec27b083fe1fd4c5643888a3",
       "executable": false
     },
     "tests/e2e/local-d1-read.mjs": {
@@ -9286,7 +9294,7 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "ba8abf2ef2b4123e145d41ad1e6e9a45f75cf57a3bf6b9fa53bc58c6c4f8b33a",
+      "sha256": "d469253a277127050c17c4046a87ae82539cdc4e54190c1dcdf27bdeed0ad9ed",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
@@ -9406,7 +9414,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "e6ca462977e02f17e0918b57304d1fbd7391465f866d11a095d4045b071674ab",
+      "sha256": "b7760b6e2a3fc79f0f4462baecaf7caa066cecf6307e783029ff02d1fcfe0354",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
@@ -9649,8 +9657,12 @@
       "sha256": "131b6e0e3242d2a106a7c39ded6599fabb6276bd59286ed577f42fff7c9d85e7",
       "executable": false
     },
+    "tests/worker/leadership-digest-upgrade.test.ts": {
+      "sha256": "141cb307636454e79cfa292404a3b50088259815e3038d4e487b7613681186e7",
+      "executable": false
+    },
     "tests/worker/leadership-digests.test.ts": {
-      "sha256": "5352440a1700faad526bd4807e687ce3552b9bc4a3bab128de0ebf3c1afe68ba",
+      "sha256": "beb15b95c6a4a9590728ab9219d521b59e7cbdc5d03847f997e3300c1a6f7866",
       "executable": false
     },
     "tests/worker/linear-api-import.test.ts": {

@@ -1,3 +1,4 @@
+import { sendLeadershipDigests } from '../../src/core/features/leadership-digests/scheduled';
 import {advanceSlas} from '../../src/core/features/slas/service';
 import {mentionToken} from '../../src/core/features/notifications/mention-token';
 import { auditSchema } from '../../src/core/features/audit/schema';
@@ -17,6 +18,18 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ // Create a real scheduled leadership intent before exporting an interrupted source.
+ const leadershipRootResponse=await f.call('/initiatives','POST',{name:'synthetic-vector-4030',ownerOperatorId:f.owner});
+ expect(leadershipRootResponse.status).toBe(201);
+ expect((await f.call('/settings/notifications/leadership-digest','PUT',{email:true,slack:false})).status).toBe(200);
+ expect((await f.call('/settings/personal-time','PATCH',{timezone:'UTC',workingHoursStart:'09:00',workingHoursEnd:'17:00',workingDays:[1,2,3,4,5]})).status).toBe(200);
+ const leadershipAt=new Date('2027-01-04T09:00:00Z');
+ await sendLeadershipDigests({...bindings,APP_ORIGIN:'https://vector.example.test',MAIL_MODE:'production',MAIL_PROVIDER:'sendgrid',MAIL_API_KEY:'synthetic-vector-4031'},leadershipAt,{fetch:async()=>new Response(null,{status:429})});
+ expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_receipts').first<number>('n')).toBe(1);
+ await env.DB.prepare("UPDATE leadership_digest_receipts SET status='claimed',claim_token='synthetic-vector-4032'").run();
+ const leadershipBefore=(await env.DB.prepare('SELECT * FROM leadership_digest_receipts ORDER BY id').all()).results.map(row=>({...row,claim_token:null}));
+ const leadershipChoices=(await env.DB.prepare('SELECT * FROM leadership_digest_preferences ORDER BY operator_id').all()).results;
+
  const blockerName='synthetic-vector-1530';
  const blockerState=await f.mutate('/settings/projects','POST',{name:blockerName,leadOperatorId:f.peer});
  const projectBlocker=blockerState.projects.find(p=>p.name===blockerName)!;
@@ -309,6 +322,15 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision')).toBe(subscriptionRevision);
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT subscription_revision FROM vector_restore_status WHERE id=1').first<number>('subscription_revision')).toBe(subscriptionRevision);
  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM leadership_digest_receipts ORDER BY id').all()).results).toEqual(leadershipBefore);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM leadership_digest_preferences ORDER BY operator_id').all()).results).toEqual(leadershipChoices);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM leadership_digest_restore_holds').first<number>('n')).toBe(1);
+ let restoredLeadershipSends=0;
+ const restoredLeadershipEnv={...targetBindings,DB:destination.ARCHIVE_TARGET_DB,APP_ORIGIN:'https://vector.example.test',MAIL_MODE:'production',MAIL_PROVIDER:'sendgrid',MAIL_API_KEY:'synthetic-vector-4033'};
+ await sendLeadershipDigests(restoredLeadershipEnv,new Date('2027-01-04T10:00:00Z'),{fetch:async()=>{restoredLeadershipSends++;return new Response(null,{status:202});}});
+ expect(restoredLeadershipSends).toBe(0);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM leadership_digest_receipts ORDER BY id').all()).results).toEqual(leadershipBefore);
+
  expect((await targetCall('/api/settings/teams/'+slaStoppedTeam.id,'PATCH',{archived:false},historical)).status).toBe(200);
  const restoredStop=await targetCall('/api/issues/'+slaStoppedIssue.identifier+'/sla','GET',undefined,historical);
  expect(restoredStop.status).toBe(200);expect(await restoredStop.json()).toMatchObject({state:'stopped',stoppedAt:slaStoppedAt});

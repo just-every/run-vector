@@ -1,3 +1,4 @@
+import {leadershipDigestJourney} from './leadership-digest-journey.mjs';
 import {mkdtempSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -19,6 +20,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
  try{
  const settings=await call('/settings/administration'),team=settings.teams.find(t=>!t.archivedAt),owner=settings.viewer.id;
  await call('/settings/notifications','PATCH',{mutedKinds:[]});
+ await leadershipDigestJourney({page,runtime,call,evidence});
  let memberFixture;
  // Viewports share one real Member; restore its role through the public Owner door.
  for(const width of [1440,390]){

@@ -17,7 +17,7 @@ it('weekly leadership scheduled delivery deduplicates owners and subscribers in 
   const cookie=await invite(['synthetic-vector-4002','vector.test'].join('@'),f.cookie), member=await actor(cookie);
   const call=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
   const read=(path:string,method='GET',body?:unknown)=>json(f.call(path,method,body));
-  const tick=(date:string)=>scheduled({scheduledTime:Date.parse(date)},remote,{fetch:network});
+  const tick=(date:string,beforeAdmission?:any)=>scheduled({scheduledTime:Date.parse(date)},remote,{fetch:network,beforeAdmission});
   try {
     await read('/settings/integrations/slack','POST',{botToken:edge.token});
     for (const [id,user,send] of [[f.owner,'UDIGEST1',f.call],[member,'UDIGEST2',call]] as const) {
@@ -69,9 +69,85 @@ it('weekly leadership scheduled delivery deduplicates owners and subscribers in 
     expect(changed).toContain('Milestone completed: synthetic-vector-4008');
     expect(changed).toContain(remote.APP_ORIGIN+'/app/initiatives/'+root.id);
     expect(changed).toContain(remote.APP_ORIGIN+'/app/projects/'+projects[0].id+'#milestone-'+milestone.id);
+    let membershipWithdrawn=false;
+    await tick('2027-03-22T13:00:00Z',async(receipt:any)=>{
+      if(receipt.recipient_id===member&&!membershipWithdrawn){membershipWithdrawn=true;await read('/settings/teams/'+privateTeam.id+'/members/'+member,'DELETE');}
+    });
+    expect(mail).toHaveLength(6);expect(posts()).toHaveLength(6);
+    const withdrawn=mail.slice(4).find(m=>m.personalizations[0].to[0].email===email).content[0].value as string;
+    expect(withdrawn).not.toContain(projects[1].id);expect(withdrawn).not.toContain(projects[1].name);
+    expect(withdrawn).not.toContain('Target slipped:');expect(withdrawn).not.toContain('New risk:');expect(withdrawn).not.toContain('Milestone completed:');
+    expect(posts().filter(c=>c.body.channel==='DDIGEST2').at(-1)!.body.text).not.toContain(projects[1].name);
     await json(await call('/subscriptions/'+subscription.id,'DELETE'));
-    await tick('2027-03-22T13:00:00Z');expect(mail).toHaveLength(5);expect(posts()).toHaveLength(5);
-    await tick('2027-03-22T14:00:00Z');expect(mail).toHaveLength(5);expect(posts()).toHaveLength(5);
-    expect(await env.DB.prepare("SELECT count(*) n FROM leadership_digest_receipts WHERE status='accepted'").first<number>('n')).toBe(10);
+    await tick('2027-03-29T13:00:00Z');expect(mail).toHaveLength(7);expect(posts()).toHaveLength(7);
+    await tick('2027-03-29T14:00:00Z');expect(mail).toHaveLength(7);expect(posts()).toHaveLength(7);
+    expect(await env.DB.prepare("SELECT count(*) n FROM leadership_digest_receipts WHERE status='accepted'").first<number>('n')).toBe(14);
+    await read('/settings/personal-time','PATCH',{timezone:'America/New_York',workingHoursStart:'01:00',workingHoursEnd:'03:00',workingDays:[7]});
+    await tick('2027-11-07T05:30:00Z');await tick('2027-11-07T06:30:00Z');
+    expect(mail).toHaveLength(8);expect(posts()).toHaveLength(8); // repeated local DST hour occupies one week slot
+
   } finally { edge.restore(); }
+});
+
+it('weekly leadership delivery revalidates withdrawal, unlinking, disabled installs, holds and erasure and retries only definite rejection',async()=>{
+  const f=await setupAdministration(),edge=channelEdge('TFIXTURE');
+  const cookie=await invite(['synthetic-vector-4010','vector.test'].join('@'),f.cookie),member=await actor(cookie);
+  const call=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
+  const mine=(path:string,method='GET',body?:unknown)=>json(call(path,method,body));
+  const owner=(path:string,method='GET',body?:unknown)=>json(f.call(path,method,body));
+  let mailCount=0,mailStatus=202;
+  const network:typeof fetch=async()=>{mailCount++;return new Response(null,{status:mailStatus});};
+  const tick=(at:string,beforeAdmission?:any,afterSubmission?:()=>Promise<void>)=>scheduled({scheduledTime:Date.parse(at)},remote,{fetch:network,beforeAdmission,afterSubmission});
+  const posts=()=>edge.calls.filter(c=>c.method==='chat.postMessage');
+  try {
+    await owner('/settings/integrations/slack','POST',{botToken:edge.token});
+    const email=await env.DB.prepare('SELECT email FROM operators WHERE id=?').bind(member).first<string>('email');
+    edge.users(email!,'UDIGEST3','synthetic-vector-4011');
+    await mine('/settings/notifications/slack/link','POST',{slackUserId:'UDIGEST3'});
+    await mine('/settings/notifications/leadership-digest','PUT',{email:true,slack:true});
+    await mine('/settings/personal-time','PATCH',{timezone:'UTC',workingHoursStart:'09:00',workingHoursEnd:'17:00',workingDays:[1,2,3,4,5]});
+    const root=await json(f.call('/initiatives','POST',{name:'synthetic-vector-4012',ownerOperatorId:f.owner}),201);
+    let sub=await json(call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
+    // A claimed intent must not survive withdrawal before either transport.
+    let withdrew=false;
+    await tick('2027-01-04T09:00:00Z',async()=>{if(!withdrew){withdrew=true;await mine('/subscriptions/'+sub.id,'DELETE');}});
+    expect(mailCount).toBe(0);expect(posts()).toHaveLength(0);
+    sub=await json(call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
+    mailStatus=429;
+    await tick('2027-01-11T09:00:00Z');expect(mailCount).toBe(1);expect(posts()).toHaveLength(1);
+    mailStatus=202;
+    await tick('2027-01-11T09:00:59Z');expect(mailCount).toBe(1);
+    await tick('2027-01-11T09:01:00Z');expect(mailCount).toBe(2);expect(posts()).toHaveLength(1);
+    await tick('2027-01-11T10:00:00Z');expect(mailCount).toBe(2);expect(posts()).toHaveLength(1);
+    // Slack's definitive rate limit uses the existing durable delivery's retry claim.
+    edge.postMode('retry');await tick('2027-01-18T09:00:00Z');expect(posts()).toHaveLength(2);
+    edge.postMode('accepted');await tick('2027-01-18T09:01:00Z');expect(posts()).toHaveLength(3);
+    await tick('2027-01-18T10:00:00Z');expect(posts()).toHaveLength(3);
+    const beforeUnlink=posts().length;
+    await tick('2027-01-25T09:00:00Z',async(receipt:any)=>{if(receipt.channel==='slack')await mine('/settings/notifications/slack/link','DELETE');});
+    expect(posts()).toHaveLength(beforeUnlink);
+    await mine('/settings/notifications/slack/link','POST',{slackUserId:'UDIGEST3'});
+    // A network-edge change after conversations.open is observed before chat.postMessage.
+    let stopped=false;
+    edge.beforeCall(async(method)=>{if(method==='conversations.open'&&!stopped){stopped=true;await mine('/subscriptions/'+sub.id,'DELETE');}});
+    await tick('2027-02-01T09:00:00Z');expect(posts()).toHaveLength(beforeUnlink);edge.beforeCall();
+    sub=await json(call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
+    await owner('/settings/integrations/slack','DELETE');
+    await tick('2027-02-08T09:00:00Z');expect(posts()).toHaveLength(beforeUnlink);
+    // Expired claims and lost acknowledgements are terminal, even after restart.
+    const beforeCrash=mailCount;
+    await expect(tick('2027-02-15T09:00:00Z',undefined,async()=>{throw Error('synthetic-vector-settlement-crash');})).rejects.toThrow('synthetic-vector-settlement-crash');
+    await tick('2027-02-15T10:00:00Z');expect(mailCount).toBe(beforeCrash+1);
+    expect(await env.DB.prepare("SELECT status FROM leadership_digest_receipts WHERE recipient_id=? AND slot='2027-02-15' AND channel='email'").bind(member).first<string>('status')).toBe('uncertain');
+    // Restore fences stop later weeks, not merely the already consumed receipt.
+    await env.DB.prepare("INSERT INTO vector_restore_status(id,import_id,effects_held) VALUES(1,'synthetic-vector-4013',1)").run();
+    const held=mailCount;await tick('2027-02-22T09:00:00Z');expect(mailCount).toBe(held);
+    await env.DB.prepare('DELETE FROM vector_restore_status').run();
+    // An unlinked or inactive person never regains a pending send after erasure.
+    await tick('2027-03-01T09:00:00Z',async()=>{await owner('/settings/operators/'+member,'DELETE');});
+    expect(mailCount).toBe(held);
+    expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_receipts WHERE recipient_id=?').bind(member).first<number>('n')).toBe(0);
+    expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_preferences WHERE operator_id=?').bind(member).first<number>('n')).toBe(0);
+    await tick('2027-03-08T09:00:00Z');expect(mailCount).toBe(held);
+  } finally {edge.restore();}
 });

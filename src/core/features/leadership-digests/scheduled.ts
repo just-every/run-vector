@@ -2,7 +2,7 @@ import type { WorkerBindings } from '../../app/bindings';
 import { CLAIM_TIMEOUT_MS, RETRY_WINDOW_MS, type MailResult } from '../notifications/mail';
 import { notificationSender } from '../notifications/mail-sender';
 import { notificationEmailAvailable } from '../notifications/context';
-import { leadershipWeekSlot } from '../notifications/digest-calendar';
+import { leadershipWeekSlot, leadershipWeekIdentity } from '../notifications/digest-calendar';
 import { outboundService } from '../integrations/outbound';
 import { credentialProblem } from '../integrations/channels/settings';
 import { directDestination } from '../integrations/slack-dm/intent';
@@ -26,17 +26,23 @@ export async function sendLeadershipDigests(env: WorkerBindings, now: Date, depe
     await db.prepare(`INSERT OR IGNORE INTO leadership_digest_receipts
       (id,workspace_id,recipient_id,slot,channel,status,preference_revision,created_at,updated_at)
       SELECT ?,?,?,?,?,'pending',?,?,? WHERE ${effectsAllowed}`)
-      .bind(crypto.randomUUID(),person.workspace,person.id,slot,channel,person.revision,at,at).run();
+      .bind('leadership-'+crypto.randomUUID(),person.workspace,person.id,slot,channel,person.revision,at,at).run();
   }
   const due = (await db.prepare(`SELECT * FROM leadership_digest_receipts WHERE ${unheldReceipt}
     AND (status='pending' OR status='claimed' AND channel='slack' OR status='retry' AND next_attempt_at<=?)
-    ORDER BY created_at,id LIMIT 20`).bind(at).all<LeadershipReceipt>()).results;
+    ORDER BY created_at,id`).bind(at).all<LeadershipReceipt>()).results;
+  let processed=0;
   for (const receipt of due) {
+    if (receipt.channel==='slack' && receipt.status==='claimed' && await reconcileSlack(db,receipt,now)) continue;
     const person = await leadershipRecipient(db,receipt.recipient_id,receipt.channel);
     if (!person || person.revision!==receipt.preference_revision) {
-      await db.prepare("UPDATE leadership_digest_receipts SET status='suppressed',reason='no_longer_eligible',updated_at=? WHERE id=? AND status IN('pending','retry')").bind(at,receipt.id).run(); continue;
+      await db.prepare("UPDATE leadership_digest_receipts SET status='suppressed',reason='no_longer_eligible',updated_at=? WHERE id=? AND status IN('pending','retry','claimed')").bind(at,receipt.id).run(); continue;
     }
-    if (leadershipWeekSlot(now,person)!==receipt.slot) continue;
+    if (leadershipWeekIdentity(now,person)>receipt.slot) {
+      await db.prepare("UPDATE leadership_digest_receipts SET status='suppressed',reason='week_expired',claim_token=NULL,updated_at=? WHERE id=? AND status IN('pending','retry','claimed')").bind(at,receipt.id).run();continue;
+    }
+    if (leadershipWeekSlot(now,person)!==receipt.slot || processed>=20) continue;
+    processed++;
     if (receipt.status!=='claimed') {
       const token=crypto.randomUUID();
       const claimed=await db.prepare(`UPDATE leadership_digest_receipts SET status='claimed',claim_token=?,claimed_at=?,attempts=attempts+1,updated_at=?
@@ -75,8 +81,14 @@ async function deliverSlack(env: WorkerBindings, receipt: LeadershipReceipt, now
       {maxAttempts:3,retryDelaysMs:[60_000,300_000]});
   }
   await service.dispatch(receipt.id);
-  const result=await env.DB.prepare('SELECT state,attempts FROM integration_deliveries WHERE namespace=? AND id=?')
+  await reconcileSlack(env.DB,receipt,now);
+}
+async function reconcileSlack(db: D1Database, receipt: LeadershipReceipt, now: Date) {
+  const result=await db.prepare('SELECT state,attempts FROM integration_deliveries WHERE namespace=? AND id=?')
     .bind(receipt.workspace_id,receipt.id).first<{state:string;attempts:number}>();
-  const status=result?.state==='accepted'?'accepted':result?.state==='uncertain'?'uncertain':result?.state==='rejected'||result?.state==='exhausted'?'failed':null;
-  if (status) await settleLeadership(env.DB,receipt,receipt.claim_token!,status,now);
+  const status=result?.state==='accepted'?'accepted':result?.state==='uncertain'?'uncertain':result?.state==='rejected'?'failed':null;
+  if (!status) return false;
+  await db.prepare("UPDATE leadership_digest_receipts SET attempts=? WHERE id=? AND claim_token=? AND status='claimed'").bind(result!.attempts,receipt.id,receipt.claim_token).run();
+  await settleLeadership(db,receipt,receipt.claim_token!,status,now);
+  return true;
 }
