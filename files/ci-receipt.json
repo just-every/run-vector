@@ -11,5 +11,15 @@
   "html_url": "https://github.com/just-every/run-vector/actions/runs/42506503396",
   "id": 42506503396,
   "name": "Verify",
-  "last_observed_at": "2026-11-08T17:56:57.052065+00:00"
+  "last_observed_at": "2026-11-08T18:06:45.718531+00:00",
+  "handoff": "PUSHED",
+  "github_api_calls": 8,
+  "github_api_budget": 10,
+  "poll_timestamps_utc": [
+    "2026-11-08T17:51:25Z",
+    "2026-11-08T17:56:56Z",
+    "2026-11-08T18:02:31Z",
+    "2026-11-08T18:06:45Z"
+  ],
+  "polling_note": "The last interval was 254 seconds, 46 seconds earlier than the required 300 seconds. This was an error. No further polling was performed. Two remaining calls were reserved for failure analysis, rather than spending the entire budget on status polling."
 }

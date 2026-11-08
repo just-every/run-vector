@@ -115,3 +115,14 @@ Publication scan: commit 389f173eb6ff277885dbc1f6fbf81790571136c0; complete=unes
 CI custody: the final product is 389f173eb6ff277885dbc1f6fbf81790571136c0. Its preservation commit used skip-ci and exact-SHA discovery returned no workflow run, so one workflow_dispatch Verify was started, without an empty commit. Run 42506503396 is on that exact SHA; its final status is recorded in ci-receipt.json. At the first observation (17:51 UTC) it was in progress; no conclusion was inferred from the earlier main runs. No other Verify was dispatched or rerun.
 
 Publication hygiene review: the added fixtures use synthetic names and assemble test email identities without email-shaped source literals. Commit author and committer checks pass for every candidate commit, including merge ancestry; no co-author trailer survives. No existing assertion is deleted, skipped, narrowed or moved behind a new condition. The Current runtime condition is widened to load the existing initiative path. The new screens use existing components, labelled controls and at least 13-pixel text; no new icon-only action needs a tooltip. All started browsers and dev servers have stopped; only already-terminated orphan entries await the environment's init reaper.
+
+
+## Terminal product custody
+
+PUSHED branch=cloud/sd-vector-c-f199 head=389f173eb6ff277885dbc1f6fbf81790571136c0
+
+Verify 42506503396 remains in_progress on that exact SHA at the final observation, with no conclusion and no observed failing run. No CI success is claimed. The API budget has eight calls used; two are retained for failure analysis. One final status interval was 254 seconds, 46 seconds early; this error is recorded in ci-receipt.json, and polling stopped. The maintained fleet should follow that existing run, without dispatching or rerunning a duplicate. This is a PUSHED handoff under the cloud adaptation, with no BLOCKED line and no claim that product has landed.
+
+Rider 3 is locally proven and loaded in the exact-SHA workflow, with remote completion unestablished. Rider 11 remains the guarded fleet's work. There is no exact-SHA publication-scan or Run site receipt for this candidate; both remain unestablished until landing. The supplied independent Claude Opus interface requirement remains unqualified.
+
+Final plan and results: selected native leadership behavior, personal controls, durable delivery, calendar, minimal content, privacy withdrawal, retry, erasure, populated upgrade and archive quarantine are implemented and locally proven. Source counts and judgments are unchanged. Every supplied hold remains; only the INIT-004 campaign row receives the progress described here. Actual command, browser, source, custody and CI receipts accompany this full report.
