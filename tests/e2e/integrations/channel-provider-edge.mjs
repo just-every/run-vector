@@ -18,7 +18,7 @@ export async function channelProviderEdge(request){
   const {custom_headers,...body}=await request.json();appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'datadog.register',body})+'\n');return Response.json({});
  }
  const body=request.method==='GET'?Object.fromEntries(url.searchParams):request.headers.get('content-type')?.startsWith('application/x-www-form-urlencoded')?Object.fromEntries(new URLSearchParams(await request.text())):await request.json(),method=url.hostname==='slack.com'?url.pathname.slice(5):'discord';
- if(!['apps.manifest.create','oauth.v2.access','auth.test','auth.revoke','conversations.info','conversations.create','chat.postMessage','users.lookupByEmail','conversations.open','chat.update','discord'].includes(method))throw Error('Unexpected provider fixture endpoint');
+ if(!['apps.manifest.create','oauth.v2.access','auth.test','auth.revoke','conversations.info','conversations.create','chat.postMessage','chat.getPermalink','users.lookupByEmail','conversations.open','chat.update','discord'].includes(method))throw Error('Unexpected provider fixture endpoint');
  appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method,body})+'\n');
  if(method==='apps.manifest.create')return Response.json(request.headers.get('Authorization')==='Bearer synthetic-vector-32016'?{ok:false,error:'invalid_auth'}:{ok:true,app_id:slackAppFixture.appId,credentials:{client_id:slackAppFixture.clientId,client_secret:slackAppFixture.clientSecret,signing_secret:slackAppFixture.signingSecret}});
  if(method==='oauth.v2.access')return Response.json({ok:true,token_type:'bot',app_id:slackAppFixture.appId,scope:'chat:write,channels:manage,channels:read,im:write,users:read.email,app_mentions:read,channels:history,commands,links:read,links:write',access_token:slackAppFixture.botToken});
@@ -30,6 +30,7 @@ export async function channelProviderEdge(request){
  if(method==='conversations.open')return Response.json({ok:true,channel:{id:'D'+String(body.users).slice(1)}});
  if(method==='chat.update')return Response.json({ok:true,channel:body.channel,ts:body.ts});
  if(method==='conversations.create')return Response.json({ok:true,channel:{id:'C'+body.name.replaceAll('-','').toUpperCase(),name:body.name}});
+ if(method==='chat.getPermalink')return Response.json({ok:true,permalink:'https://synthetic-vector.slack.com/archives/'+body.channel+'/p'+body.message_ts.replace('.','')});
  if(method==='chat.postMessage')return Response.json(body.channel==='CREFUSED'?{ok:false,error:'not_in_channel'}:{ok:true,ts:'123.456'});
  if(!['discord.com','discordapp.com'].includes(url.hostname))throw Error('Unexpected fixture host');
  return Response.json({id:'fixture-message',content:body.content});

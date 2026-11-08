@@ -1,4 +1,5 @@
 // Member suspension metadata and lifecycle receipts are portable domain history; credentials remain excluded.
+// Slack mapped roots and source receipts are portable history; restored mappings and deliveries stay permanently held.
 // Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.
 // Actor names and mail remain in native identity custody; notes retain opaque references.
 // Human edits and issue-title text follow DATA-011's existing free-text boundary.

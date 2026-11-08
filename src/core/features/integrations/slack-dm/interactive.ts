@@ -1,3 +1,4 @@
+import {receiveSlackShortcut} from '../slack-app/shortcut';
 import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
@@ -40,11 +41,13 @@ export async function receiveSlackAction(env:WorkerBindings,request:Request,afte
  const timestamp=request.headers.get('x-slack-request-timestamp')??'',signature=request.headers.get('x-slack-signature')??'';
  if(!/^[0-9]{1,12}$/.test(timestamp)||!/^v0=[0-9a-f]{64}$/.test(signature))throw new IntegrationError(401,'slack_signature_invalid');
  if(Math.abs(Math.floor(Date.now()/1000)-Number(timestamp))>300)throw new IntegrationError(401,'slack_request_stale');
- if(!await admitRate(env.DB,'slack-action:'+(request.headers.get('CF-Connecting-IP')??'unknown'),300,60_000))throw new IntegrationError(429,'slack_rate_limited');
  let body:string;
  try{body=new TextDecoder('utf-8',{fatal:true}).decode(await rawIntegrationBody(request,65536));}catch(error){if(error instanceof IntegrationError)throw error;throw new IntegrationError(400,'slack_payload_invalid');}
  const signer=await signedInstallation(env,timestamp,body,signature.slice(3));
  if(!signer)throw new IntegrationError(401,'slack_signature_invalid');
+ let candidate:unknown;try{candidate=JSON.parse(new URLSearchParams(body).get('payload')??'');}catch{throw new IntegrationError(400,'slack_payload_unsupported');}
+ if(candidate&&typeof candidate==='object'&&'type' in candidate&&candidate.type==='message_action')return receiveSlackShortcut(env,signer,candidate);
+ if(!await admitRate(env.DB,'slack-action:'+(request.headers.get('CF-Connecting-IP')??'unknown'),300,60_000))throw new IntegrationError(429,'slack_rate_limited');
  const now=Date.now(),[,stored]=await env.DB.batch([
   env.DB.prepare('DELETE FROM vector_slack_request_keys WHERE received_at<?').bind(now-600_000),
   env.DB.prepare('INSERT INTO vector_slack_request_keys(key,received_at) VALUES(?,?) ON CONFLICT(key) DO NOTHING RETURNING key').bind(await sha256(signer.workspace+':'+timestamp+':'+signature),now),

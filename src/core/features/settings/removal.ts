@@ -94,7 +94,7 @@ export async function removeOperator(
   for (const table of ["issue_reminders", "notifications", "document_notifications", "project_notifications", "notification_candidates", "notification_deliveries"]) {
     statements.push(db.prepare(`DELETE FROM ${table} WHERE recipient_id=? AND ${receipt}`).bind(target, id));
   }
-  for (const table of ["document_followers", "subject_subscriptions"]) {
+  for (const table of ["document_followers", "subject_subscriptions", "operator_personal_time"]) {
     statements.push(db.prepare(`DELETE FROM ${table} WHERE operator_id=? AND ${receipt}`).bind(target, id));
   }
   statements.push(

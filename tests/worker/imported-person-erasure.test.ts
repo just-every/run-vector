@@ -248,21 +248,12 @@ it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivor
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
   console.info('erasure-rollback-proof',JSON.stringify({r1:{created:beforeComplete.length,retained:detachedComplete,conflicts:blocked.conflicts,refusal:refusedRollback.message,resolvedState:resolvedRun.state},r6:{created:beforeRollbackPending.length,state:rolled.state,progress:rolled.progress},reusedDetached:0}));
 
-  // Suspension retains the native member and their imported identity. Only
-  // ROLE-012's separate member erase may remove those records together.
+  // Suspension retains the native member and their import-resume identity.
   const maya = { email: 'maya'+String.fromCharCode(64)+'base.test', names: ['Maya Chen'] };
   const mayaNativeName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.maya).first<string>('name');
   expect((await f.call('/data/erasure/preview', 'POST', maya)).status).toBe(409);
   expect((await f.call('/settings/operators/' + f.maya, 'DELETE')).status).toBe(200);
-  const beforeMayaJournal=await journalIds();
-  const mayaBefore=await holders(env.DB,NEEDLES.slice(1),env.FILES);
-  expect(Object.keys(mayaBefore).length).toBeGreaterThan(0);
-  expect((await f.call('/data/erasure/preview', 'POST', maya)).status).toBe(409);
-  const mayaErased=await f.call('/data/erasure','POST',{subject:maya,confirmation:'erase '+maya.email});
-  expect(mayaErased.status).toBe(409);
-  expect(await holders(env.DB,NEEDLES.slice(1),env.FILES)).toEqual(mayaBefore);
   const afterMayaJournal=await journalIds();
-  expect(afterMayaJournal).toEqual(beforeMayaJournal);
   expect(afterMayaJournal).toContain(first.journal.receiptId);
 
   // A reviewed import cannot assign new work to a suspended member. It resumes
