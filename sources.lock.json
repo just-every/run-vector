@@ -9673,12 +9673,16 @@
       "sha256": "b504277699fb5c185f8c05a1b65f28a0d9b71b60d63b73db55baae05000d8ae7",
       "executable": false
     },
+    "tests/worker/issue-types-recovery.ts": {
+      "sha256": "9877e3aafe6a6de8795220e98687659bda239b8f749dc1a5271751c12f825759",
+      "executable": false
+    },
     "tests/worker/issue-types-upgrade.test.ts": {
       "sha256": "e282bebe54f85dddbcb8c29f5f20b937c565d0cf3728ee553e552bf3f00a9ca7",
       "executable": false
     },
     "tests/worker/issue-types.test.ts": {
-      "sha256": "1d07dcce3a100b0a7acbd5eef0313be093c24f471e04269e2215105ae4baf75d",
+      "sha256": "e7a6b788478d859ce783c4587ffe117bdfc16d14ebe539a210973cec87c465cf",
       "executable": false
     },
     "tests/worker/issue-undo.test.ts": {

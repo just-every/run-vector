@@ -1,3 +1,4 @@
+import { typedUndoJourney } from './issue-types-recovery'
 import { env } from 'cloudflare:workers'
 import { expect, it } from 'vitest'
 import { roleWorkspace, resetLimits, snapshot } from './role-fixture'
@@ -128,6 +129,7 @@ it('team issue types retain identity, enforce required Severity at every native 
  await json(owner.call(base,'PUT',{enabled:true}))
  expect(await json(member.call('/issues/'+issue.identifier))).toMatchObject({issueTypeId:bug.id,issueType:{name:'Defect'}})
  await json(owner.call(`/settings/teams/${other.id}/issue-types`,'PUT',{enabled:false}))
+ await typedUndoJourney(w)
  await severityArchive(w,[issue.id,same.issue.id])
  const {destination}=await import('./http-archive-fixture')
  for(const id of [issue.id,same.issue.id,mapped.issue.id]) {
