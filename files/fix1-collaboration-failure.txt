@@ -1,0 +1,18 @@
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6820262Z node:internal/modules/run_main:123
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6820767Z     triggerUncaughtException(
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6821128Z     ^
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6821261Z 
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6821481Z locator.waitFor: Timeout 20000ms exceeded.
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6821895Z Call log:
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6822625Z   - waiting for getByRole('tooltip').filter({ hasText: 'synthetic-vector-documents-1440-1794167318075 issue' }) to be visible
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6823053Z 
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6823797Z     at projectDocumentsJourney (/home/runner/work/run-vector/run-vector/tests/e2e/project-documents-journey.mjs:63:67)
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6824823Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/project-report-runtime.mjs:123:2 {
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6825405Z   log: [
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6826066Z     "  - waiting for getByRole('tooltip').filter({ hasText: 'synthetic-vector-documents-1440-1794167318075 issue' }) to be visible"
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6826767Z   ],
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6826990Z   name: 'TimeoutError'
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6827263Z }
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6827393Z 
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.6827504Z Node.js v22.20.0
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T19:49:05.7081784Z  ELIFECYCLE  Command failed with exit code 1.

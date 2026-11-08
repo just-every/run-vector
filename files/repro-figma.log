@@ -1,0 +1,12 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f203-fix2/run-vector
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 1 skipped (2)
+   Start at  20:28:18
+   Duration  52.97s (transform 4.39s, setup 0ms, import 9.41s, tests 42.80s, environment 0ms)
+

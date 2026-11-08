@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f203-fix2",
+  "head": "4c9460bbf65aa048896713d3c1f925809e64bd04",
+  "product_ref_observed": "4c9460bbf65aa048896713d3c1f925809e64bd04\trefs/heads/cloud/sd-vector-c-f203-fix2",
+  "merge_base_main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "commit": "commit 4c9460bbf65aa048896713d3c1f925809e64bd04\nAuthor:     Run Edit Run fleet <fleet@runeditrun.com>\nAuthorDate: Sun Nov 8 20:32:40 2026 +0000\nCommit:     Run Edit Run fleet <fleet@runeditrun.com>\nCommitDate: Sun Nov 8 20:32:40 2026 +0000\n\n    Regenerate Figma SDK operations from the published schema\n",
+  "new_commit_files": "M\tsdk/generated.ts\nM\tsources.lock.json\n",
+  "candidate_commits": "4c9460bbf65aa048896713d3c1f925809e64bd04 Regenerate Figma SDK operations from the published schema\n2806e3bc158a0b63035276534ab1b20d310699a3 Fix Figma OAuth protocol and restore verification coverage\n5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df Prove Figma image revocation and restore replay boundaries\n6d2447f18e2159b9e6500af813cd757f6cd89bc4 Add Figma OAuth, isolated previews and atomic plugin capture [skip ci]\n",
+  "worktree_clean": true,
+  "verify_run_id": 42520664122,
+  "prior_verify_run_id": 42515193427,
+  "main_verify_run_ids": [
+    42503991437,
+    42501646337
+  ],
+  "pr": null,
+  "landing_claim": false
+}

@@ -1,0 +1,14 @@
+{
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "candidate": "4c9460bbf65aa048896713d3c1f925809e64bd04",
+  "compared_paths": [
+    "src/core/ui/tooltip.tsx",
+    "src/core/features/markdown/ui/markdown.tsx",
+    "src/core/features/issue-references",
+    "src/core/features/documents",
+    "tests/e2e/project-report-runtime.mjs",
+    "tests/e2e/project-documents-journey.mjs"
+  ],
+  "diff_exit": 0,
+  "unchanged": true
+}

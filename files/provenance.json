@@ -1,0 +1,28 @@
+{
+  "base": "2806e3bc158a0b63035276534ab1b20d310699a3",
+  "head": "4c9460bbf65aa048896713d3c1f925809e64bd04",
+  "sdk_before": {
+    "typed_operations": 56,
+    "runtime_operations": 56
+  },
+  "sdk_after": {
+    "typed_operations": 58,
+    "runtime_operations": 58
+  },
+  "contract_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "contract_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "DESIGN-001": "missing -> missing",
+  "views_unchanged": true,
+  "contract_unchanged": true,
+  "product_changes": " sdk/generated.ts  | 16 ++++++++++++++++\n sources.lock.json |  2 +-\n 2 files changed, 17 insertions(+), 1 deletion(-)\n"
+}

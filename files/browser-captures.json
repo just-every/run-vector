@@ -1,0 +1,18 @@
+[
+  {
+    "file": "candidate-document-reference-1440.png",
+    "sha256": "ec0fbe3d05e30dc93da9558618c2c3536b8e1d6461d9c2e62cd1cfca439ea527",
+    "width": 1440,
+    "head": "4c9460bbf65aa048896713d3c1f925809e64bd04",
+    "node": "22.20.0",
+    "purpose": "Unchanged document reference diagnostic; synthetic fixture, no Figma UI qualification claim"
+  },
+  {
+    "file": "candidate-document-reference-390.png",
+    "sha256": "3908876ea4561d0313c0c027c8bbf64da22886e351bc7470c6091a82383ff43e",
+    "width": 390,
+    "head": "4c9460bbf65aa048896713d3c1f925809e64bd04",
+    "node": "22.20.0",
+    "purpose": "Unchanged document reference diagnostic; synthetic fixture, no Figma UI qualification claim"
+  }
+]

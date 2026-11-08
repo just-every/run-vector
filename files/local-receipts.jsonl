@@ -1,0 +1,26 @@
+{"label": "repro-sdk", "command": ["timeout", "60", "node", "sdk/generate.mjs", "--check"], "exit": 1, "seconds": 0.03, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "sdk-generate", "command": ["timeout", "60", "node", "sdk/generate.mjs"], "exit": 0, "seconds": 0.03, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "probe-sdk", "command": ["timeout", "60", "node", "sdk/generate.mjs", "--check"], "exit": 0, "seconds": 0.03, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "repro-inventory", "command": ["timeout", "240", "pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/integration-api.test.ts", "-t", "versioned schema is published"], "exit": 0, "seconds": 12.2, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "repro-upgrade", "command": ["timeout", "240", "pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/project-fields-upgrade.test.ts"], "exit": 0, "seconds": 28.12, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "repro-spec", "command": ["timeout", "60", "pnpm", "integration:check"], "exit": 0, "seconds": 0.33, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "main-build", "command": ["timeout", "600", "npx", "-y", "@runeditrun/rer", "build"], "exit": 0, "seconds": 40.07, "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213"}
+{"label": "typecheck", "command": ["timeout", "240", "pnpm", "typecheck"], "exit": 0, "seconds": 22.91, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "views-write", "command": ["timeout", "60", "node", "scripts/contract-docs.mjs", "write", "DESIGN-001"], "exit": 0, "seconds": 0.07, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "views-check", "command": ["timeout", "60", "node", "scripts/contract-docs.mjs", "check", "DESIGN-001"], "exit": 0, "seconds": 0.06, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "ledger", "command": ["timeout", "120", "node", "--test", "scripts/deployment/tests/migration-head.test.mjs"], "exit": 0, "seconds": 0.82, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "spec-generate", "command": ["timeout", "60", "pnpm", "integration:sync"], "exit": 0, "seconds": 0.3, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "spec-check", "command": ["timeout", "60", "pnpm", "integration:check"], "exit": 0, "seconds": 0.31, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "lock-generate", "command": ["timeout", "120", "pnpm", "sources:lock"], "exit": 0, "seconds": 0.75, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "lock-check", "command": ["timeout", "120", "pnpm", "sources:check"], "exit": 0, "seconds": 0.68, "head": "2806e3bc158a0b63035276534ab1b20d310699a3"}
+{"label": "sdk-build", "command": ["timeout", "120", "node", "sdk/build.mjs"], "exit": 0, "seconds": 0.78, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "repro-figma", "command": ["timeout", "240", "pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/link-cascade.test.ts", "-t", "Figma"], "exit": 0, "head": "2806e3bc158a0b63035276534ab1b20d310699a3", "duration_ms": 52970, "note": "recorded terminal exit and original log"}
+{"label": "head-project-report-node24", "command": ["timeout", "600", "node", "tests/e2e/project-report-runtime.mjs"], "exit": 0, "head": "2806e3bc158a0b63035276534ab1b20d310699a3", "node": "24.19.0", "chromium": "/usr/bin/chromium", "note": "original unmodified journey, original terminal exit captured; repeat with Node22 for main parity"}
+{"label": "probe-figma", "command": ["timeout", "240", "pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/link-cascade.test.ts", "-t", "Figma"], "exit": 0, "seconds": 52.78, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "probe-inventory", "command": ["timeout", "240", "pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/integration-api.test.ts", "-t", "versioned schema is published"], "exit": 0, "seconds": 11.93, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "probe-upgrade", "command": ["timeout", "240", "pnpm", "exec", "vitest", "run", "--config", "vitest.config.ts", "tests/worker/project-fields-upgrade.test.ts"], "exit": 0, "seconds": 22.3, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "final-sdk", "command": ["timeout", "60", "node", "sdk/generate.mjs", "--check"], "exit": 0, "seconds": 0.05, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "final-source-check", "command": ["timeout", "120", "pnpm", "sources:check"], "exit": 0, "seconds": 0.76, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "main-project-report", "command": ["timeout", "600", "node", "tests/e2e/project-report-runtime.mjs"], "exit": 0, "seconds": 176.66, "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213"}
+{"label": "first-party-check", "command": ["timeout", "240", "npx", "-y", "@runeditrun/rer", "check", "--profile", "first-party"], "exit": 0, "seconds": 1.28, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}
+{"label": "final-project-report", "command": ["timeout", "600", "node", "tests/e2e/project-report-runtime.mjs"], "exit": 0, "seconds": 180.59, "head": "4c9460bbf65aa048896713d3c1f925809e64bd04"}

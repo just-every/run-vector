@@ -1,0 +1,5 @@
+
+> vector@0.4.1 integration:check /home/agent/rer-consolidation/work/sd-vector-c-f203-fix2/run-vector
+> node scripts/sync-integration.mjs --check
+
+Integration deployment spec, setup digest and producer workflow match.

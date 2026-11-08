@@ -1,0 +1,36 @@
+{
+  "expected_failure": [
+    "repro-sdk"
+  ],
+  "failures": [],
+  "passed_labels": [
+    "sdk-generate",
+    "probe-sdk",
+    "repro-inventory",
+    "repro-upgrade",
+    "repro-spec",
+    "main-build",
+    "typecheck",
+    "views-write",
+    "views-check",
+    "ledger",
+    "spec-generate",
+    "spec-check",
+    "lock-generate",
+    "lock-check",
+    "sdk-build",
+    "repro-figma",
+    "head-project-report-node24",
+    "probe-figma",
+    "probe-inventory",
+    "probe-upgrade",
+    "final-sdk",
+    "final-source-check",
+    "main-project-report",
+    "first-party-check",
+    "final-project-report"
+  ],
+  "local_command_count": 26,
+  "no_product_ui_change": true,
+  "clause_changes": []
+}

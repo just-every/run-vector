@@ -1,0 +1,4 @@
+{"time": 1794169679.4197912, "args": ["api", "repos/just-every/run-vector/actions/runs/42515193427/jobs", "--jq", ".jobs[] | select(.conclusion == \"failure\") | {id,name,steps:[.steps[]|select(.conclusion==\"failure\")|.name]}"]}
+{"time": 1794169690.4840634, "args": ["run", "view", "42515193427", "--repo", "just-every/run-vector", "--job", "128836857107", "--log-failed"]}
+{"time": 1794169854.603489, "args": ["api", "repos/just-every/run-vector/actions/runs?head_sha=0e8a686c06eddd55943ed1d2690df32a8fc82213&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"]}
+{"time": 1794169969.647031, "args": ["api", "repos/just-every/run-vector/actions/runs?head_sha=4c9460bbf65aa048896713d3c1f925809e64bd04&per_page=100", "--jq", ".workflow_runs[] | {id,name,status,conclusion,head_sha,html_url}"]}
