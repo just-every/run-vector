@@ -1,0 +1,139 @@
+JOB shards (administration, true, true, true)
+not ok 1 - [OPS-003] empty workspace administration through real mobile browser
+  ---
+  duration_ms: 1005982.763029
+  type: 'test'
+  location: '/home/runner/work/run-vector/run-vector/tests/contract.ts:4:10'
+  failureType: 'testCodeFailure'
+  error: |-
+    browser failed requests
+    + actual - expected
+    
+    + [
+    +   {
+    +     failure: {
+    +       errorText: 'net::ERR_ABORTED'
+    +     },
+    +     url: 'http://127.0.0.1:15944/api/settings/integrations/channels'
+    +   }
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0:
+      url: 'http://127.0.0.1:15944/api/settings/integrations/channels'
+      failure:
+        errorText: 'net::ERR_ABORTED'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:250:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+    async file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:56:1
+  ...
+
+JOB shards (imports, true, true, true)
+ FAIL  tests/worker/personal-time.test.ts > [NOTIFY-010 NOTIFY-005 NOTIFY-007 OPS-003] personal clocks inherit workspace time, isolate settings and fence exactly-once scheduled reminders
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/worker/personal-time.test.ts:227:7
+    225|         .bind(pacific)
+    226|         .first("n"),
+    227|     ).toBe(0);
+       |       ^
+    228|   },
+    229| );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  1 failed | 35 passed (36)
+   Start at  20:49:13
+   Duration  317.17s (transform 3.66s, setup 0ms, import 61.30s, tests 247.81s, environment 1ms)
+
+
+
+JOB shards (portability, true, true, true)
+ FAIL  tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+AssertionError: expected 409 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 409
+
+ ❯ outboundCommentJourney tests/worker/outbound-comment-journey.ts:153:116
+    151|   expect((await f.call('/settings/operators/' + memberId, 'DELETE')).s…
+    152|   const subject = { names: ['synthetic-vector-9011'] };
+    153|   expect((await f.call('/data/erasure', 'POST', { subject, confirmatio…
+       |                                                                                                                    ^
+    154|   const retained = (await queued()).filter(e => JSON.parse(e.body).com…
+    155|   expect(retained).toHaveLength(1);
+ ❯ tests/worker/outbound-webhooks.test.ts:33:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+JOB shards (portability, true, true, true)
+ FAIL  tests/worker/release-notes.test.ts > native release notes retain six exact completed sources and human revisions while current ownership and source visibility fence every draft operation
+AssertionError: {"error":"operator_active","message":"This email or name belongs to a current or suspended member, or an invitation. Member erasure requires the separate explicit member erasure action."}: expected 409 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 409
+
+ ❯ json tests/worker/release-notes.test.ts:11:57
+      9|  const w=await roleWorkspace(),owner=w.people.owner;
+
+     10|  const json=async(response:Response,status=200)=>{
+ Test Files  2 failed | 17 passed (19)
+     11|   expect(response.status,await response.clone().text()).toBe(status);
+      Tests  2 failed | 24 passed (26)
+       |                                                         ^
+   Start at  20:49:59
+   Duration  254.07s (transform 4.66s, setup 0ms, import 80.18s, tests 164.20s, environment 1ms)
+
+
+     12|   return response.json() as Promise<any>;
+     13|  };
+ ❯ tests/worker/release-notes.test.ts:184:16
+
+JOB shards (core-runtime, true, true, true)
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ []
+- [
+-   'BAHFGJGC-1',
+-   'CAHFGJGC-1'
+- ]
+
+    at rows (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-boolean-filter-journey.mjs:49:12)
+    at async booleanFilterJourney (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-boolean-filter-journey.mjs:106:5)
+    at async withInvitedOperator (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+    at async keyboardJourney (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-keyboard-journey.mjs:56:3)
+    at async withInvitedOperator (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+    at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:747:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [ 'BAHFGJGC-1', 'CAHFGJGC-1' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,27 @@
+{
+  "ledger": {
+    "command": "pnpm test:deployment",
+    "exit": 0,
+    "tests_passed": 9
+  },
+  "spec": {
+    "write": "pnpm integration:sync",
+    "check": "pnpm integration:check",
+    "exit": 0,
+    "migrations_before": 133,
+    "migrations_after": 134
+  },
+  "lock": {
+    "write": "pnpm sources:lock",
+    "check": "pnpm sources:check",
+    "exit": 0
+  },
+  "views": {
+    "write": "node scripts/contract-docs.mjs write ROLE-011",
+    "check": "node scripts/contract-docs.mjs check ROLE-011",
+    "exit": 0,
+    "restored": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md"
+  },
+  "contract_judgments": "unchanged",
+  "migration_number_collision": false
+}

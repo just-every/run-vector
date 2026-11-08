@@ -1,0 +1,2 @@
+{"observed": "2026-11-08T21:01:07.810260+00:00", "kind": "candidate-ci", "data": {"id": 42521374619, "status": "in_progress", "conclusion": null, "head_sha": "5b5292f80ce0b391e972787c338489c04e40af3d", "html_url": "https://github.com/just-every/run-vector/actions/runs/42521374619"}}
+{"observed": "2026-11-08T21:06:08.381990+00:00", "kind": "candidate-ci", "data": {"id": 42521374619, "status": "completed", "conclusion": "failure", "head_sha": "5b5292f80ce0b391e972787c338489c04e40af3d", "html_url": "https://github.com/just-every/run-vector/actions/runs/42521374619"}}

@@ -1,0 +1,7 @@
+(node:9230) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PASS NOTIFY-003 native Inbox pagination ordering and cached rows clear after suspension while personal choices stay retained
+{"passed":true,"width":1440,"fixtures":[{"width":1440,"source":"31 actual native UI comments; no synthetic Inbox response or row fixture","paginationRows":32}],"remainingNotifications":0}

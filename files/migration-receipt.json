@@ -1,0 +1,9 @@
+{
+  "full_history": true,
+  "main_highest_migration": "migrations/core/0133_release_notes.sql",
+  "candidate_added_migrations": [
+    "migrations/core/0134_member_suspension.sql"
+  ],
+  "candidate_migration_sha256": "be42aea7504808466e56d5f65e7e6b95f8b71f81d54e1be3fa4850b5b3627387",
+  "main_migration_bytes_unchanged": true
+}

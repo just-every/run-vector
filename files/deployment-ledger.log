@@ -1,0 +1,24 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:deployment /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector
+> node --test --test-concurrency=2 scripts/deployment/tests/*.test.mjs
+
+✔ seed controller first setup preserves data and repeated deploy has no writes and byte-identical receipt (291.688769ms)
+✔ prepare rejects credential-bearing environment before any build or provider access (3.851776ms)
+✔ Vector deployment preserves owner and invitation guards, revokes removed operators and repeats without writes (1606.09189ms)
+✔ actual Vector owner plan preserves native data, secrets and state on exact repeat (180.8557ms)
+✔ missing owner secrets refuse before resource writes (7.963038ms)
+✔ an unrelated named resource is refused without adoption (5.109822ms)
+✔ lost native create stays uncertain and is never adopted on retry (8.513477ms)
+✔ owner exact repeat refuses live cron drift without writes or state replacement (74.836204ms)
+This Worker has a Cron Trigger. Cloudflare may take up to about two hours to start its first scheduled run on some accounts.
+This Worker has a Cron Trigger. Cloudflare may take up to about two hours to start its first scheduled run on some accounts.
+✔ real owner CLI packages the Vector declaration, maps mail credentials and preserves state on deploy/health repeat (322.525675ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1787.866936

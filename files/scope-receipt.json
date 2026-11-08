@@ -1,0 +1,27 @@
+{
+  "original_candidate": "806b1715d89a5383b5722b1b6c37a615b0665763",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "fix_files": [
+    "management/integration/deployment-spec.json",
+    "sources.lock.json",
+    "src/core/features/issues/service.ts",
+    "src/core/features/settings/removal.ts",
+    "tests/e2e/collaboration-pagination.mjs",
+    "tests/worker/collaboration-mail.test.ts",
+    "tests/worker/triage-upgrade.ts"
+  ],
+  "contract_equal_main": true,
+  "generated_views_equal_main": true,
+  "migration_0134_unchanged": true,
+  "tested_index_tree": "b718c9ba137b6cd3cc65c62bebc30b7f7c78d1c4",
+  "test_files_unchanged_from_candidate": true,
+  "original_seven_failing_assertions_unchanged": true,
+  "additional_candidate_assertion_corrected": "worker collaboration-mail and browser collaboration-pagination restore main zero-recipient-notification assertions; preference/follower/session/page assertions remain",
+  "final_fix_stat": "7 files changed, 39 insertions(+), 20 deletions(-)",
+  "read_only_main_role_comparison": {
+    "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "passed": 4,
+    "timeouts": 2,
+    "worktree_removed": true
+  }
+}

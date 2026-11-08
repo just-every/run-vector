@@ -1,0 +1,8 @@
+{
+  "product_clean": true,
+  "head": "5b5292f80ce0b391e972787c338489c04e40af3d",
+  "product_identity_scan": "all eight candidate commits have fleet author and committer; no trailers",
+  "generated_views_committed": false,
+  "contract_judgment_changes": [],
+  "public_packet_policy": "only explicit regular report and receipt files; original raw workflow archives with environment headers excluded"
+}

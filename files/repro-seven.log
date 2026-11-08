@@ -1,0 +1,224 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/follower-events.test.ts (2 tests | 1 failed) 14937ms
+   × [TEAM-004 NOTIFY-001 NOTIFY-003 NOTIFY-004 NOTIFY-009] workflow status removal notifies followers once without replaying terminal completion 8293ms
+Using secrets defined in .dev.vars
+stderr | tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+Operator intake persistence failed Error: D1_ERROR: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at createOperatorIntake (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/operator-intake/repository.ts:121:18)
+      at Object.createOperatorIntakeRoute [as handler] (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/operator-intake/routes.ts:24:20)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+ ❯ tests/worker/source-ingest.test.ts (3 tests | 1 failed) 9775ms
+   × [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe 8185ms
+Using secrets defined in .dev.vars
+ ❯ tests/worker/project-dependencies.test.ts (2 tests | 1 failed) 5712ms
+   × direct project graph uses native and scoped doors, stable identity, attributed endpoint activity and current lead Inbox subjects 3061ms
+Using secrets defined in .dev.vars
+stderr | tests/worker/project-report.test.ts > [PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives
+Error: D1_ERROR: synthetic-vector-mention-rollback: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-mention-rollback: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at editDocument (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/documents/repository.ts:73:2)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/documents/routes.ts:16:53)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+stderr | tests/worker/project-report.test.ts > [PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives
+Error: D1_ERROR: synthetic-vector-mention-rollback: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-mention-rollback: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at createDocument (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/documents/repository.ts:61:2)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/src/core/features/documents/routes.ts:14:40)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+ ❯ tests/worker/project-report.test.ts (3 tests | 1 failed) 16672ms
+   × [PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives 5373ms
+Using secrets defined in .dev.vars
+ ❯ tests/worker/issue-session-projection.test.ts (3 tests | 3 failed) 2243ms
+   × [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale edit projection denies native signout between final native auth and the shared admission statement 1194ms
+   × [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale accept projection denies native signout between final native auth and the shared admission statement 612ms
+   × [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale return projection denies native signout between final native auth and the shared admission statement 436ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/follower-events.test.ts > [TEAM-004 NOTIFY-001 NOTIFY-003 NOTIFY-004 NOTIFY-009] workflow status removal notifies followers once without replaying terminal completion
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ exerciseSubjectSubscriptions tests/worker/subscriptions-scenario.ts:115:133
+    113|  await read(await bob('/subscriptions','POST',{subjectType:'label',sub…
+    114|  expect((await f.call('/settings/operators/'+f.bob,'DELETE')).status).…
+    115|  expect(await env.DB.prepare('SELECT count(*) AS n FROM subject_subscr…
+       |                                                                                                                                     ^
+    116|  expect(moved.status.id).toBe(started.id);
+    117| }
+ ❯ tests/worker/follower-events.test.ts:406:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale edit projection denies native signout between final native auth and the shared admission statement
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale accept projection denies native signout between final native auth and the shared admission statement
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale return projection denies native signout between final native auth and the shared admission statement
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/worker/issue-session-projection.test.ts:79:25
+     77|         { DB: db },
+     78|       );
+     79|       expect(projected).toBe(true);
+       |                         ^
+     80|       expect(fired).toBe(true);
+     81|       expectPrivateDenial(response, await response.text(), 401);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/worker/project-dependencies.test.ts > direct project graph uses native and scoped doors, stable identity, attributed endpoint activity and current lead Inbox subjects
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/worker/project-dependencies.test.ts:86:162
+     84|   expect((await f.call('/settings/operators/'+f.lead.id,'DELETE')).sta…
+     85|   await body(await f.people.owner.api(path(b.id,a.id),'PUT'));
+     86|   expect((await env.DB.prepare('SELECT recipient_id FROM project_notif…
+       |                                                                                                                                                                  ^
+     87|   expect((await notices(f.member)).length).toBeGreaterThan(0);
+     88|   const stable=await snapshot(watched);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/worker/project-report.test.ts > [PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ documentMentionsScenario tests/worker/document-mentions-scenario.ts:99:135
+     97|  await read(await f.call('/settings/operators/'+nextId,'DELETE'));
+     98|  expect((await request('/api/notifications','GET',undefined,next)).sta…
+     99|  expect((await env.DB.prepare('SELECT count(*) n FROM document_notific…
+       |                                                                                                                                       ^
+    100|  expect((await env.DB.prepare('SELECT count(*) n FROM document_followe…
+    101|  const beforeReplay=await snapshot(watched);
+ ❯ documentJourney tests/worker/documents-scenario.ts:53:18
+ ❯ tests/worker/project-report.test.ts:105:163
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+AssertionError: operators: expected [ { …(10) }, { …(10) }, { …(10) } ] to deeply equal [ { …(8) }, { …(8) }, { …(8) } ]
+
+- Expected
++ Received
+
+@@ -4,29 +4,35 @@
+      "email": "sarah@vector.test",
+      "id": "01J00000000000000000000002",
+      "name": "Sarah Chen",
+      "removed_at": null,
+      "role": "owner",
++     "suspended_at": null,
++     "suspended_by": null,
+      "updated_at": "2026-09-01T00:00:00.000Z",
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "created_at": "2026-09-03T00:00:00.000Z",
+      "email": "maya@vector.test",
+      "id": "01J00000000000000000000003",
+      "name": "Maya Ortiz",
+      "removed_at": null,
+      "role": "owner",
++     "suspended_at": null,
++     "suspended_by": null,
+      "updated_at": "2026-09-03T00:00:00.000Z",
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "created_at": "2026-09-06T00:00:00.000Z",
+      "email": "alex@vector.test",
+      "id": "01J00000000000000000000004",
+      "name": "Alex Lee",
+      "removed_at": null,
+      "role": "owner",
++     "suspended_at": null,
++     "suspended_by": null,
+      "updated_at": "2026-09-06T00:00:00.000Z",
+      "workspace_id": "01J00000000000000000000001",
+    },
+  ]
+
+ ❯ triageUpgrade tests/worker/triage-upgrade.ts:87:7
+     85|       ).results,
+     86|       table.name,
+     87|     ).toEqual(
+       |       ^
+     88|       table.rows.map((row) => ({
+     89|         ...row,
+ ❯ tests/worker/source-ingest.test.ts:50:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  7 failed | 6 passed (13)
+   Start at  20:07:24
+   Duration  89.17s (transform 6.31s, setup 0ms, import 36.29s, tests 49.34s, environment 0ms)
+

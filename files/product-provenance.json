@@ -1,0 +1,17 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f207-fix1",
+  "head": "5b5292f80ce0b391e972787c338489c04e40af3d",
+  "tree": "b718c9ba137b6cd3cc65c62bebc30b7f7c78d1c4",
+  "parents": [
+    "58cceb1b4cd7ea8aeb8f55ef28cfd26fc27d19d9"
+  ],
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "original_candidate": "806b1715d89a5383b5722b1b6c37a615b0665763",
+  "product_commits": [
+    "58cceb1b4cd7ea8aeb8f55ef28cfd26fc27d19d9",
+    "5b5292f80ce0b391e972787c338489c04e40af3d"
+  ],
+  "push_succeeded": true,
+  "recorded_at": "2026-11-08T20:41:07.158740+00:00"
+}

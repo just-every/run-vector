@@ -1,0 +1,104 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector
+
+ ❯ tests/worker/role-matrix.test.ts (6 tests | 2 failed) 262330ms
+   × [ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing 33903ms
+   × [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 123935ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ❯ tests/worker/collaboration-mail.test.ts (3 tests | 1 failed) 2336ms
+   × [NOTIFY-006 NOTIFY-004 OPS-004 BASE-DATA-003] final admission observes opt-out and issue mute, suspension cancels delivery while retaining personal choices and Inbox history, and late settlement cannot resurrect deleted issues 237ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+exception = kj/async-io-unix.c++:1535: disconnected: connect(): Connection refused
+stack: /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@56a84f2 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@56a86d5 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a392a8 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@569e310 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@569ead0 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@318f140 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a269e0 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a277b0 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5899989 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5899e03 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a0ed10 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a1a120 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3193130 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@24274b0 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3485510 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@30b4650
+uncaught exception; source = Uncaught (in promise); stack = Error: Network connection lost.
+uncaught exception; exception = workerd/jsg/_virtual_includes/iterator/workerd/jsg/value.h:1477: disconnected: jsg.Error: Network connection lost.
+stack: /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3418800 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@341949c /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5a392a8 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260907.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@3183d0e
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/collaboration-mail.test.ts > [NOTIFY-006 NOTIFY-004 OPS-004 BASE-DATA-003] final admission observes opt-out and issue mute, suspension cancels delivery while retaining personal choices and Inbox history, and late settlement cannot resurrect deleted issues
+AssertionError: expected [] to deeply equal [ { …(9) }, { …(9) }, { …(9) } ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "actor_id": "01M6YCYHMKD0R6R6B27TJH8G6C",
+-     "actor_name": "Owner",
+-     "causes_json": "[\"assignment\"]",
+-     "created_at": "2026-11-08T20:17:43.723Z",
+-     "event_id": "01M6YCYJ9BQ790WV1B76NFP2EJ",
+-     "id": "320b57066da18b719c0f774454f9c638",
+-     "issue_id": "01M6YCYJ9BBPS7265PNW0X1W9E",
+-     "read_at": null,
+-     "recipient_id": "01M6YCYJ7JH2XCXWYM4FGD8BKF",
+-   },
+-   {
+-     "actor_id": "01M6YCYHMKD0R6R6B27TJH8G6C",
+-     "actor_name": "Owner",
+-     "causes_json": "[\"assignment\"]",
+-     "created_at": "2026-11-08T20:17:43.738Z",
+-     "event_id": "01M6YCYJ9T71JH5QR33GT5Q0KS",
+-     "id": "277b0ddaf7026630e239b73250783f2d",
+-     "issue_id": "01M6YCYJ9TQZ06PN98MY5M1GAX",
+-     "read_at": null,
+-     "recipient_id": "01M6YCYJ7JH2XCXWYM4FGD8BKF",
+-   },
+-   {
+-     "actor_id": "01M6YCYHMKD0R6R6B27TJH8G6C",
+-     "actor_name": "Owner",
+-     "causes_json": "[\"assignment\"]",
+-     "created_at": "2026-11-08T20:17:43.767Z",
+-     "event_id": "01M6YCYJAQQPYBX52CTMSFRVJT",
+-     "id": "07618beef5e0716b721fb06163e43f5b",
+-     "issue_id": "01M6YCYJAQ07TWABFA2MN9J9F2",
+-     "read_at": null,
+-     "recipient_id": "01M6YCYJ7JH2XCXWYM4FGD8BKF",
+-   },
+- ]
++ []
+
+ ❯ tests/worker/collaboration-mail.test.ts:133:160
+    131|     const retained=await Promise.all(retainedTables.map(table=>env.DB.…
+    132|     await removeOperator(env.DB, f.owner, f.bob);
+    133|     for(let index=0;index<retainedTables.length;index++)expect((await …
+       |                                                                                                                                                                ^
+    134|     for (const table of [
+    135|       "notification_deliveries",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/worker/role-matrix.test.ts > [ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing
+Error: Test timed out in 30000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/worker/role-matrix.test.ts:408:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/worker/role-matrix.test.ts:526:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed | 9 passed (11)
+      Tests  3 failed | 24 passed (27)
+   Start at  20:12:47
+   Duration  371.18s (transform 7.31s, setup 0ms, import 70.85s, tests 292.50s, environment 1ms)
+

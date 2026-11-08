@@ -1,0 +1,159 @@
+Original Verify run 42513319748, job 128831161230
+
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale edit projection denies native signout between final native auth and the shared admission statement
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale accept projection denies native signout between final native auth and the shared admission statement
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale return projection denies native signout between final native auth and the shared admission statement
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/worker/issue-session-projection.test.ts:79:25
+     77|         { DB: db },
+     78|       );
+     79|       expect(projected).toBe(true);
+       |                         ^
+     80|       expect(fired).toBe(true);
+     81|       expectPrivateDenial(response, await response.text(), 401);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  3 failed | 44 passed (47)
+   Start at  19:08:02
+   Duration  356.98s (transform 4.05s, setup 0ms, import 63.17s, tests 285.68s, environment 1ms)
+
+
+Original Verify run 42513319748, job 128831161235
+
+ FAIL  tests/worker/project-dependencies.test.ts > direct project graph uses native and scoped doors, stable identity, attributed endpoint activity and current lead Inbox subjects
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/worker/project-dependencies.test.ts:86:162
+     84|   expect((await f.call('/settings/operators/'+f.lead.id,'DELETE')).sta…
+     85|   await body(await f.people.owner.api(path(b.id,a.id),'PUT'));
+     86|   expect((await env.DB.prepare('SELECT recipient_id FROM project_notif…
+       |                                                                                                                                                                  ^
+     87|   expect((await notices(f.member)).length).toBeGreaterThan(0);
+     88|   const stable=await snapshot(watched);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+AssertionError: operators: expected [ { …(10) }, { …(10) }, { …(10) } ] to deeply equal [ { …(8) }, { …(8) }, { …(8) } ]
+
+- Expected
++ Received
+
+@@ -4,29 +4,35 @@
+      "email": "sarah@vector.test",
+      "id": "01J00000000000000000000002",
+      "name": "Sarah Chen",
+      "removed_at": null,
+      "role": "owner",
++     "suspended_at": null,
++     "suspended_by": null,
+      "updated_at": "2026-09-01T00:00:00.000Z",
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "created_at": "2026-09-03T00:00:00.000Z",
+      "email": "maya@vector.test",
+      "id": "01J00000000000000000000003",
+      "name": "Maya Ortiz",
+      "removed_at": null,
+      "role": "owner",
++     "suspended_at": null,
++     "suspended_by": null,
+      "updated_at": "2026-09-03T00:00:00.000Z",
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "created_at": "2026-09-06T00:00:00.000Z",
+      "email": "alex@vector.test",
+      "id": "01J00000000000000000000004",
+      "name": "Alex Lee",
+      "removed_at": null,
+      "role": "owner",
++     "suspended_at": null,
++     "suspended_by": null,
+      "updated_at": "2026-09-06T00:00:00.000Z",
+      "workspace_id": "01J00000000000000000000001",
+    },
+  ]
+
+ ❯ triageUpgrade tests/worker/triage-upgrade.ts:87:7
+     85|       ).results,
+     86|       table.name,
+     87|     ).toEqual(
+       |       ^
+     88|       table.rows.map((row) => ({
+     89|         ...row,
+ ❯ tests/worker/source-ingest.test.ts:50:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 17 passed (19)
+      Tests  2 failed | 38 passed (40)
+   Start at  19:20:32
+   Duration  190.25s (transform 5.52s, setup 0ms, import 84.81s, tests 95.33s, environment 2ms)
+
+
+Original Verify run 42513319748, job 128831161241
+
+ FAIL  tests/worker/follower-events.test.ts > [TEAM-004 NOTIFY-001 NOTIFY-003 NOTIFY-004 NOTIFY-009] workflow status removal notifies followers once without replaying terminal completion
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ exerciseSubjectSubscriptions tests/worker/subscriptions-scenario.ts:115:133
+    113|  await read(await bob('/subscriptions','POST',{subjectType:'label',sub…
+    114|  expect((await f.call('/settings/operators/'+f.bob,'DELETE')).status).…
+
+    115|  expect(await env.DB.prepare('SELECT count(*) AS n FROM subject_subscr…
+       |                                                                                                                                     ^
+    116|  expect(moved.status.id).toBe(started.id);
+    117| }
+ ❯ tests/worker/follower-events.test.ts:406:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/worker/project-report.test.ts > [PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ documentMentionsScenario tests/worker/document-mentions-scenario.ts:99:135
+     97|  await read(await f.call('/settings/operators/'+nextId,'DELETE'));
+     98|  expect((await request('/api/notifications','GET',undefined,next)).sta…
+     99|  expect((await env.DB.prepare('SELECT count(*) n FROM document_notific…
+       |                                                                                                                                       ^
+    100|  expect((await env.DB.prepare('SELECT count(*) n FROM document_followe…
+ Test Files  2 failed | 18 passed (20)
+    101|  const beforeReplay=await snapshot(watched);
+ ❯ documentJourney tests/worker/documents-scenario.ts:53:18
+ ❯ tests/worker/project-report.test.ts:105:163
+
+
+Original Verify run 42513319748, job 128831161257
+
+Archive command succeeded, but retrieved content ends during source-lock output; no assertion text available in this job archive. No retry or direct blob request was made.

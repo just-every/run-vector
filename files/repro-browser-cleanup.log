@@ -1,0 +1,1923 @@
+
+> vector@0.4.1 test:collaboration /home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector
+> node --experimental-strip-types tests/e2e/collaboration-runtime.mjs
+
+(node:6955) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+# Subtest: [OPS-004] real first-owner collaboration at mobile
+    # Subtest: [TEAM-001] 1440: create team with uppercase prefix and seven categories
+    ok 1 - [TEAM-001] 1440: create team with uppercase prefix and seven categories
+      ---
+      duration_ms: 156.162618
+      type: 'test'
+      ...
+    # Subtest: [TEAM-002] 1440: rename team; add rename and reorder workflow status
+    ok 2 - [TEAM-002] 1440: rename team; add rename and reorder workflow status
+      ---
+      duration_ms: 7329.562984
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 1440: create rename recolour readable workspace label
+    ok 3 - [ISSUE-014] 1440: create rename recolour readable workspace label
+      ---
+      duration_ms: 3370.416375
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 1440: create project with lead Markdown optional target and Planned lifecycle
+    ok 4 - [PROJ-001] 1440: create project with lead Markdown optional target and Planned lifecycle
+      ---
+      duration_ms: 317.062143
+      type: 'test'
+      ...
+    # Subtest: [PROJ-002] 1440: operator explicitly changes project lifecycle
+    ok 5 - [PROJ-002] 1440: operator explicitly changes project lifecycle
+      ---
+      duration_ms: 273.73702
+      type: 'test'
+      ...
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 private team-template reads and Viewer creation/edit/application refusals passed at 1440/390
+    # Subtest: [PROJ-012] 1440: save project structure, launch native issue teams and retain projects after template deletion
+    ok 6 - [PROJ-012] 1440: save project structure, launch native issue teams and retain projects after template deletion
+      ---
+      duration_ms: 195657.149769
+      type: 'test'
+      ...
+    # Subtest: [CYCLE-001] 1440: manual nonoverlap cycles use workspace timezone and reject invalid end
+    ok 7 - [CYCLE-001] 1440: manual nonoverlap cycles use workspace timezone and reject invalid end
+      ---
+      duration_ms: 813.26768
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 1440: label applied to an authored issue
+    ok 8 - [ISSUE-014] 1440: label applied to an authored issue
+      ---
+      duration_ms: 354.686837
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 1440: separate labelled section applies label without adding an inline property picker
+    ok 9 - [ISSUE-014] 1440: separate labelled section applies label without adding an inline property picker
+      ---
+      duration_ms: 380.319893
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-008] 1440: mobile issue retains open description and outcome
+    ok 10 - [ISSUE-008] 1440: mobile issue retains open description and outcome
+      ---
+      duration_ms: 6.532564
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-001] 1440: live assignment and self suppression
+    ok 11 - [NOTIFY-001] 1440: live assignment and self suppression
+      ---
+      duration_ms: 3287.638183
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 1440: keyboard selected stable description mention
+    ok 12 - [ISSUE-013] 1440: keyboard selected stable description mention
+      ---
+      duration_ms: 2750.734508
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-002] 1440: followed comment mention overlap produces one row and one mail
+    ok 13 - [NOTIFY-002] 1440: followed comment mention overlap produces one row and one mail
+      ---
+      duration_ms: 2707.170155
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-002] 1440: followers receive plain comments without email and commenter self suppression
+    ok 14 - [NOTIFY-002] 1440: followers receive plain comments without email and commenter self suppression
+      ---
+      duration_ms: 2574.326894
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 1440: description edit mentions only newly added recipients and leaves unknown tokens literal
+    ok 15 - [ISSUE-013] 1440: description edit mentions only newly added recipients and leaves unknown tokens literal
+      ---
+      duration_ms: 575.370622
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 1440: remove and re-add selected mention creates a new edit event once
+    ok 16 - [ISSUE-013] 1440: remove and re-add selected mention creates a new edit event once
+      ---
+      duration_ms: 2130.463229
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 1440: recipient comments suppress self and preserve issue version
+    ok 17 - [NOTIFY-003] 1440: recipient comments suppress self and preserve issue version
+      ---
+      duration_ms: 6773.639415
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 1440: row opening and mark all are private version-neutral reads
+    ok 18 - [NOTIFY-003] 1440: row opening and mark all are private version-neutral reads
+      ---
+      duration_ms: 3833.439063
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-017] 1440: native description and comment reactions synchronize without notifications
+    ok 19 - [ISSUE-017] 1440: native description and comment reactions synchronize without notifications
+      ---
+      duration_ms: 9983.978463
+      type: 'test'
+      ...
+ISSUE-027 private-source backlinks follow current Member/Viewer membership at 1440/390
+ISSUE-027 description/comment links, title/status hover and focus, one retained backlink and removed state passed at1440 and390
+    # Subtest: [ISSUE-006] 1440: own unfollow and follow preserve issue version
+    ok 20 - [ISSUE-006] 1440: own unfollow and follow preserve issue version
+      ---
+      duration_ms: 2267.023264
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-004] 1440: issue and event mutes suppress future inbox and actual mail; unmute never backfills
+    ok 21 - [NOTIFY-004] 1440: issue and event mutes suppress future inbox and actual mail; unmute never backfills
+      ---
+      duration_ms: 9789.089024
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 1440: email optout retains inbox and Base development captures contain only disclosed fields
+    ok 22 - [NOTIFY-006] 1440: email optout retains inbox and Base development captures contain only disclosed fields
+      ---
+      duration_ms: 2280.671036
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 1440: native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures
+    ok 23 - [NOTIFY-006] 1440: native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures
+      ---
+      duration_ms: 4680.950411
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 1440: operator re-enables email through native Settings and next real mention is captured once
+    ok 24 - [NOTIFY-006] 1440: operator re-enables email through native Settings and next real mention is captured once
+      ---
+      duration_ms: 3120.074709
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 1440: native Inbox pagination ordering and cached rows clear after suspension while personal history stays retained
+    not ok 25 - [NOTIFY-003] 1440: native Inbox pagination ordering and cached rows clear after suspension while personal history stays retained
+      ---
+      duration_ms: 12457.791798
+      type: 'test'
+      location: '/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/contract.ts:4:10'
+      failureType: 'testCodeFailure'
+      error: |-
+        notifications personal history retained during suspension
+        + actual - expected
+        
+        + []
+        - [
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:45.456Z',
+        -     event_id: '01M6YE37VGBQGST4Y4VESW88WE',
+        -     id: '02d80d8e8eca8cfe04b910f08c37a670',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:45.255Z',
+        -     event_id: '01M6YE37N7Q4JKFHGKAE92DPX7',
+        -     id: '09b96e6824485b61d6c61bb77f2e1c53',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:48.104Z',
+        -     event_id: '01M6YE3AE8TXWBV4R5T0WJVSC9',
+        -     id: '13af1f62c745113b3c4b1aa36ece1442',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:47.626Z',
+        -     event_id: '01M6YE39ZA20YNFJPYVCV5W694',
+        -     id: '1779e18b141a8c7b541e2b242bb5b79b',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:50.216Z',
+        -     event_id: '01M6YE3CG8QPXK8BP9VP54Z1P4',
+        -     id: '233c7be7e4eeb185fc47f96f3938ea9c',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:44.650Z',
+        -     event_id: '01M6YE372AG9J2FMF6PPZK1WN0',
+        -     id: '2a5f097454a3c6b7cf20341017e16ec3',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:44.945Z',
+        -     event_id: '01M6YE37BH3SMH45R1BNWT1ZZ3',
+        -     id: '312995dfea1c9eb83aa256be0aaba808',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:49.697Z',
+        -     event_id: '01M6YE3C01TTQDNSVBHB0HWC3G',
+        -     id: '392c1253090e64cd832c8acc9ca61f44',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:43.969Z',
+        -     event_id: '01M6YE36D1W4YD6P5039TNVCVQ',
+        -     id: '39edc29e90f7f01f8d79a4112c12865f',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment","mention"]',
+        -     created_at: '2026-11-08T20:37:40.780Z',
+        -     event_id: '01M6YE339C0VMGVDCXWHFZTVFR',
+        -     id: '3aa21fcaef80a36dc77775cc9657cbda',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment","mention"]',
+        -     created_at: '2026-11-08T20:37:35.629Z',
+        -     event_id: '01M6YE2Y8DDFCPB6NMGD3N270F',
+        -     id: '408d74100d330ece50ad99ccbed729a9',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:45.102Z',
+        -     event_id: '01M6YE37GEE3761MJVY65GPX9C',
+        -     id: '521191405fe33345bf9f1c427ac606c9',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:46.422Z',
+        -     event_id: '01M6YE38SP0E90VC2TJXFAZ6K5',
+        -     id: '573b7211acf97bcecd482c600722099d',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:49.491Z',
+        -     event_id: '01M6YE3BSKBP1SFQWQ50YW9FBQ',
+        -     id: '57d264e2af4afd45a84af46214001d11',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["mention"]',
+        -     created_at: '2026-11-08T20:35:56.074Z',
+        -     event_id: '01M6YDZX1A7AXA0B71KVCN4G8Z',
+        -     id: '5c071f821c8122f0627be294f2ade88c',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: '2026-11-08T20:36:05.086Z',
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:44.508Z',
+        -     event_id: '01M6YE36XW7QFHNF89FGXJ8FR6',
+        -     id: '6249b73f6aec7364af894ecb854df4df',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:43.687Z',
+        -     event_id: '01M6YE3647JHYYJ6GN4R1T1DDX',
+        -     id: '62bd3c9b67bc1dccc009731224e439e6',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:50.430Z',
+        -     event_id: '01M6YE3CPY9KW73XTRRN8NS2FS',
+        -     id: '67f34f00fe963b709ae50aff6418289b',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:45.672Z',
+        -     event_id: '01M6YE38280QBQ11SWDQDQ5ZWJ',
+        -     id: '6a9d67cbcf47194a2bcbe3b813fe381f',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:46.137Z',
+        -     event_id: '01M6YE38GSX5KAJ8FAHYX3W3QT',
+        -     id: '6b8321524c4938d75fff6919e78b494e',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:47.399Z',
+        -     event_id: '01M6YE39R7GC0205Y7XAD4CVW6',
+        -     id: '737130f045e2587abeda369a90f9d3f4',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment","mention"]',
+        -     created_at: '2026-11-08T20:37:36.091Z',
+        -     event_id: '01M6YE2YPVY50MPB2DWJB8K5MS',
+        -     id: '78c96d74a66fd9304ff7a40d58d09b86',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:48.726Z',
+        -     event_id: '01M6YE3B1PTMSSS9GKY071NN84',
+        -     id: '8980270baafc742f8ebcea4139a5d9a2',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:46.631Z',
+        -     event_id: '01M6YE3907ZNBC4KYGWX79YKJY',
+        -     id: '9876ceb4b828b92631b84b392a420a90',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:49.189Z',
+        -     event_id: '01M6YE3BG55EGBB91EFV7TMDDM',
+        -     id: '9a9b5bfd275e7b0e01b8039f178bd1e1',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:49.977Z',
+        -     event_id: '01M6YE3C8SDYZN33CVK2BKM5NA',
+        -     id: '9c7b5649b17838650bfe3e4e4969643c',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["mention"]',
+        -     created_at: '2026-11-08T20:35:46.245Z',
+        -     event_id: '01M6YDZKE5CCG09ZC8X28S4MVH',
+        -     id: 'ae327fb9ff146b4d17eb162147959cf6',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: '2026-11-08T20:36:08.494Z',
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:48.988Z',
+        -     event_id: '01M6YE3B9WVMZTT8D338SWNSRG',
+        -     id: 'b20dce579c506b24ca68b7ca0cb36598',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment","mention"]',
+        -     created_at: '2026-11-08T20:35:49.194Z',
+        -     event_id: '01M6YDZPAAX752R3YMJ01MB424',
+        -     id: 'b31fc2e981694a2d7a167fa1102af012',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: '2026-11-08T20:36:08.494Z',
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:44.799Z',
+        -     event_id: '01M6YE376ZP7FAWZZX4NW70MFD',
+        -     id: 'c8ee64baeb82a0dd043085e1d53c0901',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:47.150Z',
+        -     event_id: '01M6YE39GE69FXDBVSTRCDD0BP',
+        -     id: 'cafde508311e0783a02f9bb0c1250404',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:44.165Z',
+        -     event_id: '01M6YE36K5ZT7H8DXWV10Z71RB',
+        -     id: 'd3f5dcd5f817118ecac24c297aed8f7f',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:44.313Z',
+        -     event_id: '01M6YE36QSHTXPVD2WXK96XWAZ',
+        -     id: 'd822aa708c4d7ab89644c2c274576b80',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:48.378Z',
+        -     event_id: '01M6YE3APT3XNTBZ8J08QMT2VZ',
+        -     id: 'dac079727805a91d4fb7ff5791821534',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:46.852Z',
+        -     event_id: '01M6YE3974EEKSMC05FMNN76YH',
+        -     id: 'e467cc8edd98b9cd5104cbc0d6f687a7',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment","mention"]',
+        -     created_at: '2026-11-08T20:37:33.450Z',
+        -     event_id: '01M6YE2W4AXHKBSWDTA4PHA1NQ',
+        -     id: 'e54d1faef966730f85daae2e1b04badf',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["assignment"]',
+        -     created_at: '2026-11-08T20:35:42.621Z',
+        -     event_id: '01M6YDZFWXPRP3FJQG81D79SR1',
+        -     id: 'e887e9c07c96f03e78d0aefdb7b33d91',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: '2026-11-08T20:36:08.494Z',
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:45.912Z',
+        -     event_id: '01M6YE389R8S1YJEFQMKPWZBTG',
+        -     id: 'ea0c6e521c782d513cabc4c6e83c8d62',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:35:52.013Z',
+        -     event_id: '01M6YDZS2DJR0X9NHPGE1CFKZ8',
+        -     id: 'f2f50e0396504470ab83c805ff1e252f',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: '2026-11-08T20:36:08.494Z',
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   },
+        -   [Object: null prototype] {
+        -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+        -     actor_name: 'Collaboration owner',
+        -     causes_json: '["comment"]',
+        -     created_at: '2026-11-08T20:37:47.850Z',
+        -     event_id: '01M6YE3A6ASQ4ZVB5HZ2F731T8',
+        -     id: 'f30aad2f9dd960bca52b7e32d6ed12e6',
+        -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+        -     read_at: null,
+        -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+        -   }
+        - ]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected:
+        0:
+          id: '02d80d8e8eca8cfe04b910f08c37a670'
+          event_id: '01M6YE37VGBQGST4Y4VESW88WE'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:45.456Z'
+          read_at: ~
+        1:
+          id: '09b96e6824485b61d6c61bb77f2e1c53'
+          event_id: '01M6YE37N7Q4JKFHGKAE92DPX7'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:45.255Z'
+          read_at: ~
+        2:
+          id: '13af1f62c745113b3c4b1aa36ece1442'
+          event_id: '01M6YE3AE8TXWBV4R5T0WJVSC9'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:48.104Z'
+          read_at: ~
+        3:
+          id: '1779e18b141a8c7b541e2b242bb5b79b'
+          event_id: '01M6YE39ZA20YNFJPYVCV5W694'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:47.626Z'
+          read_at: ~
+        4:
+          id: '233c7be7e4eeb185fc47f96f3938ea9c'
+          event_id: '01M6YE3CG8QPXK8BP9VP54Z1P4'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:50.216Z'
+          read_at: ~
+        5:
+          id: '2a5f097454a3c6b7cf20341017e16ec3'
+          event_id: '01M6YE372AG9J2FMF6PPZK1WN0'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:44.650Z'
+          read_at: ~
+        6:
+          id: '312995dfea1c9eb83aa256be0aaba808'
+          event_id: '01M6YE37BH3SMH45R1BNWT1ZZ3'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:44.945Z'
+          read_at: ~
+        7:
+          id: '392c1253090e64cd832c8acc9ca61f44'
+          event_id: '01M6YE3C01TTQDNSVBHB0HWC3G'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:49.697Z'
+          read_at: ~
+        8:
+          id: '39edc29e90f7f01f8d79a4112c12865f'
+          event_id: '01M6YE36D1W4YD6P5039TNVCVQ'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:43.969Z'
+          read_at: ~
+        9:
+          id: '3aa21fcaef80a36dc77775cc9657cbda'
+          event_id: '01M6YE339C0VMGVDCXWHFZTVFR'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment","mention"]'
+          created_at: '2026-11-08T20:37:40.780Z'
+          read_at: ~
+        10:
+          id: '408d74100d330ece50ad99ccbed729a9'
+          event_id: '01M6YE2Y8DDFCPB6NMGD3N270F'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment","mention"]'
+          created_at: '2026-11-08T20:37:35.629Z'
+          read_at: ~
+        11:
+          id: '521191405fe33345bf9f1c427ac606c9'
+          event_id: '01M6YE37GEE3761MJVY65GPX9C'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:45.102Z'
+          read_at: ~
+        12:
+          id: '573b7211acf97bcecd482c600722099d'
+          event_id: '01M6YE38SP0E90VC2TJXFAZ6K5'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:46.422Z'
+          read_at: ~
+        13:
+          id: '57d264e2af4afd45a84af46214001d11'
+          event_id: '01M6YE3BSKBP1SFQWQ50YW9FBQ'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:49.491Z'
+          read_at: ~
+        14:
+          id: '5c071f821c8122f0627be294f2ade88c'
+          event_id: '01M6YDZX1A7AXA0B71KVCN4G8Z'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["mention"]'
+          created_at: '2026-11-08T20:35:56.074Z'
+          read_at: '2026-11-08T20:36:05.086Z'
+        15:
+          id: '6249b73f6aec7364af894ecb854df4df'
+          event_id: '01M6YE36XW7QFHNF89FGXJ8FR6'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:44.508Z'
+          read_at: ~
+        16:
+          id: '62bd3c9b67bc1dccc009731224e439e6'
+          event_id: '01M6YE3647JHYYJ6GN4R1T1DDX'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:43.687Z'
+          read_at: ~
+        17:
+          id: '67f34f00fe963b709ae50aff6418289b'
+          event_id: '01M6YE3CPY9KW73XTRRN8NS2FS'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:50.430Z'
+          read_at: ~
+        18:
+          id: '6a9d67cbcf47194a2bcbe3b813fe381f'
+          event_id: '01M6YE38280QBQ11SWDQDQ5ZWJ'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:45.672Z'
+          read_at: ~
+        19:
+          id: '6b8321524c4938d75fff6919e78b494e'
+          event_id: '01M6YE38GSX5KAJ8FAHYX3W3QT'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:46.137Z'
+          read_at: ~
+        20:
+          id: '737130f045e2587abeda369a90f9d3f4'
+          event_id: '01M6YE39R7GC0205Y7XAD4CVW6'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:47.399Z'
+          read_at: ~
+        21:
+          id: '78c96d74a66fd9304ff7a40d58d09b86'
+          event_id: '01M6YE2YPVY50MPB2DWJB8K5MS'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment","mention"]'
+          created_at: '2026-11-08T20:37:36.091Z'
+          read_at: ~
+        22:
+          id: '8980270baafc742f8ebcea4139a5d9a2'
+          event_id: '01M6YE3B1PTMSSS9GKY071NN84'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:48.726Z'
+          read_at: ~
+        23:
+          id: '9876ceb4b828b92631b84b392a420a90'
+          event_id: '01M6YE3907ZNBC4KYGWX79YKJY'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:46.631Z'
+          read_at: ~
+        24:
+          id: '9a9b5bfd275e7b0e01b8039f178bd1e1'
+          event_id: '01M6YE3BG55EGBB91EFV7TMDDM'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:49.189Z'
+          read_at: ~
+        25:
+          id: '9c7b5649b17838650bfe3e4e4969643c'
+          event_id: '01M6YE3C8SDYZN33CVK2BKM5NA'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:49.977Z'
+          read_at: ~
+        26:
+          id: 'ae327fb9ff146b4d17eb162147959cf6'
+          event_id: '01M6YDZKE5CCG09ZC8X28S4MVH'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["mention"]'
+          created_at: '2026-11-08T20:35:46.245Z'
+          read_at: '2026-11-08T20:36:08.494Z'
+        27:
+          id: 'b20dce579c506b24ca68b7ca0cb36598'
+          event_id: '01M6YE3B9WVMZTT8D338SWNSRG'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:48.988Z'
+          read_at: ~
+        28:
+          id: 'b31fc2e981694a2d7a167fa1102af012'
+          event_id: '01M6YDZPAAX752R3YMJ01MB424'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment","mention"]'
+          created_at: '2026-11-08T20:35:49.194Z'
+          read_at: '2026-11-08T20:36:08.494Z'
+        29:
+          id: 'c8ee64baeb82a0dd043085e1d53c0901'
+          event_id: '01M6YE376ZP7FAWZZX4NW70MFD'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:44.799Z'
+          read_at: ~
+        30:
+          id: 'cafde508311e0783a02f9bb0c1250404'
+          event_id: '01M6YE39GE69FXDBVSTRCDD0BP'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:47.150Z'
+          read_at: ~
+        31:
+          id: 'd3f5dcd5f817118ecac24c297aed8f7f'
+          event_id: '01M6YE36K5ZT7H8DXWV10Z71RB'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:44.165Z'
+          read_at: ~
+        32:
+          id: 'd822aa708c4d7ab89644c2c274576b80'
+          event_id: '01M6YE36QSHTXPVD2WXK96XWAZ'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:44.313Z'
+          read_at: ~
+        33:
+          id: 'dac079727805a91d4fb7ff5791821534'
+          event_id: '01M6YE3APT3XNTBZ8J08QMT2VZ'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:48.378Z'
+          read_at: ~
+        34:
+          id: 'e467cc8edd98b9cd5104cbc0d6f687a7'
+          event_id: '01M6YE3974EEKSMC05FMNN76YH'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:46.852Z'
+          read_at: ~
+        35:
+          id: 'e54d1faef966730f85daae2e1b04badf'
+          event_id: '01M6YE2W4AXHKBSWDTA4PHA1NQ'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment","mention"]'
+          created_at: '2026-11-08T20:37:33.450Z'
+          read_at: ~
+        36:
+          id: 'e887e9c07c96f03e78d0aefdb7b33d91'
+          event_id: '01M6YDZFWXPRP3FJQG81D79SR1'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["assignment"]'
+          created_at: '2026-11-08T20:35:42.621Z'
+          read_at: '2026-11-08T20:36:08.494Z'
+        37:
+          id: 'ea0c6e521c782d513cabc4c6e83c8d62'
+          event_id: '01M6YE389R8S1YJEFQMKPWZBTG'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:45.912Z'
+          read_at: ~
+        38:
+          id: 'f2f50e0396504470ab83c805ff1e252f'
+          event_id: '01M6YDZS2DJR0X9NHPGE1CFKZ8'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:35:52.013Z'
+          read_at: '2026-11-08T20:36:08.494Z'
+        39:
+          id: 'f30aad2f9dd960bca52b7e32d6ed12e6'
+          event_id: '01M6YE3A6ASQ4ZVB5HZ2F731T8'
+          issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+          recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+          actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+          actor_name: 'Collaboration owner'
+          causes_json: '["comment"]'
+          created_at: '2026-11-08T20:37:47.850Z'
+          read_at: ~
+      actual:
+      operator: 'deepStrictEqual'
+      stack: |-
+        file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-pagination.mjs:114:16
+        async lifecycleOperation (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-lifecycle.mjs:15:16)
+        async TestContext.<anonymous> (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-runtime.mjs:113:15)
+        async Test.run (node:internal/test_runner/test:1054:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+        async clause (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-runtime.mjs:111:11)
+        async paginationAndRemoval (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-pagination.mjs:16:3)
+        async collaborationEvents (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-events.mjs:357:3)
+        async TestContext.<anonymous> (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-runtime.mjs:169:9)
+        async Test.run (node:internal/test_runner/test:1054:7)
+      ...
+    1..25
+not ok 1 - [OPS-004] real first-owner collaboration at mobile
+  ---
+  duration_ms: 439023.941438
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/contract.ts:4:10'
+  failureType: 'testCodeFailure'
+  error: |-
+    notifications personal history retained during suspension
+    + actual - expected
+    
+    + []
+    - [
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:45.456Z',
+    -     event_id: '01M6YE37VGBQGST4Y4VESW88WE',
+    -     id: '02d80d8e8eca8cfe04b910f08c37a670',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:45.255Z',
+    -     event_id: '01M6YE37N7Q4JKFHGKAE92DPX7',
+    -     id: '09b96e6824485b61d6c61bb77f2e1c53',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:48.104Z',
+    -     event_id: '01M6YE3AE8TXWBV4R5T0WJVSC9',
+    -     id: '13af1f62c745113b3c4b1aa36ece1442',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:47.626Z',
+    -     event_id: '01M6YE39ZA20YNFJPYVCV5W694',
+    -     id: '1779e18b141a8c7b541e2b242bb5b79b',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:50.216Z',
+    -     event_id: '01M6YE3CG8QPXK8BP9VP54Z1P4',
+    -     id: '233c7be7e4eeb185fc47f96f3938ea9c',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:44.650Z',
+    -     event_id: '01M6YE372AG9J2FMF6PPZK1WN0',
+    -     id: '2a5f097454a3c6b7cf20341017e16ec3',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:44.945Z',
+    -     event_id: '01M6YE37BH3SMH45R1BNWT1ZZ3',
+    -     id: '312995dfea1c9eb83aa256be0aaba808',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:49.697Z',
+    -     event_id: '01M6YE3C01TTQDNSVBHB0HWC3G',
+    -     id: '392c1253090e64cd832c8acc9ca61f44',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:43.969Z',
+    -     event_id: '01M6YE36D1W4YD6P5039TNVCVQ',
+    -     id: '39edc29e90f7f01f8d79a4112c12865f',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment","mention"]',
+    -     created_at: '2026-11-08T20:37:40.780Z',
+    -     event_id: '01M6YE339C0VMGVDCXWHFZTVFR',
+    -     id: '3aa21fcaef80a36dc77775cc9657cbda',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment","mention"]',
+    -     created_at: '2026-11-08T20:37:35.629Z',
+    -     event_id: '01M6YE2Y8DDFCPB6NMGD3N270F',
+    -     id: '408d74100d330ece50ad99ccbed729a9',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:45.102Z',
+    -     event_id: '01M6YE37GEE3761MJVY65GPX9C',
+    -     id: '521191405fe33345bf9f1c427ac606c9',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:46.422Z',
+    -     event_id: '01M6YE38SP0E90VC2TJXFAZ6K5',
+    -     id: '573b7211acf97bcecd482c600722099d',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:49.491Z',
+    -     event_id: '01M6YE3BSKBP1SFQWQ50YW9FBQ',
+    -     id: '57d264e2af4afd45a84af46214001d11',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["mention"]',
+    -     created_at: '2026-11-08T20:35:56.074Z',
+    -     event_id: '01M6YDZX1A7AXA0B71KVCN4G8Z',
+    -     id: '5c071f821c8122f0627be294f2ade88c',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: '2026-11-08T20:36:05.086Z',
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:44.508Z',
+    -     event_id: '01M6YE36XW7QFHNF89FGXJ8FR6',
+    -     id: '6249b73f6aec7364af894ecb854df4df',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:43.687Z',
+    -     event_id: '01M6YE3647JHYYJ6GN4R1T1DDX',
+    -     id: '62bd3c9b67bc1dccc009731224e439e6',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:50.430Z',
+    -     event_id: '01M6YE3CPY9KW73XTRRN8NS2FS',
+    -     id: '67f34f00fe963b709ae50aff6418289b',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:45.672Z',
+    -     event_id: '01M6YE38280QBQ11SWDQDQ5ZWJ',
+    -     id: '6a9d67cbcf47194a2bcbe3b813fe381f',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:46.137Z',
+    -     event_id: '01M6YE38GSX5KAJ8FAHYX3W3QT',
+    -     id: '6b8321524c4938d75fff6919e78b494e',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:47.399Z',
+    -     event_id: '01M6YE39R7GC0205Y7XAD4CVW6',
+    -     id: '737130f045e2587abeda369a90f9d3f4',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment","mention"]',
+    -     created_at: '2026-11-08T20:37:36.091Z',
+    -     event_id: '01M6YE2YPVY50MPB2DWJB8K5MS',
+    -     id: '78c96d74a66fd9304ff7a40d58d09b86',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:48.726Z',
+    -     event_id: '01M6YE3B1PTMSSS9GKY071NN84',
+    -     id: '8980270baafc742f8ebcea4139a5d9a2',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:46.631Z',
+    -     event_id: '01M6YE3907ZNBC4KYGWX79YKJY',
+    -     id: '9876ceb4b828b92631b84b392a420a90',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:49.189Z',
+    -     event_id: '01M6YE3BG55EGBB91EFV7TMDDM',
+    -     id: '9a9b5bfd275e7b0e01b8039f178bd1e1',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:49.977Z',
+    -     event_id: '01M6YE3C8SDYZN33CVK2BKM5NA',
+    -     id: '9c7b5649b17838650bfe3e4e4969643c',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["mention"]',
+    -     created_at: '2026-11-08T20:35:46.245Z',
+    -     event_id: '01M6YDZKE5CCG09ZC8X28S4MVH',
+    -     id: 'ae327fb9ff146b4d17eb162147959cf6',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: '2026-11-08T20:36:08.494Z',
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:48.988Z',
+    -     event_id: '01M6YE3B9WVMZTT8D338SWNSRG',
+    -     id: 'b20dce579c506b24ca68b7ca0cb36598',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment","mention"]',
+    -     created_at: '2026-11-08T20:35:49.194Z',
+    -     event_id: '01M6YDZPAAX752R3YMJ01MB424',
+    -     id: 'b31fc2e981694a2d7a167fa1102af012',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: '2026-11-08T20:36:08.494Z',
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:44.799Z',
+    -     event_id: '01M6YE376ZP7FAWZZX4NW70MFD',
+    -     id: 'c8ee64baeb82a0dd043085e1d53c0901',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:47.150Z',
+    -     event_id: '01M6YE39GE69FXDBVSTRCDD0BP',
+    -     id: 'cafde508311e0783a02f9bb0c1250404',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:44.165Z',
+    -     event_id: '01M6YE36K5ZT7H8DXWV10Z71RB',
+    -     id: 'd3f5dcd5f817118ecac24c297aed8f7f',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:44.313Z',
+    -     event_id: '01M6YE36QSHTXPVD2WXK96XWAZ',
+    -     id: 'd822aa708c4d7ab89644c2c274576b80',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:48.378Z',
+    -     event_id: '01M6YE3APT3XNTBZ8J08QMT2VZ',
+    -     id: 'dac079727805a91d4fb7ff5791821534',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:46.852Z',
+    -     event_id: '01M6YE3974EEKSMC05FMNN76YH',
+    -     id: 'e467cc8edd98b9cd5104cbc0d6f687a7',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment","mention"]',
+    -     created_at: '2026-11-08T20:37:33.450Z',
+    -     event_id: '01M6YE2W4AXHKBSWDTA4PHA1NQ',
+    -     id: 'e54d1faef966730f85daae2e1b04badf',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["assignment"]',
+    -     created_at: '2026-11-08T20:35:42.621Z',
+    -     event_id: '01M6YDZFWXPRP3FJQG81D79SR1',
+    -     id: 'e887e9c07c96f03e78d0aefdb7b33d91',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: '2026-11-08T20:36:08.494Z',
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:45.912Z',
+    -     event_id: '01M6YE389R8S1YJEFQMKPWZBTG',
+    -     id: 'ea0c6e521c782d513cabc4c6e83c8d62',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:35:52.013Z',
+    -     event_id: '01M6YDZS2DJR0X9NHPGE1CFKZ8',
+    -     id: 'f2f50e0396504470ab83c805ff1e252f',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: '2026-11-08T20:36:08.494Z',
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   },
+    -   [Object: null prototype] {
+    -     actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2',
+    -     actor_name: 'Collaboration owner',
+    -     causes_json: '["comment"]',
+    -     created_at: '2026-11-08T20:37:47.850Z',
+    -     event_id: '01M6YE3A6ASQ4ZVB5HZ2F731T8',
+    -     id: 'f30aad2f9dd960bca52b7e32d6ed12e6',
+    -     issue_id: '01M6YDZBSFEEZTXSES9XERXQWY',
+    -     read_at: null,
+    -     recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+    -   }
+    - ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: '02d80d8e8eca8cfe04b910f08c37a670'
+      event_id: '01M6YE37VGBQGST4Y4VESW88WE'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:45.456Z'
+      read_at: ~
+    1:
+      id: '09b96e6824485b61d6c61bb77f2e1c53'
+      event_id: '01M6YE37N7Q4JKFHGKAE92DPX7'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:45.255Z'
+      read_at: ~
+    2:
+      id: '13af1f62c745113b3c4b1aa36ece1442'
+      event_id: '01M6YE3AE8TXWBV4R5T0WJVSC9'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:48.104Z'
+      read_at: ~
+    3:
+      id: '1779e18b141a8c7b541e2b242bb5b79b'
+      event_id: '01M6YE39ZA20YNFJPYVCV5W694'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:47.626Z'
+      read_at: ~
+    4:
+      id: '233c7be7e4eeb185fc47f96f3938ea9c'
+      event_id: '01M6YE3CG8QPXK8BP9VP54Z1P4'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:50.216Z'
+      read_at: ~
+    5:
+      id: '2a5f097454a3c6b7cf20341017e16ec3'
+      event_id: '01M6YE372AG9J2FMF6PPZK1WN0'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:44.650Z'
+      read_at: ~
+    6:
+      id: '312995dfea1c9eb83aa256be0aaba808'
+      event_id: '01M6YE37BH3SMH45R1BNWT1ZZ3'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:44.945Z'
+      read_at: ~
+    7:
+      id: '392c1253090e64cd832c8acc9ca61f44'
+      event_id: '01M6YE3C01TTQDNSVBHB0HWC3G'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:49.697Z'
+      read_at: ~
+    8:
+      id: '39edc29e90f7f01f8d79a4112c12865f'
+      event_id: '01M6YE36D1W4YD6P5039TNVCVQ'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:43.969Z'
+      read_at: ~
+    9:
+      id: '3aa21fcaef80a36dc77775cc9657cbda'
+      event_id: '01M6YE339C0VMGVDCXWHFZTVFR'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment","mention"]'
+      created_at: '2026-11-08T20:37:40.780Z'
+      read_at: ~
+    10:
+      id: '408d74100d330ece50ad99ccbed729a9'
+      event_id: '01M6YE2Y8DDFCPB6NMGD3N270F'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment","mention"]'
+      created_at: '2026-11-08T20:37:35.629Z'
+      read_at: ~
+    11:
+      id: '521191405fe33345bf9f1c427ac606c9'
+      event_id: '01M6YE37GEE3761MJVY65GPX9C'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:45.102Z'
+      read_at: ~
+    12:
+      id: '573b7211acf97bcecd482c600722099d'
+      event_id: '01M6YE38SP0E90VC2TJXFAZ6K5'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:46.422Z'
+      read_at: ~
+    13:
+      id: '57d264e2af4afd45a84af46214001d11'
+      event_id: '01M6YE3BSKBP1SFQWQ50YW9FBQ'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:49.491Z'
+      read_at: ~
+    14:
+      id: '5c071f821c8122f0627be294f2ade88c'
+      event_id: '01M6YDZX1A7AXA0B71KVCN4G8Z'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["mention"]'
+      created_at: '2026-11-08T20:35:56.074Z'
+      read_at: '2026-11-08T20:36:05.086Z'
+    15:
+      id: '6249b73f6aec7364af894ecb854df4df'
+      event_id: '01M6YE36XW7QFHNF89FGXJ8FR6'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:44.508Z'
+      read_at: ~
+    16:
+      id: '62bd3c9b67bc1dccc009731224e439e6'
+      event_id: '01M6YE3647JHYYJ6GN4R1T1DDX'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:43.687Z'
+      read_at: ~
+    17:
+      id: '67f34f00fe963b709ae50aff6418289b'
+      event_id: '01M6YE3CPY9KW73XTRRN8NS2FS'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:50.430Z'
+      read_at: ~
+    18:
+      id: '6a9d67cbcf47194a2bcbe3b813fe381f'
+      event_id: '01M6YE38280QBQ11SWDQDQ5ZWJ'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:45.672Z'
+      read_at: ~
+    19:
+      id: '6b8321524c4938d75fff6919e78b494e'
+      event_id: '01M6YE38GSX5KAJ8FAHYX3W3QT'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:46.137Z'
+      read_at: ~
+    20:
+      id: '737130f045e2587abeda369a90f9d3f4'
+      event_id: '01M6YE39R7GC0205Y7XAD4CVW6'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:47.399Z'
+      read_at: ~
+    21:
+      id: '78c96d74a66fd9304ff7a40d58d09b86'
+      event_id: '01M6YE2YPVY50MPB2DWJB8K5MS'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment","mention"]'
+      created_at: '2026-11-08T20:37:36.091Z'
+      read_at: ~
+    22:
+      id: '8980270baafc742f8ebcea4139a5d9a2'
+      event_id: '01M6YE3B1PTMSSS9GKY071NN84'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:48.726Z'
+      read_at: ~
+    23:
+      id: '9876ceb4b828b92631b84b392a420a90'
+      event_id: '01M6YE3907ZNBC4KYGWX79YKJY'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:46.631Z'
+      read_at: ~
+    24:
+      id: '9a9b5bfd275e7b0e01b8039f178bd1e1'
+      event_id: '01M6YE3BG55EGBB91EFV7TMDDM'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:49.189Z'
+      read_at: ~
+    25:
+      id: '9c7b5649b17838650bfe3e4e4969643c'
+      event_id: '01M6YE3C8SDYZN33CVK2BKM5NA'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:49.977Z'
+      read_at: ~
+    26:
+      id: 'ae327fb9ff146b4d17eb162147959cf6'
+      event_id: '01M6YDZKE5CCG09ZC8X28S4MVH'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["mention"]'
+      created_at: '2026-11-08T20:35:46.245Z'
+      read_at: '2026-11-08T20:36:08.494Z'
+    27:
+      id: 'b20dce579c506b24ca68b7ca0cb36598'
+      event_id: '01M6YE3B9WVMZTT8D338SWNSRG'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:48.988Z'
+      read_at: ~
+    28:
+      id: 'b31fc2e981694a2d7a167fa1102af012'
+      event_id: '01M6YDZPAAX752R3YMJ01MB424'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment","mention"]'
+      created_at: '2026-11-08T20:35:49.194Z'
+      read_at: '2026-11-08T20:36:08.494Z'
+    29:
+      id: 'c8ee64baeb82a0dd043085e1d53c0901'
+      event_id: '01M6YE376ZP7FAWZZX4NW70MFD'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:44.799Z'
+      read_at: ~
+    30:
+      id: 'cafde508311e0783a02f9bb0c1250404'
+      event_id: '01M6YE39GE69FXDBVSTRCDD0BP'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:47.150Z'
+      read_at: ~
+    31:
+      id: 'd3f5dcd5f817118ecac24c297aed8f7f'
+      event_id: '01M6YE36K5ZT7H8DXWV10Z71RB'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:44.165Z'
+      read_at: ~
+    32:
+      id: 'd822aa708c4d7ab89644c2c274576b80'
+      event_id: '01M6YE36QSHTXPVD2WXK96XWAZ'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:44.313Z'
+      read_at: ~
+    33:
+      id: 'dac079727805a91d4fb7ff5791821534'
+      event_id: '01M6YE3APT3XNTBZ8J08QMT2VZ'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:48.378Z'
+      read_at: ~
+    34:
+      id: 'e467cc8edd98b9cd5104cbc0d6f687a7'
+      event_id: '01M6YE3974EEKSMC05FMNN76YH'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:46.852Z'
+      read_at: ~
+    35:
+      id: 'e54d1faef966730f85daae2e1b04badf'
+      event_id: '01M6YE2W4AXHKBSWDTA4PHA1NQ'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment","mention"]'
+      created_at: '2026-11-08T20:37:33.450Z'
+      read_at: ~
+    36:
+      id: 'e887e9c07c96f03e78d0aefdb7b33d91'
+      event_id: '01M6YDZFWXPRP3FJQG81D79SR1'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["assignment"]'
+      created_at: '2026-11-08T20:35:42.621Z'
+      read_at: '2026-11-08T20:36:08.494Z'
+    37:
+      id: 'ea0c6e521c782d513cabc4c6e83c8d62'
+      event_id: '01M6YE389R8S1YJEFQMKPWZBTG'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:45.912Z'
+      read_at: ~
+    38:
+      id: 'f2f50e0396504470ab83c805ff1e252f'
+      event_id: '01M6YDZS2DJR0X9NHPGE1CFKZ8'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:35:52.013Z'
+      read_at: '2026-11-08T20:36:08.494Z'
+    39:
+      id: 'f30aad2f9dd960bca52b7e32d6ed12e6'
+      event_id: '01M6YE3A6ASQ4ZVB5HZ2F731T8'
+      issue_id: '01M6YDZBSFEEZTXSES9XERXQWY'
+      recipient_id: '01M6YDZ8JB7ZQ7GGYA6XVCDAA2'
+      actor_id: '01M6YDR2GZT1GBZ3M0202R2BM2'
+      actor_name: 'Collaboration owner'
+      causes_json: '["comment"]'
+      created_at: '2026-11-08T20:37:47.850Z'
+      read_at: ~
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-pagination.mjs:114:16
+    async lifecycleOperation (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-lifecycle.mjs:15:16)
+    async TestContext.<anonymous> (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-runtime.mjs:113:15)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+    async clause (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-runtime.mjs:111:11)
+    async paginationAndRemoval (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-pagination.mjs:16:3)
+    async collaborationEvents (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-events.mjs:357:3)
+    async TestContext.<anonymous> (file:///home/agent/rer-consolidation/work/sd-vector-c-f207-fix1/run-vector/tests/e2e/collaboration-runtime.mjs:169:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+  ...
+1..1
+# tests 26
+# suites 0
+# pass 24
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 439034.239944
+ ELIFECYCLE  Command failed with exit code 1.

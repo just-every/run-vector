@@ -1,0 +1,8 @@
+{
+  "id": 42520155621,
+  "status": "in_progress",
+  "conclusion": null,
+  "head_sha": "58cceb1b4cd7ea8aeb8f55ef28cfd26fc27d19d9",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42520155621",
+  "watcher_stopped_reason": "A second candidate-added notification-retention expectation was found in the browser journey and will be restored to main zero-row cleanup semantics before the final candidate push."
+}
