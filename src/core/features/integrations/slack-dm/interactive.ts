@@ -1,5 +1,4 @@
-import {intakeSlackMessage} from '../slack-app/thread-intake';
-import {slackMessage} from '../slack-app/thread-mapping';
+import {receiveSlackShortcut} from '../slack-app/shortcut';
 import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
@@ -46,17 +45,8 @@ export async function receiveSlackAction(env:WorkerBindings,request:Request,afte
  try{body=new TextDecoder('utf-8',{fatal:true}).decode(await rawIntegrationBody(request,65536));}catch(error){if(error instanceof IntegrationError)throw error;throw new IntegrationError(400,'slack_payload_invalid');}
  const signer=await signedInstallation(env,timestamp,body,signature.slice(3));
  if(!signer)throw new IntegrationError(401,'slack_signature_invalid');
- let raw:unknown;try{raw=JSON.parse(new URLSearchParams(body).get('payload')??'');}catch{throw new IntegrationError(400,'slack_payload_unsupported');}
- if((raw as {type?:unknown})?.type==='message_action'){
-  const shortcut=z.object({type:z.literal('message_action'),callback_id:z.literal('vector_create_issue'),team:z.object({id:z.string()}),user:z.object({id:z.string()}),channel:z.object({id:z.string()}),message:slackMessage.omit({channel:true}).extend({user:z.string()})}).safeParse(raw);
-  if(!shortcut.success)throw new IntegrationError(400,'slack_payload_unsupported');
-  const payload=shortcut.data;
-  // The signed invoking member supplies authority; the selected message retains
-  // its Slack author. Bots cannot file and their own messages are ignored.
-  const event=slackMessage.parse({...payload.message,channel:payload.channel.id,user:payload.user.id});
-  await intakeSlackMessage(env,signer,payload.team.id,event,'shortcut:'+payload.team.id+':'+payload.channel.id+':'+payload.message.ts,true,payload.message.user);
-  return;
- }
+ let candidate:unknown;try{candidate=JSON.parse(new URLSearchParams(body).get('payload')??'');}catch{throw new IntegrationError(400,'slack_payload_unsupported');}
+ if(candidate&&typeof candidate==='object'&&'type' in candidate&&candidate.type==='message_action')return receiveSlackShortcut(env,signer,candidate);
  if(!await admitRate(env.DB,'slack-action:'+(request.headers.get('CF-Connecting-IP')??'unknown'),300,60_000))throw new IntegrationError(429,'slack_rate_limited');
  const now=Date.now(),[,stored]=await env.DB.batch([
   env.DB.prepare('DELETE FROM vector_slack_request_keys WHERE received_at<?').bind(now-600_000),

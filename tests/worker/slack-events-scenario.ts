@@ -1,3 +1,4 @@
+import {slackThreadSync} from './slack-thread-scenario';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {bindings,origin,request,actor,invite} from './base-auth-fixture';
@@ -19,33 +20,33 @@ export async function setupSlackIntake(f:Awaited<ReturnType<typeof setupIntegrat
   const state:Record<string,unknown>={};for(const [index,{name}] of names.entries())state[name]=rows[index].results.map(row=>JSON.stringify(row)).sort();
   return state;
  };
- const payload={type:'event_callback',team_id:slackIntakeFixture.team,event_id:'synthetic-vector-33002',event:{type:'app_mention',ts:'1794124800.000001',user:slackIntakeFixture.user,channel:slackIntakeFixture.channel,text:'<@'+slackIntakeFixture.bot+'> Fix the intake defect'}};
+ const payload={type:'event_callback',team_id:slackIntakeFixture.team,event_id:'synthetic-vector-33002',event:{type:'app_mention',ts:'1730000000.000001',user:slackIntakeFixture.user,channel:slackIntakeFixture.channel,text:'<@'+slackIntakeFixture.bot+'> Fix the intake defect'}};
  return {read,send,snapshot,payload};
 }
-export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string){
- const {read,send,snapshot,payload}=await setupSlackIntake(f,secret,operatorId);
- const initialReceiptCount=(await env.DB.prepare('SELECT count(*) n FROM vector_slack_event_receipts').first<number>('n'))!;
+export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string,member:string,calls:{method:string;body:any}[],threadEdge:{status:number;permalink?:string;onInfo?:(()=>Promise<void>)}){
+ const intake=await setupSlackIntake(f,secret,operatorId),{read,send,snapshot,payload}=intake;
  const before=await snapshot();
  expect(await read(await send({type:'url_verification',challenge:'synthetic-vector-33003'}))).toEqual({challenge:'synthetic-vector-33003'});
  for(const options of [{unsigned:true},{secret:'synthetic-vector-33004'},{timestamp:String(Math.floor(Date.now()/1000)-301)}]){await read(await send(payload,options),401);expect(await snapshot()).toEqual(before);}
  const created=await read(await send(payload));
  const issue=await env.DB.prepare('SELECT i.team_id,i.title,a.actor_operator_id FROM issues i JOIN issue_activity a ON a.issue_id=i.id AND a.kind=\'issue.created\' WHERE i.identifier=?').bind(created.identifier).first();
  expect(issue).toMatchObject({team_id:f.initial.teams[0].id,title:'Fix the intake defect',actor_operator_id:operatorId});
- expect(await env.DB.prepare('SELECT count(*) n FROM vector_slack_event_receipts').first<number>('n')).toBe(initialReceiptCount+1);
+ expect(await env.DB.prepare('SELECT count(*) n FROM vector_slack_event_receipts').first<number>('n')).toBe(1);
  const delivered=await snapshot();
  await read(await send(payload),409);expect(await snapshot()).toEqual(delivered);
  // A provider retry signed at a different time is still the same durable event.
  await read(await send(payload,{timestamp:String(Math.floor(Date.now()/1000)+1)}),409);expect(await snapshot()).toEqual(delivered);
- const unlinked={...payload,event_id:'synthetic-vector-33005',event:{...payload.event,ts:'1794124800.000005',user:slackIntakeFixture.unlinked}};
+ const unlinked={...payload,event_id:'synthetic-vector-33005',event:{...payload.event,user:slackIntakeFixture.unlinked}};
  await read(await send(unlinked),403);expect(await snapshot()).toEqual(delivered);
- const unmapped={...payload,event_id:'synthetic-vector-33006',event:{...payload.event,ts:'1794124800.000006',channel:slackIntakeFixture.unmapped}};
+ const unmapped={...payload,event_id:'synthetic-vector-33006',event:{...payload.event,channel:slackIntakeFixture.unmapped}};
  await read(await send(unmapped),403);expect(await snapshot()).toEqual(delivered);
+ await slackThreadSync(f,intake,secret,member,created.identifier,calls,threadEdge);
  // Each signed action re-resolves the target's current native role and active state.
  const other=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-slack-guests',identifierPrefix:'SGUEST'})).teams.find(team=>team.name==='synthetic-vector-slack-guests')!;
  const guest=await invite('synthetic-vector-intake-guest@vector.test',f.cookie),guestId=await actor(guest);
  expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[other.id]})).status).toBe(200);
  await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:guestId,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.guest}));
- const guestPayload={...payload,event_id:'synthetic-vector-guest-event',event:{...payload.event,ts:'1794124800.000007',user:slackIntakeFixture.guest}};
+ const guestPayload={...payload,event_id:'synthetic-vector-guest-event',event:{...payload.event,user:slackIntakeFixture.guest}};
  const nativeState=async()=>({issues:(await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results,receipts:(await env.DB.prepare('SELECT * FROM vector_slack_event_receipts ORDER BY event_key').all()).results});
  const beforeNative=await nativeState();
  // Native reads/writes conceal the uninvited team with 404; Slack returns its fixed 403 refusal.
@@ -55,14 +56,14 @@ export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrat
  await read(await send(guestPayload),403);expect(await snapshot()).toEqual(beforeGuest);
  expect((await f.call('/settings/operators/'+operatorId+'/role','PATCH',{role:'guest',teamIds:[other.id]})).status).toBe(200);
  const demoted=await snapshot();
- await read(await send({...payload,event_id:'synthetic-vector-demoted-event',event:{...payload.event,ts:'1794124800.000008'}}),403);expect(await snapshot()).toEqual(demoted);
+ await read(await send({...payload,event_id:'synthetic-vector-demoted-event'}),403);expect(await snapshot()).toEqual(demoted);
  const suspendedCookie=await invite('synthetic-vector-intake-suspend@vector.test',f.cookie),suspendedId=await actor(suspendedCookie);
  await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:suspendedId,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.suspended}));
- const active=await read(await send({...payload,event_id:'synthetic-vector-active-event',event:{...payload.event,ts:'1794124800.000009',user:slackIntakeFixture.suspended}}));
+ const active=await read(await send({...payload,event_id:'synthetic-vector-active-event',event:{...payload.event,user:slackIntakeFixture.suspended,ts:'1730000000.000002'}}));
  expect(await env.DB.prepare("SELECT a.actor_operator_id FROM issues i JOIN issue_activity a ON a.issue_id=i.id AND a.kind='issue.created' WHERE i.identifier=?").bind(active.identifier).first()).toMatchObject({actor_operator_id:suspendedId});
  expect((await f.call('/settings/operators/'+suspendedId,'DELETE')).status).toBe(200);
  const suspended=await snapshot();
- await read(await send({...payload,event_id:'synthetic-vector-suspended-event',event:{...payload.event,ts:'1794124800.000010',user:slackIntakeFixture.suspended}}),403);expect(await snapshot()).toEqual(suspended);
+ await read(await send({...payload,event_id:'synthetic-vector-suspended-event',event:{...payload.event,user:slackIntakeFixture.suspended,ts:'1730000000.000002'}}),403);expect(await snapshot()).toEqual(suspended);
 
 }
 

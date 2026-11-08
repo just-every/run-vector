@@ -1,4 +1,4 @@
-import {threadProtocol,sendThread,enqueueThreadMessages,threadDestination} from './slack-app/thread-delivery';
+import {threadProtocol,sendThread,enqueueThreadMessages} from './slack-app/thread-delivery';
 import {channelBindingSource} from './channels/subjects';
 import {publicWebhookEvent} from './private-events';
 import {subscribedWebhookEvent} from './subscriptions';
@@ -62,7 +62,7 @@ export async function dispatchWebhooks(env:WorkerBindings){
   // Slack direct messages (SLACK-004) share this queue under one per-workspace destination label.
   const direct=Boolean(await env.DB.prepare('SELECT 1 FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(workspace).first()),directHeld=direct&&await credentialProblem(env,'slack:'+workspace);
   if(!genericConfigured&&!destinations.some(d=>d.kind!=='webhook')&&!direct)continue;
-  const blocked=[...(await destinationSigningProblems(env,workspace)).keys(),...(directHeld?[directDestination,threadDestination]:[])];
+  const blocked=[...(await destinationSigningProblems(env,workspace)).keys(),...(directHeld?[directDestination]:[])];
   for(const destination of destinations){
    if(destination.kind==='webhook'&&!genericConfigured&&!blocked.includes(destination.id))blocked.push(destination.id);
    if(destination.kind==='slack'&&await credentialProblem(env,'slack:'+workspace))blocked.push(destination.id);
@@ -80,7 +80,7 @@ export async function dispatchWebhooks(env:WorkerBindings){
    await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=COALESCE(enqueued_at,?) WHERE id=? AND workspace_id=?').bind(new Date().toISOString(),event.id,workspace).run();enqueued++;
   }
   if(direct&&!directHeld)enqueued+=(await enqueueDirectMessages(env,workspace,service)).length;
-  if(direct&&!directHeld)enqueued+=await enqueueThreadMessages(env,workspace,service);
+  if(direct&&!directHeld)enqueued+=(await enqueueThreadMessages(env,workspace,service)).length;
   dispatched+=(await service.dispatchDue(20)).length;
  }
  return {configured,enqueued,dispatched,held};

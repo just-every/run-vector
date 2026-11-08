@@ -1,5 +1,4 @@
-import {slackMessage} from './thread-mapping';
-import {intakeSlackMessage} from './thread-intake';
+import {receiveThreadMessage,threadMessage} from './thread-mapping';
 import {unfurlSlackLinks,linkSharedEvent} from './unfurl';
 import {providerUninstall} from './retire';
 import {z} from 'zod';
@@ -8,7 +7,7 @@ import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
 import {signedInstallation} from '../slack-dm/signing';
 import {rawIntegrationBody} from '../raw-body';
 import {IntegrationError} from '../errors';
-const callback=z.object({type:z.literal('event_callback'),team_id:z.string().max(100),event_id:z.string().min(1).max(200),event:z.union([linkSharedEvent,slackMessage.extend({type:z.enum(['app_mention','message'])})])});
+const callback=z.object({type:z.literal('event_callback'),team_id:z.string().max(100),event_id:z.string().min(1).max(200),event:z.union([linkSharedEvent,threadMessage])});
 /** The signature identifies the installation; neither an untrusted team ID nor
  * a browser session selects it. No request state is written before admission. */
 export async function receiveSlackEvent(env:WorkerBindings,request:Request){
@@ -24,15 +23,15 @@ export async function receiveSlackEvent(env:WorkerBindings,request:Request){
  if(verification.success)return {challenge:verification.data.challenge};
  const uninstall=z.object({type:z.literal('event_callback'),event:z.object({type:z.enum(['app_uninstalled','tokens_revoked'])})}).safeParse(payload);
  if(uninstall.success)return providerUninstall(env,signer);
- const echoed=z.object({event:z.object({type:z.enum(['message','app_mention']),bot_id:z.string().optional(),subtype:z.string().optional()})}).safeParse(payload);
- if(echoed.success&&(echoed.data.event.bot_id||echoed.data.event.subtype))return {ok:true,ignored:true};
+ const echo=z.object({type:z.literal('event_callback'),team_id:z.string(),event:z.object({type:z.enum(['message','app_mention']),bot_id:z.string().min(1)})}).safeParse(payload);
+ if(echo.success){
+  if(await env.DB.prepare('SELECT slack_team_id FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(signer.workspace).first<string>('slack_team_id')!==echo.data.team_id)throw new IntegrationError(403,'slack_workspace_mismatch');
+  return {ok:true,ignored:true};
+ }
  const parsed=callback.safeParse(payload);
  if(!parsed.success)throw new IntegrationError(400,'slack_event_unsupported');
  const {event,event_id,team_id}=parsed.data;
- if(event.type==='link_shared'){
-  const key=await sha256(event_id);
-  if(await env.DB.prepare('SELECT 1 FROM vector_slack_event_receipts WHERE workspace_id=? AND event_key=?').bind(signer.workspace,key).first())throw new IntegrationError(409,'slack_event_replayed');
-  return unfurlSlackLinks(env,signer,team_id,event,key);
- }
- return intakeSlackMessage(env,signer,team_id,event,event_id,event.type==='app_mention');
+ const key=await sha256(event_id);
+ if(event.type==='link_shared')return unfurlSlackLinks(env,signer,team_id,event,key);
+ return receiveThreadMessage(env,signer,team_id,event,key);
 }
