@@ -105,17 +105,21 @@ export async function exerciseFigma() {
       if (url.pathname === "/v1/oauth/token") {
         assert.equal(url.origin, "https://api.figma.com");
         assert.equal(init?.method, "POST");
-        assert.equal(headers.get("authorization"), null);
+        // Figma authenticates the OAuth app with HTTP Basic, not body secrets.
+        assert.equal(
+          headers.get("authorization"),
+          "Basic " + btoa(config.clientId + ":" + config.clientSecret),
+        );
+        assert.equal(
+          headers.get("content-type"),
+          "application/x-www-form-urlencoded",
+        );
         const form = new URLSearchParams(String(init?.body));
         assert.deepEqual([...form.keys()].sort(), [
-          "client_id",
-          "client_secret",
           "code",
           "grant_type",
           "redirect_uri",
         ]);
-        assert.equal(form.get("client_id"), config.clientId);
-        assert.equal(form.get("client_secret"), config.clientSecret);
         assert.equal(
           form.get("redirect_uri"),
           origin + "/api/settings/figma/callback",

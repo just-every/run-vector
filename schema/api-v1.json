@@ -5275,6 +5275,20 @@
             "description": "Capture changed or retired"
           }
         }
+      },
+      "options": {
+        "operationId": "figma_capture_preflight",
+        "summary": "Check the allowed origin, method and headers for Figma plugin capture",
+        "security": [],
+        "x-scopes": [],
+        "responses": {
+          "204": {
+            "description": "Allowed plugin preflight; bearer authority is checked on POST"
+          },
+          "403": {
+            "description": "Origin, method or requested headers refused"
+          }
+        }
       }
     }
   },

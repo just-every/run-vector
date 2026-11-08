@@ -12,10 +12,9 @@ export class FigmaResponseError extends Error {
 export async function figmaRequest(
   path: string,
   token?: string,
-  form?: URLSearchParams,
 ) {
   if (
-    !/^\/(?:v1\/oauth\/token|v1\/files\/[A-Za-z0-9]{1,128}\/nodes\?ids=[0-9%3A]+&depth=1|v1\/images\/[A-Za-z0-9]{1,128}\?ids=[0-9%3A]+&format=png&scale=1)$/.test(
+    !/^\/(?:v1\/files\/[A-Za-z0-9]{1,128}\/nodes\?ids=[0-9%3A]+&depth=1|v1\/images\/[A-Za-z0-9]{1,128}\?ids=[0-9%3A]+&format=png&scale=1)$/.test(
       path,
     )
   )
@@ -25,15 +24,11 @@ export async function figmaRequest(
     65536,
     "application/json",
     {
-      method: form ? "POST" : "GET",
+      method: "GET",
       headers: {
         Accept: "application/json",
         ...(token ? { Authorization: "Bearer " + token } : {}),
-        ...(form
-          ? { "Content-Type": "application/x-www-form-urlencoded" }
-          : {}),
       },
-      ...(form ? { body: form.toString() } : {}),
     },
   );
 }
@@ -108,8 +103,6 @@ export async function exchangeCode(
   callback: string,
 ) {
   const form = new URLSearchParams({
-    client_id: clientId,
-    client_secret: secret,
     redirect_uri: callback,
     code,
     grant_type: "authorization_code",
@@ -118,7 +111,20 @@ export async function exchangeCode(
     const value = grant.parse(
       JSON.parse(
         new TextDecoder("utf-8", { fatal: true }).decode(
-          await figmaRequest("/v1/oauth/token", undefined, form),
+          await boundedFetch(
+            "https://api.figma.com/v1/oauth/token",
+            65536,
+            "application/json",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                Authorization: "Basic " + btoa(clientId + ":" + secret),
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: form.toString(),
+            },
+          ),
         ),
       ),
     );

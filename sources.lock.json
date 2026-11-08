@@ -2034,7 +2034,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
+      "sha256": "19bcf090cb1cf46dc6508cbacf80f2fe0aaee9ca216b71f861bdd35a11413e40",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2670,7 +2670,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "db4bc52cd3ae6b161548f2c64b9f5df5fbcc876262e8ced204721d8710aa7d1e",
+      "sha256": "0dd6ce04ee4e0a0231a34cb6c650ed3d306c87426dab504bb4e723963f4b081a",
       "executable": false
     },
     "schema/importers.schema.json": {
@@ -5486,7 +5486,7 @@
       "executable": false
     },
     "src/core/features/integrations/figma/client.ts": {
-      "sha256": "a55ac302616d42361090a14c8929906a8188a51832c6abde3b6d017bc61e3a3f",
+      "sha256": "c63faa6a4f54683ce1d28adcb4f7a00a1bb4f67ef3d334e4ccd1256488b19976",
       "executable": false
     },
     "src/core/features/integrations/figma/configuration.ts": {
@@ -9530,7 +9530,7 @@
       "executable": false
     },
     "tests/worker/figma-journey.ts": {
-      "sha256": "a93ca419e4b49e855a1ef3cd108b042ddacfeeab451095296cc6a8f25ee44d18",
+      "sha256": "943d47dd757a25f520c4beb08e7036b95cb84397dc0a1f7c90c2f07ea2115ee2",
       "executable": false
     },
     "tests/worker/first-run.test.ts": {
@@ -9822,7 +9822,7 @@
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
-      "sha256": "03b59fe1b7375e586ce0cc71c0059aeea25f79f00a59a1989223bba61dfe0e64",
+      "sha256": "88fe0732e0989856f62389683cdca58e7fc06bb9465d8ebb07ae88a6e47dd3b7",
       "executable": false
     },
     "tests/worker/project-fields.test.ts": {
