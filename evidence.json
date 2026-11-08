@@ -37,6 +37,12 @@
       "sha256": "9b07a8ed358876c3a2f50e7b157411ca5786105cfee9a491d938ed14575889c6"
     },
     {
+      "blob": "b48a2ace1c2c56f81e594c93f407c9e442bf850a",
+      "bytes": 6765,
+      "path": "evidence-verification.json",
+      "sha256": "dbd30a4b24893302ab8e9aadeaf5800dcd5dbea0fc3d513a1e2c6dedbb86130a"
+    },
+    {
       "blob": "0cc8a986f8ed938a86e70e6627b1c7dc877c37c9",
       "bytes": 340,
       "path": "identity-audit.txt",
