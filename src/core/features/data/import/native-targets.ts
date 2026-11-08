@@ -3,7 +3,7 @@ import { currentTypeRequirements } from '../../issue-types/requirements';
 import {importAlias} from '../aliases/import';
 import type { D1TargetAdapter, TargetRow, D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
-import { nativeRelations,snapshotExpression,legacyWithSlaSnapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
+import { releaseNoteReferences,nativeRelations,snapshotExpression,legacyWithSlaSnapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
 
 const guard = (sql:string,...params:Json[]): D1Sql => ({sql:`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('import native option changed') END`,params});
 /** One set read of complete native snapshots, for preview of a re-imported file. */
@@ -94,7 +94,8 @@ export const nativeTargets: D1TargetAdapter = {
       AND NOT EXISTS(SELECT 1 FROM issue_parents WHERE parent_issue_id=?)
       AND NOT EXISTS(SELECT 1 FROM issue_dependencies WHERE blocking_issue_id=?)
       AND NOT EXISTS(SELECT 1 FROM issue_relations WHERE second_issue_id=?)
-      AND NOT EXISTS(SELECT 1 FROM issue_duplicates WHERE canonical_issue_id=?)`,id,destination,id,id,id,id),
+      AND NOT EXISTS(SELECT 1 FROM issue_duplicates WHERE canonical_issue_id=?)
+      AND NOT (${releaseNoteReferences('?')})`,id,destination,id,id,id,id,id),
       ...Object.values(nativeRelations).map(([table,key])=>({sql:`DELETE FROM "${table}" WHERE "${key}"=?`,params:[id]})),
       {sql:'DELETE FROM issue_relations WHERE first_issue_id=?',params:[id]},
       {sql:'DELETE FROM manual_order_entries WHERE issue_id=?',params:[id]},

@@ -1,3 +1,4 @@
+import {addReleaseNoteRoutes} from './notes/routes';
 import type {Hono} from 'hono';
 import {z} from 'zod';
 import type {AppEnvironment} from '../../app/bindings';
@@ -10,6 +11,7 @@ import {listReleases,readRelease,createRelease,editRelease,replaceReleaseScope,i
 const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_release_input');return result.data;}
 export function addReleaseRoutes(app:Hono<AppEnvironment>,versioned=false){
+ if(!versioned)addReleaseNoteRoutes(app);
  app.get('/releases',async c=>{
   const result=await listReleases(c.env.DB,c.get('operatorId'));if(!versioned)return c.json(result);
   const {limit,cursor,...filters}=pageQuery.extend({team:z.string().length(26).optional(),status:z.enum(['planned','in_progress','released']).optional()}).strict().parse(c.req.query());
