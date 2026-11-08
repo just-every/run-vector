@@ -2,20 +2,20 @@
 
 The frozen scope is the planner-selected native roadmap acceptance. These are coverage rows, not new acceptance points. The contract retains its supplied holds for configurable status categories and Paused behavior, project dependency connectors and conflict flags, INIT-002 facts and DATA-014 imports. Independent Claude Opus interface qualification remains external to this continuation.
 
-| Row | Selected outcome | Public-door proof |
-| --- | --- | --- |
-| R1 | Both dates give a bar, target only a diamond, start only an open faded bar to today or a future start, neither dates an Unscheduled entry without an invented date | ./tests/worker/roadmap.test.ts, lines 20 to 43; ./tests/e2e/roadmap-journey.mjs, roadmapJourney lines 14 to 48 |
-| R2 | Initiative span derives only from visible project dates and falls back to its own target diamond | ./tests/worker/roadmap.test.ts lines 27 to 43 and 80 to 91; browser initiative projection and membership withdrawal lines 124 to 141 |
-| R3 | Today marker, read-only milestone and week, month and quarter zoom | roadmapJourney lines 43, 99 to 105 and mark contrast lines 144 to 159; roadmap read fixture asserts milestone identity |
-| R4 | Body and endpoint drags preserve or change the proper dates, one activity per accepted gesture | roadmapJourney lines 86 to 97, mounted mutation loop lines 48 to 70 |
-| R5 | Target diamond and Unscheduled drag reach native storage and visible activity | roadmapJourney lines 67 to 83 |
-| R6 | Arrow key moves focused bar by one zoom unit | roadmapJourney lines 99 to 103 |
-| R7 | Roadmap start date, target date, priority and labels use the current version-checked project writer and one activity per change | roadmapJourney lines 106 to 123; ./tests/worker/roadmap.test.ts mounted mutations and stale refusals |
-| R8 | Owner, Admin and Member may edit; Guest and Viewer may read visible projects but never edit | ./tests/worker/roadmap.test.ts role rotation and unchanged-storage refusals; roadmapJourney lines 168 to 181; extended Viewer mutation census |
-| R9 | Current private membership hides project title and identifier and excludes its dates from initiative spans; foreign and missing identifiers are indistinguishable and refusals leave storage unchanged | ./tests/worker/roadmap.test.ts lines 78 to 106; roadmapJourney lines 126 to 141 |
-| R10 | Phone list equivalent at 390px | roadmapJourney lines 161 to 167, no overflow and every fixture project visible |
-| R11 | Light, Dark and System follow member choice with text AA and distinguishable marks; fixed lifecycle styling | roadmapJourney lines 45, 143 to 161, existing theme contrast helper and axe checks |
-| R12 | Revoked actor cannot read or mutate; replayed stale update cannot add activity; reused issue timeline stays intact | ./tests/worker/roadmap.test.ts lines 61 to 64 and 107 to 110; existing ./tests/e2e/timeline-journey.mjs remains reached by the core runtime |
+| Row | Selected outcome | Public-door proof | Exact-SHA Verify |
+| --- | --- | --- | --- |
+| R1 | Both dates give a bar, target only a diamond, start only an open faded bar to today or a future start, neither dates an Unscheduled entry without an invented date | ./tests/worker/roadmap.test.ts, lines 20 to 43; ./tests/e2e/roadmap-journey.mjs, roadmapJourney lines 14 to 48  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R2 | Initiative span derives only from visible project dates and falls back to its own target diamond | ./tests/worker/roadmap.test.ts lines 27 to 43 and 80 to 91; browser initiative projection and membership withdrawal lines 124 to 141  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R3 | Today marker, read-only milestone and week, month and quarter zoom | roadmapJourney lines 43, 99 to 105 and mark contrast lines 144 to 159; roadmap read fixture asserts milestone identity  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R4 | Body and endpoint drags preserve or change the proper dates, one activity per accepted gesture | roadmapJourney lines 86 to 97, mounted mutation loop lines 48 to 70  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R5 | Target diamond and Unscheduled drag reach native storage and visible activity | roadmapJourney lines 67 to 83  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R6 | Arrow key moves focused bar by one zoom unit | roadmapJourney lines 99 to 103  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R7 | Roadmap start date, target date, priority and labels use the current version-checked project writer and one activity per change | roadmapJourney lines 106 to 123; ./tests/worker/roadmap.test.ts mounted mutations and stale refusals  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R8 | Owner, Admin and Member may edit; Guest and Viewer may read visible projects but never edit | ./tests/worker/roadmap.test.ts role rotation and unchanged-storage refusals; roadmapJourney lines 168 to 181; extended Viewer mutation census  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R9 | Current private membership hides project title and identifier and excludes its dates from initiative spans; foreign and missing identifiers are indistinguishable and refusals leave storage unchanged | ./tests/worker/roadmap.test.ts lines 78 to 106; roadmapJourney lines 126 to 141  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R10 | Phone list equivalent at 390px | roadmapJourney lines 161 to 167, no overflow and every fixture project visible  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R11 | Light, Dark and System follow member choice with text AA and distinguishable marks; fixed lifecycle styling | roadmapJourney lines 45, 143 to 161, existing theme contrast helper and axe checks  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
+| R12 | Revoked actor cannot read or mutate; replayed stale update cannot add activity; reused issue timeline stays intact | ./tests/worker/roadmap.test.ts lines 61 to 64 and 107 to 110; existing ./tests/e2e/timeline-journey.mjs remains reached by the core runtime  push run 42519715259, candidate acbc351d9342d843e13a81a9266c58ebcd4818bc, overall failure; job details unavailable at API limit |
 
 ## DONE riders
 
@@ -34,3 +34,5 @@ The frozen scope is the planner-selected native roadmap acceptance. These are co
 ## Pre-ready self-check
 
 Existing assertions must remain intact. No new permanent test registration is planned. No migration or provider action is needed. The changed request fixture must contain only synthetic identifiers and existing native versions. Product UI is preserved; existing tooltip, 13px minimum text, both themes, no overflow and hydration checks remain inside roadmapJourney. Source lock and generator receipts are recorded separately. No publication-scan success or hosted acceptance is assumed.
+
+Terminal CI qualification: FAIL. Local selected-scope rows remain passing; the whole-workflow exact-SHA green bar is not met. Fresh main and candidate share the development navigation failure at ./tests/e2e/dev-runtime.mjs line 109, with actual receipts in SHARD-REPRODUCTIONS.json.

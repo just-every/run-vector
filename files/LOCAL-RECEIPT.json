@@ -8,8 +8,8 @@
       "command": "pnpm test:worker tests/worker/role-matrix.test.ts tests/worker/integration-api.test.ts tests/worker/roadmap.test.ts",
       "exit": 0,
       "files": 3,
-      "assertions": 12,
-      "proof": "touched-workers.txt"
+      "proof": "touched-workers.txt",
+      "tests": 12
     },
     {
       "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium perl -e 'alarm 1200; exec @ARGV' -- node tests/e2e/core-runtime.mjs projects",

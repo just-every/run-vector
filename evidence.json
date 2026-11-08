@@ -7,22 +7,22 @@
       "sha256": "aac78920df31450923a1a6a6735e17de5cc20533c8b7acce12a970d9f5ee9b44"
     },
     {
-      "blob": "0a016286f29ee3b7d922e029a00081a04d5a2fa9",
-      "bytes": 612,
+      "blob": "8265be977588a7c17d33ce258acc5f29e48009b5",
+      "bytes": 1704,
       "path": "CI-RECEIPT.json",
-      "sha256": "041f982df3e94696cccf0f08af9e05d00468ff3ab4b122d73364963e1ca68983"
+      "sha256": "c2a7f06f9f02dc6cd54b67df324afbb138b5c5ffc1e35d02e31499648aeeb8fe"
     },
     {
-      "blob": "b701a64e73a476bd28e13e8db6ba9329f763a2f0",
-      "bytes": 5347,
+      "blob": "549541a2f64823a3e02fb7061a06c1620c2ebf38",
+      "bytes": 7204,
       "path": "COVERAGE.md",
-      "sha256": "c66eeb71a8eac0e5b739ec55cfcf4a6b32bfc824c0f34fe120988857d948651a"
+      "sha256": "42fb12de11020e776c7878ef5fe18569bcd0d8b0866a107f9914c98b7046a965"
     },
     {
-      "blob": "c8c5b1b6910307c73096a026e56c43e3847c24df",
-      "bytes": 1798,
+      "blob": "f70bbd332af3e0a2732d6f27363e766d4cb00534",
+      "bytes": 1793,
       "path": "LOCAL-RECEIPT.json",
-      "sha256": "10d1606476d0ebd6cc3f7f83087935cbb872c0860673ba08e623216eaafb8a56"
+      "sha256": "9e088f421a00a4ddae7567865e252fa03138a7ef9a6dd60873063119fea55b92"
     },
     {
       "blob": "27537b4da4e2fd0f29baea97607168518f76cc39",
@@ -43,10 +43,16 @@
       "sha256": "3d08a68c9b8cc89a1d1f85a50623c50ce6374e4a3de48e85bff364181a2adf51"
     },
     {
-      "blob": "ecdce25cd91b805bd133481ca8892b7983f38734",
-      "bytes": 10404,
+      "blob": "cc3b0aabc2d2f856fbec67306dc09f96fda0218b",
+      "bytes": 13702,
       "path": "REPORT.md",
-      "sha256": "efed256c8f5a5886fd326d630d25cb9d55f8d03091418b47f52aa321cd0121d8"
+      "sha256": "1c438e678b8cd7a147604f9d32e422511e15cae8e62500fe8bf8fb6dddc7760e"
+    },
+    {
+      "blob": "706f12e333b9db5dd6898cd08783f63f5524f673",
+      "bytes": 1025,
+      "path": "SHARD-REPRODUCTIONS.json",
+      "sha256": "a09edf6b46f12576f34ba9e69a9da2eea8a7de35c07fe887d653af45fe24c448"
     },
     {
       "blob": "466ce0136ae1973a5d5da106e839763b808d8ed3",
@@ -61,10 +67,40 @@
       "sha256": "76ab5d0a413d8fd5a5ec0e878074442f08531316d8766b0cbbc7766c0358394f"
     },
     {
+      "blob": "15866b2e572d43ed8faa7302ec79a0b2d437713f",
+      "bytes": 725,
+      "path": "baseline-development-failure.txt",
+      "sha256": "283600b258522acf5f83e6cc7e80262a9feb0588a19d3c07db9940c574ed591a"
+    },
+    {
       "blob": "47a99dc021f05691b1ad1212db77a40dac4225f3",
       "bytes": 7170,
       "path": "browser-results.json",
       "sha256": "f18cd8404891648ff99624c12aa70e1ffdf9b3af6f742ac5bb937da735cec2d5"
+    },
+    {
+      "blob": "9dee0c0089b4120b1baa3a067f45d4813861e135",
+      "bytes": 64,
+      "path": "candidate-dev-retry-receipt.json",
+      "sha256": "cd77a12db81b35df25e49f726587817aef23c071bc44eb7f8e6af1623f572764"
+    },
+    {
+      "blob": "68b88dad3a6697523701334159e37b0afd7e6c55",
+      "bytes": 1231,
+      "path": "candidate-imports-shard.json",
+      "sha256": "997a2993ca97e835375fa878f52fd9875de3f8ce228c6fc10da462ce30254626"
+    },
+    {
+      "blob": "5a320fef9544c14a2e1ae9827da592d8853f1b17",
+      "bytes": 472,
+      "path": "candidate-worker2-failure.txt",
+      "sha256": "a401eb94ffdc3197cccf8ecaa743b5f1966ae05c2eae010945d9e6a123084bed"
+    },
+    {
+      "blob": "5931ef899db0c544afab98cf44f92f2d17ce7f80",
+      "bytes": 796,
+      "path": "candidate-worker2-shard.json",
+      "sha256": "ffcc869ff39ed4a840cf0322700a2e3f08b7d2c3b5cb88c4753fba716d974195"
     },
     {
       "blob": "8bbf9bb627618fa0078bf45f105a6c2c385da4fa",
@@ -89,6 +125,18 @@
       "bytes": 0,
       "path": "first-party.txt",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "9dee0c0089b4120b1baa3a067f45d4813861e135",
+      "bytes": 64,
+      "path": "fresh-candidate-dev-receipt.json",
+      "sha256": "cd77a12db81b35df25e49f726587817aef23c071bc44eb7f8e6af1623f572764"
+    },
+    {
+      "blob": "7cac4004f3dd1dfb770e02d820746e2b88a6f8d9",
+      "bytes": 64,
+      "path": "main-dev-receipt.json",
+      "sha256": "ffa002dc53978cc5d7541e4ff56c00b192be1d8f44df6af7b18579df0db7a6da"
     },
     {
       "blob": "45bf1c9f2a804128affe209a8ecd24d41782320b",

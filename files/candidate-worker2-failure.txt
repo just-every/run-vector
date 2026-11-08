@@ -1,0 +1,4 @@
+Application listened on port 45799, 46629, 33181, 44599; readiness failed for GET http://127.0.0.1:42851/health through expected internal port 45799. Check application health and the runtime target's port binding.
+Starting your application on this computer (waiting for the bound internal listener): readiness deadline exceeded (exit none, signal none). Last health: HTTP 503.
+Error: Actual shared local setup: exit 1, signal none.
+Error: Real setup: exit 1, signal none.

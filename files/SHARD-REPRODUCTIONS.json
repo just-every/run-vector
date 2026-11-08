@@ -1,0 +1,22 @@
+{
+  "candidate_head": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+  "main_head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "full_imports_exit": 0,
+  "full_worker2_exit": 1,
+  "worker2_worker_partitions_passed": [
+    "2/6",
+    "3/6"
+  ],
+  "candidate_original_checkout_dev_failure": "setup readiness deadline exceeded; last health HTTP 503",
+  "candidate_original_checkout_dev_retry_exit": 1,
+  "main_fresh_dev_exit": 1,
+  "candidate_fresh_dev_exit": 1,
+  "shared_fresh_failure": {
+    "file": "tests/e2e/dev-runtime.mjs",
+    "line": 109,
+    "command": "pnpm test:dev:ci",
+    "message": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal; performance.timeOrigin changes after Current to My work navigation"
+  },
+  "github_failure_cause": "unestablished: failed-job details unavailable at exhausted ten-call budget",
+  "classification": "The fresh development assertion also fails main and is outside the roadmap repair. The exact-SHA red Verify remains unresolved, with no green or READY claim."
+}

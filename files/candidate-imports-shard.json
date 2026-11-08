@@ -1,0 +1,41 @@
+{
+  "startedAt": "2026-11-08T20:53:10.062Z",
+  "sourceCommit": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+  "note": "Vector CI test suites and build checks.",
+  "passed": true,
+  "checks": [
+    {
+      "command": "test:worker --shard=4/6",
+      "startedAt": "2026-11-08T20:53:10.074Z",
+      "completedAt": "2026-11-08T20:56:53.597Z",
+      "passed": true
+    },
+    {
+      "command": "test:worker --shard=5/6",
+      "startedAt": "2026-11-08T20:56:53.610Z",
+      "completedAt": "2026-11-08T21:04:36.078Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/data-runtime.mjs",
+      "startedAt": "2026-11-08T21:04:36.093Z",
+      "completedAt": "2026-11-08T21:11:38.080Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/related-runtime.mjs",
+      "startedAt": "2026-11-08T21:11:38.087Z",
+      "completedAt": "2026-11-08T21:12:35.238Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/issue-copy-runtime.mjs",
+      "startedAt": "2026-11-08T21:12:35.245Z",
+      "completedAt": "2026-11-08T21:13:27.816Z",
+      "passed": true
+    }
+  ],
+  "shard": "imports",
+  "reusedBuildSha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+  "completedAt": "2026-11-08T21:13:27.820Z"
+}

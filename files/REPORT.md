@@ -4,6 +4,7 @@ Repository: just-every/run-vector
 Branch: cloud/sd-vector-c-f202-pc1
 Candidate: acbc351d9342d843e13a81a9266c58ebcd4818bc
 Published starting head preserved: 52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b
+Terminal status: BLOCKED — exact-SHA Verify 42519715259 failed; GitHub diagnostics and the permitted failed-job rerun are unavailable within the exhausted ten-call budget.
 Product repair commit: acbc351d9342d843e13a81a9266c58ebcd4818bc
 PR: none; the existing push workflow admits the named cloud branch directly.
 
@@ -17,7 +18,7 @@ No plan rows, Status, Gap, Evidence or acceptance text were changed. INIT-003 re
 
 ## Claim and held boundaries
 
-CLAIM INIT-003 PARTIAL points=1 tests=tests/worker/roadmap.test.ts#roadmap places visible projects and initiatives and fences every planning change with one activity; tests/e2e/roadmap-journey.mjs#roadmapJourney; tests/worker/role-matrix.test.ts#current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+CLAIM INIT-003 PARTIAL points=1 tests=tests/worker/roadmap.test.ts#roadmap places visible projects and initiatives and fences every planning change with one activity; tests/e2e/roadmap-journey.mjs#roadmapJourney
 
 GAP INIT-003: The selected four-project browser acceptance and native inherited duties pass locally. Configurable project categories and Paused styling and never-slipping behavior under PROJ-016, dependency connectors and conflict flags under PROJ-015, INIT-002 roll-up facts, DATA-014 imports and the supplied independent Claude Opus interface qualification remain held and unclaimed. A full-clause DONE claim would overstate this selected lease.
 
@@ -29,7 +30,7 @@ Original Verify 42505077963 at 52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b failed i
 
 Both exact shard commands were run at the saved head with Node 22.20.0, pnpm 10.12.4, UTC, one Vitest worker and that head's prebuilt output. Imports returned exit 1 and exposed [API-003] the versioned schema is published through the real app: the generated validator expected expectedVersion with pattern ^[a-f0-9]{64}$ and the published schema omitted it. Worker-2 returned exit 1 and exposed the Viewer test: native fixture coverage expected 175 registered mutation fixtures and received 174; PATCH /roadmap/projects/:id was absent. The targeted Viewer test independently reproduced the same failure with exit 1 in the clean CI environment. Actual assertions and command receipts are original-imports-failure.txt, original-worker2-failure.txt and VERIFY-REPRODUCED.json. This is one repair round covering two reproduced omissions, with no weakened assertion.
 
-A separate local SETUP-001 sign-in assertion failed because the required initial setup had generated private development settings in the checkout. Moving those local settings outside the checkout restored the CI environment; the unchanged first-run test passed in clean-first-run.txt. No sign-in source or assertion was edited. Expected low-level foreign-key diagnostics from existing Worker scenarios did not add a failed assertion to the completed worker-2 reproduction.
+A separate local SETUP-001 sign-in assertion failed because the required initial setup had generated private development settings in the checkout. Moving those local settings outside the checkout restored the CI environment; the unchanged first-run test passed in clean-first-run.txt. No sign-in source or assertion was edited. Low-level foreign-key diagnostics appeared during existing Worker scenarios; the completed worker-2 reproduction reported no additional failed assertion.
 
 ## Proof and checks
 
@@ -46,7 +47,7 @@ PROBE INIT-003 1: mounted GET /api/roadmap and version-checked PATCH /api/roadma
 ## DONE riders and pre-ready check
 
 Rows 1 and 2: PASS for the selected scope through real seeded native and browser doors, including allowed and unsafe cases. Whole-clause DONE is not claimed because the supplied held requirements remain.
-Row 3: exact-candidate push Verify is recorded separately in CI-RECEIPT.json; the worker glob and existing core runtime call chain load the new proof.
+Row 3: FAIL, exact-candidate push Verify 42519715259 completed with failure. The worker glob and existing core runtime load the selected proof, but a green whole-workflow result is unestablished; see CI-RECEIPT.json.
 Row 4: PASS, exact candidate native probe and explicit source continuity for the successful browser proof; final CI binds all verification to the full SHA.
 Row 5: PASS INSPECTED, INIT-003 explicitly names the inherited PROJ-001 fields and VIEW-011 theme duties, with the lease's existing role and privacy requirements preserved.
 Row 6: PASS mechanical generation and lock; all Status rows and counts are unchanged. Landing owns any judged status and view update.
@@ -65,3 +66,19 @@ Candidate push Verify: 42519715259, event push, head acbc351d9342d843e13a81a9266
 Publication scan: NOT RUN in cloud, explicitly delegated to the maintained Mac lander. No complete, historyScanned or zero-findings receipt is claimed. Main equality with the candidate, candidate Run site and guarded landing remain unestablished fleet duties. Main was 0e8a686c at the continuation's comparison; the exact full main identity is recorded in terminal provenance. No PR was required or opened. No other repository was cloned or written.
 
 Evidence publication is separate report-only custody, with an explicit regular-file allowlist and injected-secret screening. Its final exact EVIDENCE line is the authoritative transfer receipt. Product READY, main acceptance and evidence transfer are separate facts. No inbox file was read or written; intended lane updates are final POST lines.
+
+## Exact-candidate CI update
+
+Verify 42519715259 completed with failure at the exact candidate SHA on the tenth and final authorized GitHub call. No green result is claimed. Failed-job identities and logs were not retrieved because the call budget is exhausted. Both originally failing independent shards were run locally on this candidate; see SHARD-REPRODUCTIONS.json. The first repaired local tests remain passing; a red workflow is a standing gate and no READY line is justified yet.
+
+## Completed local shard and baseline comparison
+
+The full imports shard passed with exit 0 on acbc351d9342d843e13a81a9266c58ebcd4818bc: Worker partitions 4 and 5, mapped import browser and CLI including the 2,000-issue staged journey, related-issue journey and issue-copy journey all passed. The full worker-2 shard passed Worker partitions 2 and 3, then returned exit 1 in test:dev:ci because setup health remained HTTP 503. The isolated retry in the original checkout had the same setup failure.
+
+A fresh detached worktree of unchanged main 0e8a686c06eddd55943ed1d2690df32a8fc82213 was built and ran the same test:dev:ci on this runner using Node 22.20.0 and system Chromium. It passed setup health, then failed the existing tests/e2e/dev-runtime.mjs line 109 assertion: performance.timeOrigin changed when navigating from Current to My work, proving a document reload where client navigation is expected. A second fresh worktree at acbc351d9342d843e13a81a9266c58ebcd4818bc also passed setup health and failed the exact same line 109 assertion. Both fresh test commands returned exit 1. The original-checkout 503 did not reproduce with fresh candidate fixture state; it is not attributed to a roadmap source change.
+
+The shared fresh failure is present on main and no relevant development-test assertion or implementation was changed by this continuation. Per the supplied red-Verify policy, it is reported for fv triage without weakening its test or guessing a source repair. This does not identify the failed GitHub job: only the overall exact-SHA Verify failure was retrievable before the ten-call cap. No workflow rerun was dispatched and no current CI failure is asserted to be this local baseline failure without the missing job diagnostics.
+
+Actual receipts: candidate-imports-shard.json, candidate-worker2-shard.json, SHARD-REPRODUCTIONS.json, main-dev-receipt.json, fresh-candidate-dev-receipt.json, candidate-dev-retry-receipt.json, candidate-worker2-failure.txt and baseline-development-failure.txt. All are ordinary selected files; no settings, state database, session, private dev key or profile is selected.
+
+Final disposition: product repair published, selected roadmap proof locally passing, INIT-003 claimed PARTIAL, all 272 Status rows and counts unchanged. The standing exact-SHA Verify bar is red. Independent interface qualification, scan, guarded landing and Run site remain unclaimed. Follow-up needs the failed job identities and logs for Verify 42519715259, followed by its one permitted failed-job rerun only if its actual failure is proven to be the baseline flake. No READY is emitted. All servers and browsers launched for proof are stopped; clones are removed after final evidence transfer.

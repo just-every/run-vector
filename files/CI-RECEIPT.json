@@ -1,22 +1,49 @@
 {
   "repository": "just-every/run-vector",
   "candidate": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
-  "github_calls_used": 4,
-  "observed": {
-    "runs": [
-      {
-        "conclusion": null,
-        "event": "push",
-        "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
-        "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
-        "id": 42519715259,
-        "name": "Verify",
-        "status": "in_progress"
-      }
-    ],
-    "total_count": 1
-  },
-  "status": "in_progress",
+  "github_calls_used": 10,
+  "observations": [
+    {
+      "conclusion": null,
+      "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "failure",
+      "head_sha": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519715259",
+      "status": "completed"
+    }
+  ],
+  "status": "completed",
+  "conclusion": "failure",
+  "run_id": 42519715259,
+  "failed_jobs": "not retrieved: all ten authorized GitHub calls consumed",
   "scan": "delegated to guarded lander",
   "Run site": "not run before main landing"
 }

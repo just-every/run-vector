@@ -1,0 +1,33 @@
+main
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 1794172628325.7
+- 1794172624268
+           ^
+
+    at file://[REDACTED]/tests/e2e/dev-runtime.mjs:109:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1794172628325.7,
+  expected: 1794172624268,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+fresh candidate
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 1794173071722.2
+- 1794173067580.8
+          ^
+
+    at file://[REDACTED]/tests/e2e/dev-runtime.mjs:109:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 1794173071722.2,
+  expected: 1794173067580.8,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
