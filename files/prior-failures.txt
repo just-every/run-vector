@@ -1,0 +1,56 @@
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:08.4109638Z CAL-001 VIEW-007 private exclusion, current creator authority, Viewer month read-only and own feed rotation/revocation passed at 1440/390
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0584545Z file:///home/runner/work/run-vector/run-vector/tests/e2e/cycle-report-runtime.mjs:27
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0585500Z  throw new Error(String(error.stack??error).replace(/\/calendar\/feed\/[a-f0-9]{64}/g,'/calendar/feed/[redacted]'));
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0586232Z        ^
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0586360Z 
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0586568Z Error: locator.waitFor: Timeout 20000ms exceeded.
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0586887Z Call log:
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0587216Z   - waiting for locator('#issue-row-SYNDS-28') to be visible
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0587478Z 
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0587863Z     at dashboardsJourney (/home/runner/work/run-vector/run-vector/tests/e2e/dashboards-journey.mjs:88:65)
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0588631Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/cycle-report-runtime.mjs:24:2
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0589354Z     at file:///home/runner/work/run-vector/run-vector/tests/e2e/cycle-report-runtime.mjs:27:8
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0590164Z 
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0590270Z Node.js v22.20.0
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.0915225Z  ELIFECYCLE  Command failed with exit code 1.
+shards (collaboration, true, true, true)	Verify the independent shard	2026-11-08T20:03:38.1128457Z ##[error]Process completed with exit code 1.
+
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:54:21.0790440Z [Vector runtime] Passed CURR-007
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4275497Z node:internal/modules/run_main:123
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4276147Z     triggerUncaughtException(
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4276554Z     ^
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4276730Z 
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4277040Z page.waitForFunction: Timeout 30000ms exceeded.
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4277944Z     at reset (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:47:16)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4279567Z     at async streamControlsJourney (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:92:5)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4281115Z     at async withInvitedOperator (/home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4282410Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:754:5 {
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4283286Z   log: [],
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4283668Z   name: 'TimeoutError'
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4284029Z }
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4284197Z 
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4284689Z Node.js v22.20.0
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4744301Z  ELIFECYCLE  Command failed with exit code 1.
+shards (core-runtime, true, true, true)	Verify the independent shard	2026-11-08T19:55:02.4992794Z ##[error]Process completed with exit code 1.
+
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5518001Z Error: Command failed: /opt/hostedtoolcache/node/22.20.0/x64/bin/node /home/runner/work/run-vector/run-vector/sdk/generate.mjs --check
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5518903Z file:///home/runner/work/run-vector/run-vector/sdk/generate.mjs:78
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5519671Z   if (await readFile(target, 'utf8').catch(() => '') !== output) throw Error('SDK is stale; run node sdk/generate.mjs');
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5520339Z                                                                        ^
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5520649Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5520913Z Error: SDK is stale; run node sdk/generate.mjs
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5521467Z     at file:///home/runner/work/run-vector/run-vector/sdk/generate.mjs:78:72
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5521828Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5521980Z Node.js v22.20.0
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5522149Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5522377Z     at genericNodeError (node:internal/errors:983:15)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5523123Z     at wrappedFn (node:internal/errors:537:14)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5523585Z     at checkExecSyncError (node:child_process:916:11)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5524142Z     at execFileSync (node:child_process:952:15)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5524681Z     at buildSdk (file:///home/runner/work/run-vector/run-vector/sdk/build.mjs:8:3)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5525390Z     at file:///home/runner/work/run-vector/run-vector/tests/e2e/integration-runtime.mjs:22:2
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5526126Z     at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5526634Z   status: 1,
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5527077Z   signal: null,
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-08T19:50:34.5527461Z   output: [
+

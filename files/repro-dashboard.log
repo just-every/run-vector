@@ -1,0 +1,11 @@
+(node:2308) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE dashboards FAIL locator.waitFor: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('#issue-row-SYNDS-28') to be visible[22m
+
+    at dashboardsJourney (/home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector/tests/e2e/dashboards-journey.mjs:88:65)
+    at async file:///home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector/.artifacts/fleet/probe.mjs:12:25

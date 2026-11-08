@@ -1,0 +1,47 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector
+> vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts -t browser-parsed
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/sub-teams.test.ts (4 tests | 1 failed | 3 skipped) 1330ms
+   × [TEAM-006 REPORT-003] browser-parsed full-list links retain explicit sub-team inclusion and exclusion 1328ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/sub-teams.test.ts > [TEAM-006 REPORT-003] browser-parsed full-list links retain explicit sub-team inclusion and exclusion
+ZodError: [
+  {
+    "code": "invalid_value",
+    "values": [
+      "false",
+      "true"
+    ],
+    "path": [
+      "includeSubTeams"
+    ],
+    "message": "Invalid option: expected one of \"false\"|\"true\""
+  }
+]
+ ❯ tests/worker/sub-teams.test.ts:79:40
+     77|     // decodes these boolean-looking query values before validating th…
+     78|     const search = "?team=" + w.team.id + "&includeSubTeams=" + includ…
+     79|     const query = issueListQuerySchema.parse(defaultParseSearch(search…
+       |                                        ^
+     80|     expect(query.includeSubTeams).toBe(include);
+     81|     const response = await w.call("/issues?" + new URLSearchParams(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  20:30:23
+   Duration  14.03s (transform 6.13s, setup 0ms, import 12.00s, tests 1.33s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,59 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix2",
+  "head_sha": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+  "run_id": 42520865907,
+  "attempt_1_conclusion": "failure",
+  "failed_jobs": [
+    {
+      "conclusion": "failure",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42520865907/job/128854053127",
+      "id": 128854053127,
+      "name": "shards (worker-2, true, true, true)",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Verify the independent shard",
+          "number": 11
+        }
+      ]
+    },
+    {
+      "conclusion": "failure",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42520865907/job/128854053169",
+      "id": 128854053169,
+      "name": "shards (core-runtime, true, true, true)",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Verify the independent shard",
+          "number": 11
+        }
+      ]
+    },
+    {
+      "conclusion": "failure",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42520865907/job/128860199188",
+      "id": 128860199188,
+      "name": "verify",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Require the complete verification wall",
+          "number": 2
+        }
+      ]
+    }
+  ],
+  "rerun_request": {
+    "command": "gh api --method POST repos/just-every/run-vector/actions/runs/42520865907/rerun-failed-jobs --include",
+    "exit": 0,
+    "http_status": 201,
+    "outcome": "accepted; retry result not observed"
+  },
+  "terminal_custody": "PUSHED",
+  "ready": false
+}

@@ -1,0 +1,282 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix2",
+  "head": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+  "checks": [
+    {
+      "check": "SDK freshness before regeneration",
+      "command": "node sdk/generate.mjs --check",
+      "exit": 1,
+      "log": "repro-sdk.log",
+      "bytes": 460,
+      "sha256": "4b7d21b6136a789728da62ed13718b5328853d34c67e429dc1e9fb99a5e19ddd"
+    },
+    {
+      "check": "SDK regeneration",
+      "command": "node sdk/generate.mjs && node sdk/generate.mjs --check",
+      "exit": 0,
+      "log": "probe-sdk.log",
+      "bytes": 116,
+      "sha256": "77ac5625d8a498d481575e9ce7dba459044a1c24c0810103252ed7b6570279d5"
+    },
+    {
+      "check": "original router regression",
+      "command": "pnpm test:worker tests/worker/sub-teams.test.ts -t browser-parsed",
+      "exit": 1,
+      "log": "repro-query.log",
+      "bytes": 1840,
+      "sha256": "84108cb2be68d57714833625c6d39d491ff4f1559467110980b9608f8febc7d5"
+    },
+    {
+      "check": "head security/data-loss/dependency repro",
+      "command": "pnpm test:worker tests/worker/sub-teams.test.ts tests/worker/dependencies.test.ts tests/worker/team-cycles.test.ts tests/worker/triage.test.ts",
+      "exit": 0,
+      "log": "repro-worker.log",
+      "bytes": 725,
+      "sha256": "438e00c8f2805ee53c7e521eea07e54ba1f614d8839c85ff6ee39c6202206ac4"
+    },
+    {
+      "check": "fixed hierarchy/router/dependency probes",
+      "command": "pnpm test:worker tests/worker/sub-teams.test.ts tests/worker/dependencies.test.ts",
+      "exit": 0,
+      "log": "probe-worker.log",
+      "bytes": 664,
+      "sha256": "f64dde06c99420e815bdd6739fb71cdcd6ca537dea19a691a75f2cae33fd44c8"
+    },
+    {
+      "check": "populated source-ingest/base upgrades and role matrix",
+      "command": "pnpm test:worker tests/worker/role-matrix.test.ts tests/worker/source-ingest.test.ts tests/worker/base-refresh-upgrade.test.ts",
+      "exit": 0,
+      "log": "probe-upgrades.log",
+      "bytes": 744,
+      "sha256": "863dbc4abe088f43f429d84da4d3fef0c94eab33f60d6282f518894bf425c9f7"
+    },
+    {
+      "check": "populated cycle upgrade",
+      "command": "pnpm test:worker tests/worker/cycle-schedule.test.ts",
+      "exit": 0,
+      "log": "probe-cycle-upgrade.log",
+      "bytes": 597,
+      "sha256": "f6ab32f8376673dc5e96f7200dab05980f87bc04edbccd69392954351055ae2d"
+    },
+    {
+      "check": "deployment migration ledger",
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "log": "migration-ledger.log",
+      "bytes": 582,
+      "sha256": "6af27bd47e1eb74446d3c3377121305146ba3ef003ecb2a945956675b1b7ed4c"
+    },
+    {
+      "check": "typecheck",
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "bytes": 104,
+      "sha256": "a08deda58f54e897a9cc89efba6e078ace50972c85c6a89f8f6b7ccf552e59f5"
+    },
+    {
+      "check": "production build",
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log",
+      "bytes": 34017,
+      "sha256": "b700e421fdb082e3fa3bdf030181ce16fc0f2ec34de4f47368637bfbf4b6c6d9"
+    },
+    {
+      "check": "contract write",
+      "command": "node scripts/contract-docs.mjs write TEAM-006",
+      "exit": 0,
+      "log": "contract-write.log",
+      "bytes": 38,
+      "sha256": "a3291e1ce7c738351bd94d47cd116c3ef8a2782926d022c66ec15b5030393b5e"
+    },
+    {
+      "check": "contract check before view restoration",
+      "command": "node scripts/contract-docs.mjs check TEAM-006",
+      "exit": 0,
+      "log": "contract-check.log",
+      "bytes": 36,
+      "sha256": "51d122a8b3b9ff17eb5b6d79f7bc872b7a2fd584429abf41e2d066f0cafdd205"
+    },
+    {
+      "check": "integration regeneration",
+      "command": "node scripts/sync-integration.mjs --write",
+      "exit": 0,
+      "log": "integration-write.log",
+      "bytes": 71,
+      "sha256": "eff5d2ff49e7728058769b28a6d383839345dd22c6f7ca1093ab356021928c23"
+    },
+    {
+      "check": "integration freshness",
+      "command": "node scripts/sync-integration.mjs --check",
+      "exit": 0,
+      "log": "integration-check.log",
+      "bytes": 71,
+      "sha256": "eff5d2ff49e7728058769b28a6d383839345dd22c6f7ca1093ab356021928c23"
+    },
+    {
+      "check": "source lock generation last",
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "log": "sources-lock.log",
+      "bytes": 535239,
+      "sha256": "5128f6ade3a81490f03900d8530605e990d54602d9c02099acb0f2694372420d"
+    },
+    {
+      "check": "source lock check",
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "log": "sources-check.log",
+      "bytes": 535255,
+      "sha256": "e53687127f00ab94fb7d6c9ed95f297d6ff3cc41528b8aff283145f0e253b00a"
+    },
+    {
+      "check": "native rer check",
+      "command": "npx -y @runeditrun/rer check",
+      "exit": 0,
+      "log": "rer-check.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "check": "dashboard before fix",
+      "command": "node .artifacts/fleet/probe.mjs dashboards",
+      "exit": 1,
+      "log": "repro-dashboard.log",
+      "bytes": 705,
+      "sha256": "106a903195283d60bc6dd2f5e954ad63b3ab6128f9c601fe9673141d5f729c95"
+    },
+    {
+      "check": "dashboard after fix, 1440 and 390, light/dark",
+      "command": "node .artifacts/fleet/probe.mjs dashboards",
+      "exit": 0,
+      "log": "probe-dashboard.log",
+      "bytes": 911,
+      "sha256": "615219a6537b64fccb88265b91b10363984424547b923f511d520cca13690433"
+    },
+    {
+      "check": "stream controls before fix, 1440",
+      "command": "node .artifacts/fleet/probe.mjs stream",
+      "exit": 0,
+      "log": "repro-stream.log",
+      "bytes": 1104,
+      "sha256": "b9735f33296e871e8451e9ad51b73f2ec88c7fe52037f64922fdc9e2599f32c7"
+    },
+    {
+      "check": "stream controls after fix, 1440",
+      "command": "node .artifacts/fleet/probe.mjs stream",
+      "exit": 0,
+      "log": "probe-stream.log",
+      "bytes": 1104,
+      "sha256": "132daf4222057df4d7093cef01a4824bcc72e6bbd8b690ca7a794c72e8511e64"
+    },
+    {
+      "check": "complete core-current command including independent projects",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 node tests/e2e/core-runtime.mjs current",
+      "exit": 0,
+      "log": "probe-core-current.log",
+      "bytes": 30183,
+      "sha256": "784e79a24ba6e4d341fc664fd76578e95838a4be4cd3a44d52a3273afc605195",
+      "current_checks": 59,
+      "independent_project_checks": 54
+    },
+    {
+      "check": "CI audit-recovery timeout local reproduction",
+      "command": "cloud_run timeout 300 pnpm test:worker tests/worker/data-http-audit-recovery.test.ts",
+      "exit": 0,
+      "log": "repro-audit-recovery.log",
+      "bytes": 6639,
+      "sha256": "05f60fb3255a76447f5c45b7f91d9d23514a307319a6e0fc7197451a939591b6",
+      "tests": 1,
+      "vitest_duration_seconds": 127.14,
+      "test_duration_seconds": 118.43,
+      "note": "Expected malformed-archive FK rollback emits workerd reset diagnostics; test still passes locally. CI timed out at 180 seconds. No timeout or assertion was changed."
+    }
+  ],
+  "note": "Commands ran through cloud_run with hard timeouts, Node 22.20.0, pnpm 10.12.4. The initial worker command matched two real files (12 tests); cycle/triage upgrade entries were then run via their real entrypoints. No missing file match is claimed as a test.",
+  "before_after": {
+    "clause_judgments": {
+      "before": {
+        "done": 136,
+        "partial": 72,
+        "missing": 64,
+        "total": 272
+      },
+      "after": {
+        "done": 136,
+        "partial": 72,
+        "missing": 64,
+        "total": 272
+      }
+    },
+    "subteam_dependency_tests": {
+      "before": 12,
+      "after": 13
+    },
+    "sdk_freshness": {
+      "before": "stale; check exit 1",
+      "after": "fresh; 57 operations; check exit 0"
+    }
+  },
+  "ci": {
+    "repository": "just-every/run-vector",
+    "branch": "cloud/sd-vector-c-f205-fix2",
+    "head_sha": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+    "run_id": 42520865907,
+    "attempt_1_conclusion": "failure",
+    "failed_jobs": [
+      {
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42520865907/job/128854053127",
+        "id": 128854053127,
+        "name": "shards (worker-2, true, true, true)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "failure",
+            "name": "Verify the independent shard",
+            "number": 11
+          }
+        ]
+      },
+      {
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42520865907/job/128854053169",
+        "id": 128854053169,
+        "name": "shards (core-runtime, true, true, true)",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "failure",
+            "name": "Verify the independent shard",
+            "number": 11
+          }
+        ]
+      },
+      {
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42520865907/job/128860199188",
+        "id": 128860199188,
+        "name": "verify",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "failure",
+            "name": "Require the complete verification wall",
+            "number": 2
+          }
+        ]
+      }
+    ],
+    "rerun_request": {
+      "command": "gh api --method POST repos/just-every/run-vector/actions/runs/42520865907/rerun-failed-jobs --include",
+      "exit": 0,
+      "http_status": 201,
+      "outcome": "accepted; retry result not observed"
+    },
+    "terminal_custody": "PUSHED",
+    "ready": false
+  }
+}

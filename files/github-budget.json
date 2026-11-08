@@ -1,0 +1,17 @@
+{
+  "limit": 10,
+  "used": 10,
+  "remaining": 0,
+  "commands": [
+    "gh run view 42516503223 -R just-every/run-vector --log-failed",
+    "gh api repos/just-every/run-vector/actions/runs?branch=main&per_page=5",
+    "gh api repos/just-every/run-vector/actions/runs?head_sha=3503a75381109b411d3cac78293b1bbd28d3c82a&per_page=100",
+    "gh api repos/just-every/run-vector/actions/runs/42520865907 --jq {status,conclusion,head_sha,html_url} [observed 2026-11-08T20:40:32Z]",
+    "gh api repos/just-every/run-vector/actions/runs/42520865907 --jq {status,conclusion,head_sha,html_url} [observed 2026-11-08T20:50:32Z]",
+    "gh api repos/just-every/run-vector/actions/runs/42520865907 --jq {status,conclusion,head_sha,html_url} [observed 2026-11-08T21:00:33Z]",
+    "gh api repos/just-every/run-vector/actions/runs/42520865907/jobs?per_page=100",
+    "gh run view 42520865907 --repo just-every/run-vector --job 128854053127 --log-failed",
+    "gh run view 42520865907 --repo just-every/run-vector --job 128854053169 --log-failed",
+    "gh api --method POST repos/just-every/run-vector/actions/runs/42520865907/rerun-failed-jobs --include"
+  ]
+}

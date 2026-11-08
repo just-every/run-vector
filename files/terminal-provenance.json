@@ -1,0 +1,15 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix2",
+  "head": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "clean": true,
+  "generated_views_equal_main": true,
+  "product_commits": [
+    "3503a75381109b411d3cac78293b1bbd28d3c82a",
+    "cf2bb091b0e6168b3a3924f31d1ef812e5be3b31",
+    "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+    "569212d1b2eb44a7ebb45eec4ee5b0a25d025572"
+  ],
+  "shallow": false
+}

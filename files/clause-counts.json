@@ -1,0 +1,38 @@
+{
+  "origin/main": {
+    "counts": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "TEAM006": "missing"
+  },
+  "69464a9b035333e4b9bcbdbd6d2ceed672c3a378": {
+    "counts": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "TEAM006": "missing"
+  },
+  "HEAD": {
+    "counts": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "TEAM006": "missing"
+  },
+  "working": {
+    "counts": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "allMainStatusRowsPreserved": true
+  }
+}

@@ -1,0 +1,35 @@
+cf2bb091b0e6168b3a3924f31d1ef812e5be3b31
+0e8a686c06eddd55943ed1d2690df32a8fc82213
+is_shallow=false
+
+ docs/API.md                                      |  27 +++
+ migrations/core/0134_sub_teams.sql               |   8 +
+ schema/api-v1.json                               | 118 +++++++++++
+ sources.lock.json                                |  76 +++++--
+ src/core/features/administration/read.ts         |   4 +-
+ src/core/features/administration/routes.ts       |   2 +
+ src/core/features/administration/schema.ts       |   8 +-
+ src/core/features/administration/teams.ts        |  42 +++-
+ src/core/features/data/archive-inventory.json    |   9 +-
+ src/core/features/data/archive-policy.mjs        |   2 +
+ src/core/features/data/import/native-snapshot.ts |   1 +
+ src/core/features/integrations/api.ts            |   7 +
+ src/core/features/issues/browse-sql.ts           |   7 +-
+ src/core/features/issues/list-schema.ts          |   1 +
+ src/core/features/roles/doors.ts                 |   4 +-
+ src/core/features/roles/matrix.ts                |   1 +
+ src/core/features/sub-teams/hierarchy.ts         | 235 +++++++++++++++++++++
+ src/core/features/sub-teams/workflow.ts          | 226 ++++++++++++++++++++
+ src/core/features/team-membership/permissions.ts |  12 +-
+ src/core/platform/db/schema.ts                   |   5 +
+ tests/worker/base-refresh-upgrade.test.ts        |  10 +-
+ tests/worker/role-matrix.test.ts                 | 125 +----------
+ tests/worker/role-probes.ts                      |   9 +
+ tests/worker/role-viewer-census.ts               |   4 +
+ tests/worker/sub-team-authority-journey.ts       | 231 ++++++++++++++++++++
+ tests/worker/sub-team-fixture.ts                 |  38 ++++
+ tests/worker/sub-team-list-journey.ts            | 104 +++++++++
+ tests/worker/sub-team-workflow-journey.ts        | 255 +++++++++++++++++++++++
+ tests/worker/sub-teams.test.ts                   |  12 ++
+ tests/worker/team-membership-journey.ts          | 132 ++++++++++++
+ 30 files changed, 1550 insertions(+), 165 deletions(-)

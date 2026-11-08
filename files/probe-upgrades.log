@@ -1,0 +1,19 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector
+> vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts tests/worker/source-ingest.test.ts tests/worker/base-refresh-upgrade.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  20:29:36
+   Duration  221.15s (transform 4.20s, setup 0ms, import 15.26s, tests 204.49s, environment 0ms)
+

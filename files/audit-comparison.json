@@ -1,0 +1,13 @@
+{
+  "main_head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "main_tracked_clean": true,
+  "main_probe_log": "repro-audit-recovery-main.log",
+  "main_test_result": "1 passed",
+  "main_test_seconds": 121.12,
+  "main_vitest_seconds": 131.75,
+  "candidate_comparison_log": "repro-audit-recovery-head.log",
+  "candidate_test_result": "1 passed",
+  "candidate_test_seconds": 122.43,
+  "candidate_vitest_seconds": 131.3,
+  "provenance": "Comparison log artifacts retained in this task packet; main-probe checkout head and tracked cleanliness inspected before publication. These local passes are not main CI failure evidence."
+}

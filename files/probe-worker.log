@@ -1,0 +1,18 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector
+> vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/dependencies.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  20:31:05
+   Duration  40.82s (transform 4.48s, setup 0ms, import 13.36s, tests 26.32s, environment 0ms)
+

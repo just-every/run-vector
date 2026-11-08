@@ -1,0 +1,13 @@
+{
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "main_migration_files": 133,
+  "all_main_migration_bytes_unchanged": true,
+  "main_highest": 133,
+  "candidate_additions": [
+    {
+      "name": "0134_sub_teams.sql",
+      "sha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218"
+    }
+  ],
+  "collision": false
+}
