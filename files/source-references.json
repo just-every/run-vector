@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/core/features/automation-rules/settings.ts",
+    "line": 29,
+    "label": "Scoped destination read"
+  },
+  {
+    "path": "src/core/features/automation-rules/settings.ts",
+    "line": 38,
+    "label": "Saved-reference redaction"
+  },
+  {
+    "path": "src/core/features/issues/service.ts",
+    "line": 42,
+    "label": "Preserved native projection and ownership decoration"
+  },
+  {
+    "path": "tests/worker/automation-rules.test.ts",
+    "line": 100,
+    "label": "Privacy HTTP regression"
+  },
+  {
+    "path": "tests/worker/project-fields-upgrade.test.ts",
+    "line": 10,
+    "label": "Previous-main populated checkpoint"
+  },
+  {
+    "path": "management/integration/deployment-spec.json",
+    "line": 820,
+    "label": "Generated migration metadata"
+  }
+]

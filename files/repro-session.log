@@ -1,0 +1,47 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/issue-session-projection.test.ts
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/issue-session-projection.test.ts (3 tests | 3 failed) 4055ms
+   × [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale edit projection denies native signout between final native auth and the shared admission statement 2509ms
+   × [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale accept projection denies native signout between final native auth and the shared admission statement 648ms
+   × [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale return projection denies native signout between final native auth and the shared admission statement 895ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale edit projection denies native signout between final native auth and the shared admission statement
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale accept projection denies native signout between final native auth and the shared admission statement
+ FAIL  tests/worker/issue-session-projection.test.ts > [BASE-ACCESS-002 ISSUE-004 INTAKE-006] stale return projection denies native signout between final native auth and the shared admission statement
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/worker/issue-session-projection.test.ts:79:25
+     77|         { DB: db },
+     78|       );
+     79|       expect(projected).toBe(true);
+       |                         ^
+     80|       expect(fired).toBe(true);
+     81|       expectPrivateDenial(response, await response.text(), 401);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  22:17:53
+   Duration  28.79s (transform 11.37s, setup 0ms, import 23.52s, tests 4.05s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

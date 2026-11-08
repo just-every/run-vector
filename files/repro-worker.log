@@ -1,0 +1,70 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/automation-rules.test.ts tests/worker/admission-final.test.ts tests/worker/base-auth.test.ts tests/worker/removal-boundary.test.ts tests/worker/subissues-access.test.ts
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/automation-rules.test.ts (2 tests | 1 failed) 134944ms
+   × [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access 703ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/automation-rules.test.ts > [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access
+AssertionError: expected [ { …(2) }, { …(2) }, { …(2) }, …(2) ] to not deep equally contain ObjectContaining{…}
+
+- Expected:
+ObjectContaining {
+  "id": "01M6YKYBZF7WYH0YYMN4P10VNV",
+}
+
++ Received:
+[
+  {
+    "id": "01M6YKYBZF7WYH0YYMN4P10VNV",
+    "name": "private-automation-secret",
+  },
+  {
+    "id": "01M6YKYBZ0B3GQ2GXJKZAYYEC0",
+    "name": "public-automation",
+  },
+  {
+    "id": "01M6YKTA5JEQRQN7V63RJJ6HK6",
+    "name": "security",
+  },
+  {
+    "id": "01M6YKTHFK76XZK0D08AS14JE7",
+    "name": "security",
+  },
+  {
+    "id": "01M6YKTK04G3AXJG9FV5DDN8GK",
+    "name": "security",
+  },
+]
+
+ ❯ assertHidden tests/worker/automation-rules.test.ts:111:39
+    109|       const result = await json(call(path));
+    110|       expect(result.destinations).toContainEqual({id:visible.id,name:'…
+    111|       expect(result.destinations).not.toContainEqual(expect.objectCont…
+       |                                       ^
+    112|       expect(JSON.stringify(result)).not.toContain('private-automation…
+    113|       expect(JSON.stringify(result)).not.toContain('CPRIVATE');
+ ❯ tests/worker/automation-rules.test.ts:115:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 17 passed (18)
+   Start at  22:17:09
+   Duration  200.82s (transform 9.22s, setup 0ms, import 47.12s, tests 148.93s, environment 1ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

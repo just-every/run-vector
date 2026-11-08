@@ -1,0 +1,16 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'current private and invited teams scope'
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 5 skipped (6)
+   Start at  22:41:22
+   Duration  47.81s (transform 6.72s, setup 0ms, import 12.80s, tests 33.67s, environment 0ms)
+

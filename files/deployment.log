@@ -1,0 +1,76 @@
+
+> vector@0.4.1 test:deployment /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> node --test --test-concurrency=2 scripts/deployment/tests/*.test.mjs
+
+TAP version 13
+# (node:3369) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: seed controller first setup preserves data and repeated deploy has no writes and byte-identical receipt
+ok 1 - seed controller first setup preserves data and repeated deploy has no writes and byte-identical receipt
+  ---
+  duration_ms: 297.045292
+  type: 'test'
+  ...
+# Subtest: prepare rejects credential-bearing environment before any build or provider access
+ok 2 - prepare rejects credential-bearing environment before any build or provider access
+  ---
+  duration_ms: 1.014967
+  type: 'test'
+  ...
+# (node:3370) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Vector deployment preserves owner and invitation guards, revokes removed operators and repeats without writes
+ok 3 - Vector deployment preserves owner and invitation guards, revokes removed operators and repeats without writes
+  ---
+  duration_ms: 1755.723381
+  type: 'test'
+  ...
+# (node:3391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual Vector owner plan preserves native data, secrets and state on exact repeat
+ok 4 - actual Vector owner plan preserves native data, secrets and state on exact repeat
+  ---
+  duration_ms: 193.714398
+  type: 'test'
+  ...
+# Subtest: missing owner secrets refuse before resource writes
+ok 5 - missing owner secrets refuse before resource writes
+  ---
+  duration_ms: 11.215187
+  type: 'test'
+  ...
+# Subtest: an unrelated named resource is refused without adoption
+ok 6 - an unrelated named resource is refused without adoption
+  ---
+  duration_ms: 5.960929
+  type: 'test'
+  ...
+# Subtest: lost native create stays uncertain and is never adopted on retry
+ok 7 - lost native create stays uncertain and is never adopted on retry
+  ---
+  duration_ms: 15.287422
+  type: 'test'
+  ...
+# Subtest: owner exact repeat refuses live cron drift without writes or state replacement
+ok 8 - owner exact repeat refuses live cron drift without writes or state replacement
+  ---
+  duration_ms: 82.069519
+  type: 'test'
+  ...
+# This Worker has a Cron Trigger. Cloudflare may take up to about two hours to start its first scheduled run on some accounts.
+# This Worker has a Cron Trigger. Cloudflare may take up to about two hours to start its first scheduled run on some accounts.
+# Subtest: real owner CLI packages the Vector declaration, maps mail credentials and preserves state on deploy/health repeat
+ok 9 - real owner CLI packages the Vector declaration, maps mail credentials and preserves state on deploy/health repeat
+  ---
+  duration_ms: 290.916497
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2008.455526

@@ -1,0 +1,11 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'Owners change roles with one audit entry'
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+
+ ELIFECYCLE  Command failed.

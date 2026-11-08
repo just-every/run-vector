@@ -1,0 +1,53 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/automation-rules.test.ts -t 'conceals private-team'
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/automation-rules.test.ts (2 tests | 1 failed | 1 skipped) 1933ms
+   × [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access 1930ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/automation-rules.test.ts > [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access
+AssertionError: expected [ { …(2) }, { …(2) } ] to not deep equally contain ObjectContaining{…}
+
+- Expected:
+ObjectContaining {
+  "id": "01M6YKZZTWTV5WA91BCFFVHD4J",
+}
+
++ Received:
+[
+  {
+    "id": "01M6YKZZTWTV5WA91BCFFVHD4J",
+    "name": "private-automation-secret",
+  },
+  {
+    "id": "01M6YKZZT70ER2GYTXXNT11Q6S",
+    "name": "public-automation",
+  },
+]
+
+ ❯ assertHidden tests/worker/automation-rules.test.ts:111:39
+     96|     expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).re…
+     97|   } finally { edge.restore(); }
+     98| },240_000);
+       |            ^
+     99|
+ ❯ tests/worker/automation-rules.test.ts:115:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  22:20:32
+   Duration  18.15s (transform 7.12s, setup 0ms, import 15.21s, tests 1.93s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

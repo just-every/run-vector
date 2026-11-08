@@ -1,0 +1,18 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f204-fix1",
+  "head": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "custody": "READY",
+  "required_workflow": "Verify",
+  "run_id": 42530509805,
+  "status": "completed",
+  "conclusion": "success",
+  "head_sha": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42530509805",
+  "github_calls": 7,
+  "generated_view_exemption_used": false,
+  "clause_changes": [],
+  "AUTO-002": "partial",
+  "local_extra_role_timeouts_disclosed": true,
+  "landing_claim": false
+}

@@ -1,0 +1,16 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/automation-rules.test.ts tests/worker/admission-final.test.ts tests/worker/base-auth.test.ts tests/worker/removal-boundary.test.ts tests/worker/subissues-access.test.ts
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-fix1/run-vector
+
+
+ Test Files  5 passed (5)
+      Tests  18 passed (18)
+   Start at  22:26:28
+   Duration  148.08s (transform 7.02s, setup 0ms, import 33.18s, tests 110.22s, environment 1ms)
+

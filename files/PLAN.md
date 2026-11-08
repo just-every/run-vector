@@ -1,0 +1,10 @@
+# AUTO-002 FIX round plan
+
+Scope: just-every/run-vector, cloud/sd-vector-c-f204-fix1. Keep AUTO-002 partial and every other clause judgment. No Settings UI implementation, internal snapshot follow-up, or unrelated changes.
+
+1. Fresh full-history filtered clone; require original candidate 3a2537c1d37eff9008b842168e54fc5f09bbc6bc. Install fleet credentials, identity and preserved commit hooks. Reproduce Settings privacy, stale-session assertions and stale generated deployment metadata with bounded commands.
+2. Merge fresh main, resolving CONTRACT first while preserving all main judgments and parent Status rows, ID-MAP and newer tests. Restore generated views whole from main. Renumber only this candidate's unapplied automation migration above main's maximum, updating its references and populated-upgrade checkpoint.
+3. Filter automation-rule Settings destinations by the current reader's team/project/view visibility. Keep existing assertions intact, preserve the native activity projection used by stale-session interleaving, and prove native signout still denies the final response with unchanged storage.
+4. Run the same focused commands and typecheck. Generate SDK and deployment spec with their actual generators, update the mounted-route inventory only if its documented checks require it. Run migration ledger, contract write/check AUTO-002, restore main views, and stage then regenerate source lock last and check it.
+5. Audit every candidate commit identity/message including side parents. Push only the named cloud branch through cloud-push.py. Discover and watch exact-SHA Verify through REST under the ten-call budget and 300-second per-run cadence. Do not claim READY unless Verify succeeds or only the generated views fail.
+6. Write complete non-secret report and actual receipts outside the product. Publish explicitly selected files only on evidence/sd-vector-c-f204-fix1. Retain provenance, final POST and CI outcome. Delete the successful product clone and dependencies at task end; preserve finished unpushed work if blocked.

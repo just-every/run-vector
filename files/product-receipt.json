@@ -1,0 +1,37 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f204-fix1",
+  "head": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "parents": [
+    "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+    "442b61455234c57befcb642bf4afdaa2dc459922"
+  ],
+  "push": "success",
+  "push_attempts": 1,
+  "push_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f204-fix1",
+  "identity": "Run Edit Run fleet <fleet@runeditrun.com>",
+  "candidate_commits_audited": 4,
+  "working_tree_clean": true,
+  "clause_changes": [],
+  "AUTO-002": "partial",
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "pr": null,
+  "custody": "READY",
+  "verify_run_id": 42530509805,
+  "verify_conclusion": "success",
+  "verify_head": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "verify_url": "https://github.com/just-every/run-vector/actions/runs/42530509805",
+  "blockers": [],
+  "landing_claim": false
+}
