@@ -1,3 +1,4 @@
+import {threadProtocol,sendThread,enqueueThreadMessages} from './slack-app/thread-delivery';
 import {channelBindingSource} from './channels/subjects';
 import {publicWebhookEvent} from './private-events';
 import {subscribedWebhookEvent} from './subscriptions';
@@ -27,6 +28,7 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
  const signedProtocol=createWebhookProtocol({resolveDestination:async id=>(await configuration(id)).url,signingKey:async envelope=>(await configuration(envelope.destinationId)).key});
  const protocol={...signedProtocol,async prepare(envelope:Parameters<typeof signedProtocol.prepare>[0],at:number){if(!await publicWebhookEvent(env,workspace,envelope.body)||!await subscribedWebhookEvent(env,workspace,envelope.destinationId,envelope.event,envelope.body))throw new IntegrationError(403,'webhook_event_unavailable');return signedProtocol.prepare(envelope,at);}};
  const transport:TrustedTransport={async send(wire){
+  if(wire.headers['vector-thread-event'])return sendThread(env,workspace,wire);
   if(wire.headers['vector-dm-event'])return sendDirect(env,workspace,wire);
   if(wire.headers['vector-channel-destination'])return sendChannel(env,workspace,wire);
   const destination=wire.headers['webhook-destination'],eventId=wire.headers['webhook-id'],current=await configuration(destination);
@@ -46,7 +48,7 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
   const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs');
   return demoEffect(send, () => ({status:204,headers:{},body:''}));
  }};
- return new DeliveryService({repository,protocols:[protocol,...channelProtocols(env,workspace),directProtocol(env,workspace)],transport,now});
+ return new DeliveryService({repository,protocols:[protocol,...channelProtocols(env,workspace),directProtocol(env,workspace),threadProtocol(env,workspace)],transport,now});
 }
 /** A destination that cannot sign keeps its events queued, unsent, and is reported as held; every other destination proceeds. */
 export async function dispatchWebhooks(env:WorkerBindings){
@@ -78,6 +80,7 @@ export async function dispatchWebhooks(env:WorkerBindings){
    await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=COALESCE(enqueued_at,?) WHERE id=? AND workspace_id=?').bind(new Date().toISOString(),event.id,workspace).run();enqueued++;
   }
   if(direct&&!directHeld)enqueued+=(await enqueueDirectMessages(env,workspace,service)).length;
+  if(direct&&!directHeld)enqueued+=(await enqueueThreadMessages(env,workspace,service)).length;
   dispatched+=(await service.dispatchDue(20)).length;
  }
  return {configured,enqueued,dispatched,held};

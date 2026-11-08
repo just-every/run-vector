@@ -198,6 +198,13 @@
       ]
     },
     {
+      "id": "slack-thread-sync",
+      "required": false,
+      "why": "SLACK-002: signed linked members map messages in an explicitly team-bound channel. Mapped replies and resolution use durable delivery; private teams send only identifiers and status changes.",
+      "data": ["Slack message text", "Slack author ID", "Slack thread identity", "Slack permalink", "Vector reply text", "actor display name", "issue identifier", "workflow status name", "thread resolution marker"],
+      "adapters": ["vector.slack-web-api.v1"]
+    },
+    {
       "id": "slack-direct-messages",
       "required": false,
       "why": "SLACK-004: a member looks up and confirms their own Slack account by their sign-in email, then chooses Slack direct messages for assignments and mentions; signed Assign to me and Change status requests return to Vector.",
