@@ -1,7 +1,7 @@
 import {slackThreadImport} from './slack-thread-import';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
-import {bindings,origin,request} from './base-auth-fixture';
+import {bindings,origin,request,invite,actor} from './base-auth-fixture';
 import {dispatchWebhooks,outboundService} from '../../src/core/features/integrations/outbound';
 import type {setupIntegrations} from './integration-fixture';
 import {slackIntakeFixture,setupSlackIntake} from './slack-events-scenario';
@@ -22,6 +22,17 @@ export async function slackThreadSync(f:Awaited<ReturnType<typeof setupIntegrati
  const firstReply=event('synthetic-vector-thread-1','1730000000.000010','Slack reply one');
  expect(await read(await send(firstReply))).toMatchObject({identifier,rootCommentId:root.id});
  comments=await discussion();expect(comments.filter(c=>c.parentId===root.id).map(c=>c.body)).toEqual(['Slack reply one']);
+ // SLACK-002 gate B: Also send to channel is still a reply in this exact thread.
+ const broadcast=event('synthetic-vector-broadcast','1730000000.000009','Broadcast Slack reply');
+ const broadcastResult=await read(await send({...broadcast,event:{...broadcast.event,subtype:'thread_broadcast'}}));
+ const broadcastReplies=(await discussion()).filter(c=>c.body==='Broadcast Slack reply'&&c.parentId===root.id);
+ console.log('GATE_PROBE B status=200 mappedReplies='+broadcastReplies.length);
+ expect.soft(broadcastResult).toMatchObject({identifier,rootCommentId:root.id});
+ expect.soft(broadcastReplies).toHaveLength(1);
+ if(broadcastReplies.length){await read(await send({...broadcast,event:{...broadcast.event,subtype:'thread_broadcast'}}),409);}
+ const ignoredBefore=await snapshot();
+ await read(await send({...event('synthetic-vector-edited','1730000000.000008','Ignored edit'),event:{...broadcast.event,ts:'1730000000.000008',subtype:'message_changed'}}));
+ expect(await snapshot()).toEqual(ignoredBefore);
  const afterReply=await snapshot();
  await read(await send(firstReply),409);expect(await snapshot()).toEqual(afterReply);
  f.restart();await read(await send({...firstReply,event_id:'synthetic-vector-thread-duplicate'}),409);expect(await snapshot()).toEqual(afterReply);
@@ -30,6 +41,23 @@ export async function slackThreadSync(f:Awaited<ReturnType<typeof setupIntegrati
  expect((await discussion()).filter(c=>c.body==='Concurrent Slack reply')).toHaveLength(1);
  const echoBefore=await snapshot();await read(await send({...event('synthetic-vector-thread-echo','1730000000.000012','Bot echo'),event:{...concurrent.event,ts:'1730000000.000012',bot_id:'synthetic-vector-echo',subtype:'bot_message'}}));expect(await snapshot()).toEqual(echoBefore);
  const posts=()=>calls.filter(c=>c.method==='chat.postMessage'&&c.body.thread_ts);
+ // SLACK-002 gate C: a Guest admitted by the comment door gets one outbound reply.
+ const guest=await invite('synthetic-vector-thread-guest@vector.test',f.cookie),guestId=await actor(guest);
+ expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[f.initial.teams[0].id]})).status).toBe(200);
+ const guestReply=await read(await request('/api/issues/'+identifier+'/comments','POST',{body:'Authorized Guest Slack reply',parentId:root.id},guest),201);
+ const ownerReply=await read(await f.call('/issues/'+identifier+'/comments','POST',{body:'Owner Slack delivery control',parentId:root.id}),201);
+ await dispatchWebhooks(bindings);await dispatchWebhooks(bindings);f.restart();await dispatchWebhooks(bindings);
+ const guestPosts=posts().filter(c=>c.body.text.includes('Authorized Guest Slack reply')).length;
+ const ownerPosts=posts().filter(c=>c.body.text.includes('Owner Slack delivery control')).length;
+ console.log('GATE_PROBE C status=201 guestPosts='+guestPosts+' ownerPosts='+ownerPosts);
+ expect.soft(guestPosts).toBe(1);expect(ownerPosts).toBe(1);
+ expect.soft(await env.DB.prepare('SELECT state,attempts FROM integration_deliveries WHERE namespace=? AND id=?').bind(workspace,guestReply.id+':slack-thread').first()).toMatchObject({state:'accepted',attempts:1});
+ expect(await env.DB.prepare('SELECT state,attempts FROM integration_deliveries WHERE namespace=? AND id=?').bind(workspace,ownerReply.id+':slack-thread').first()).toMatchObject({state:'accepted',attempts:1});
+ // Guest access remains current at transport time, including the final channel check.
+ await read(await request('/api/issues/'+identifier+'/comments','POST',{body:'Withdrawn Guest reply',parentId:root.id},guest),201);
+ threadEdge.onInfo=async()=>{threadEdge.onInfo=undefined;expect((await f.call('/settings/teams/'+f.initial.teams[0].id+'/members/'+guestId,'DELETE')).status).toBe(200);};
+ await dispatchWebhooks(bindings);threadEdge.onInfo=undefined;
+ expect(posts().filter(c=>c.body.text.includes('Withdrawn Guest reply'))).toHaveLength(0);
  const beforePosts=posts().length;
  const native=await read(await request('/api/issues/'+identifier+'/comments','POST',{body:'Vector reply one',parentId:root.id},member),201);
  await read(await f.call('/issues/'+identifier+'/comments','POST',{body:'Separate top-level comment'}),201);
@@ -100,6 +128,14 @@ export async function slackThreadSync(f:Awaited<ReturnType<typeof setupIntegrati
  const shortcutRoot=await env.DB.prepare("SELECT c.body,c.actor_operator_id FROM vector_slack_threads m JOIN issue_comments c ON c.id=m.root_comment_id WHERE m.thread_ts='1730000002.000001'").first<any>();
  expect(shortcutRoot.body).toContain('Message shortcut source');expect(shortcutRoot.body).toContain('Slack author: '+slackIntakeFixture.unlinked);
  expect(shortcutRoot.actor_operator_id).toBe(await env.DB.prepare('SELECT operator_id FROM vector_slack_member_links WHERE slack_user_id=?').bind(slackIntakeFixture.user).first('operator_id'));
+ // SLACK-002 gate A: the linked human acts; bot_id describes the selected source.
+ const botShortcut={...shortcut,message:{...shortcut.message,bot_id:'synthetic-vector-source-bot',ts:'1730000002.000003',text:'Bot-authored shortcut source'}};
+ const botResponse=await signShortcut(botShortcut);expect(botResponse.status).toBe(200);
+ const botRoots=(await env.DB.prepare("SELECT c.body,c.actor_operator_id FROM vector_slack_threads m JOIN issue_comments c ON c.id=m.root_comment_id WHERE m.thread_ts=?").bind(botShortcut.message.ts).all<any>()).results;
+ console.log('GATE_PROBE A status='+botResponse.status+' mappedRoots='+botRoots.length+' humanControlRoots=1');
+ expect.soft(botRoots).toHaveLength(1);
+ expect.soft(botRoots[0]).toMatchObject({actor_operator_id:shortcutRoot.actor_operator_id,body:expect.stringContaining(botShortcut.message.text)});
+ if(botRoots.length){const saved=await snapshot();expect((await signShortcut(botShortcut)).status).toBe(409);expect(await snapshot()).toEqual(saved);}
  await slackThreadImport(f,intake);
  // Queue while public, then make the issue private: final transport must redact.
  const person=await env.DB.prepare('SELECT operator_id FROM vector_slack_member_links WHERE slack_user_id=?').bind(slackIntakeFixture.user).first<string>('operator_id');

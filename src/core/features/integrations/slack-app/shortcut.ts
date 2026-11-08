@@ -10,7 +10,9 @@ export async function receiveSlackShortcut(env:WorkerBindings,signer:{workspace:
  const parsed=shortcut.safeParse(payload);
  if(!parsed.success)throw new IntegrationError(400,'slack_payload_unsupported');
  const data=parsed.data;
- const message=threadMessage.safeParse({...data.message,type:'app_mention',user:data.user.id,source_user:data.message.user,channel:data.channel.id});
+ // This signed action is the linked human's selection, not a bot event echo.
+ // Preserve the source author without forwarding its bot_id as the actor.
+ const message=threadMessage.safeParse({type:'app_mention',user:data.user.id,source_user:data.message.user,channel:data.channel.id,ts:data.message.ts,text:data.message.text,thread_ts:data.message.thread_ts});
  if(!message.success)throw new IntegrationError(400,'slack_payload_invalid');
  return receiveThreadMessage(env,signer,data.team.id,message.data,await sha256('shortcut:'+data.team.id+':'+data.channel.id+':'+data.message.ts));
 }

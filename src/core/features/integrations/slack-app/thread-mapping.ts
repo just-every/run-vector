@@ -35,7 +35,7 @@ export async function threadAdmission(env:WorkerBindings,signer:Signer,team:stri
 /** A source timestamp is unique even if Slack retries with a different event ID.
  * Source, root, issue and replay receipt commit in the same native transaction. */
 export async function receiveThreadMessage(env:WorkerBindings,signer:Signer,team:string,message:ThreadMessage,key:string,existingIdentifier?:string){
- if(message.bot_id||message.subtype)return {ok:true,ignored:true};
+ if(message.bot_id||(message.subtype&&!(message.type==='message'&&message.subtype==='thread_broadcast'&&message.thread_ts&&message.thread_ts!==message.ts)))return {ok:true,ignored:true};
  const add=/^\s*<@[A-Z0-9]+>\s+add\s+([A-Z]{2,10}-[1-9][0-9]*)\b/.exec(message.text);
  existingIdentifier=existingIdentifier??add?.[1];
  const {binding,link,access}=await threadAdmission(env,signer,team,message);

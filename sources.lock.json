@@ -5606,7 +5606,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/shortcut.ts": {
-      "sha256": "e345577ae6c753a1c1a644d3edf9c7585f68bb0933f7b4e4a0f060dd83ecac79",
+      "sha256": "d47d029868587b6c16f4221d9842f7b64b66a5425e2080c9b76b7171d80a963c",
       "executable": false
     },
     "src/core/features/integrations/slack-app/thread-allocation.ts": {
@@ -5614,11 +5614,11 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/thread-delivery.ts": {
-      "sha256": "8f3537bd18c06c942b836cf39f336f692c353df6b91c935fd7e85cbb50b64188",
+      "sha256": "e404ab392c4ad7728199bfb9247e12f059a7982683208956e38725fff7b8d066",
       "executable": false
     },
     "src/core/features/integrations/slack-app/thread-mapping.ts": {
-      "sha256": "f2e6b77ed264c23ea473c35bb7077fd197766d3343765327a67b618ce645edd5",
+      "sha256": "7e040722dce09f5663f7f48ec67ca322f341fc082dbfd02a8457e2a82b8ee5dc",
       "executable": false
     },
     "src/core/features/integrations/slack-app/thread-source.ts": {
@@ -9982,7 +9982,7 @@
       "executable": false
     },
     "tests/worker/slack-thread-scenario.ts": {
-      "sha256": "1f73c8d4377fc3bedbf57c8a1f8a1b10244aa337c002499aa435fa73459f59d3",
+      "sha256": "b1c112d9d41548c4b0bd97a417bd8c0df308b5270a92bf13d5212b2daa1e9e0d",
       "executable": false
     },
     "tests/worker/slack-thread-upgrade.ts": {

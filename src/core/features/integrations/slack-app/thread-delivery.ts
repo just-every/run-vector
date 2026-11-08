@@ -30,7 +30,9 @@ export async function threadTarget(env:WorkerBindings,workspace:string,id:string
  AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=m.workspace_id AND h.id=e.id)
  AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=m.workspace_id AND h.id=e.id)`).bind(id,workspace).first<Target>();
  if(!row||await credentialProblem(env,'slack:'+workspace)||await credentialProblem(env,'slack-signing:'+workspace))return null;
- const canSee=async(actor:string)=>Boolean(await visibilityDatabase(env.DB,actor).prepare("SELECT 1 FROM issues i JOIN operators o ON o.id=? JOIN vector_auth_operators a ON a.operator_id=o.id JOIN oa_operators n ON n.id=a.auth_id AND n.status='active' WHERE i.id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member')").bind(actor,row.issue_id).first());
+ // The mapping still requires its original linked member. A reply actor may
+ // also be a Guest whose current team membership admits this issue.
+ const canSee=async(actor:string)=>Boolean(await visibilityDatabase(env.DB,actor).prepare("SELECT 1 FROM issues i JOIN operators o ON o.id=? JOIN vector_auth_operators a ON a.operator_id=o.id JOIN oa_operators n ON n.id=a.auth_id AND n.status='active' WHERE i.id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member','guest')").bind(actor,row.issue_id).first());
  if(!await canSee(row.operator_id)||row.actor_id&&!await canSee(row.actor_id))return null;
  if(row.is_private&&row.kind!=='status')return null;
  return row;
