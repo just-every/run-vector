@@ -1,0 +1,117 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f203-fix1",
+  "head": "2806e3bc158a0b63035276534ab1b20d310699a3",
+  "parent": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+  "origin_main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "product_push": "success",
+  "product_push_attempts": 1,
+  "pr": null,
+  "clause_changes": [],
+  "contract_status": "DESIGN-001 missing -> missing (unchanged; no judgment made)",
+  "test_counts": {
+    "touched_files": 3,
+    "touched_tests_passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "route_counts": {
+    "before_declared": 57,
+    "after_declared": 58,
+    "mounted": 58
+  },
+  "migration_counts": {
+    "before_spec": 133,
+    "after_spec": 134,
+    "source": 134,
+    "renumbered": false
+  },
+  "ci": {
+    "conclusion": "failure",
+    "head_sha": "2806e3bc158a0b63035276534ab1b20d310699a3",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42515193427",
+    "id": 42515193427,
+    "status": "completed",
+    "failed_jobs": [
+      {
+        "id": 128836857095,
+        "name": "shards (hosted-artifact, true, true, false)",
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42515193427/job/128836857095"
+      },
+      {
+        "id": 128836857105,
+        "name": "shards (administration, true, true, true)",
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42515193427/job/128836857105"
+      },
+      {
+        "id": 128836857107,
+        "name": "shards (collaboration, true, true, true)",
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42515193427/job/128836857107"
+      },
+      {
+        "id": 128841900171,
+        "name": "verify",
+        "conclusion": "failure",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42515193427/job/128841900171"
+      }
+    ]
+  },
+  "generated_views_committed": false,
+  "scope": "Four gate findings only; no UI, CDN compatibility, administration or clause judgment changes",
+  "updated": "2026-11-08T20:14:23.158268+00:00",
+  "local_verify": {
+    "command": "cloud_run timeout 900 npx -y @runeditrun/rer verify",
+    "exit": 0,
+    "agent_door_conformance_passed": 1483,
+    "agent_door_conformance_total": 1483
+  },
+  "github_calls_used": 10,
+  "auth_recovery": {
+    "initial_github_job_details_http": 401,
+    "git_attempts": 2,
+    "recovered": true,
+    "credential_source": "launcher decrypted bundle only",
+    "receipt": "AUTH-RECOVERY.jsonl"
+  },
+  "backup": {
+    "path": "/home/agent/rer-consolidation/work/push-rescue/cloud_sd-vector-c-f203-fix1-2806e3bc158a.bundle",
+    "head": "2806e3bc158a0b63035276534ab1b20d310699a3",
+    "prerequisite": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+    "kind": "incremental bundle of FIX commit; published parent is prerequisite",
+    "verified": true,
+    "sha256": "005d131cac6a03386706c5463c89974948a857ea5427d81624e75953dda9c170",
+    "bytes": 3111
+  },
+  "blockers": [
+    {
+      "file": "sdk/generated.ts",
+      "reason": "Exact-SHA hosted-artifact integration journey requires SDK regeneration outside explicit lease",
+      "check": "node sdk/generate.mjs --check",
+      "exit": 1,
+      "required_hunks": [
+        "@@ -68,6 +68,8 @@",
+        "@@ -527,5 +529,19 @@"
+      ],
+      "probe": "main passes; original candidate and FIX head both fail",
+      "evidence": "SDK-LEASE-BLOCKER.json and SDK-REQUIRED.patch"
+    },
+    {
+      "file": "tests/e2e/project-documents-journey.mjs:63",
+      "reason": "Collaboration project-report runtime times out waiting for issue-link tooltip at 1440; outside lease",
+      "evidence": "ci-failed-job-10.log"
+    }
+  ],
+  "ready": false,
+  "administration": {
+    "job": 128836857105,
+    "conclusion": "failure",
+    "log_read": false,
+    "reason": "explicitly out of scope in brief; ten-call GitHub budget used on status, recovery inventory and the other two failed shards"
+  },
+  "terminal_status": "BLOCKED",
+  "evidence_status": "selected packet ready for separate publication",
+  "cleanup": "Delete disposable clone and node_modules after successful evidence publication; keep external packet and verified bundle."
+}

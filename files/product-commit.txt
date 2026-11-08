@@ -1,0 +1,15 @@
+commit 2806e3bc158a0b63035276534ab1b20d310699a3
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 19:28:10 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 19:28:10 2026 +0000
+
+    Fix Figma OAuth protocol and restore verification coverage
+
+ management/integration/deployment-spec.json    |  6 ++++++
+ schema/api-v1.json                             | 14 ++++++++++++++
+ sources.lock.json                              | 10 +++++-----
+ src/core/features/integrations/figma/client.ts | 26 ++++++++++++++++----------
+ tests/worker/figma-journey.ts                  | 14 +++++++++-----
+ tests/worker/project-fields-upgrade.test.ts    |  2 +-
+ 6 files changed, 51 insertions(+), 21 deletions(-)

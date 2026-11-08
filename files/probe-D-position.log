@@ -1,0 +1,4 @@
+$ timeout 30 python3 /tmp/check-upgrade-fixture.py
+Historical release insertion checkpoint and fixture exactly match main; migration 0133 remains after insertion.
+
+exit=0

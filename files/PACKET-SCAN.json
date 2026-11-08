@@ -1,0 +1,6 @@
+{
+  "files_checked": 48,
+  "suspected_credential_patterns": 0,
+  "symlinks": 0,
+  "note": "Local explicit packet credential-pattern check only; not fleet publication acceptance"
+}

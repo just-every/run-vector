@@ -1,0 +1,9 @@
+$ timeout 90 pnpm integration:check
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 integration:check /workspace/run-vector
+> node scripts/sync-integration.mjs --check
+
+Integration deployment spec, setup digest and producer workflow match.
+
+exit=0

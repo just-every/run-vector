@@ -1,0 +1,8 @@
+$ timeout 240 pnpm typecheck
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 typecheck /workspace/run-vector
+> tsc -b
+
+
+exit=0

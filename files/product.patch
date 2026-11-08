@@ -1,0 +1,199 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index a0f25e22..a342322a 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -808,6 +808,12 @@
+       "name": "0133_release_notes.sql",
+       "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+       "sql": "-- Historical releases keep unknown ownership; only native creation supplies it.\nALTER TABLE releases ADD COLUMN owner_operator_id TEXT REFERENCES operators(id);\n\nCREATE TABLE release_note_drafts (\n release_id TEXT PRIMARY KEY REFERENCES releases(id) ON DELETE CASCADE,\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n version INTEGER NOT NULL CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n erased_at TEXT\n);\n\nCREATE TABLE release_note_revisions (\n release_id TEXT NOT NULL REFERENCES releases(id) ON DELETE CASCADE,\n version INTEGER NOT NULL CHECK(version>0),\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n created_at TEXT NOT NULL,\n PRIMARY KEY(release_id,version)\n);\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0134_figma.sql",
++      "sha256": "1ebdfbb20c5224d0d4a2f9764d76111ab5bb5fdd973e847859f8fe95c61199fb",
++      "sql": "-- App configuration history is portable; app, member and OAuth state secrets\n-- use the existing excluded installation vault and require fresh entry.\nCREATE TABLE vector_figma_installations (\n workspace_id TEXT PRIMARY KEY REFERENCES workspace_settings(id) ON DELETE CASCADE,\n configured_at TEXT NOT NULL\n);\n\n-- Durable capture identity prevents a restored or deleted issue from being\n-- recreated by a plugin replay. No provider credential or comment is retained.\nCREATE TABLE vector_figma_captures (\n workspace_id TEXT NOT NULL REFERENCES workspace_settings(id) ON DELETE CASCADE,\n operator_id TEXT NOT NULL,\n capture_id TEXT NOT NULL,\n fingerprint TEXT NOT NULL,\n issue_id TEXT REFERENCES issues(id) ON DELETE SET NULL,\n created_at TEXT NOT NULL,\n PRIMARY KEY(workspace_id,operator_id,capture_id)\n);\n\nCREATE TRIGGER vector_figma_person_removed AFTER UPDATE OF removed_at ON operators\nWHEN NEW.removed_at IS NOT NULL BEGIN\n DELETE FROM vector_integration_secret_keys\n WHERE identity='figma-member:'||OLD.workspace_id||':'||OLD.id\n OR substr(identity,1,length('figma-state:'||OLD.workspace_id||':'||OLD.id||':'))='figma-state:'||OLD.workspace_id||':'||OLD.id||':';\nEND;\nCREATE TRIGGER vector_figma_person_deleted BEFORE DELETE ON operators BEGIN\n DELETE FROM vector_integration_secret_keys\n WHERE identity='figma-member:'||OLD.workspace_id||':'||OLD.id\n OR substr(identity,1,length('figma-state:'||OLD.workspace_id||':'||OLD.id||':'))='figma-state:'||OLD.workspace_id||':'||OLD.id||':';\nEND;\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/schema/api-v1.json b/schema/api-v1.json
+index 2708e6d0..55510976 100644
+--- a/schema/api-v1.json
++++ b/schema/api-v1.json
+@@ -5275,6 +5275,20 @@
+             "description": "Capture changed or retired"
+           }
+         }
++      },
++      "options": {
++        "operationId": "figma_capture_preflight",
++        "summary": "Check the allowed origin, method and headers for Figma plugin capture",
++        "security": [],
++        "x-scopes": [],
++        "responses": {
++          "204": {
++            "description": "Allowed plugin preflight; bearer authority is checked on POST"
++          },
++          "403": {
++            "description": "Origin, method or requested headers refused"
++          }
++        }
+       }
+     }
+   },
+diff --git a/sources.lock.json b/sources.lock.json
+index fad95981..8bbbbdba 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -2034,7 +2034,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
++      "sha256": "19bcf090cb1cf46dc6508cbacf80f2fe0aaee9ca216b71f861bdd35a11413e40",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {
+@@ -2670,7 +2670,7 @@
+       "executable": false
+     },
+     "schema/api-v1.json": {
+-      "sha256": "db4bc52cd3ae6b161548f2c64b9f5df5fbcc876262e8ced204721d8710aa7d1e",
++      "sha256": "0dd6ce04ee4e0a0231a34cb6c650ed3d306c87426dab504bb4e723963f4b081a",
+       "executable": false
+     },
+     "schema/importers.schema.json": {
+@@ -5486,7 +5486,7 @@
+       "executable": false
+     },
+     "src/core/features/integrations/figma/client.ts": {
+-      "sha256": "a55ac302616d42361090a14c8929906a8188a51832c6abde3b6d017bc61e3a3f",
++      "sha256": "c63faa6a4f54683ce1d28adcb4f7a00a1bb4f67ef3d334e4ccd1256488b19976",
+       "executable": false
+     },
+     "src/core/features/integrations/figma/configuration.ts": {
+@@ -9530,7 +9530,7 @@
+       "executable": false
+     },
+     "tests/worker/figma-journey.ts": {
+-      "sha256": "a93ca419e4b49e855a1ef3cd108b042ddacfeeab451095296cc6a8f25ee44d18",
++      "sha256": "943d47dd757a25f520c4beb08e7036b95cb84397dc0a1f7c90c2f07ea2115ee2",
+       "executable": false
+     },
+     "tests/worker/first-run.test.ts": {
+@@ -9822,7 +9822,7 @@
+       "executable": false
+     },
+     "tests/worker/project-fields-upgrade.test.ts": {
+-      "sha256": "03b59fe1b7375e586ce0cc71c0059aeea25f79f00a59a1989223bba61dfe0e64",
++      "sha256": "88fe0732e0989856f62389683cdca58e7fc06bb9465d8ebb07ae88a6e47dd3b7",
+       "executable": false
+     },
+     "tests/worker/project-fields.test.ts": {
+diff --git a/src/core/features/integrations/figma/client.ts b/src/core/features/integrations/figma/client.ts
+index be3f3208..80889370 100644
+--- a/src/core/features/integrations/figma/client.ts
++++ b/src/core/features/integrations/figma/client.ts
+@@ -12,10 +12,9 @@ export class FigmaResponseError extends Error {
+ export async function figmaRequest(
+   path: string,
+   token?: string,
+-  form?: URLSearchParams,
+ ) {
+   if (
+-    !/^\/(?:v1\/oauth\/token|v1\/files\/[A-Za-z0-9]{1,128}\/nodes\?ids=[0-9%3A]+&depth=1|v1\/images\/[A-Za-z0-9]{1,128}\?ids=[0-9%3A]+&format=png&scale=1)$/.test(
++    !/^\/(?:v1\/files\/[A-Za-z0-9]{1,128}\/nodes\?ids=[0-9%3A]+&depth=1|v1\/images\/[A-Za-z0-9]{1,128}\?ids=[0-9%3A]+&format=png&scale=1)$/.test(
+       path,
+     )
+   )
+@@ -25,15 +24,11 @@ export async function figmaRequest(
+     65536,
+     "application/json",
+     {
+-      method: form ? "POST" : "GET",
++      method: "GET",
+       headers: {
+         Accept: "application/json",
+         ...(token ? { Authorization: "Bearer " + token } : {}),
+-        ...(form
+-          ? { "Content-Type": "application/x-www-form-urlencoded" }
+-          : {}),
+       },
+-      ...(form ? { body: form.toString() } : {}),
+     },
+   );
+ }
+@@ -108,8 +103,6 @@ export async function exchangeCode(
+   callback: string,
+ ) {
+   const form = new URLSearchParams({
+-    client_id: clientId,
+-    client_secret: secret,
+     redirect_uri: callback,
+     code,
+     grant_type: "authorization_code",
+@@ -118,7 +111,20 @@ export async function exchangeCode(
+     const value = grant.parse(
+       JSON.parse(
+         new TextDecoder("utf-8", { fatal: true }).decode(
+-          await figmaRequest("/v1/oauth/token", undefined, form),
++          await boundedFetch(
++            "https://api.figma.com/v1/oauth/token",
++            65536,
++            "application/json",
++            {
++              method: "POST",
++              headers: {
++                Accept: "application/json",
++                Authorization: "Basic " + btoa(clientId + ":" + secret),
++                "Content-Type": "application/x-www-form-urlencoded",
++              },
++              body: form.toString(),
++            },
++          ),
+         ),
+       ),
+     );
+diff --git a/tests/worker/figma-journey.ts b/tests/worker/figma-journey.ts
+index a2ab143e..09ea1a42 100644
+--- a/tests/worker/figma-journey.ts
++++ b/tests/worker/figma-journey.ts
+@@ -105,17 +105,21 @@ export async function exerciseFigma() {
+       if (url.pathname === "/v1/oauth/token") {
+         assert.equal(url.origin, "https://api.figma.com");
+         assert.equal(init?.method, "POST");
+-        assert.equal(headers.get("authorization"), null);
++        // Figma authenticates the OAuth app with HTTP Basic, not body secrets.
++        assert.equal(
++          headers.get("authorization"),
++          "Basic " + btoa(config.clientId + ":" + config.clientSecret),
++        );
++        assert.equal(
++          headers.get("content-type"),
++          "application/x-www-form-urlencoded",
++        );
+         const form = new URLSearchParams(String(init?.body));
+         assert.deepEqual([...form.keys()].sort(), [
+-          "client_id",
+-          "client_secret",
+           "code",
+           "grant_type",
+           "redirect_uri",
+         ]);
+-        assert.equal(form.get("client_id"), config.clientId);
+-        assert.equal(form.get("client_secret"), config.clientSecret);
+         assert.equal(
+           form.get("redirect_uri"),
+           origin + "/api/settings/figma/callback",
+diff --git a/tests/worker/project-fields-upgrade.test.ts b/tests/worker/project-fields-upgrade.test.ts
+index 961697f8..f778d4cc 100644
+--- a/tests/worker/project-fields-upgrade.test.ts
++++ b/tests/worker/project-fields-upgrade.test.ts
+@@ -7,7 +7,7 @@ import { provePopulatedUpgrade } from './populated-upgrade';
+ it('[PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrades preserve records and export the extended planning inventory',async()=>{
+   await proveViewerRoleUpgrade();
+   await provePopulatedUpgrade('0062_project_fields.sql',{
+-    until:'0062_project_fields.sql',preserveAfter:'0133_release_notes.sql',
++    until:'0062_project_fields.sql',preserveAfter:'0125_issue_templates.sql',
+     added:['table project_labels','index project_labels_label_idx','trigger project_dates_insert','trigger project_dates_update','trigger project_label_admission','trigger project_label_update_admission','trigger project_label_usage'],
+     changed:['table projects','table labels'],removed:[],
+   },['projects','labels'],undefined,async()=>{

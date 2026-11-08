@@ -1,0 +1,16 @@
+$ timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/project-fields-upgrade.test.ts
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  19:23:32
+   Duration  21.69s (transform 5.18s, setup 0ms, import 10.68s, tests 10.34s, environment 0ms)
+
+
+exit=0

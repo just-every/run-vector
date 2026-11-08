@@ -1,0 +1,9 @@
+{
+  "path": "/home/agent/rer-consolidation/work/push-rescue/cloud_sd-vector-c-f203-fix1-2806e3bc158a.bundle",
+  "head": "2806e3bc158a0b63035276534ab1b20d310699a3",
+  "prerequisite": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+  "kind": "incremental bundle of FIX commit; published parent is prerequisite",
+  "verified": true,
+  "sha256": "005d131cac6a03386706c5463c89974948a857ea5427d81624e75953dda9c170",
+  "bytes": 3111
+}

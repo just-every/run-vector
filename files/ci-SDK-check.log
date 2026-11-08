@@ -1,0 +1,11 @@
+$ timeout 60 node sdk/generate.mjs --check
+file:///workspace/run-vector/sdk/generate.mjs:78
+  if (await readFile(target, 'utf8').catch(() => '') !== output) throw Error('SDK is stale; run node sdk/generate.mjs');
+                                                                       ^
+
+Error: SDK is stale; run node sdk/generate.mjs
+    at file:///workspace/run-vector/sdk/generate.mjs:78:72
+
+Node.js v24.19.0
+
+exit=1

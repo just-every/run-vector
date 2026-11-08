@@ -1,0 +1,45 @@
+$ timeout 180 pnpm exec vitest run --config vitest.config.ts tests/worker/integration-api.test.ts -t the versioned schema is published
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/integration-api.test.ts (5 tests | 1 failed | 4 skipped) 732ms
+   × [API-003] the versioned schema is published through the real app 730ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/integration-api.test.ts > [API-003] the versioned schema is published through the real app
+AssertionError: expected [ 'DELETE /comments/{id}', …(57) ] to deeply equal [ 'DELETE /comments/{id}', …(56) ]
+
+- Expected
++ Received
+
+@@ -27,10 +27,11 @@
+    "GET /report-exports/cycles",
+    "GET /report-exports/history",
+    "GET /report-exports/issues",
+    "GET /report-exports/projects",
+    "GET /schema",
++   "OPTIONS /integrations/figma/issues",
+    "PATCH /comments/{id}",
+    "PATCH /initiatives/{id}",
+    "PATCH /issues/{identifier}",
+    "PATCH /projects/{id}",
+    "PATCH /projects/{id}/milestones/{milestoneId}",
+
+ ❯ tests/worker/integration-api.test.ts:94:18
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  19:23:31
+   Duration  12.42s (transform 5.22s, setup 0ms, import 11.01s, tests 732ms, environment 0ms)
+
+
+exit=1

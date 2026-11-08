@@ -1,0 +1,8 @@
+$ timeout 30 python3 /tmp/check-upgrade-fixture.py
+Traceback (most recent call last):
+  File "/tmp/check-upgrade-fixture.py", line 7, in <module>
+    assert current == main, 'historical release insertion checkpoint/fixture differs from main'
+           ^^^^^^^^^^^^^^^
+AssertionError: historical release insertion checkpoint/fixture differs from main
+
+exit=1

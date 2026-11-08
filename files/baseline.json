@@ -1,0 +1,16 @@
+{
+  "candidate": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+  "origin_main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "full_history": true,
+  "merge_main": "already up to date",
+  "main_migration_highest": "migrations/core/0133_release_notes.sql",
+  "candidate_migration_highest": "migrations/core/0134_figma.sql",
+  "candidate_migrations": 134,
+  "published_spec_migrations": 133,
+  "missing_spec_migrations": [
+    "migrations/core/0134_figma.sql"
+  ],
+  "main_fixture_checkpoint": "until:'0062_project_fields.sql',preserveAfter:'0125_issue_templates.sql',",
+  "candidate_fixture_checkpoint": "until:'0062_project_fields.sql',preserveAfter:'0133_release_notes.sql',",
+  "lease_diff_stat": "docs/INTEGRATIONS.md                               |  45 ++\n migrations/core/0134_figma.sql                     |  30 +\n schema/api-v1.json                                 |  39 ++\n seed.json                                          |  16 +\n sources.lock.json                                  |  72 +-\n src/core/features/data/archive-inventory.json      |  12 +\n src/core/features/data/archive-policy.mjs          |   3 +\n src/core/features/integrations/api.ts              |   8 +-\n src/core/features/integrations/config-routes.ts    |   2 +\n src/core/features/integrations/figma/client.ts     | 141 ++++\n .../features/integrations/figma/configuration.ts   | 170 +++++\n src/core/features/integrations/figma/connection.ts | 207 ++++++\n .../features/integrations/figma/plugin-cors.ts     |  36 +\n src/core/features/integrations/figma/plugin.ts     | 125 ++++\n src/core/features/integrations/figma/preview.ts    | 196 ++++++\n src/core/features/integrations/figma/routes.ts     |  67 ++\n src/core/features/integrations/figma/urls.ts       |  68 ++\n src/core/features/integrations/native-egress.d.mts |   1 +\n src/core/features/integrations/native-egress.mjs   |  13 +\n src/core/features/links/routes.ts                  |   2 +\n src/core/features/roles/doors.ts                   |   8 +\n tests/worker/figma-archive.ts                      | 136 ++++\n tests/worker/figma-journey.ts                      | 765 +++++++++++++++++++++\n tests/worker/link-cascade.test.ts                  |   8 +\n tests/worker/project-fields-upgrade.test.ts        |   3 +-\n tests/worker/role-viewer-census.ts                 |   2 +\n 26 files changed, 2159 insertions(+), 16 deletions(-)"
+}

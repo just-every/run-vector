@@ -1,0 +1,52 @@
+$ timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/link-cascade.test.ts -t Figma member
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/link-cascade.test.ts (2 tests | 1 failed | 1 skipped) 1111ms
+   × Figma member connections isolate frame previews and personal-token captures survive replay and credential-free restore 1109ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/link-cascade.test.ts > Figma member connections isolate frame previews and personal-token captures survive replay and credential-free restore
+AssertionError: Values are not strictly equal:
+
+
+[Diff] Actual / Expected
+
+
+-   503
++   303
+
+
+- Expected
++ Received
+
+- 303
++ 503
+
+ ❯ new AssertionError node-internal:internal_assertionerror:427:15
+ ❯ strictEqual node-internal:internal_assert:196:11
+ ❯ assert.equal node-internal:internal_assert:157:12
+ ❯ exerciseFigma tests/worker/figma-journey.ts:319:12
+    317|     await json(await callback(state, await testCookie(env.DB, ids.maya…
+    318|     assert.equal(callLog.length, noExchange);
+    319|     assert.equal((await callback(state)).status, 303);
+       |            ^
+    320|     await json(await callback(state), 403);
+    321|     assert.equal(callLog.length, noExchange + 1);
+ ❯ tests/worker/link-cascade.test.ts:46:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  19:23:29
+   Duration  13.37s (transform 5.73s, setup 0ms, import 11.64s, tests 1.11s, environment 0ms)
+
+
+exit=1

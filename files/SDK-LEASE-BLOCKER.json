@@ -1,0 +1,26 @@
+{
+  "target": "sdk/generated.ts",
+  "leased": false,
+  "probes": [
+    {
+      "revision": "origin/main",
+      "label": "main",
+      "check_exit": 0,
+      "output": "SDK checked: 56 published operations.\n"
+    },
+    {
+      "revision": "5fd3e3aa1131abe2a3b003f2c29c47f3d148b9df",
+      "label": "candidate",
+      "check_exit": 1,
+      "output": "file:///tmp/vector-sdk-fixture/candidate/sdk/generate.mjs:78\n  if (await readFile(target, 'utf8').catch(() => '') !== output) throw Error('SDK is stale; run node sdk/generate.mjs');\n                                                                       ^\n\nError: SDK is stale; run node sdk/generate.mjs\n    at file:///tmp/vector-sdk-fixture/candidate/sdk/generate.mjs:78:72\n\nNode.js v24.19.0\n"
+    },
+    {
+      "revision": "HEAD",
+      "label": "fixed",
+      "check_exit": 1,
+      "output": "file:///tmp/vector-sdk-fixture/fixed/sdk/generate.mjs:78\n  if (await readFile(target, 'utf8').catch(() => '') !== output) throw Error('SDK is stale; run node sdk/generate.mjs');\n                                                                       ^\n\nError: SDK is stale; run node sdk/generate.mjs\n    at file:///tmp/vector-sdk-fixture/fixed/sdk/generate.mjs:78:72\n\nNode.js v24.19.0\n"
+    }
+  ],
+  "expected_diff": "SDK-REQUIRED.patch",
+  "product_sdk_untouched": true
+}

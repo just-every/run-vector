@@ -1,0 +1,39 @@
+{
+  "startedAt": "2026-11-08T19:29:00.252Z",
+  "sourceCommit": "2806e3bc158a0b63035276534ab1b20d310699a3",
+  "note": "Build, artifact and contract checks; no test suites.",
+  "passed": true,
+  "checks": [
+    {
+      "command": "sources:verify-base",
+      "startedAt": "2026-11-08T19:29:00.256Z",
+      "completedAt": "2026-11-08T19:29:00.726Z",
+      "passed": true
+    },
+    {
+      "command": "check",
+      "startedAt": "2026-11-08T19:29:00.726Z",
+      "completedAt": "2026-11-08T19:29:01.500Z",
+      "passed": true
+    },
+    {
+      "command": "build",
+      "startedAt": "2026-11-08T19:29:01.500Z",
+      "completedAt": "2026-11-08T19:29:25.229Z",
+      "passed": true
+    },
+    {
+      "command": "integration:check",
+      "startedAt": "2026-11-08T19:29:25.229Z",
+      "completedAt": "2026-11-08T19:29:25.593Z",
+      "passed": true
+    },
+    {
+      "command": "artifact:delivery",
+      "startedAt": "2026-11-08T19:29:25.594Z",
+      "completedAt": "2026-11-08T19:29:26.132Z",
+      "passed": true
+    }
+  ],
+  "completedAt": "2026-11-08T19:29:26.141Z"
+}
