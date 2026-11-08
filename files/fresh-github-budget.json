@@ -1,0 +1,134 @@
+{
+  "calls": [
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794165426.10607,
+      "timestamp": "2026-11-08T19:17:06.106267+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs?head_sha=1f64f9b95b0316367438e9f95e1ce65dfae28386&per_page=100",
+        "--jq",
+        "[.workflow_runs[] | {id,name,status,conclusion,head_sha,html_url,event}]"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-1.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794165727.1315956,
+      "timestamp": "2026-11-08T19:22:07.131750+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-2.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794166028.172717,
+      "timestamp": "2026-11-08T19:27:08.172897+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-3.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794166329.2026556,
+      "timestamp": "2026-11-08T19:32:09.202788+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-4.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794166630.240212,
+      "timestamp": "2026-11-08T19:37:10.240364+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-5.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794166931.2745824,
+      "timestamp": "2026-11-08T19:42:11.274719+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-6.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794167232.2978575,
+      "timestamp": "2026-11-08T19:47:12.297997+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-7.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794167533.3363829,
+      "timestamp": "2026-11-08T19:52:13.336526+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42514227052/jobs?per_page=100",
+        "--jq",
+        "[.jobs[] | {id,name,status,conclusion,head_sha,html_url,steps:[.steps[] | {name,status,conclusion}]}]"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-8.txt"
+    },
+    {
+      "key": "verify-1f64f9b95b0316367438e9f95e1ce65dfae28386",
+      "time": 1794167834.3714068,
+      "timestamp": "2026-11-08T19:57:14.371539+00:00",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42514227052",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128833943514",
+        "--log-failed"
+      ],
+      "exit": 0,
+      "responseFile": "fresh-gh-9.txt"
+    }
+  ]
+}

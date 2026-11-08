@@ -1,0 +1,16 @@
+{
+  "name": "fresh-probe-typecheck",
+  "command": [
+    "timeout",
+    "300",
+    "pnpm",
+    "typecheck"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "01a911cd314c467b0b771dcb123e774e765e4bae2a4dcad36f46a0370145e2d2",
+  "started": "2026-11-08T19:11:29.612468+00:00",
+  "completed": "2026-11-08T19:11:53.808221+00:00",
+  "exit": 0,
+  "log": "fresh-probe-typecheck.log",
+  "log_sha256": "3fbfede0a8385836a5750b004e962bf63d0a979f24577c59519124d6686f84eb"
+}

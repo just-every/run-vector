@@ -1,0 +1,16 @@
+{
+  "name": "fresh-mechanical-integration-write",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "integration:sync"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "893c7f55fde00a6d8bfb1e675d4599a160d19359d41ecf23c3521fed965ec697",
+  "started": "2026-11-08T19:12:24.843463+00:00",
+  "completed": "2026-11-08T19:12:25.332205+00:00",
+  "exit": 0,
+  "log": "fresh-mechanical-integration-write.log",
+  "log_sha256": "506fd47323341c75e9bc6df8c54470f2728f89a54556740900dd851d09f8055b"
+}

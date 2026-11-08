@@ -1,0 +1,35 @@
+{
+  "branch": "cloud/sd-vector-c-f201-fix1",
+  "headBeforeCommit": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "indexTree": "d4ed3487f97b1a8cfba18845f183661403328a39",
+  "fixDiffStat": " management/integration/deployment-spec.json   |  6 ++++++\n sources.lock.json                             | 10 +++++-----\n src/core/features/roles/doors.ts              |  5 +++--\n tests/worker/outbound-subscription-upgrade.ts |  2 +-\n tests/worker/team-cycles-journey.ts           |  2 +-\n tests/worker/triage-upgrade.ts                |  5 +++--\n 6 files changed, 19 insertions(+), 11 deletions(-)\n",
+  "changedFiles": [
+    "management/integration/deployment-spec.json",
+    "sources.lock.json",
+    "src/core/features/roles/doors.ts",
+    "tests/worker/outbound-subscription-upgrade.ts",
+    "tests/worker/team-cycles-journey.ts",
+    "tests/worker/triage-upgrade.ts"
+  ],
+  "clauseJudgmentChanges": [],
+  "statusCountsBefore": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "statusCountsAfter": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "migrationCountBefore": 133,
+  "migrationCountAfter": 134,
+  "snapshotTestsBefore": {
+    "passed": 4,
+    "failed": 3
+  },
+  "snapshotTestsAfter": {
+    "passed": 7,
+    "failed": 0
+  }
+}

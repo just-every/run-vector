@@ -1,0 +1,19 @@
+{
+  "originalCandidate": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "shallow": false,
+  "merge": "Already up to date; origin/main is an ancestor of the original candidate",
+  "mainMigrationHighest": "0133_release_notes.sql",
+  "candidateMigration": "0134_issue_types.sql",
+  "collision": false,
+  "clauseBefore": [
+    "| `ISSUE-021` | Issue types | target | missing |  | No implementation yet |"
+  ],
+  "clauseMain": [
+    "| `ISSUE-021` | Issue types | target | missing |  | No implementation yet |"
+  ],
+  "clauseJudgmentChanges": [],
+  "setupCommand": "cloud_run timeout 900 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+  "setupExit": 0,
+  "setupLogExcluded": "Private local settings and URLs are not evidence"
+}

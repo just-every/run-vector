@@ -1,0 +1,18 @@
+{
+  "name": "fresh-mechanical-views-check",
+  "command": [
+    "timeout",
+    "180",
+    "node",
+    "scripts/contract-docs.mjs",
+    "check",
+    "ISSUE-021"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "1fe28e3a67f365162e9f6a3dcebcd6fca299f452a9f1d216679dc48b1212dd7e",
+  "started": "2026-11-08T19:11:46.045207+00:00",
+  "completed": "2026-11-08T19:11:46.226923+00:00",
+  "exit": 0,
+  "log": "fresh-mechanical-views-check.log",
+  "log_sha256": "00b20d515b3d31a3afe8e966cebec413d7ae94c0bbe90846363a0332fa7b4b65"
+}

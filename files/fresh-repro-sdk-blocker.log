@@ -1,0 +1,8 @@
+file:///home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/sdk/generate.mjs:78
+  if (await readFile(target, 'utf8').catch(() => '') !== output) throw Error('SDK is stale; run node sdk/generate.mjs');
+                                                                       ^
+
+Error: SDK is stale; run node sdk/generate.mjs
+    at file:///home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/sdk/generate.mjs:78:72
+
+Node.js v24.19.0

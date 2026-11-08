@@ -1,0 +1,19 @@
+{
+  "name": "fresh-repro-snapshots",
+  "command": [
+    "timeout",
+    "300",
+    "pnpm",
+    "test:worker",
+    "tests/worker/cycle-schedule.test.ts",
+    "tests/worker/source-ingest.test.ts",
+    "tests/worker/outbound-webhooks.test.ts"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "started": "2026-11-08T19:10:09.030206+00:00",
+  "completed": "2026-11-08T19:10:45.396380+00:00",
+  "exit": 1,
+  "log": "fresh-repro-snapshots.log",
+  "log_sha256": "ebaa11ccac7efc3e915e34d0c43aeba3ca7c28c1294414209986a7cab9eb0838"
+}

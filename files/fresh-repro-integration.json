@@ -1,0 +1,16 @@
+{
+  "name": "fresh-repro-integration",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "integration:check"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "started": "2026-11-08T19:10:31.764518+00:00",
+  "completed": "2026-11-08T19:10:32.307579+00:00",
+  "exit": 1,
+  "log": "fresh-repro-integration.log",
+  "log_sha256": "a2d9df3236c9d170d1b7a9589829fdc479df59effa7509301caf16f87cf4eb1b"
+}

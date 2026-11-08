@@ -1,0 +1,18 @@
+{
+  "file": "sdk/generated.ts",
+  "inLease": false,
+  "baselineCheckExit": 0,
+  "candidateCheckExit": 1,
+  "externalGenerationExit": 0,
+  "externalGeneratedCheckExit": 0,
+  "externalGenerationOutput": "SDK generated: 56 published operations.\n",
+  "proposedHunks": [
+    "@@ -14,11 +14,11 @@"
+  ],
+  "oldSha256": "bdd9322dc00398d065624b9159c23efc8ecf47fadf4b1868ad153e8eb134f5a5",
+  "generatedSha256": "30f6b0bff5a6c4251e2980dfb23960572cf791bd2af8ad5b3fa9637142014c54",
+  "patch": "SDK-BLOCKER.patch",
+  "patchAppliedToProduct": false,
+  "productHead": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "productClean": true
+}

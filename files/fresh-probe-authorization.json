@@ -1,0 +1,19 @@
+{
+  "name": "fresh-probe-authorization",
+  "command": [
+    "timeout",
+    "360",
+    "pnpm",
+    "test:worker",
+    "tests/worker/issue-types.test.ts",
+    "tests/worker/issue-types-upgrade.test.ts",
+    "tests/worker/role-matrix.test.ts"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "d11ed12efcd81557aadc27d671bebc60b67048c8fe54670e256e7a94b551f4e9",
+  "started": "2026-11-08T19:11:54.662683+00:00",
+  "completed": "2026-11-08T19:16:17.369074+00:00",
+  "exit": 0,
+  "log": "fresh-probe-authorization.log",
+  "log_sha256": "fae3d1f84edb5ce24864af1f9802277d218aba64cc9d9c5f11d465a0dd5c398b"
+}

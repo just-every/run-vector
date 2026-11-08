@@ -1,0 +1,10 @@
+{
+  "path": "/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/run-vector",
+  "removed": true,
+  "removedAt": "2026-11-08T19:29:01.603559+00:00",
+  "stagedTree": "d4ed3487f97b1a8cfba18845f183661403328a39",
+  "publishedProductHead": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "stagedTreeEqualsPublishedProduct": true,
+  "noUnstagedOrUntrackedProductFiles": true,
+  "activeCheckoutRetainedForEvidence": "/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout"
+}

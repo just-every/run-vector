@@ -1,0 +1,17 @@
+{
+  "name": "fresh-repro-sdk-blocker",
+  "command": [
+    "timeout",
+    "180",
+    "node",
+    "sdk/generate.mjs",
+    "--check"
+  ],
+  "head": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "worktree_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "started": "2026-11-08T19:57:31.851430+00:00",
+  "completed": "2026-11-08T19:57:31.924206+00:00",
+  "exit": 1,
+  "log": "fresh-repro-sdk-blocker.log",
+  "log_sha256": "34cc6ca7fae712484268e790d1481d6d0d61bbcb25c5c72f3e31a8e18e615a0a"
+}

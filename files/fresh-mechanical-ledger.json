@@ -1,0 +1,17 @@
+{
+  "name": "fresh-mechanical-ledger",
+  "command": [
+    "timeout",
+    "180",
+    "node",
+    "--test",
+    "scripts/deployment/tests/migration-head.test.mjs"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "01a911cd314c467b0b771dcb123e774e765e4bae2a4dcad36f46a0370145e2d2",
+  "started": "2026-11-08T19:11:44.708771+00:00",
+  "completed": "2026-11-08T19:11:45.791611+00:00",
+  "exit": 0,
+  "log": "fresh-mechanical-ledger.log",
+  "log_sha256": "ce911dda90e9a9f9e70ec5559ef47c18353b7af8a2e5760b64830b00f96dbede"
+}

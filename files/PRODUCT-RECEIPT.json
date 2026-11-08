@@ -1,0 +1,99 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201-fix1",
+  "head": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "tree": "d4ed3487f97b1a8cfba18845f183661403328a39",
+  "priorStagedTree": "d4ed3487f97b1a8cfba18845f183661403328a39",
+  "priorStagedTreeMatchesProduct": true,
+  "base": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "workingTreeClean": true,
+  "fixCommitCount": 1,
+  "fixDiffStat": " management/integration/deployment-spec.json   |  6 ++++++\n sources.lock.json                             | 10 +++++-----\n src/core/features/roles/doors.ts              |  5 +++--\n tests/worker/outbound-subscription-upgrade.ts |  2 +-\n tests/worker/team-cycles-journey.ts           |  2 +-\n tests/worker/triage-upgrade.ts                |  5 +++--\n 6 files changed, 19 insertions(+), 11 deletions(-)\n",
+  "clauseJudgmentChanges": [],
+  "generatedViewsCommitted": false,
+  "ciStatus": "completed",
+  "pr": null,
+  "productPush": "success on first attempt",
+  "productRemoteRef": "refs/heads/cloud/sd-vector-c-f201-fix1",
+  "ciRunIds": [
+    42514227052
+  ],
+  "ciUrl": "https://github.com/just-every/run-vector/actions/runs/42514227052",
+  "ciExactHead": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "mainMigrationsRetainedByteForByte": 133,
+  "regeneratedSpecSqlAndDigestMatch": true,
+  "authorizationTestFiles": 3,
+  "authorizationTestsPassed": 8,
+  "snapshotTestFiles": 3,
+  "snapshotTestsPassed": 7,
+  "localTouchedChecks": "all passed",
+  "mainPublicationScan": "fleet Mac responsibility, not run in cloud",
+  "landingClaim": false,
+  "ciLastObserved": "2026-11-08T19:47:12.704029+00:00",
+  "githubCallsUsed": 9,
+  "ciConclusion": "failure",
+  "ready": false,
+  "ciUnderlyingFailures": [
+    {
+      "id": 128833943514,
+      "name": "shards (hosted-artifact, true, true, false)"
+    }
+  ],
+  "ciPassedJobs": [
+    {
+      "id": 128833620973,
+      "name": "plan"
+    },
+    {
+      "id": 128833663252,
+      "name": "build"
+    },
+    {
+      "id": 128833943471,
+      "name": "shards (collaboration, true, true, true)"
+    },
+    {
+      "id": 128833943484,
+      "name": "shards (administration, true, true, true)"
+    },
+    {
+      "id": 128833943492,
+      "name": "shards (core-runtime, true, true, true)"
+    },
+    {
+      "id": 128833943539,
+      "name": "shards (worker-2, true, true, true)"
+    },
+    {
+      "id": 128833943569,
+      "name": "shards (portability, true, true, true)"
+    },
+    {
+      "id": 128833943583,
+      "name": "shards (core-runtime-planning, true, true, true)"
+    },
+    {
+      "id": 128833943586,
+      "name": "shards (imports, true, true, true)"
+    }
+  ],
+  "ciTargetedShards": "administration, imports/worker-1, portability/worker-3 and worker-2 all success",
+  "terminalStatus": "BLOCKED",
+  "blocker": {
+    "command": "node sdk/generate.mjs --check",
+    "error": "SDK is stale; run node sdk/generate.mjs",
+    "file": "sdk/generated.ts",
+    "hunk": "@@ -14,11 +14,11 @@",
+    "inLease": false,
+    "mainSchemaCheckExit": 0,
+    "candidateSchemaCheckExit": 1,
+    "externalGenerationAndCheckExit": 0,
+    "ciJobId": 128833943514,
+    "ciJobName": "hosted-artifact",
+    "contractViewExceptionApplies": false
+  },
+  "productPushCount": 1,
+  "productPushStatus": "success",
+  "unpublishedProductChanges": false
+}

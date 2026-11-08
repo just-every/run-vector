@@ -1,0 +1,18 @@
+{
+  "name": "fresh-mechanical-views-write",
+  "command": [
+    "timeout",
+    "180",
+    "node",
+    "scripts/contract-docs.mjs",
+    "write",
+    "ISSUE-021"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "1fe28e3a67f365162e9f6a3dcebcd6fca299f452a9f1d216679dc48b1212dd7e",
+  "started": "2026-11-08T19:11:45.823950+00:00",
+  "completed": "2026-11-08T19:11:46.003382+00:00",
+  "exit": 0,
+  "log": "fresh-mechanical-views-write.log",
+  "log_sha256": "f7a57b6bbf87ca638b41f61f26f4e709a2b50ad417ab81776c35d55168e32a81"
+}

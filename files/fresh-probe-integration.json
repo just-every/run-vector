@@ -1,0 +1,16 @@
+{
+  "name": "fresh-probe-integration",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "integration:check"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "893c7f55fde00a6d8bfb1e675d4599a160d19359d41ecf23c3521fed965ec697",
+  "started": "2026-11-08T19:12:25.368950+00:00",
+  "completed": "2026-11-08T19:12:25.880623+00:00",
+  "exit": 0,
+  "log": "fresh-probe-integration.log",
+  "log_sha256": "fb812b64ecfd71b0a9d0aa05603477337f6132a3e07600daea5a0fdbecb6982a"
+}

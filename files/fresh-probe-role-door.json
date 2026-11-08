@@ -1,0 +1,18 @@
+{
+  "name": "fresh-probe-role-door",
+  "command": [
+    "timeout",
+    "180",
+    "node",
+    "--input-type=module",
+    "-e",
+    "import {assertRoleDoorCoverage} from \"./tests/e2e/role-door-coverage.mjs\"; console.log(await assertRoleDoorCoverage());"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "01a911cd314c467b0b771dcb123e774e765e4bae2a4dcad36f46a0370145e2d2",
+  "started": "2026-11-08T19:11:21.584927+00:00",
+  "completed": "2026-11-08T19:11:29.576878+00:00",
+  "exit": 0,
+  "log": "fresh-probe-role-door.log",
+  "log_sha256": "a3221044568391868995caa276101dc5bb5c633a5b303ae3d62e79413edeb531"
+}

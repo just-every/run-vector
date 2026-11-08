@@ -1,0 +1,16 @@
+{
+  "name": "fresh-mechanical-lock-check",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "sources:check"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "d11ed12efcd81557aadc27d671bebc60b67048c8fe54670e256e7a94b551f4e9",
+  "started": "2026-11-08T19:12:26.965349+00:00",
+  "completed": "2026-11-08T19:12:27.788635+00:00",
+  "exit": 0,
+  "log": "fresh-mechanical-lock-check.log",
+  "log_sha256": "91162dc5e27e6aed1ddb00ce905825aa31eff05631a34d8e5a05e334f6142fd5"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "fresh-mechanical-lock-write",
+  "command": [
+    "timeout",
+    "180",
+    "pnpm",
+    "sources:lock"
+  ],
+  "head": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+  "worktree_diff_sha256": "d11ed12efcd81557aadc27d671bebc60b67048c8fe54670e256e7a94b551f4e9",
+  "started": "2026-11-08T19:12:25.925213+00:00",
+  "completed": "2026-11-08T19:12:26.937312+00:00",
+  "exit": 0,
+  "log": "fresh-mechanical-lock-write.log",
+  "log_sha256": "1ead8dfcbde79bb8e6edd3aeaa4eda5a4e029e8ccabb2e5ed938ad122a7b89f4"
+}

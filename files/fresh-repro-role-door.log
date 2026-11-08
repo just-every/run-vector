@@ -1,0 +1,16 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Door has no role-matrix row: PUT /settings/teams/:id/issue-types
+    at assertRoleDoorCoverage (file:///home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/tests/e2e/role-door-coverage.mjs:36:11)
+    at async file:///home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/[eval1]:1:88 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

@@ -1,0 +1,393 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout
+> vitest run --config vitest.config.ts tests/worker/cycle-schedule.test.ts tests/worker/source-ingest.test.ts tests/worker/outbound-webhooks.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout
+
+Using secrets defined in .dev.vars
+stderr | tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+Operator intake persistence failed Error: D1_ERROR: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/auth/mutation-database.ts:93:9)
+      at createOperatorIntake (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/operator-intake/repository.ts:121:18)
+      at Object.createOperatorIntakeRoute [as handler] (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/operator-intake/routes.ts:24:20)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+ ❯ tests/worker/source-ingest.test.ts (3 tests | 1 failed) 6765ms
+   × [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe 5576ms
+Using secrets defined in .dev.vars
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: fixture native event durability failure: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: fixture native event durability failure: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/auth/mutation-database.ts:93:9)
+      at createIssueRecord (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/issues/repository.ts:59:9)
+      at createIssue (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/issues/mutations.ts:6:19)
+      at /home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/issues/routes.ts:24:14
+      at respondToMutation (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/issues/routes.ts:100:20)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: synthetic-vector-9006: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: synthetic-vector-9006: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/auth/mutation-database.ts:93:9)
+      at addComment (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/repository.ts:120:3)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/routes.ts:95:18)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/routes.ts:67:5)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/auth/mutation-database.ts:93:9)
+      at changeComment (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/repository.ts:217:16)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/routes.ts:138:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/routes.ts:77:7)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/auth/mutation-database.ts:93:9)
+      at changeComment (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/repository.ts:217:16)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/routes.ts:138:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/src/core/features/discussion/routes.ts:77:7)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f201-fix1/checkout/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stdout | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+PROBE WEBHOOK-002 Owner deletion: {"email":["comment.created","comment.deleted"],"native":["comment.created","comment.deleted"],"signedDeliveries":4,"uniqueDeliveryIds":4}
+
+ ❯ tests/worker/outbound-webhooks.test.ts (2 tests | 1 failed) 4342ms
+   × [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds 4207ms
+Using secrets defined in .dev.vars
+ ❯ tests/worker/cycle-schedule.test.ts (2 tests | 1 failed) 2084ms
+   × [TEAM-005 CYCLE-007] cadence edits preserve started cycles and future identities, validate ranges and keep teams independent 763ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/cycle-schedule.test.ts > [TEAM-005 CYCLE-007] cadence edits preserve started cycles and future identities, validate ranges and keep teams independent
+AssertionError: expected [ { …(15) }, { …(15) } ] to deeply equal [ { …(14) }, { …(14) } ]
+
+- Expected
++ Received
+
+@@ -5,10 +5,11 @@
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "id": "01J00000000000000000000010",
+      "identifier_prefix": "FLW",
+      "is_private": 0,
++     "issue_types_enabled": 0,
+      "membership_mode": "open",
+      "name": "Flow",
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+@@ -21,10 +22,11 @@
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "id": "01J00000000000000000000011",
+      "identifier_prefix": "PLT",
+      "is_private": 0,
++     "issue_types_enabled": 0,
+      "membership_mode": "open",
+      "name": "Platform",
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+
+ ❯ proveTeamCyclesUpgrade tests/worker/team-cycles-journey.ts:129:55
+    127|   await applyD1Migrations(db,migrations.slice(boundary));
+    128|   const after=(await db.prepare('SELECT * FROM teams ORDER BY id').all…
+    129|   expect(after.map(({cycles_enabled,...team})=>team)).toEqual(before);
+       |                                                       ^
+    130|   expect(after.every(t=>t.cycles_enabled===1)).toBe(true);
+    131|   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).…
+ ❯ tests/worker/cycle-schedule.test.ts:79:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+AssertionError: expected [ { …(27) }, { …(27) }, …(6) ] to deeply equal [ { …(26) }, { …(26) }, …(6) ]
+
+- Expected
++ Received
+
+@@ -13,10 +13,11 @@
+      "due_date": null,
+      "estimate": null,
+      "expected_outcome": "Restore reliable webhook delivery before customer tolerance is exceeded.",
+      "id": "01J00000000000000000000100",
+      "identifier": "FLW-842",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "FLW",
+      "priority": "none",
+      "project_id": "01J00000000000000000000040",
+      "sequence_number": 842,
+@@ -41,10 +42,11 @@
+      "due_date": "2026-10-03",
+      "estimate": 8,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000101",
+      "identifier": "FLW-841",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "FLW",
+      "priority": "urgent",
+      "project_id": "01J00000000000000000000040",
+      "sequence_number": 841,
+@@ -69,10 +71,11 @@
+      "due_date": "2026-09-30",
+      "estimate": 5,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000102",
+      "identifier": "FLW-840",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "FLW",
+      "priority": "high",
+      "project_id": "01J00000000000000000000040",
+      "sequence_number": 840,
+@@ -97,10 +100,11 @@
+      "due_date": "2026-10-04",
+      "estimate": 5,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000103",
+      "identifier": "PLT-101",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "high",
+      "project_id": "01J00000000000000000000041",
+      "sequence_number": 101,
+@@ -125,10 +129,11 @@
+      "due_date": "2026-10-05",
+      "estimate": 3,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000104",
+      "identifier": "PLT-102",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "medium",
+      "project_id": "01J00000000000000000000041",
+      "sequence_number": 102,
+@@ -153,10 +158,11 @@
+      "due_date": "2026-10-02",
+      "estimate": 5,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000105",
+      "identifier": "PLT-103",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "high",
+      "project_id": "01J00000000000000000000041",
+      "sequence_number": 103,
+@@ -181,10 +187,11 @@
+      "due_date": null,
+      "estimate": 2,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000106",
+      "identifier": "PLT-104",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "low",
+      "project_id": "01J00000000000000000000042",
+      "sequence_number": 104,
+@@ -209,10 +216,11 @@
+      "due_date": null,
+      "estimate": null,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000107",
+      "identifier": "PLT-105",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "none",
+      "project_id": "01J00000000000000000000042",
+      "sequence_number": 105,
+
+ ❯ outboundSubscriptionUpgrade tests/worker/outbound-subscription-upgrade.ts:28:80
+
+ ❯ tests/worker/outbound-webhooks.test.ts:35:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+AssertionError: issues: expected [ { …(27) }, { …(27) }, …(6) ] to deeply equal [ { …(26) }, { …(26) }, …(6) ]
+
+- Expected
++ Received
+
+@@ -13,10 +13,11 @@
+      "due_date": null,
+      "estimate": null,
+      "expected_outcome": "Restore reliable webhook delivery before customer tolerance is exceeded.",
+      "id": "01J00000000000000000000100",
+      "identifier": "FLW-842",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "FLW",
+      "priority": "none",
+      "project_id": "01J00000000000000000000040",
+      "sequence_number": 842,
+@@ -41,10 +42,11 @@
+      "due_date": "2026-10-03",
+      "estimate": 8,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000101",
+      "identifier": "FLW-841",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "FLW",
+      "priority": "urgent",
+      "project_id": "01J00000000000000000000040",
+      "sequence_number": 841,
+@@ -69,10 +71,11 @@
+      "due_date": "2026-09-30",
+      "estimate": 5,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000102",
+      "identifier": "FLW-840",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "FLW",
+      "priority": "high",
+      "project_id": "01J00000000000000000000040",
+      "sequence_number": 840,
+@@ -97,10 +100,11 @@
+      "due_date": "2026-10-04",
+      "estimate": 5,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000103",
+      "identifier": "PLT-101",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "high",
+      "project_id": "01J00000000000000000000041",
+      "sequence_number": 101,
+@@ -125,10 +129,11 @@
+      "due_date": "2026-10-05",
+      "estimate": 3,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000104",
+      "identifier": "PLT-102",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "medium",
+      "project_id": "01J00000000000000000000041",
+      "sequence_number": 102,
+@@ -153,10 +158,11 @@
+      "due_date": "2026-10-02",
+      "estimate": 5,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000105",
+      "identifier": "PLT-103",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "high",
+      "project_id": "01J00000000000000000000041",
+      "sequence_number": 103,
+@@ -181,10 +187,11 @@
+      "due_date": null,
+      "estimate": 2,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000106",
+      "identifier": "PLT-104",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "low",
+      "project_id": "01J00000000000000000000042",
+      "sequence_number": 104,
+@@ -209,10 +216,11 @@
+      "due_date": null,
+      "estimate": null,
+      "expected_outcome": null,
+      "id": "01J00000000000000000000107",
+      "identifier": "PLT-105",
++     "issue_type_id": null,
+      "milestone_id": null,
+      "origin_prefix": "PLT",
+      "priority": "none",
+      "project_id": "01J00000000000000000000042",
+      "sequence_number": 105,
+
+ ❯ triageUpgrade tests/worker/triage-upgrade.ts:87:7
+     85|       ).results,
+     86|       table.name,
+     87|     ).toEqual(
+       |       ^
+     88|       table.rows.map((row) => ({
+     89|         ...row,
+ ❯ tests/worker/source-ingest.test.ts:50:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 4 passed (7)
+   Start at  19:10:11
+   Duration  34.19s (transform 5.15s, setup 0ms, import 19.27s, tests 13.19s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

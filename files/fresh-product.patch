@@ -1,0 +1,126 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index a0f25e22..9bc44710 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -808,6 +808,12 @@
+       "name": "0133_release_notes.sql",
+       "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+       "sql": "-- Historical releases keep unknown ownership; only native creation supplies it.\nALTER TABLE releases ADD COLUMN owner_operator_id TEXT REFERENCES operators(id);\n\nCREATE TABLE release_note_drafts (\n release_id TEXT PRIMARY KEY REFERENCES releases(id) ON DELETE CASCADE,\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n version INTEGER NOT NULL CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n erased_at TEXT\n);\n\nCREATE TABLE release_note_revisions (\n release_id TEXT NOT NULL REFERENCES releases(id) ON DELETE CASCADE,\n version INTEGER NOT NULL CHECK(version>0),\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n created_at TEXT NOT NULL,\n PRIMARY KEY(release_id,version)\n);\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0134_issue_types.sql",
++      "sha256": "8a7df9b29250959a694c13e537e5a045b9f6b2e3be24e0975c636b6b2a873ec3",
++      "sql": "-- ISSUE-021: team type identities and required typed fields are portable domain state.\nALTER TABLE teams ADD COLUMN issue_types_enabled INTEGER NOT NULL DEFAULT 0 CHECK(issue_types_enabled IN (0,1));\nCREATE TABLE issue_types (\n id TEXT PRIMARY KEY,\n team_id TEXT NOT NULL REFERENCES teams(id),\n default_key TEXT NOT NULL CHECK(default_key IN ('bug','feature','task','epic')),\n name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),\n icon TEXT NOT NULL CHECK(length(icon) BETWEEN 1 AND 32),\n position INTEGER NOT NULL CHECK(position>=0),\n version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n UNIQUE(team_id,default_key),\n UNIQUE(team_id,name COLLATE NOCASE)\n);\nCREATE TABLE issue_type_required_fields (\n type_id TEXT NOT NULL REFERENCES issue_types(id),\n field_id TEXT NOT NULL REFERENCES custom_field_definitions(id),\n PRIMARY KEY(type_id,field_id)\n);\nALTER TABLE issues ADD COLUMN issue_type_id TEXT REFERENCES issue_types(id);\nCREATE INDEX issues_type_idx ON issues(issue_type_id);\n-- These guards enforce the admitted typed boundary at commit, including writers\n-- which do not accept fields themselves, and roll the whole native batch back.\nCREATE TRIGGER issue_type_insert BEFORE INSERT ON issues BEGIN\n SELECT CASE WHEN NEW.issue_type_id IS NOT NULL AND NOT EXISTS(\n  SELECT 1 FROM issue_types ty JOIN teams t ON t.id=ty.team_id\n  WHERE ty.id=NEW.issue_type_id AND t.id=NEW.team_id\n ) THEN RAISE(ABORT,'issue_type_unavailable') END;\n SELECT CASE WHEN EXISTS(SELECT 1 FROM issue_type_required_fields r\n  WHERE r.type_id=NEW.issue_type_id AND NOT EXISTS(\n   SELECT 1 FROM custom_field_definitions d JOIN custom_field_options o ON o.field_id=d.id\n   JOIN json_each(NEW.custom_fields_json) v ON v.key=d.id AND v.value=o.id\n   WHERE d.id=r.field_id AND d.team_id=NEW.team_id\n  )) THEN RAISE(ABORT,'issue_type_required_field') END;\nEND;\nCREATE TRIGGER issue_type_update BEFORE UPDATE OF team_id,issue_type_id,custom_fields_json ON issues BEGIN\n SELECT CASE WHEN NEW.issue_type_id IS NOT NULL AND NOT EXISTS(\n  SELECT 1 FROM issue_types ty WHERE ty.id=NEW.issue_type_id AND ty.team_id=NEW.team_id\n ) THEN RAISE(ABORT,'issue_type_unavailable') END;\n SELECT CASE WHEN NEW.team_id IS OLD.team_id AND NEW.issue_type_id IS NOT OLD.issue_type_id AND NOT EXISTS(\n  SELECT 1 FROM teams t WHERE t.id=NEW.team_id AND t.issue_types_enabled=1\n ) THEN RAISE(ABORT,'issue_type_unavailable') END;\n SELECT CASE WHEN EXISTS(SELECT 1 FROM issue_type_required_fields r\n  WHERE r.type_id=NEW.issue_type_id AND NOT EXISTS(\n   SELECT 1 FROM custom_field_definitions d JOIN custom_field_options o ON o.field_id=d.id\n   JOIN json_each(NEW.custom_fields_json) v ON v.key=d.id AND v.value=o.id\n   WHERE d.id=r.field_id AND d.team_id=NEW.team_id\n  )) THEN RAISE(ABORT,'issue_type_required_field') END;\nEND;\nCREATE TRIGGER issue_type_requirement_insert BEFORE INSERT ON issue_type_required_fields BEGIN\n SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM issue_types ty JOIN custom_field_definitions d ON d.team_id=ty.team_id\n  WHERE ty.id=NEW.type_id AND d.id=NEW.field_id AND d.type='single_select')\n  THEN RAISE(ABORT,'issue_type_required_field') END;\n SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i WHERE i.issue_type_id=NEW.type_id AND NOT EXISTS(\n  SELECT 1 FROM custom_field_options o JOIN json_each(i.custom_fields_json) v ON v.key=o.field_id AND v.value=o.id\n  WHERE o.field_id=NEW.field_id)) THEN RAISE(ABORT,'issue_type_required_field') END;\nEND;\nCREATE TRIGGER issue_types_revision_update AFTER UPDATE ON issue_types BEGIN\n UPDATE issue_list_revision SET revision=revision+1 WHERE id=1;\nEND;\nCREATE TRIGGER issue_types_team_revision AFTER UPDATE OF issue_types_enabled ON teams BEGIN\n UPDATE issue_list_revision SET revision=revision+1 WHERE id=1;\nEND;\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/sources.lock.json b/sources.lock.json
+index ec981037..0a5da010 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -2038,7 +2038,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
++      "sha256": "cc02b7d8df5dcf7388a7a38c33c1203c0835289aa1c9d28afc42933f570bf504",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {
+@@ -7062,7 +7062,7 @@
+       "executable": false
+     },
+     "src/core/features/roles/doors.ts": {
+-      "sha256": "2b6a6282d2ad83d0244853033e8180aac2570b5df1b068f03558f3aa7ffc1f4a",
++      "sha256": "3c4d106927432922ef8fdc1fe6cd80c48ea1c38013d339f75abca922c7c59e06",
+       "executable": false
+     },
+     "src/core/features/roles/enforcement.ts": {
+@@ -9774,7 +9774,7 @@
+       "executable": false
+     },
+     "tests/worker/outbound-subscription-upgrade.ts": {
+-      "sha256": "c5f93749115073f345a8c194ab3b8655f7775769e3a047028efee3aa76a9ba98",
++      "sha256": "809b26ab4381f19d3dd343a9c07d047fb29fa95438e6c8844c5737f06781b442",
+       "executable": false
+     },
+     "tests/worker/outbound-webhooks.test.ts": {
+@@ -10038,7 +10038,7 @@
+       "executable": false
+     },
+     "tests/worker/team-cycles-journey.ts": {
+-      "sha256": "13deb5f74063c307671d781e8d01df61f9ab6f2225ff4e59f3d11a05ece23cd4",
++      "sha256": "4f41b285d8b3d9b9ceedf8ba15b0ecac87f9295ab7f1f6af707eb0dc0ddb19c6",
+       "executable": false
+     },
+     "tests/worker/triage-responsibility-journey.ts": {
+@@ -10046,7 +10046,7 @@
+       "executable": false
+     },
+     "tests/worker/triage-upgrade.ts": {
+-      "sha256": "e5f71a4de946053df4b0283b44ddae50066685f38c4f02f71d3dd156a00e2e6a",
++      "sha256": "4beec45ca7ed90b51668ae8a2fa9ed70b3a557f88583f915f14dddab1d64b96c",
+       "executable": false
+     },
+     "tests/worker/video-preview-journey.ts": {
+diff --git a/src/core/features/roles/doors.ts b/src/core/features/roles/doors.ts
+index d7e8740d..36939dfc 100644
+--- a/src/core/features/roles/doors.ts
++++ b/src/core/features/roles/doors.ts
+@@ -262,8 +262,9 @@ export const doors: Door[] = [
+   { method: 'POST', path: '/settings/labels/:id/merge', row: 'labels.manage' },
+   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
+   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
+-  { method: 'PUT', path: '/settings/teams/:id/issue-types', row: null, teams: team('id') },
+-  { method: 'PATCH', path: '/settings/teams/:id/issue-types/:typeId', row: null, teams: team('id') },
++  // Team-setting doors; typeManagementFence additionally requires a workspace Owner.
++  { method: 'PUT', path: '/settings/teams/:id/issue-types', row: 'teams.settings', teams: team('id') },
++  { method: 'PATCH', path: '/settings/teams/:id/issue-types/:typeId', row: 'teams.settings', teams: team('id') },
+   { method: 'POST', path: '/settings/teams/:id/custom-fields', row: 'custom-fields.team', teams: team('id') },
+   { method: 'PATCH', path: '/settings/teams/:id/custom-fields/:fieldId', row: 'custom-fields.team', teams: team('id') },
+   // Intake and triage
+diff --git a/tests/worker/outbound-subscription-upgrade.ts b/tests/worker/outbound-subscription-upgrade.ts
+index 246e9968..8d4298ce 100644
+--- a/tests/worker/outbound-subscription-upgrade.ts
++++ b/tests/worker/outbound-subscription-upgrade.ts
+@@ -25,7 +25,7 @@ export async function outboundSubscriptionUpgrade() {
+   expect(await db.prepare('SELECT * FROM vector_webhook_destinations WHERE id=?').bind(destination).first()).toEqual({ ...original,
+     event_kinds: JSON.stringify(['issue.created', 'issue.updated', 'issue.completed']), team_ids: '[]' });
+   expect((await db.prepare('SELECT * FROM vector_webhook_events ORDER BY id').all()).results).toEqual(queued);
+-  expect((await db.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(issues);
++  expect((await db.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(issues.map(issue=>({...issue,issue_type_id:null})));
+   await db.batch([
+     db.prepare('INSERT INTO issue_comments(id,issue_id,actor_operator_id,body,created_at,updated_at) VALUES(?,?,?,?,?,?)').bind('synthetic-vector-9053', issue.id, owner, 'synthetic-vector-9054', at, at),
+     activity('synthetic-vector-9055', 'comment.created', 'synthetic-vector-9053'),
+diff --git a/tests/worker/team-cycles-journey.ts b/tests/worker/team-cycles-journey.ts
+index ef4b615b..479e7e48 100644
+--- a/tests/worker/team-cycles-journey.ts
++++ b/tests/worker/team-cycles-journey.ts
+@@ -126,7 +126,7 @@ export async function proveTeamCyclesUpgrade() {
+   const commitments=(await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results;
+   await applyD1Migrations(db,migrations.slice(boundary));
+   const after=(await db.prepare('SELECT * FROM teams ORDER BY id').all()).results;
+-  expect(after.map(({cycles_enabled,...team})=>team)).toEqual(before);
++  expect(after.map(({cycles_enabled,...team})=>team)).toEqual(before.map(team=>({...team,issue_types_enabled:0})));
+   expect(after.every(t=>t.cycles_enabled===1)).toBe(true);
+   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).results).toEqual(cycles);
+   expect((await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results).toEqual(commitments);
+diff --git a/tests/worker/triage-upgrade.ts b/tests/worker/triage-upgrade.ts
+index feaf3c45..11ae8287 100644
+--- a/tests/worker/triage-upgrade.ts
++++ b/tests/worker/triage-upgrade.ts
+@@ -4,10 +4,11 @@ import { expect, inject } from "vitest";
+ import { insertHistoricalSample } from "./historical-sample-fixture";
+ /**
+  * Columns a later migration adds to a table that already held rows, with the value an
+- * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1.
++ * untouched pre-existing row takes: 0124 enables cycles; 0134 leaves issue types off and unset.
+  */
+ const addedAfterBoundary: Record<string, Record<string, unknown>> = {
+-  teams: { cycles_enabled: 1 },
++  teams: { cycles_enabled: 1, issue_types_enabled: 0 },
++  issues: { issue_type_id: null },
+ };
+ /** A populated prior head retains every value, including queued candidates and mutes. */
+ export async function triageUpgrade() {
