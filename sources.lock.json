@@ -9962,11 +9962,11 @@
       "executable": false
     },
     "tests/worker/slack-app-recovery-scenario.ts": {
-      "sha256": "f164f79878fbc445b7f3ab18e90d39854194e9143a9a1bf97e50a2ae50ce1c5e",
+      "sha256": "b6b47b0a91aec84761b6469a81c4c77a82097385295291b72fbd06dfd4333806",
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "8020c34a1bdfbdd43bfddf30d61f271499c00e2dc025c96fc95f5a09c7aaec12",
+      "sha256": "ba6b2c84fa568af3b76341352bd104615e868173625e5dd8cd3c467415dbb88f",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {

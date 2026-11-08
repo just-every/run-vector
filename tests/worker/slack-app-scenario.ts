@@ -116,6 +116,12 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
   const intake=await setupSlackIntake(f,secret,mappedMember);
   const intakeIssue=await intake.read(await intake.send(intake.payload));
   if(phase==='archive'){
+   await intake.read(await intake.send({...intake.payload,event_id:'synthetic-vector-archive-reply',event:{...intake.payload.event,type:'message',ts:'1730000000.000020',thread_ts:intake.payload.event.ts,text:'Portable incoming Slack reply'}}));
+   await read(await f.call('/issues/'+intakeIssue.identifier+'/comments','POST',{parentId:intakeIssue.rootCommentId,body:'Portable accepted Vector reply'}),201);
+   const {dispatchWebhooks}=await import('../../src/core/features/integrations/outbound');await dispatchWebhooks(bindings);
+   await read(await f.call('/issues/'+intakeIssue.identifier+'/comments','POST',{parentId:intakeIssue.rootCommentId,body:'Portable queued Vector reply'}),201);
+   threadEdge.status=429;await dispatchWebhooks(bindings);threadEdge.status=200;
+   expect((await env.DB.prepare("SELECT state FROM integration_deliveries WHERE json_extract(envelope,'$.protocol')='slack_thread' ORDER BY state").all()).results).toEqual([{state:'accepted'},{state:'queued'}]);
    await begin();await slackAppArchive(f,[secret,clientSecret,configToken,botToken]);
    return;
   }

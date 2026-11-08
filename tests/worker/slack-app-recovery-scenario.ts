@@ -12,6 +12,8 @@ export async function slackAppArchive(f:Awaited<ReturnType<typeof setupIntegrati
  const threadTables=['vector_slack_threads','vector_slack_thread_messages','vector_slack_thread_events'];
  const threads=await env.DB.batch(threadTables.map(table=>env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1')));
  expect(threads[0].results.length).toBeGreaterThan(0);
+ expect(threads[1].results.length).toBeGreaterThan(1);expect(threads[2].results.length).toBeGreaterThan(1);
+ const deliveries=(await env.DB.prepare("SELECT id,state,attempts FROM integration_deliveries WHERE json_extract(envelope,'$.protocol')='slack_thread' ORDER BY id").all()).results;
  const exported=await httpExport(f.call),bytes=JSON.stringify(exported);
  const records=await compactSlackArchive(exported);
  for(const value of [...secrets,...encrypted])expect(bytes).not.toContain(value);
@@ -23,6 +25,7 @@ export async function slackAppArchive(f:Awaited<ReturnType<typeof setupIntegrati
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_slack_member_links').all()).results).toEqual([]);
  expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT * FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").all()).results).toEqual([]);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_slack_event_receipts ORDER BY event_key').all()).results).toEqual(receipts);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT id,state,attempts FROM integration_deliveries WHERE json_extract(envelope,'$.protocol')='slack_thread' ORDER BY id").all()).results).toEqual(deliveries);
  const restoredThreads=await destination.ARCHIVE_TARGET_DB.batch(threadTables.map(table=>destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1')));
  for(let index=0;index<threadTables.length;index++)expect(restoredThreads[index].results).toEqual(threads[index].results.map(row=>index===1?row:{...row,held:1}));
  expect((await call('/settings/integrations/slack/app/install','POST',{})).status).toBe(409);
