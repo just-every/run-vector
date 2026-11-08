@@ -4,6 +4,8 @@ import { roleWorkspace, resetLimits, snapshot } from './role-fixture'
 import { json } from './custom-fields-journey'
 import { severityArchive } from './custom-fields-writers'
 import { agentRequest, agentToolClient } from './agent-resource-journey'
+import { beforeCommit } from './removal-interleaving'
+import { request } from './base-auth-fixture'
 import { origin } from './base-auth-fixture'
 
 const tables=['issues','issue_activity','issue_types','issue_type_required_fields','custom_field_definitions','custom_field_options','teams','team_issue_sequences','issue_followers','notifications']
@@ -45,6 +47,24 @@ it('team issue types retain identity, enforce required Severity at every native 
  await unchanged(()=>owner.call('/issues/'+plain.identifier,'PATCH',{expectedVersion:plain.version,issueTypeId:bug.id}),400)
  const typed=await json(owner.call('/issues/'+plain.identifier,'PATCH',{expectedVersion:plain.version,issueTypeId:feature.id}))
  expect(typed.issueTypeId).toBe(feature.id)
+ // The owner can require a field after a request admitted its old optional state.
+ // The pending clear must recheck that association in its own transaction.
+ const withSeverity=await json(member.call('/issues/'+typed.identifier,'PATCH',{expectedVersion:typed.version,customFields:fields}))
+ let concurrent:Awaited<ReturnType<typeof snapshot>>|undefined
+ const racing=beforeCommit(sql=>sql.includes('UPDATE issues SET'),async()=>{
+  await json(owner.call(base+'/'+feature.id,'PATCH',{expectedVersion:1,requiredFieldIds:[severity.id]}))
+  concurrent=await snapshot(tables)
+ })
+ const raced=await request('/api/issues/'+typed.identifier,'PATCH',{expectedVersion:withSeverity.version,customFields:{}},member.cookie,{DB:racing})
+ expect(raced.status,await raced.clone().text()).toBe(400)
+ expect(concurrent).toBeDefined();expect(await snapshot(tables)).toEqual(concurrent)
+ await json(owner.call(base+'/'+feature.id,'PATCH',{expectedVersion:2,requiredFieldIds:[]}))
+ // Setting a type follows ordinary issue-edit cells, including invited Guests.
+ const roleIssue=await json(owner.call('/issues','POST',{title:'synthetic-vector-role-type',teamId:w.team.id}),201)
+ const guestType=await json(guest.call('/issues/'+roleIssue.identifier,'PATCH',{expectedVersion:roleIssue.version,issueTypeId:enabled.types[2].id}))
+ const adminType=await json(admin.call('/issues/'+roleIssue.identifier,'PATCH',{expectedVersion:guestType.version,issueTypeId:enabled.types[3].id}))
+ expect(adminType.issueTypeId).toBe(enabled.types[3].id)
+ await unchanged(()=>viewer.call('/issues/'+roleIssue.identifier,'PATCH',{expectedVersion:adminType.version,issueTypeId:null}),403)
  const otherState=await json(owner.call('/settings/teams','POST',{name:'synthetic-vector-other-types',identifierPrefix:'TYPEB'}))
  const other=otherState.teams.find((t:any)=>t.identifierPrefix==='TYPEB')
  const otherTypes=await json(owner.call(`/settings/teams/${other.id}/issue-types`,'PUT',{enabled:true}))
@@ -86,6 +106,12 @@ it('team issue types retain identity, enforce required Severity at every native 
  expect(filtered.total).toBe(3);expect(filtered.issues.every((i:any)=>i.issueType.id===bug.id)).toBe(true)
  const view=await json(member.call('/views','POST',{name:'synthetic-vector-types-view',isShared:true,query:{issueType:bug.id,grouping:'issueType'}}),201)
  expect((await json(member.call('/views/'+view.id))).query).toMatchObject({issueType:bug.id,grouping:'issueType'})
+ await json(owner.call(`/settings/teams/${other.id}/privacy`,'PUT',{isPrivate:true}))
+ await unchanged(()=>member.call('/issues/'+mapped.issue.identifier),404)
+ const privateGroups=await json(member.api('/issues?grouping=issueType'))
+ expect(privateGroups.allGroups.some((group:any)=>group.key===otherTypes.types[1].id)).toBe(false)
+ expect((await json(member.api('/issues?issueType='+otherTypes.types[1].id))).total).toBe(0)
+ expect((await json(guest.api('/issues?grouping=issueType'))).issues.every((issue:any)=>issue.team.id===w.team.id)).toBe(true)
  const disabled=await json(owner.call(base,'PUT',{enabled:false}))
  expect(disabled.types.map((t:any)=>t.id)).toEqual(enabled.types.map((t:any)=>t.id))
  const hidden=await json(member.call('/issues/'+issue.identifier))
@@ -97,6 +123,12 @@ it('team issue types retain identity, enforce required Severity at every native 
  expect(await json(member.call('/issues/'+issue.identifier))).toMatchObject({issueTypeId:bug.id,issueType:{name:'Defect'}})
  await json(owner.call(`/settings/teams/${other.id}/issue-types`,'PUT',{enabled:false}))
  await severityArchive(w,[issue.id,same.issue.id])
+ const {destination}=await import('./http-archive-fixture')
+ for(const id of [issue.id,same.issue.id,mapped.issue.id]) {
+  const typeOf=(db:D1Database)=>db.prepare('SELECT issue_type_id FROM issues WHERE id=?').bind(id).first('issue_type_id')
+  expect(await typeOf(destination.ARCHIVE_TARGET_DB)).toBe(await typeOf(env.DB))
+ }
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT issue_types_enabled FROM teams WHERE id=?').bind(other.id).first('issue_types_enabled')).toBe(0)
  for(const table of ['issue_types','issue_type_required_fields']) {
   const {destination}=await import('./http-archive-fixture')
   expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+(table==='issue_types'?' ORDER BY id':' ORDER BY type_id,field_id')).all()).results).toEqual((await env.DB.prepare('SELECT * FROM '+table+(table==='issue_types'?' ORDER BY id':' ORDER BY type_id,field_id')).all()).results)

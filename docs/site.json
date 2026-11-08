@@ -531,6 +531,10 @@
     {
       "source": "docs/SLAS.md",
       "reason": "Native resolution SLA behavior, portable clocks and implementation qualification."
+    },
+    {
+      "source": "docs/ISSUE-TYPES.md",
+      "reason": "Native issue type API, required-field custody, archive compatibility and remaining interface qualification for maintainers."
     }
   ]
 }

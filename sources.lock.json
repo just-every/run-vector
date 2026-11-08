@@ -554,7 +554,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "b43e78246131215c03610a528dd2e4210f75fb6f7e3027a8b82b49641e4458d9",
+      "sha256": "de3c3582f5a6959d02991dd6cc016cebb3dbd593867305ffcdaf2721fba3c235",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -730,7 +730,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "bf1f7d71f9dd8037b170c58b6e2cf56abfcac1248563308fef36e89bcad5810c",
+      "sha256": "edaa6094d2bd8929d121bcc1ebfdf472671a67737113a43cb04a2cbd49873cc2",
       "executable": false
     },
     "docs/SLAS.md": {
@@ -2670,7 +2670,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "2f8030b300b5f98193b7b2f520382b19e1311bdf42c603c90f3ce377783d1dfd",
+      "sha256": "4ce3242f54611cafe82889f2058c4792afb7487619ac099cd499e4c7d14997c4",
       "executable": false
     },
     "schema/importers.schema.json": {
@@ -4826,7 +4826,7 @@
       "executable": false
     },
     "src/core/features/data/import/mapper.ts": {
-      "sha256": "9a8e6ddfb5cb43990f8f352f8562c756f70f01f36ac841eb0312a8a907780a19",
+      "sha256": "e09aa748c19cc7b1d59c479e6fd30515fc2030482e40a62db1b10448060e0e58",
       "executable": false
     },
     "src/core/features/data/import/native-snapshot.ts": {
@@ -4878,7 +4878,7 @@
       "executable": false
     },
     "src/core/features/data/import/row-values.ts": {
-      "sha256": "ef74a4b6164663e140e660839fd8993c50860f297d756372a73b830d7d626eb9",
+      "sha256": "646327380b58f8913ad068a349ca881c4a01bc90729a36c84778992b8e500728",
       "executable": false
     },
     "src/core/features/data/import/runs.ts": {
@@ -5810,7 +5810,7 @@
       "executable": false
     },
     "src/core/features/issue-copy/service.ts": {
-      "sha256": "d527548530c19aa50dd1cd6653bd1d8bb4d3a493c0751fe44ebb22913c14f0c1",
+      "sha256": "985afad8702ef6bb8248911c782f1b2eb8f9c78504a01dde4d128415ba4540b2",
       "executable": false
     },
     "src/core/features/issue-copy/snapshot.ts": {
@@ -5950,7 +5950,7 @@
       "executable": false
     },
     "src/core/features/issue-types/definitions.ts": {
-      "sha256": "9098d219893ec4f738faee51d502cf1d8f29d429c9af37e8cc1c4b94fb4f9e57",
+      "sha256": "107f6826aee674a6b3f387a1f1e052566dfc0d8b1f881b641cb64973e592a64a",
       "executable": false
     },
     "src/core/features/issue-types/history.ts": {
@@ -6098,7 +6098,7 @@
       "executable": false
     },
     "src/core/features/issues/repository.ts": {
-      "sha256": "0927768fab3bb889e935a5f79ab639f6880393bbef7e30b4ca318ff281976405",
+      "sha256": "2b23dc7b6f9b64deb8a53c6b28dc69184700b590c6e5e6317222a4e0e07cb0e7",
       "executable": false
     },
     "src/core/features/issues/routes.ts": {
@@ -7730,11 +7730,11 @@
       "executable": false
     },
     "src/core/features/team-move/plan.ts": {
-      "sha256": "14db6bf00c954d7caf5c1848e67612cd5cd9c54ad746a8fae8e83f4b4391bf5e",
+      "sha256": "6c6913b07982bfcf3c7accb44034370f20335dcd74b861927889080613971212",
       "executable": false
     },
     "src/core/features/team-move/repository.ts": {
-      "sha256": "e8130c4e44ee41d4804fa29f379b2402c2c2a4a57c36dab10470c5bc216609de",
+      "sha256": "73e81bcfc82c3c96f8e42486459108eb9e60521340bef1d5cfd829312da5cf57",
       "executable": false
     },
     "src/core/features/team-move/routes.ts": {
@@ -9630,11 +9630,11 @@
       "executable": false
     },
     "tests/worker/issue-types-upgrade.test.ts": {
-      "sha256": "4b3f384f5cbc29d1dc75288fa4a71a2c02c4e7a69ed4b6550260a4ea1aedbba6",
+      "sha256": "330fe9bb9714769ffd805a5eb39dc69867448b680063f510c922e2cab994fc0a",
       "executable": false
     },
     "tests/worker/issue-types.test.ts": {
-      "sha256": "8d665a59a582291329779c6c9245f7d4f4165b9515d207e052c84b708eb220bf",
+      "sha256": "f859bab312fda8969e662d0e843d2a4d5d4f8e0dfa99c6c573c8421d7b627a3a",
       "executable": false
     },
     "tests/worker/issue-undo.test.ts": {
@@ -9654,7 +9654,7 @@
       "executable": false
     },
     "tests/worker/jira-issue-types-journey.ts": {
-      "sha256": "de9d4bce6d31f98ea96643a70f96a5fb308968a0b002718c4415dc55f7ba695c",
+      "sha256": "3662c98768b4bc0a16b1255a6a2827ac0b6250151389b03de485515b94ada775",
       "executable": false
     },
     "tests/worker/jira-loss-review-fixture.ts": {

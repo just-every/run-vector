@@ -59,4 +59,15 @@ export async function jiraIssueTypesJourney(f:Awaited<ReturnType<typeof setupImp
  await send(`/settings/teams/${f.team.id}/issue-types`,'PUT',{enabled:false})
  expect((await f.apply(revoked,planned)).status).toBe(400)
  await send(`/settings/teams/${f.team.id}/issue-types`,'PUT',{enabled:true})
+ // A generic source field that was never mapped cannot silently assign a type.
+ const generic=f.input([f.row('synthetic-vector-unmapped-type',{issueType:bug.id})],'synthetic-vector-unmapped-type')
+ const untypedReview=await f.preview(generic)
+ expect(untypedReview.ready).toBe(true)
+ expect(untypedReview.omissions).toContainEqual(expect.objectContaining({field:'issueType',code:'unmapped_column'}))
+ const explicit={...generic,mapping:{...generic.mapping,issueType:'issueType'}}
+ expect((await f.preview(explicit)).errors).toContainEqual(expect.objectContaining({message:expect.stringContaining('Severity')}))
+ const genericRun=await f.publish(generic)
+ expect(await env.DB.prepare('SELECT issue_type_id FROM issues WHERE id IN (SELECT target_id FROM ik_provenance WHERE job_id=?)').bind(genericRun.id).first('issue_type_id')).toBeNull()
+ const genericRollback=await call('/data/import/runs/'+genericRun.id+'/rollback','POST',{confirmed:true})
+ expect(genericRollback.status).toBe(200);await f.finish(await genericRollback.json())
 }

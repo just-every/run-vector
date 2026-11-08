@@ -160,7 +160,7 @@ export async function copyIssue(
     );
     const copiedActivityId = createUlid(now);
     for (const [issueId, kind, next] of [
-      [id, "issue.copied_from", { identifier: row.identifier, issueTypeId: mapped.issueTypeId }],
+      [id, "issue.copied_from", { identifier: row.identifier, ...(mapped.issueTypeId ? {issueTypeId: mapped.issueTypeId} : {}) }],
       [row.id, "issue.copied_to", { identifier: plan.identifier }],
     ] as const)
       writes.push(
@@ -236,7 +236,7 @@ export async function copyIssue(
     mappings: allocated.map((plan) => ({
       identifier: plan.row.identifier,
       status: { from: plan.row.status_id, to: target.status_id },
-      issueType: { from: plan.row.issue_type_id, to: plan.mapped.issueTypeId },
+      ...(plan.row.issue_type_id || plan.mapped.issueTypeId ? {issueType: { from: plan.row.issue_type_id, to: plan.mapped.issueTypeId }} : {}),
       labels: plan.mapped.labels.map((id) => ({ from: id, to: id })),
       customFields: plan.mapped.customFieldMappings,
     })),

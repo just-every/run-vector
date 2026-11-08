@@ -33,7 +33,8 @@ export async function updateType(db: D1Database, actor: string, teamId: string, 
  const previous = (await readTeamTypes(ctx.db,teamId)).types.find(type=>type.id===id)
  if (!previous) throw new SettingsError('not_found','Issue type is unavailable.',404)
  if (input.expectedVersion !== previous.version) throw new SettingsError('stale_type','This type changed. Reload before saving.',409)
- const next = {...previous,...input,requiredFieldIds:input.requiredFieldIds??previous.requiredFieldIds}
+ const {expectedVersion: _expectedVersion,...changes}=input
+ const next = {...previous,...changes,version:previous.version+1,requiredFieldIds:input.requiredFieldIds??previous.requiredFieldIds}
  for (const field of next.requiredFieldIds) if (!await ctx.db.prepare("SELECT 1 FROM main.custom_field_definitions WHERE id=? AND team_id=? AND type='single_select'").bind(field,teamId).first())
   throw new SettingsError('invalid_field','Choose a single-select field of this team.',400)
  writes.push(guard(ctx.db,'EXISTS(SELECT 1 FROM main.issue_types WHERE id=? AND team_id=? AND version=?)',id,teamId,previous.version),

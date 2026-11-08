@@ -203,7 +203,8 @@
           "parent",
           "orderView",
           "sort",
-          "grouping"
+          "grouping",
+          "issueType"
         ],
         "parameters": [
           {
@@ -390,6 +391,14 @@
               "type": "string",
               "format": "date"
             }
+          },
+          {
+            "name": "issueType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "all, none, or one stable type identity. grouping=issueType uses stable identities and complete filtered counts."
           }
         ]
       },
@@ -471,7 +480,16 @@
                   "customFields": {
                     "type": "object",
                     "additionalProperties": true,
-                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back."
+                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back. A required field of the final issue type cannot be cleared or omitted; invalid writes return 400 without effects."
+                  },
+                  "issueTypeId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 26,
+                    "maxLength": 26,
+                    "description": "One enabled issue type of the destination team. Required custom fields are validated in the same native transaction; omission retains the current type on edit."
                   }
                 },
                 "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue. A template selection needs both templateId and templateVersion. Explicit native fields win; omitted fields receive template defaults."
@@ -874,7 +892,16 @@
                   "customFields": {
                     "type": "object",
                     "additionalProperties": true,
-                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back."
+                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back. A required field of the final issue type cannot be cleared or omitted; invalid writes return 400 without effects."
+                  },
+                  "issueTypeId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 26,
+                    "maxLength": 26,
+                    "description": "One enabled issue type of the destination team. Required custom fields are validated in the same native transaction; omission retains the current type on edit."
                   }
                 },
                 "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue."
@@ -946,7 +973,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                  "issueTypeId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 26,
+                    "maxLength": 26,
+                    "description": "Explicit destination-team type for a copy. Same-team copies retain the enabled original type; other copies report a dropped type when no mapping is chosen."
+                  },
+                  "customFields": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Explicit destination field values. Required fields of the mapped issue type must have valid destination options."
+                  }
+                }
               }
             }
           },

@@ -71,8 +71,13 @@ and an issue's `fields` lists its team's fields. Set a value through
 `customFields` on issue create or update: the field id maps to an option id, and
 `null` clears it. Numbers, unknown options and other teams' fields return 400
 without a change; each actual change is one attributed activity entry with the
-previous and new option ids. Untyped legacy keys are stored as sent. Imports do
-not map source columns onto team fields yet and report them as omitted.
+previous and new option ids. Untyped legacy keys are stored as sent. Jira All Fields CSV can explicitly map a source column to a team field and its option identities during review; other source profiles retain their existing omissions.
+
+## Issue types (ISSUE-021)
+
+Visible team metadata includes `issueTypesEnabled` and enabled `issueTypes`, with stable IDs, names, icons, versions and `requiredFieldIds`. Issue create and edit accept nullable `issueTypeId`, constrained to that team. A required typed field must have a valid option in the final full `customFields` map; clearing or omitting it is refused 400. Cookie requests, scoped edits, template application, bulk edits, copies and agent tools share the same admission and transactional requirement guards. Management is Owner-only through native team Settings routes, separate from bearer issue-edit permission.
+
+Lists accept `issueType=all`, `issueType=none` or a type ID, with `grouping=issueType`. Saved views retain those choices and complete group totals distinguish equal names by stable identity. Copy accepts an explicitly selected destination type and destination fields; an unmapped cross-team type is reported in `droppedValues`. Disabled teams retain assignments and history while active type projections disappear. See the contributor reference in `docs/ISSUE-TYPES.md` for the native management, review and archive boundaries.
 
 ## Project planning
 

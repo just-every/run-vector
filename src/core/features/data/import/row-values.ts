@@ -59,7 +59,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
     catch(error){if(input.format==='jira-csv'&&error instanceof Error&&error.message.startsWith('Reference was not found')){omissions.push({row,field:'cycle',code:'unresolved_sprint',message:'No explicit sprint mapping. The issue is imported without a cycle; the sprint stays in the original.'});return null;}throw error;}
   }):undefined;
   const issueTypeId=take('issueType',()=>{
-    const raw=String(payload.issueType??text('issueType')).trim();
+    const raw=(input.format==='jira-csv'?String(payload.issueType??''):text('issueType')).trim();
     if(!raw)return null;
     if(input.format==='jira-csv'&&!input.jira?.issueTypes)return null;
     const selected=input.format==='jira-csv'?input.jira!.issueTypes![raw]:raw;

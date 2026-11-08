@@ -18,6 +18,8 @@ import { importFields,type ImportDiagnostic,type ImportInput } from './types';
 export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInput,source:SourceBundle,effectiveAt:string,mappingVersion:string,origin:string) {
   const refs=await loadImportReferences(db,actor.workspace),errors:ImportDiagnostic[]=[],omissions:ImportDiagnostic[]=[],rows:MappedRow[]=[],effects=new Map<string,MappingResult>(),counters=new Map<string,number>(),floors=new Map<string,number>(),reusedRanks=new Map<string,number>();
   const fieldCatalogue=await importFieldCatalogue(db,actor.workspace);
+  for(const field of Object.keys(input.jira?.customFields??{}))if(!fieldCatalogue.definitions.some(d=>d.id===field&&d.type==='single_select'))
+    errors.push({row:0,field,code:'invalid_mapping',message:'Choose an existing single-select custom-field definition.'});
   for(const [field,column] of Object.entries(input.mapping)) {
     if(!(importFields as readonly string[]).includes(field) || typeof column!=='string' || !source.records.some(record=>record.payload && typeof record.payload==='object' && !Array.isArray(record.payload) && Object.hasOwn(record.payload,column)))
       errors.push({row:0,field,code:'invalid_mapping',message:'Choose a column that exists in this file.'});

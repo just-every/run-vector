@@ -127,14 +127,13 @@ export async function moveIssueTeamRecord(
         teamId: issue.team_id,
         statusId: issue.status_id,
         cycleId: issue.cycle_id,
-        issueTypeId: issue.issue_type_id,
+        ...(issue.issue_type_id ? {issueTypeId:issue.issue_type_id} : {}),
       },
       nextValue: {
         teamId: input.teamId,
         statusId: input.statusId,
         cycleId: null,
-        issueTypeId: null,
-        droppedTypeId: issue.issue_type_id,
+        ...(issue.issue_type_id ? {issueTypeId:null,droppedTypeId:issue.issue_type_id} : {}),
       },
       now: timestamp,
     });

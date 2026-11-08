@@ -139,7 +139,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
     dueDate: request.input.dueDate,
       expectedOutcome: request.input.expectedOutcome,
       customerImpact: request.input.customerImpact,
-      issueTypeId: request.input.issueTypeId,
+      ...(request.input.issueTypeId ? {issueTypeId: request.input.issueTypeId} : {}),
       customFields: fields.values,
     },
     now,
