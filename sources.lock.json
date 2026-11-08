@@ -9977,8 +9977,12 @@
       "sha256": "563491d53284074cd755fd186241e041539ec2224681f58bf91c0543da209fec",
       "executable": false
     },
+    "tests/worker/slack-thread-import.ts": {
+      "sha256": "2517bd113fc9c90cbed361cf67609f21cc7b1370abe2980385caf2898adcfc2f",
+      "executable": false
+    },
     "tests/worker/slack-thread-scenario.ts": {
-      "sha256": "879c90415ba3222104eab8f30602760cf4cf2096e5d8a5a05481e74281eb1626",
+      "sha256": "1f73c8d4377fc3bedbf57c8a1f8a1b10244aa337c002499aa435fa73459f59d3",
       "executable": false
     },
     "tests/worker/slack-thread-upgrade.ts": {

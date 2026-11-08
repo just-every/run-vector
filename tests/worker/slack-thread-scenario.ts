@@ -1,3 +1,4 @@
+import {slackThreadImport} from './slack-thread-import';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {bindings,origin,request} from './base-auth-fixture';
@@ -79,6 +80,12 @@ export async function slackThreadSync(f:Awaited<ReturnType<typeof setupIntegrati
  const rootResults=await Promise.all([send(concurrentRoot),send(concurrentRoot)]);expect(rootResults.map(r=>r.status).sort()).toEqual([200,409]);
  expect(await env.DB.prepare("SELECT count(*) n FROM issues WHERE title='Concurrent source root'").first<number>('n')).toBe(1);
  expect(await env.DB.prepare('SELECT last_sequence FROM team_issue_sequences WHERE team_id=?').bind(f.initial.teams[0].id).first<number>('last_sequence')).toBe(sequenceBefore!+1);
+ // Distinct simultaneous captures must both survive the shared identifier allocator.
+ const separate=['1730000004.000002','1730000004.000003'].map((ts,index)=>({...payload,event_id:'synthetic-vector-distinct-root-'+index,event:{...payload.event,ts,text:'Distinct concurrent source '+index}}));
+ const distinct=await Promise.all(separate.map(value=>send(value)));
+ expect(distinct.map(response=>response.status)).toEqual([200,200]);
+ expect(new Set(await Promise.all(distinct.map(async response=>(await response.json() as any).identifier))).size).toBe(2);
+ expect(await env.DB.prepare('SELECT last_sequence FROM team_issue_sequences WHERE team_id=?').bind(f.initial.teams[0].id).first<number>('last_sequence')).toBe(sequenceBefore!+3);
  // Signed message shortcut shares the same transactional intake, without a rate bucket write on refusal.
  const shortcut={type:'message_action',callback_id:'vector_create_issue',trigger_id:'synthetic-vector-shortcut',team:{id:slackIntakeFixture.team},user:{id:slackIntakeFixture.user},channel:{id:slackIntakeFixture.channel},message:{user:slackIntakeFixture.unlinked,ts:'1730000002.000001',text:'Message shortcut source'}};
  const signShortcut=async(value:unknown,unsigned=false)=>{
@@ -93,6 +100,7 @@ export async function slackThreadSync(f:Awaited<ReturnType<typeof setupIntegrati
  const shortcutRoot=await env.DB.prepare("SELECT c.body,c.actor_operator_id FROM vector_slack_threads m JOIN issue_comments c ON c.id=m.root_comment_id WHERE m.thread_ts='1730000002.000001'").first<any>();
  expect(shortcutRoot.body).toContain('Message shortcut source');expect(shortcutRoot.body).toContain('Slack author: '+slackIntakeFixture.unlinked);
  expect(shortcutRoot.actor_operator_id).toBe(await env.DB.prepare('SELECT operator_id FROM vector_slack_member_links WHERE slack_user_id=?').bind(slackIntakeFixture.user).first('operator_id'));
+ await slackThreadImport(f,intake);
  // Queue while public, then make the issue private: final transport must redact.
  const person=await env.DB.prepare('SELECT operator_id FROM vector_slack_member_links WHERE slack_user_id=?').bind(slackIntakeFixture.user).first<string>('operator_id');
  expect((await f.call('/settings/teams/'+f.initial.teams[0].id+'/members/'+person,'PUT',{role:'member'})).status).toBe(200);
