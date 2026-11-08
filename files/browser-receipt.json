@@ -1,0 +1,19 @@
+{
+  "checks": [
+    {
+      "id": "ROLE-011",
+      "name": "native suspension retains rendered names and hidden personal state; reactivation requires fresh sign-in",
+      "passed": true
+    }
+  ],
+  "widths": [
+    1440,
+    390
+  ],
+  "scope": "Native HTTP lifecycle and rendered retained attribution; assignment dialog and directory interface remain unqualified.",
+  "head": "83991ac0b0cf798cfdd1b096429d7d48c6611061",
+  "command": "cloud_run timeout 1200 node /tmp/vector-suspension-browser.mjs",
+  "exit": 0,
+  "candidateHead": "806b1715d89a5383b5722b1b6c37a615b0665763",
+  "relevantSourceUnchanged": true
+}

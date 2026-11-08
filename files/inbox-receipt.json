@@ -1,0 +1,15 @@
+{
+  "command": "cloud_run timeout 1200 node /tmp/vector-retained-inbox.mjs",
+  "width": 1440,
+  "exit": 0,
+  "checks": [
+    {
+      "id": "NOTIFY-003",
+      "name": "native Inbox pagination ordering and cached rows clear after suspension while personal history stays retained",
+      "passed": true
+    }
+  ],
+  "candidateHead": "806b1715d89a5383b5722b1b6c37a615b0665763",
+  "sourceFilesMatchCandidate": true,
+  "note": "The exact committed helper was exercised from rendered native comments through suspension; the final commit records the identical tested bytes."
+}

@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f207",
+  "head": "806b1715d89a5383b5722b1b6c37a615b0665763",
+  "checks": [
+    {
+      "check": "native lifecycle, OAuth, sponsored credentials and versioned attribution",
+      "command": "cloud_run timeout 300 pnpm test:worker tests/worker/member-suspension.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "source_log_sha256": "b501a46dfb89c12de76dfb4eeeac0eb8cdd546060c22588a1ff279b9a3ab8d73",
+      "observed_result": [
+        "Test Files  1 passed (1)",
+        "Tests  1 passed (1)",
+        "Duration  14.01s (transform 4.96s, setup 0ms, import 10.68s, tests 2.71s, environment 0ms)"
+      ]
+    },
+    {
+      "check": "populated additive upgrade",
+      "command": "cloud_run pnpm test:worker tests/worker/member-suspension.test.ts tests/worker/member-suspension-upgrade.test.ts",
+      "exit": 0,
+      "passed": 2,
+      "source_log_sha256": "d588f03673f961268e594de124d699c3dad0b4f24625be771b62f11f0a38eb69",
+      "observed_result": [
+        "Test Files  2 passed (2)",
+        "Tests  2 passed (2)",
+        "Duration  22.58s (transform 4.34s, setup 0ms, import 13.98s, tests 7.47s, environment 0ms)"
+      ]
+    },
+    {
+      "check": "role matrix and retained removal boundaries",
+      "command": "cloud_run timeout 900 pnpm test:worker tests/worker/role-matrix.test.ts tests/worker/removal-boundary.test.ts tests/worker/removal-history.test.ts tests/worker/removal-files.test.ts tests/worker/views-removal.test.ts tests/worker/collaboration-mail.test.ts tests/worker/outbound-broken-destination.test.ts",
+      "exit": 0,
+      "passed": 29,
+      "source_log_sha256": "5b647f47e795fff06fd396cf61d476a67f8cb86a05e2ac2b302c3562094c170c",
+      "observed_result": [
+        "Test Files  7 passed (7)",
+        "Tests  29 passed (29)",
+        "Duration  293.24s (transform 5.94s, setup 0ms, import 39.53s, tests 249.82s, environment 1ms)"
+      ]
+    },
+    {
+      "check": "signed Slack unlinking survives reactivation",
+      "command": "cloud_run timeout 300 pnpm test:worker tests/worker/outbound-broken-destination.test.ts",
+      "exit": 0,
+      "passed": 8,
+      "source_log_sha256": "62e959cf8dc4f330715b8bf7c7785576567c134cac1874380833c2d6d550dbad",
+      "observed_result": [
+        "Test Files  1 passed (1)",
+        "Tests  8 passed (8)",
+        "Duration  39.71s (transform 4.21s, setup 0ms, import 9.31s, tests 29.80s, environment 1ms)"
+      ]
+    },
+    {
+      "check": "final audit and archive regression",
+      "command": "cloud_run timeout 600 pnpm test:worker tests/worker/role-matrix.test.ts tests/worker/data-http.test.ts -t 'native actions populate|native archive HTTP'",
+      "exit": 0,
+      "passed": 2,
+      "source_log_sha256": "9e097ead01e4f9d3771821dad6bc8f5ce39eaafe696aae7fd282c89c5a2e4634",
+      "observed_result": [
+        "Test Files  2 passed (2)",
+        "Tests  2 passed | 5 skipped (7)",
+        "Duration  132.18s (transform 4.97s, setup 0ms, import 14.88s, tests 116.10s, environment 0ms)"
+      ]
+    },
+    {
+      "check": "imported outsider erasure with suspended-native refusal",
+      "command": "cloud_run pnpm test:worker tests/worker/imported-person-erasure.test.ts",
+      "exit": 0,
+      "passed": 1,
+      "source_log_sha256": "d03adf92d56d423d37e3ca768a7f7d6344fce250088596ec36d8621887427075",
+      "observed_result": [
+        "Test Files  1 passed (1)",
+        "Tests  1 passed (1)",
+        "Duration  152.59s (transform 3.48s, setup 0ms, import 7.70s, tests 144.28s, environment 0ms)"
+      ]
+    },
+    {
+      "check": "deployment migration ledger",
+      "command": "cloud_run node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "passed": 1,
+      "source_log_sha256": "53b19780f59b6b1e479331a36249f45bd433cadd1e2781908290e0af2ad67f12",
+      "observed_result": [
+        "\u2139 tests 1",
+        "\u2139 pass 1",
+        "\u2139 fail 0",
+        "\u2139 skipped 0",
+        "\u2139 duration_ms 1046.962061"
+      ]
+    },
+    {
+      "check": "authentication browser regression",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 pnpm test:base-auth",
+      "exit": 0,
+      "passed": 9,
+      "source_log_sha256": "2e445f20ce50bc3d49360f6c4428d832d3141addf12018858dbbfec8cea0434c",
+      "observed_result": [
+        "Base authentication runtime: 9 checks passed; /workspace/run-vector/.wrangler/base-auth-evidence"
+      ]
+    },
+    {
+      "check": "administration browser, including registered member lifecycle journey",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 pnpm test:admin",
+      "exit": 0,
+      "passed": 80,
+      "journeys": 79,
+      "functionalCheckpoints": 102,
+      "source_log_sha256": "818d9adf720ad1fb1b2dc49c5aea1ef8f6ae774c6d7ced7afac9598ee310108c",
+      "observed_result": [
+        "Administration browser: 79 clause journeys, 102 functional checkpoints passed.",
+        "\u2139 tests 80",
+        "\u2139 suites 0",
+        "\u2139 pass 80",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 1048781.114869"
+      ]
+    },
+    {
+      "check": "complete collaboration browser with retained-state and revoked-cache checks at both widths",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 pnpm test:collaboration",
+      "exit": 0,
+      "passed": 53,
+      "journeys": 52,
+      "functionalCheckpoints": 122,
+      "liveTimings": 10,
+      "source_log_sha256": "b3bc33dee94ab20eb32fa40b84260b3aae479d1f0fae55541962a3b2ebc35ead",
+      "observed_result": [
+        "Collaboration browser: 52 clause journeys, 122 functional checkpoints, 10 live timings passed.",
+        "\u2139 tests 53",
+        "\u2139 suites 0",
+        "\u2139 pass 53",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 874050.948605"
+      ]
+    }
+  ],
+  "mechanical": [
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write ROLE-011; node scripts/contract-docs.mjs check ROLE-011; restore generated views from origin/main",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:lock; pnpm sources:check",
+      "exit": 0
+    }
+  ],
+  "counts": {
+    "before": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "after": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    }
+  },
+  "qualification": {
+    "status": "PARTIAL",
+    "interface": "Assignment dialog, Suspended filter, profile interface and complete flag presentation remain unfinished; required Claude Opus implementation and independent interface qualification unavailable.",
+    "provider": "Synthetic signed protocol and network-edge fixtures only; supplied holds remain."
+  },
+  "proof_byte_identity": {
+    "previousCandidate": "27f22ac580830573fea04efda791f9cf5ae23203",
+    "candidate": "806b1715d89a5383b5722b1b6c37a615b0665763",
+    "unchangedPaths": [
+      "src",
+      "migrations",
+      "tests/worker",
+      "tests/e2e/member-suspension-journey.mjs"
+    ],
+    "diffEmpty": true
+  }
+}
