@@ -16,5 +16,43 @@
   "pr": null,
   "landing_claim": false,
   "identity_audited_candidate_commits": 4,
-  "trailers": []
+  "trailers": [],
+  "local_verification_complete": true,
+  "fixed_blockers": [
+    "One-day bar body moves both dates",
+    "Dated milestone on an undated project renders on desktop and phone"
+  ],
+  "status_changes": [],
+  "contract_init003_status": "missing (main judgment preserved)",
+  "candidate_ceiling": "PARTIAL",
+  "before_after_counts": {
+    "done": [
+      136,
+      136
+    ],
+    "partial": [
+      72,
+      72
+    ],
+    "missing": [
+      64,
+      64
+    ],
+    "total": [
+      272,
+      272
+    ],
+    "targeted_blockers": [
+      2,
+      0
+    ]
+  },
+  "terminal_custody": "PUSHED",
+  "ci_run_id": 42533113770,
+  "ci_initial_conclusion": "failure",
+  "failed_jobs_retry_accepted": true,
+  "retry_result_observed": false,
+  "github_calls_used": 10,
+  "ready_claim": false,
+  "remaining_dependency": "Exact-SHA failed-jobs retry result"
 }

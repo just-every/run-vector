@@ -1,0 +1,10 @@
+{
+  "number": 10,
+  "at": "2026-11-08T23:47:09.418924+00:00",
+  "command": "gh api --method POST repos/just-every/run-vector/actions/runs/42533113770/rerun-failed-jobs --include",
+  "exit": 0,
+  "http_status": "201",
+  "same_head": "c39e92e479af0387250fbff2d96c69a754fd640f",
+  "retry_accepted": true,
+  "diagnostic": "GitHub accepted rerun-failed-jobs; no further status read within the ten-call budget."
+}

@@ -1,0 +1,10 @@
+{
+  "command": "cloud_run timeout 300 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'every role-matrix row with a door'",
+  "exit": 0,
+  "selected_tests_passed": 1,
+  "other_tests_not_selected": 5,
+  "case_duration_ms": 58020,
+  "existing_case_timeout_ms": 120000,
+  "source_changes": false,
+  "ci_timeout_reproduced": false
+}

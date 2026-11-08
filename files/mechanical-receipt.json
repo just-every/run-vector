@@ -48,5 +48,23 @@
     "exit": 0,
     "files": 1,
     "tests": 1
+  },
+  "browser": {
+    "command": "cloud_run timeout 600 node /tmp/roadmap-blockers.mjs journey probe2",
+    "exit": 0,
+    "regression_width": 1440,
+    "browser_proof_widths": [
+      1440,
+      390
+    ],
+    "source": "roadmap-blockers.mjs",
+    "result_receipt": "probe2-journey.json",
+    "preserved_assertions": true
+  },
+  "whitespace": {
+    "fix2_files_against_candidate": 0,
+    "staged_candidate": 2,
+    "inherited_finding": "src/core/features/administration/project-fields.ts:41: new blank line at EOF",
+    "preserved_under_fix_only_lease": true
   }
 }

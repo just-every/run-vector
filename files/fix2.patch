@@ -1,0 +1,104 @@
+diff --git a/src/core/features/roadmap/page.tsx b/src/core/features/roadmap/page.tsx
+index 72dbe012..f7571c9c 100644
+--- a/src/core/features/roadmap/page.tsx
++++ b/src/core/features/roadmap/page.tsx
+@@ -85,17 +85,17 @@ export function RoadmapPage() {
+                 <div className="roadmap-label"><a href={'/app/initiatives/'+node.id}>{node.name}</a><span>Initiative · {node.projectIds.length} visible projects</span></div>
+                 <div className="roadmap-track">{node.placement.start?<span role="img" className={'roadmap-span roadmap-span--'+node.placement.kind} style={position(node.placement)} aria-label={'Initiative '+node.name+' '+node.placement.start+' to '+node.placement.end}>{node.placement.kind==='diamond'?'◆':''}</span>:<span className="roadmap-no-dates">Unscheduled</span>}</div>
+               </div>)}
+-              {data.projects.filter(p=>p.placement.kind!=='unscheduled').map(project=><article className="roadmap-row" key={project.id} data-roadmap-project={project.id} data-date-kind={project.placement.kind} data-start-date={project.startDate??''} data-target-date={project.targetDate??''}>
++              {data.projects.filter(p=>p.placement.kind!=='unscheduled'||p.milestones.some(m=>m.targetDate)).map(project=><article className="roadmap-row" key={project.id} data-roadmap-project={project.id} data-date-kind={project.placement.kind} data-start-date={project.startDate??''} data-target-date={project.targetDate??''}>
+                 {label(project)}
+                 <div className="roadmap-track" onDragOver={event=>{if(drag.current&&!busy)event.preventDefault();}} onDrop={drop} role="group" aria-label={'Timeline dates for '+project.name}>
+                   <span className="roadmap-today" style={{left:geometry.position(data.today)+'%'}} role="img" aria-label={'Today '+data.today}/>
+-                  <div className={'roadmap-mark roadmap-mark--'+project.placement.kind+' roadmap-mark--'+project.lifecycle} style={position(project.placement)}>
++                  {project.placement.kind==='unscheduled'?<span className="roadmap-no-dates">Unscheduled</span>:<div className={'roadmap-mark roadmap-mark--'+project.placement.kind+' roadmap-mark--'+project.lifecycle+(project.startDate&&project.startDate===project.targetDate?' roadmap-mark--single-day':'')} style={position(project.placement)}>
+                     {data.canEdit?<>
+                       <Tooltip label="Move project"><button className="roadmap-body" disabled={busy} draggable={!busy} onDragStart={event=>begin(event,project,'body')} onDragEnd={()=>{drag.current=null;}} onKeyDown={event=>moveKey(event,project)} aria-label={'Move '+project.name+' · '+dates(project)}>{project.placement.kind==='diamond'?'◆':<span className="sr-only">{statusNames[project.lifecycle]}</span>}</button></Tooltip>
+                       {project.startDate&&<Tooltip label="Drag start date"><button className="roadmap-handle roadmap-handle--start" aria-label={'Drag start date for '+project.name} disabled={busy} draggable={!busy} onDragStart={event=>begin(event,project,'startDate')} onDragEnd={()=>{drag.current=null;}} onClick={()=>setEditing(project.id)}>‹</button></Tooltip>}
+                       {project.targetDate&&project.placement.kind!=='diamond'&&<Tooltip label="Drag target date"><button className="roadmap-handle roadmap-handle--target" aria-label={'Drag target date for '+project.name} disabled={busy} draggable={!busy} onDragStart={event=>begin(event,project,'targetDate')} onDragEnd={()=>{drag.current=null;}} onClick={()=>setEditing(project.id)}>›</button></Tooltip>}
+                     </>:<span className="roadmap-read-mark" role="img" aria-label={dates(project)}>{project.placement.kind==='diamond'?'◆':''}</span>}
+-                  </div>
++                  </div>}
+                   {project.milestones.filter(m=>m.targetDate).map(m=><Tooltip key={m.id} label={m.name+' · '+m.targetDate+(m.completed?' · Complete':'')}><span className="roadmap-milestone" tabIndex={0} role="img" aria-label={'Milestone '+m.name+' '+m.targetDate} style={{left:geometry.position(m.targetDate!)+'%'}}>◇</span></Tooltip>)}
+                 </div>
+               </article>)}
+diff --git a/src/core/features/roadmap/roadmap.css b/src/core/features/roadmap/roadmap.css
+index c311b9da..a0c0ecfc 100644
+--- a/src/core/features/roadmap/roadmap.css
++++ b/src/core/features/roadmap/roadmap.css
+@@ -3,6 +3,7 @@
+ .roadmap-legend,.roadmap-instructions{color:var(--app-muted);font-size:13px;line-height:1.6}.roadmap-message:empty{display:none}.roadmap-layout{display:grid;grid-template-columns:minmax(0,1fr) 205px;gap:18px;margin-top:22px}.roadmap-scroll{min-width:0;max-height:70vh;overflow:auto;border:1px solid var(--app-rule);border-radius:8px}.roadmap-canvas{min-width:1000px}.roadmap-axis,.roadmap-row,.roadmap-drop-row{display:grid;grid-template-columns:220px minmax(0,1fr)}.roadmap-axis{height:48px;align-items:center;background:var(--app-paper-deep);position:sticky;top:0;z-index:4;font-size:13px}.roadmap-axis>span{padding:12px}.roadmap-axis>div{position:relative;height:20px;margin-inline:24px}.roadmap-axis time{position:absolute;white-space:nowrap;transform:translateX(-50%);font:13px var(--app-mono)}
+ .roadmap-row{min-height:118px}.roadmap-label{display:flex;flex-direction:column;justify-content:center;align-items:start;gap:5px;min-width:0;padding:12px;background:var(--app-column);overflow-wrap:anywhere}.roadmap-label>a{font-weight:600;max-width:100%;font-size:14px}.roadmap-label>span{font-size:13px;color:var(--app-muted)}.roadmap-label button{font-size:13px;min-height:30px;padding:4px 8px}.roadmap-track{position:relative;min-width:0;margin-inline:24px;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(25% - 1px),var(--app-line) calc(25% - 1px),var(--app-line) 25%)}.roadmap-today{position:absolute;height:100%;width:2px;background:var(--app-cobalt-ink);z-index:1;pointer-events:none}
+ .roadmap-mark{position:absolute;top:40px;height:34px;min-width:24px;border:2px solid var(--app-ink);border-radius:5px;background:var(--app-card);box-sizing:border-box;z-index:2}.roadmap-mark--planned{border-style:dashed}.roadmap-mark--active{background:var(--app-cobalt-soft)}.roadmap-mark--completed{border-color:var(--app-ok);background:var(--app-ok-soft)}.roadmap-mark--canceled{background:repeating-linear-gradient(135deg,var(--app-field) 0,var(--app-field) 5px,var(--app-line) 5px,var(--app-line) 7px)}.roadmap-mark--open{border-style:dashed;background:linear-gradient(90deg,var(--app-cobalt-soft),transparent)}.roadmap-mark--open:after{content:'';position:absolute;right:-5px;top:8px;width:8px;height:14px;background:var(--app-column);pointer-events:none}.roadmap-mark--diamond{border:0;border-radius:0;background:transparent;transform:translateX(-50%);width:36px;min-width:36px}
+-.roadmap-body{position:absolute;inset:0;width:100%;height:100%;min-height:30px!important;border:0!important;border-radius:3px!important;background:transparent!important;color:var(--app-ink)!important;padding:0!important;cursor:grab;font-size:30px!important;line-height:1}.roadmap-handle{position:absolute!important;top:0;height:30px;min-height:30px!important;width:22px;padding:0!important;border:1px solid var(--app-ink)!important;border-radius:2px!important;background:var(--app-field)!important;color:var(--app-ink)!important;cursor:ew-resize;font-size:20px!important;z-index:3}.roadmap-handle--start{left:0}.roadmap-handle--target{right:0}.roadmap-read-mark{position:absolute;inset:0;text-align:center;font-size:30px;line-height:1}.roadmap-milestone{position:absolute;bottom:4px;transform:translateX(-50%);font-size:24px;color:var(--app-ink);line-height:1;z-index:3}.roadmap-span{position:absolute;top:24px;height:14px;border:2px solid var(--app-muted);border-radius:3px;background:var(--app-paper-deep);box-sizing:border-box;min-width:12px}.roadmap-span--diamond{font-size:24px;border:0;background:transparent;transform:translateX(-50%);height:30px;color:var(--app-ink)}.roadmap-span--open{border-style:dashed}.roadmap-initiative{min-height:78px;background:var(--app-card)}.roadmap-no-dates{display:block;margin-top:25px;font-size:13px;color:var(--app-muted)}.roadmap-drop-row{min-height:60px;font-size:13px;color:var(--app-muted)}.roadmap-drop-row>span{padding:12px}.roadmap-drop-row .roadmap-track{padding:18px 0}
++.roadmap-body{position:absolute;inset:0;width:100%;height:100%;min-height:30px!important;border:0!important;border-radius:3px!important;background:transparent!important;color:var(--app-ink)!important;padding:0!important;cursor:grab;font-size:30px!important;line-height:1}.roadmap-handle{position:absolute!important;top:0;height:30px;min-height:30px!important;width:22px;padding:0!important;border:1px solid var(--app-ink)!important;border-radius:2px!important;background:var(--app-field)!important;color:var(--app-ink)!important;cursor:ew-resize;font-size:20px!important;z-index:3}.roadmap-handle--start{left:0}.roadmap-handle--target{right:0}/* Keep a one-day bar draggable at its center, with both ends outside its body. */
++.roadmap-mark--single-day .roadmap-body{z-index:4}.roadmap-mark--single-day .roadmap-handle--start{left:-22px}.roadmap-mark--single-day .roadmap-handle--target{right:-22px}.roadmap-read-mark{position:absolute;inset:0;text-align:center;font-size:30px;line-height:1}.roadmap-milestone{position:absolute;bottom:4px;transform:translateX(-50%);font-size:24px;color:var(--app-ink);line-height:1;z-index:3}.roadmap-span{position:absolute;top:24px;height:14px;border:2px solid var(--app-muted);border-radius:3px;background:var(--app-paper-deep);box-sizing:border-box;min-width:12px}.roadmap-span--diamond{font-size:24px;border:0;background:transparent;transform:translateX(-50%);height:30px;color:var(--app-ink)}.roadmap-span--open{border-style:dashed}.roadmap-initiative{min-height:78px;background:var(--app-card)}.roadmap-no-dates{display:block;margin-top:25px;font-size:13px;color:var(--app-muted)}.roadmap-drop-row{min-height:60px;font-size:13px;color:var(--app-muted)}.roadmap-drop-row>span{padding:12px}.roadmap-drop-row .roadmap-track{padding:18px 0}
+ .roadmap-unscheduled h2{font-size:16px;margin:0 0 14px}.roadmap-unscheduled article{border:1px solid var(--app-rule);border-radius:8px;padding:8px;margin-bottom:12px;background:var(--app-column)}.roadmap-unscheduled .roadmap-label{padding:4px}.roadmap-unscheduled button{font-size:13px;margin-top:6px}.roadmap-mobile{display:none}.roadmap-editor{margin-top:24px;border:1px solid var(--app-field-border);border-radius:8px;padding:20px;background:var(--app-card)}.roadmap-editor h2{font-size:18px;margin:0}.roadmap-editor form{display:flex;gap:16px;align-items:end;flex-wrap:wrap;margin-top:20px}.roadmap-editor label{display:grid;gap:6px;font-size:14px}.roadmap-editor input:not([type=checkbox]),.roadmap-editor select{padding:9px;border:1px solid var(--app-field-border);border-radius:6px;background:var(--app-field);color:var(--app-ink);font:inherit;min-width:140px;min-height:40px}.roadmap-editor fieldset{border:1px solid var(--app-field-border);border-radius:6px;min-width:0}.roadmap-editor .roadmap-checkbox{display:flex;align-items:center;gap:8px;padding:6px}.roadmap-editor input[type=checkbox]{accent-color:var(--app-cobalt-ink);width:18px;height:18px}
+ @media(max-width:700px){.roadmap-page{padding:16px}.roadmap-heading{align-items:start}.roadmap-heading h1{font-size:24px}.roadmap-desktop,.roadmap-instructions,.roadmap-zoom{display:none}.roadmap-mobile{display:grid;gap:12px;margin-top:16px}.roadmap-mobile article{border:1px solid var(--app-rule);border-radius:8px;padding:12px;min-width:0;background:var(--app-column);overflow-wrap:anywhere}.roadmap-mobile .roadmap-label{padding:0}.roadmap-mobile p{font-size:13px;color:var(--app-muted);margin:8px 0 0;line-height:1.5}.roadmap-mobile-initiative{background:var(--app-paper-deep)!important}.roadmap-editor{padding:14px}.roadmap-editor form,.roadmap-editor label{width:100%}.roadmap-editor input,.roadmap-editor select{max-width:100%;box-sizing:border-box}.roadmap-editor .roadmap-checkbox{width:auto}.roadmap-editor .roadmap-heading button{font-size:13px}}
+diff --git a/tests/e2e/roadmap-journey.mjs b/tests/e2e/roadmap-journey.mjs
+index 7111bbe8..328b14c2 100644
+--- a/tests/e2e/roadmap-journey.mjs
++++ b/tests/e2e/roadmap-journey.mjs
+@@ -15,13 +15,15 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
+     ['Both dates',{startDate:day(today,-10),targetDate:day(today,20)}],
+     ['Target only',{targetDate:day(today,15)}],
+     ['Start only',{startDate:day(today,-5)}],['No dates',{}],
++    ['One day',{startDate:today,targetDate:today}],['Undated milestone',{}],
+   ]){
+     const name='synthetic-vector-2040 '+suffix;
+     const state=await api('/settings/projects','POST',{name,leadOperatorId:memberId,...dates});
+     const project=state.projects.find(p=>p.name===name);assert(project);named.push(project);
+     await api('/issues','POST',{teamId:team.id,projectId:project.id,title:'synthetic-vector-2041 '+suffix});
+   }
+-  const [both,target,start,none]=named;
++  const [both,target,start,none,oneDay,undatedMilestone]=named;
++  await api('/settings/projects/'+undatedMilestone.id+'/milestones','POST',{name:'synthetic-vector-2049',targetDate:day(today,9)});
+   await api('/settings/projects/'+both.id,'PATCH',{lifecycle:'active'});
+   await api('/settings/projects/'+both.id+'/milestones','POST',{name:'synthetic-vector-2042',targetDate:day(today,7)});
+   const labels=await api('/settings/labels','POST',{name:'synthetic-vector-2043',color:'#405080',projectsEnabled:true});
+@@ -41,6 +43,12 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
+   assert.equal(await row(none.id).count(),0);
+   await memberPage.locator('[data-unscheduled-project="'+none.id+'"]').waitFor();
+   await memberPage.getByRole('img',{name:'Milestone synthetic-vector-2042 '+day(today,7),exact:true}).waitFor();
++  const undatedMarker=memberPage.getByRole('img',{name:'Milestone synthetic-vector-2049 '+day(today,9),exact:true});
++  await undatedMarker.waitFor();assert(await undatedMarker.isVisible());
++  assert.equal(await row(undatedMilestone.id).getAttribute('data-start-date'),'');
++  assert.equal(await row(undatedMilestone.id).getAttribute('data-target-date'),'');
++  assert.equal(await row(undatedMilestone.id).locator('.roadmap-mark').count(),0,'milestone does not invent project dates');
++  assert(await memberPage.locator('[data-unscheduled-project="'+undatedMilestone.id+'"]').isVisible());
+   assert.equal(await memberPage.locator('[data-roadmap-initiative="'+initiative.id+'"]').getAttribute('data-date-kind'),'interval');
+   assert.equal(await row(both.id).locator('.roadmap-mark--active').count(),1);
+   await row(both.id).getByRole('button',{name:'Drag start date for '+both.name,exact:true}).focus();
+@@ -56,7 +64,7 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
+     const {first,span}=await geometry(),fraction=(Date.parse(date+'T00:00:00Z')/86400000-first)/span;
+     await memberPage.mouse.move(from.x+from.width/2,from.y+from.height/2);await memberPage.mouse.down();
+     await memberPage.mouse.move(from.x+from.width/2+12,from.y+from.height/2+3,{steps:6});
+-    await track.evaluate((element,fraction)=>{element.closest('.roadmap-scroll').scrollLeft=element.offsetLeft+element.clientWidth*fraction-300;},fraction);
++    await track.evaluate((element,fraction)=>{element.scrollIntoView({block:'nearest'});element.closest('.roadmap-scroll').scrollLeft=element.offsetLeft+element.clientWidth*fraction-300;},fraction);
+     const box=await track.boundingBox();assert(box);
+     const pending=memberPage.waitForResponse(r=>new URL(r.url()).pathname.startsWith('/api/roadmap/projects/')&&r.request().method()==='PATCH');
+     await memberPage.mouse.move(box.x+box.width*fraction,box.y+box.height/2,{steps:12});
+@@ -95,7 +103,21 @@ export async function roadmapJourney({page,memberPage,memberContext,base,api,cap
+   before=after;
+   await dragTo(row(both.id).getByRole('button',{name:'Drag target date for '+both.name,exact:true}),row(both.id).locator('.roadmap-track'),day(before.targetDate,1));
+   after=await read(both.id);assert.equal(after.startDate,before.startDate);assert.equal(after.targetDate,day(before.targetDate,1));assert.equal(after.activity.length,before.activity.length+1);
+-  console.log('Roadmap body and endpoint drags accepted');
++  // A one-day interval's center must hit its body even when date handles
++  // would overlap it. Use a physical mouse drag, retaining both dates and
++  // the zero-day duration, then prove both endpoint controls remain usable.
++  before=await read(oneDay.id);
++  await dragTo(row(oneDay.id).getByRole('button',{name:/^Move /}),row(oneDay.id).locator('.roadmap-track'),day(today,4));
++  after=await read(oneDay.id);assert.notEqual(after.startDate,before.startDate);assert.equal(after.targetDate,after.startDate);assert.equal(after.activity.length,before.activity.length+1);
++  before=after;
++  await dragTo(row(oneDay.id).getByRole('button',{name:'Drag target date for '+oneDay.name,exact:true}),row(oneDay.id).locator('.roadmap-track'),day(before.targetDate,14));
++  after=await read(oneDay.id);assert.equal(after.startDate,before.startDate);assert.equal(after.targetDate,day(before.targetDate,14));assert.equal(after.activity.length,before.activity.length+1);
++  before=after;
++  await dragTo(row(oneDay.id).getByRole('button',{name:'Drag start date for '+oneDay.name,exact:true}),row(oneDay.id).locator('.roadmap-track'),day(before.startDate,-4));
++  after=await read(oneDay.id);assert.equal(after.startDate,day(before.startDate,-4));assert.equal(after.targetDate,before.targetDate);assert.equal(after.activity.length,before.activity.length+1);
++  // Restore the main interval as the input for the existing keyboard proof.
++  after=await read(both.id);
++  console.log('Roadmap body and endpoint drags accepted, including a one-day body');
+   await memberPage.getByRole('button',{name:'Week',exact:true}).click();
+   before=after;const body=row(both.id).getByRole('button',{name:/^Move /});await body.focus();
+   const keyboard=memberPage.waitForResponse(r=>new URL(r.url()).pathname==='/api/roadmap/projects/'+both.id&&r.request().method()==='PATCH');

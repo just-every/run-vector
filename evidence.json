@@ -7,16 +7,46 @@
       "sha256": "8e97b1dab1a7e6e537eed947a8b4d9685469be274be9eede348dbb1e01dcdace"
     },
     {
-      "blob": "91a5f3fc3f137e790273405fa941b55f2d20f6f1",
-      "bytes": 6306,
+      "blob": "9c56610181ed86cf86469c3dd35a07e2deee87b5",
+      "bytes": 12243,
       "path": "REPORT.md",
-      "sha256": "5002cd3fa73ced665c9c49ab8789d166473ba4b9dc267eeeb0dd8bffc476c709"
+      "sha256": "3effd29dddcfacc003b921fb441252246c0f5d60d040d054ef437c4b7002265a"
     },
     {
-      "blob": "0c965b4079988a259304312bcbe8797d85bf22d6",
-      "bytes": 734,
+      "blob": "1febe14a21e357bbc3459d8409a8ebac5839ce83",
+      "bytes": 35180,
+      "path": "build.log",
+      "sha256": "30b6051035625631747bfff792d58fbb2840f0a13c96f0ff6f7888d34ba5d668"
+    },
+    {
+      "blob": "350440d654124383bacc00f1ef38a4a07955cf2d",
+      "bytes": 1769824,
+      "path": "ci-job-128891744674.log",
+      "sha256": "d9837cc2ce3b422849bef7bae7220aad55625ec7edec1f81571f0fe5c00b5382"
+    },
+    {
+      "blob": "8ff66b0774fc71792b697c018b7ff489016b4acc",
+      "bytes": 12899950,
+      "path": "ci-job-128891744713.log",
+      "sha256": "e76537f2ec0b1693e8559c4dae94099a930a719d9c6f29e64129ade63e39cfd1"
+    },
+    {
+      "blob": "baee2faa3a59df0f5f3054f422dc4ce79bf4d95b",
+      "bytes": 25423,
+      "path": "ci-jobs.json",
+      "sha256": "16c3a47872ab822ddb32f2d64c38e5eaff6bf85d8b2a3cc0b3d8491be4024242"
+    },
+    {
+      "blob": "49a936db7ba6ae99a88a62fa573ddf072e9ceef2",
+      "bytes": 33433,
       "path": "ci-receipt.json",
-      "sha256": "c5efecd08b4279c3bf1d28c3568a7498986edff8df2fa8a8087798a6f43a61cf"
+      "sha256": "c519bda06942cfc8ab94e618cda90968b289103e75a2671262e1fb24660c1a45"
+    },
+    {
+      "blob": "d4a17d43c9869d72d96cab0470b69e53938ef0ac",
+      "bytes": 408,
+      "path": "ci-retry-receipt.json",
+      "sha256": "49c4a8f3e24e30a0f6ab21085c7d25f05cf8d31d686b4e33e66f8a2119a3269d"
     },
     {
       "blob": "2c4cfd77e4f03f8c04d3b55288d8940de7df4392",
@@ -31,10 +61,28 @@
       "sha256": "ddadcae2ced77ea88675f6c5fec344cf4b1b44bcfdc5c0c6c77cb776dbc80fe1"
     },
     {
-      "blob": "fb23f6eff7eb3ed5e6686cf9bddcda8d4855f701",
-      "bytes": 1413,
+      "blob": "b9d1f860e57f786e584ff1d000d6f37f0c22f138",
+      "bytes": 18295,
+      "path": "fix2.patch",
+      "sha256": "67abcb8a6fc4fac719e4fc4715e978d386f5582509b2e42f122300fa096558fd"
+    },
+    {
+      "blob": "4c8c9d0cd72184e7e7c65883a3729bf7c1bde849",
+      "bytes": 336,
+      "path": "initial-browser.log",
+      "sha256": "38ab1073ec9f397811a15d6415e0fc9df2b4d0b9f46156f954008990c5952b32"
+    },
+    {
+      "blob": "f7066563d6fe3f60ad8009312a5c774ca90a3cfa",
+      "bytes": 869,
+      "path": "initial-worker.log",
+      "sha256": "949f54092dcf099fcd531e65fc14ccce5181c62bac6a93974792f5233fd65ded"
+    },
+    {
+      "blob": "56636e5061d7cdcb0dc02d6fb5c420c8dc5574c9",
+      "bytes": 1976,
       "path": "mechanical-receipt.json",
-      "sha256": "7ec47762c37d47d3636f6e1c9df300d086ee01ae0838b904ab79a7096075bad2"
+      "sha256": "92c486c8e2f830ea34ebbdd9c8298f31b1acbd6c4aa69a89dfac0ed21fc71570"
     },
     {
       "blob": "d5ff74cb44643d47341a220887c2dfd1bd1c9204",
@@ -67,10 +115,10 @@
       "sha256": "5c6bc2e1f1e007dc3082374a59dc4d914af47c3ba15b3b6c6f272e327ae5d58e"
     },
     {
-      "blob": "0cc508553197b4b98ceec0f3f84113207abe1329",
-      "bytes": 568,
+      "blob": "e83a8f0dd57f9d85315cb3d3efae6d86861c9f6f",
+      "bytes": 1410,
       "path": "product-receipt.json",
-      "sha256": "a23c4e50351264ac3784acc62b42b75c9bb9aeda0d9181a808a49880137787dc"
+      "sha256": "e3d490408004f31953252559adcdc20a2c7a9d416db32d3a46d3699e9c33c01d"
     },
     {
       "blob": "80f9eb857f6c97b2280ac0a2e2547a0209f26b6c",
@@ -107,6 +155,18 @@
       "bytes": 577,
       "path": "roadmap-journey.log",
       "sha256": "97d1541108a9a89e0966959704e835f44fb2ba8cc160c3346327153b6b713600"
+    },
+    {
+      "blob": "c60af2ccb02987e2574881ff8834f03d7e745f52",
+      "bytes": 364,
+      "path": "role-matrix-diagnostic.json",
+      "sha256": "6a0b40fd20eb81abe1dee53bf2119112db2d3c33d29d268313676be9dbd3494e"
+    },
+    {
+      "blob": "70d6903a1b9ca8f15fd9e63922a3bec1bfd9f036",
+      "bytes": 351,
+      "path": "role-matrix-diagnostic.log",
+      "sha256": "d68614ad59994f6999fb6d5c54e9f0f21436f55f80a4d00b40112545bfa5dc21"
     },
     {
       "blob": "ae80d24b979fac1534385ae1499076f88f7a47f3",

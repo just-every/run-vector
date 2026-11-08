@@ -1,0 +1,15 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts -- tests/worker/roadmap.test.ts tests/worker/role-viewer-commands.test.ts
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+ ❯ tests/worker/data-http.test.ts (1 test | 1 failed) 180188ms
+   × [AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority 180186ms
+Using secrets defined in .dev.vars
+ ELIFECYCLE  Command failed with exit code 143.
