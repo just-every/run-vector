@@ -9506,7 +9506,7 @@
       "executable": false
     },
     "tests/worker/dependencies.test.ts": {
-      "sha256": "b10ee7d744d1107544cb018ed67579a7ef91395cb5362e000c4c5864b228fb20",
+      "sha256": "cd911d626f8cf9bb89c603fcb5277a90c86969f71448a1f8115b7975d3f4a898",
       "executable": false
     },
     "tests/worker/description-history.test.ts": {
