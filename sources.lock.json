@@ -8402,7 +8402,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-pagination.mjs": {
-      "sha256": "d44b91f19032fb124ceec0e95145278942eb771e7cad1b1908abdc106bb693fe",
+      "sha256": "6fdf6d7ecea8007688cde9f5e553466f14bd02a36bbc02912a6bdd0c26e7dca0",
       "executable": false
     },
     "tests/e2e/collaboration-preferences.mjs": {
