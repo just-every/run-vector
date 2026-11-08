@@ -169,14 +169,19 @@
     {
       "id": "transactional-email",
       "required": true,
-      "why": "BASE-ACCESS-001 requires authentication and invitation mail; NOTIFY-006 additionally permits minimal assignment and direct-mention email through the same declared transactional provider.",
+      "why": "BASE-ACCESS-001 requires authentication and invitation mail; NOTIFY-006 additionally permits minimal assignment and direct-mention email through the same declared transactional provider. INIT-004 additionally permits an explicitly selected weekly leadership digest of currently visible initiative and project metadata, computed risks and completed milestones, with source links and no descriptions, comments or customer text.",
       "data": [
         "operator email address",
         "single-use sign-in URL",
         "issue title",
         "issue identifier",
         "actor display value",
-        "authenticated canonical app link"
+        "authenticated canonical app link",
+        "initiative name, status and target date",
+        "project name, lifecycle, computed health and target date",
+        "previous target date when slipped",
+        "computed risk summary and source issue identifiers",
+        "completed milestone name and source link"
       ],
       "adapters": [
         "mail.sender.v1"
@@ -200,7 +205,7 @@
     {
       "id": "slack-direct-messages",
       "required": false,
-      "why": "SLACK-004: a member looks up and confirms their own Slack account by their sign-in email, then chooses Slack direct messages for assignments and mentions; signed Assign to me and Change status requests return to Vector.",
+      "why": "SLACK-004: a member looks up and confirms their own Slack account by their sign-in email, then chooses Slack direct messages for assignments and mentions; signed Assign to me and Change status requests return to Vector. INIT-004 additionally permits an explicitly selected weekly leadership digest of currently visible initiative and project metadata, computed risks and completed milestones, with source links and no descriptions, comments or customer text.",
       "data": [
         "operator email address",
         "notification kind",
@@ -210,7 +215,12 @@
         "workflow status names and status change",
         "due date",
         "issue version",
-        "authenticated canonical app link"
+        "authenticated canonical app link",
+        "initiative name, status and target date",
+        "project name, lifecycle, computed health and target date",
+        "previous target date when slipped",
+        "computed risk summary and source issue identifiers",
+        "completed milestone name and source link"
       ],
       "adapters": [
         "vector.slack-web-api.v1"
