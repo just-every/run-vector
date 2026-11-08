@@ -23,6 +23,11 @@ export async function receiveSlackEvent(env:WorkerBindings,request:Request){
  if(verification.success)return {challenge:verification.data.challenge};
  const uninstall=z.object({type:z.literal('event_callback'),event:z.object({type:z.enum(['app_uninstalled','tokens_revoked'])})}).safeParse(payload);
  if(uninstall.success)return providerUninstall(env,signer);
+ const echo=z.object({type:z.literal('event_callback'),team_id:z.string(),event:z.object({type:z.enum(['message','app_mention']),bot_id:z.string().min(1)})}).safeParse(payload);
+ if(echo.success){
+  if(await env.DB.prepare('SELECT slack_team_id FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(signer.workspace).first<string>('slack_team_id')!==echo.data.team_id)throw new IntegrationError(403,'slack_workspace_mismatch');
+  return {ok:true,ignored:true};
+ }
  const parsed=callback.safeParse(payload);
  if(!parsed.success)throw new IntegrationError(400,'slack_event_unsupported');
  const {event,event_id,team_id}=parsed.data;

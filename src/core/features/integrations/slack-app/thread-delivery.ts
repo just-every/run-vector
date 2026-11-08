@@ -21,8 +21,11 @@ export async function threadTarget(env:WorkerBindings,workspace:string,id:string
  JOIN main.operators o ON o.id=l.operator_id AND o.workspace_id=l.workspace_id AND o.removed_at IS NULL AND o.role IN('owner','admin','member')
  JOIN vector_auth_operators a ON a.operator_id=o.id JOIN oa_operators native ON native.id=a.auth_id AND native.status='active'
  JOIN vector_channel_bindings b ON b.destination_id=m.destination_id AND b.workspace_id=m.workspace_id AND b.channel_id=m.channel_id AND b.scope='team' AND b.object_id=i.team_id AND b.suspended_reason IS NULL
+ JOIN main.operators binder ON binder.id=b.created_by AND binder.removed_at IS NULL
+ JOIN vector_auth_operators binder_map ON binder_map.operator_id=binder.id JOIN oa_operators binder_native ON binder_native.id=binder_map.auth_id AND binder_native.status='active'
  JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.kind='slack' AND d.enabled=1 AND d.revoked_at IS NULL
  WHERE e.id=? AND m.workspace_id=? AND e.held=0
+ AND (e.kind<>'reply' OR EXISTS(SELECT 1 FROM issue_comments c WHERE c.id=e.source_id AND c.issue_id=m.issue_id AND c.parent_comment_id=m.root_comment_id AND c.deleted_at IS NULL AND c.body IS NOT NULL))
  AND NOT EXISTS(SELECT 1 FROM vector_http_restore)
  AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=m.workspace_id AND h.id=e.id)
  AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=m.workspace_id AND h.id=e.id)`).bind(id,workspace).first<Target>();
@@ -43,8 +46,8 @@ async function threadBody(env:WorkerBindings,target:Target){
   text=comment.name+': '+comment.body;
  }
  // Slack's documented text limit is 40,000; refuse rather than truncate a reply.
- if(text.length>39_000)return null;
- return JSON.stringify({channel:target.channel_id,thread_ts:target.thread_ts,text:escape(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false,client_msg_id:target.id});
+ if(escape(text).length>39_000)return null;
+ return JSON.stringify({channel:target.channel_id,thread_ts:target.thread_ts,text:escape(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false});
 }
 export async function enqueueThreadMessages(env:WorkerBindings,workspace:string,service:DeliveryService){
  const rows=(await env.DB.prepare('SELECT e.id FROM vector_slack_thread_events e JOIN vector_slack_threads m ON m.id=e.thread_id WHERE m.workspace_id=? AND m.held=0 AND e.held=0 AND e.enqueued_at IS NULL ORDER BY e.created_at,e.id LIMIT 20').bind(workspace).all<{id:string}>()).results;

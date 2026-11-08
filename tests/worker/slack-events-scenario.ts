@@ -23,7 +23,7 @@ export async function setupSlackIntake(f:Awaited<ReturnType<typeof setupIntegrat
  const payload={type:'event_callback',team_id:slackIntakeFixture.team,event_id:'synthetic-vector-33002',event:{type:'app_mention',ts:'1730000000.000001',user:slackIntakeFixture.user,channel:slackIntakeFixture.channel,text:'<@'+slackIntakeFixture.bot+'> Fix the intake defect'}};
  return {read,send,snapshot,payload};
 }
-export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string,member:string,calls:{method:string;body:any}[]){
+export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string,member:string,calls:{method:string;body:any}[],threadEdge:{status:number;permalink?:string;onInfo?:(()=>Promise<void>)}){
  const intake=await setupSlackIntake(f,secret,operatorId),{read,send,snapshot,payload}=intake;
  const before=await snapshot();
  expect(await read(await send({type:'url_verification',challenge:'synthetic-vector-33003'}))).toEqual({challenge:'synthetic-vector-33003'});
@@ -40,7 +40,7 @@ export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrat
  await read(await send(unlinked),403);expect(await snapshot()).toEqual(delivered);
  const unmapped={...payload,event_id:'synthetic-vector-33006',event:{...payload.event,channel:slackIntakeFixture.unmapped}};
  await read(await send(unmapped),403);expect(await snapshot()).toEqual(delivered);
- await slackThreadSync(f,intake,secret,member,created.identifier,calls);
+ await slackThreadSync(f,intake,secret,member,created.identifier,calls,threadEdge);
  // Each signed action re-resolves the target's current native role and active state.
  const other=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-slack-guests',identifierPrefix:'SGUEST'})).teams.find(team=>team.name==='synthetic-vector-slack-guests')!;
  const guest=await invite('synthetic-vector-intake-guest@vector.test',f.cookie),guestId=await actor(guest);

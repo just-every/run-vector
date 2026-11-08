@@ -3,7 +3,7 @@ import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
 import type {WorkerBindings} from '../../../app/bindings';
 import {receiveThreadMessage,threadMessage} from './thread-mapping';
 import {IntegrationError} from '../errors';
-const shortcut=z.object({type:z.literal('message_action'),callback_id:z.literal('vector_create_issue'),trigger_id:z.string().min(1).max(500),team:z.object({id:z.string().max(100)}),user:z.object({id:z.string().max(100)}),channel:z.object({id:z.string().max(100)}),message:z.object({user:z.string().min(1).max(100),ts:z.string(),text:z.string(),thread_ts:z.string().optional()})});
+const shortcut=z.object({type:z.literal('message_action'),callback_id:z.literal('vector_create_issue'),trigger_id:z.string().min(1).max(500),team:z.object({id:z.string().max(100)}),user:z.object({id:z.string().max(100)}),channel:z.object({id:z.string().max(100)}),message:z.object({bot_id:z.string().optional(),user:z.string().min(1).max(100),ts:z.string(),text:z.string(),thread_ts:z.string().optional()})});
 /** The signing door dispatches shortcuts before writing its legacy button keys.
  * The acting linked member is the native author; the original Slack author is retained. */
 export async function receiveSlackShortcut(env:WorkerBindings,signer:{workspace:string;encrypted:string},payload:unknown){

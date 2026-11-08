@@ -9,6 +9,9 @@ export async function slackAppArchive(f:Awaited<ReturnType<typeof setupIntegrati
  const encrypted=(await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").all<{encrypted:string}>()).results.map(row=>row.encrypted);
  expect(encrypted.length).toBeGreaterThan(0);
  const receipts=(await env.DB.prepare('SELECT * FROM vector_slack_event_receipts ORDER BY event_key').all()).results;
+ const threadTables=['vector_slack_threads','vector_slack_thread_messages','vector_slack_thread_events'];
+ const threads=await env.DB.batch(threadTables.map(table=>env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1')));
+ expect(threads[0].results.length).toBeGreaterThan(0);
  const exported=await httpExport(f.call),bytes=JSON.stringify(exported);
  const records=await compactSlackArchive(exported);
  for(const value of [...secrets,...encrypted])expect(bytes).not.toContain(value);
@@ -20,6 +23,8 @@ export async function slackAppArchive(f:Awaited<ReturnType<typeof setupIntegrati
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_slack_member_links').all()).results).toEqual([]);
  expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT * FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").all()).results).toEqual([]);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM vector_slack_event_receipts ORDER BY event_key').all()).results).toEqual(receipts);
+ const restoredThreads=await destination.ARCHIVE_TARGET_DB.batch(threadTables.map(table=>destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1')));
+ for(let index=0;index<threadTables.length;index++)expect(restoredThreads[index].results).toEqual(threads[index].results.map(row=>index===1?row:{...row,held:1}));
  expect((await call('/settings/integrations/slack/app/install','POST',{})).status).toBe(409);
  // The restored public Events door cannot authenticate with an exported secret.
  const response=await f.app.request(origin+'/api/integrations/slack/events',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'url_verification',challenge:'synthetic-vector-33020'})},targetBindings);expect(response.status).toBe(401);

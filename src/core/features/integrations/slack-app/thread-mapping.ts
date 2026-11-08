@@ -1,3 +1,6 @@
+import {slackPermalink} from './thread-source';
+import {restoredEffectsHeld} from '../../data/restore-authority';
+import {threadAllocation} from './thread-allocation';
 import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {createUlid} from '../../../shared/ids';
@@ -17,6 +20,7 @@ type Signer={workspace:string;encrypted:string};
 export type ThreadMapping={id:string;issue_id:string;root_comment_id:string;identifier:string};
 const refused=()=>new IntegrationError(403,'slack_thread_unavailable');
 export async function threadAdmission(env:WorkerBindings,signer:Signer,team:string,message:ThreadMessage){
+ if(await restoredEffectsHeld(env.DB)||await env.DB.prepare('SELECT 1 FROM vector_http_restore').first())throw refused();
  const mappings=(await env.DB.prepare("SELECT b.destination_id,b.object_id,s.updated_at FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.enabled=1 AND d.revoked_at IS NULL JOIN teams t ON t.id=b.object_id AND t.workspace_id=b.workspace_id AND t.archived_at IS NULL JOIN vector_slack_installations s ON s.workspace_id=b.workspace_id AND s.slack_team_id=? AND s.enabled=1 WHERE b.workspace_id=? AND b.channel_id=? AND b.scope='team' AND d.kind='slack' AND b.suspended_reason IS NULL").bind(team,signer.workspace,message.channel).all<{destination_id:string;object_id:string;updated_at:string}>()).results;
  if(mappings.length!==1)throw new IntegrationError(403,'slack_channel_unmapped');
  const link=await env.DB.prepare("SELECT l.operator_id,l.linked_at FROM vector_slack_member_links l JOIN operators o ON o.id=l.operator_id AND o.workspace_id=l.workspace_id AND o.removed_at IS NULL AND o.role IN('owner','admin','member') JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE l.workspace_id=? AND l.slack_team_id=? AND l.slack_user_id=?").bind(signer.workspace,team,message.user).first<{operator_id:string;linked_at:string}>();
@@ -49,7 +53,7 @@ export async function receiveThreadMessage(env:WorkerBindings,signer:Signer,team
   const db=mutationDatabase(visibilityDatabase(env.DB,link.operator_id),link.operator_id,undefined,access,authority.fence);
   try{
    const id=await addComment(db,mapping.issue_id,link.operator_id,message.text,mapping.root_comment_id,(transaction,id)=>[
-    transaction.prepare('SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_slack_threads WHERE id=? AND held=0 AND issue_id=?) THEN 1 ELSE json(\'Slack mapping changed\') END').bind(mapping.id,mapping.issue_id),
+    transaction.prepare('SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_slack_threads m JOIN issues i ON i.id=m.issue_id WHERE m.id=? AND m.held=0 AND m.issue_id=? AND i.team_id=?) THEN 1 ELSE json(\'Slack mapping changed\') END').bind(mapping.id,mapping.issue_id,binding.object_id),
     transaction.prepare('INSERT INTO vector_slack_thread_messages(thread_id,message_ts,comment_id) VALUES(?,?,?)').bind(mapping.id,message.ts,id),
     transaction.prepare('DELETE FROM vector_slack_thread_events WHERE id=?').bind(id+':slack-thread'),receipt(transaction,mapping.identifier),
    ]);
@@ -61,7 +65,7 @@ export async function receiveThreadMessage(env:WorkerBindings,signer:Signer,team
  const existing=existingIdentifier?await visible.prepare('SELECT id,identifier FROM issues WHERE identifier=? AND team_id=?').bind(existingIdentifier,binding.object_id).first<{id:string;identifier:string}>():null;
  if(existingIdentifier&&!existing)throw refused();
  const text=message.text.replace(/^\s*<@[A-Z0-9]+>\s*/,'').trim();
- const permalink='https://app.slack.com/archives/'+message.channel+'/p'+message.ts.replace('.','');
+ const permalink=await slackPermalink(env,signer.workspace,message.channel,message.ts,message.thread_ts);
  const body=message.text+'\n\nSlack author: '+(message.source_user??message.user)+'\n'+permalink;
  const input=createIssueInputSchema.safeParse({teamId:binding.object_id,title:text.slice(0,240),description:body});
  if(!input.success)throw new IntegrationError(400,'slack_issue_invalid');
@@ -84,7 +88,12 @@ export async function receiveThreadMessage(env:WorkerBindings,signer:Signer,team
   if(existing){
    const event={id:activityId,issueId:existing.id,actor:link.operator_id,at};
    await db.batch([...writes(db,existing.identifier),...followStatements(db,event,[link.operator_id]),...commentStatements(db,event),...finalizeEvent(db,event)]);identifier=existing.identifier;
-  }else identifier=(await createIssueRecord(db,{actorOperatorId:link.operator_id,input:input.data,now,commitStatements:writes})).identifier;
+  }else {
+   for(let attempt=0;;attempt++){
+    try{identifier=(await createIssueRecord(db,{actorOperatorId:link.operator_id,input:input.data,now,allocation:await threadAllocation(db,binding.object_id,at),commitStatements:writes})).identifier;break;}
+    catch(error){if(attempt>=2||!String(error).includes('A selected option became unavailable')||await replay())throw error;}
+   }
+  }
   return {ok:true,identifier,rootCommentId:root};
  }catch(error){if(await replay()||await env.DB.prepare('SELECT 1 FROM vector_slack_threads WHERE workspace_id=? AND slack_team_id=? AND channel_id=? AND thread_ts=?').bind(signer.workspace,team,message.channel,rootTs).first())throw new IntegrationError(409,'slack_event_replayed');throw error;}
 }
