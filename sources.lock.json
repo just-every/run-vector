@@ -2034,7 +2034,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
+      "sha256": "a445d794da2ab89e8fedef6b4ce9f9f0bfd1aed220e93705c2ed622335a8388c",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -6074,7 +6074,7 @@
       "executable": false
     },
     "src/core/features/issues/service.ts": {
-      "sha256": "5b3bdd1d43d6d2739d666165b32cb544648b46eb86883eee2727d793ec4a6409",
+      "sha256": "5ad3b89b6ec6e884718d9ff408c54291b6b56871819b72dbd97cf7373b612811",
       "executable": false
     },
     "src/core/features/issues/ui/activity-changes.ts": {
@@ -7158,7 +7158,7 @@
       "executable": false
     },
     "src/core/features/settings/removal.ts": {
-      "sha256": "22a5139c0bb3d53d88f2a649b91212e3aa1207a12e2c0e0f11befafb830da81d",
+      "sha256": "6183d6cecb9c904586649cd34c3cf8ebf7f732b76bd41ab20c4372b51bedbb10",
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
@@ -9334,7 +9334,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "08cc0722fc0aa7b7d897b9b674628cef4bdc1aca8f571236f0a01bc82ac571ce",
+      "sha256": "6d5eeacbe45556bbf7e1644e7afe4430b64e35733b1386c7bd5926cf642a65ef",
       "executable": false
     },
     "tests/worker/current-disjoint.test.ts": {
@@ -10026,7 +10026,7 @@
       "executable": false
     },
     "tests/worker/triage-upgrade.ts": {
-      "sha256": "e5f71a4de946053df4b0283b44ddae50066685f38c4f02f71d3dd156a00e2e6a",
+      "sha256": "6421abe81ba2f6624ff868540a8bad7a2b3a552a908b8527bc56b166773ef7cd",
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {

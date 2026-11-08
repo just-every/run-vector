@@ -81,7 +81,7 @@ contractWith(
 contractWith(
   it,
   "NOTIFY-006 NOTIFY-004 OPS-004 BASE-DATA-003",
-  "final admission observes opt-out and issue mute, suspension cancels delivery while retaining personal choices and Inbox history, and late settlement cannot resurrect deleted issues",
+  "final admission observes opt-out and issue mute, suspension clears recipient custody while retaining personal choices, and late settlement cannot resurrect deleted issues",
   async () => {
     const f = await collaborationFixture();
     let calls = 0;
@@ -127,7 +127,7 @@ contractWith(
     await f.pending({}, remote);
     await drainNotificationMail(bindings);
     expect(await count("notification_development_mail")).toBe(1);
-    const retainedTables=['notification_preferences','issue_notification_mutes','notifications'];
+    const retainedTables=['notification_preferences','issue_notification_mutes'];
     const retained=await Promise.all(retainedTables.map(table=>env.DB.prepare('SELECT * FROM '+table+' ORDER BY rowid').all()));
     await removeOperator(env.DB, f.owner, f.bob);
     for(let index=0;index<retainedTables.length;index++)expect((await env.DB.prepare('SELECT * FROM '+retainedTables[index]+' ORDER BY rowid').all()).results).toEqual(retained[index].results);
@@ -135,6 +135,7 @@ contractWith(
       "notification_deliveries",
       "notification_development_mail",
       "notification_delivery_attempts",
+      "notifications",
     ])
       expect(await count(table), table).toBe(0);
   },

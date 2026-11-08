@@ -88,10 +88,14 @@ export async function removeOperator(
       .bind(target, id, target, id, id, at, target, id),
   ];
   statements.push(db.prepare(`DELETE FROM team_join_requests WHERE requester_id=? AND ${receipt}`).bind(target,id));
-  // Cancel queued personal delivery while retaining personal choices, follows
-  // and history. Active-recipient predicates also fence future admission.
-  for (const table of ["issue_reminders", "notification_candidates", "notification_deliveries"]) {
+  // Clear recipient custody and active subscriptions while retaining personal
+  // settings, saved views, attribution and terminal delivery receipts.
+  // Active-recipient predicates also fence future admission.
+  for (const table of ["issue_reminders", "notifications", "document_notifications", "project_notifications", "notification_candidates", "notification_deliveries"]) {
     statements.push(db.prepare(`DELETE FROM ${table} WHERE recipient_id=? AND ${receipt}`).bind(target, id));
+  }
+  for (const table of ["document_followers", "subject_subscriptions"]) {
+    statements.push(db.prepare(`DELETE FROM ${table} WHERE operator_id=? AND ${receipt}`).bind(target, id));
   }
   statements.push(
     db.prepare(`UPDATE operators SET removed_at=?,suspended_at=?,suspended_by=?,updated_at=? WHERE id=? AND ${receipt}`)
