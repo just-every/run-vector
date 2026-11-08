@@ -4274,7 +4274,7 @@
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
-      "sha256": "41137f6879595799df196dbd58179da804634b66f8fea1201c27e9d7e5dc5786",
+      "sha256": "7785fbf9c00fcd2b2c054378e4e36edc750e17295457901aa82d60b1c521fa33",
       "executable": false
     },
     "src/core/features/agent-door/schemas.ts": {
@@ -6409,6 +6409,10 @@
       "sha256": "a694e69d25547c617e3d452dffc72434046adea6e53a05078c55c37cb10cd595",
       "executable": false
     },
+    "src/core/features/member-lifecycle/agent-credentials.ts": {
+      "sha256": "c2a30582c568dbbe3ce96c1c1423275d52c99411054b87628717cb54100bb838",
+      "executable": false
+    },
     "src/core/features/member-lifecycle/directory.ts": {
       "sha256": "47677fce7064e1d23902ef4b2a18b422958d169479e23de3ccf5d3c443e99bef",
       "executable": false
@@ -7730,7 +7734,7 @@
       "executable": false
     },
     "src/core/features/team-membership/service.ts": {
-      "sha256": "132cbfbd684349e5be1d1800f199c8652d0231fcbe0e4708e91c85bf5ba48180",
+      "sha256": "d8714dc7f7c75b626d7cc2c30b80a103d294e7737872078ecbe5657c58029609",
       "executable": false
     },
     "src/core/features/team-move/errors.ts": {
@@ -8889,6 +8893,10 @@
       "sha256": "31d830eda6226a8ce41696f99848f78c84d5e915a84854c8f9379c4118eab8dc",
       "executable": false
     },
+    "tests/e2e/member-suspension-journey.mjs": {
+      "sha256": "535a281536f2cbd264a48e2006f1948989482259eb6959d2e9335688c2254f8f",
+      "executable": false
+    },
     "tests/e2e/mutation-refresh-runtime.mjs": {
       "sha256": "d81f0a82b9fe872f43473ea7a225a9caf125349a31f19799c4f3d06116f8bd39",
       "executable": false
@@ -9578,7 +9586,7 @@
       "executable": false
     },
     "tests/worker/imported-person-erasure.test.ts": {
-      "sha256": "871af6bebbfd632e219f749be55a1eb998cb6cf19f059a78144158246de19167",
+      "sha256": "83ce21aeb5da38fae487ae256961b2a51f84b85f07f8aee9947674fd7fd83544",
       "executable": false
     },
     "tests/worker/initiatives-scenario.ts": {
@@ -9702,7 +9710,7 @@
       "executable": false
     },
     "tests/worker/member-suspension.test.ts": {
-      "sha256": "5f47027c0dfc018550ea0171be89d8dc7f1d186015e26fb722a9da8fb8033f62",
+      "sha256": "6e1686b108a452c5cfd18803e61914bbd7c615bba46186b3a996c0e9c9ad587d",
       "executable": false
     },
     "tests/worker/my-work-tabs.test.ts": {
@@ -10003,6 +10011,10 @@
     },
     "tests/worker/subscriptions-scenario.ts": {
       "sha256": "8160d49a97eaaacd20346b344281a113224bcdae188cac1899a046acfb9676a1",
+      "executable": false
+    },
+    "tests/worker/suspension-agent-fixture.ts": {
+      "sha256": "449d8e73823b23a1e1abe4a3d9c9d37bf55a4687ca8bb8415266ee092c3bdaa3",
       "executable": false
     },
     "tests/worker/team-cycles-journey.ts": {

@@ -1,5 +1,6 @@
 import { env } from 'cloudflare:workers';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
+import { suspensionAgentFixture } from './suspension-agent-fixture';
 import { setupAdministration } from './administration-fixture';
 import { actor, bindings, confirm, invite, mailToken, origin, request, signIn } from './base-auth-fixture';
 import { createServerApp } from '../../src/core/app/server';
@@ -44,11 +45,17 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   const privateView = await json(await call(memberCookie,'/views','POST',{name:'synthetic-vector-9310',isShared:false,layout:'list',query:{team:team.id}}),201);
   const sharedView = await json(await call(memberCookie,'/views','POST',{name:'synthetic-vector-9311',isShared:true,layout:'list',query:{team:team.id}}),201);
   const project = (await json(await f.call('/settings/projects','POST',{name:'synthetic-vector-9312',leadOperatorId:member}))).projects.find((row:any)=>row.name==='synthetic-vector-9312');
+  const hiddenTeam = (await json(await f.call('/settings/teams','POST',{name:'synthetic-vector-9370',identifierPrefix:'SUSPH',isPrivate:true}))).teams.find((row:any)=>row.identifierPrefix==='SUSPH');
+  await json(await f.call(`/settings/teams/${hiddenTeam.id}/members/${member}`,'PUT',{role:'owner'}));
+  const hiddenIssue = await json(await call(memberCookie,'/issues','POST',{title:'synthetic-vector-9371',teamId:hiddenTeam.id,assigneeOperatorId:member}),201);
   const teamsBefore = await env.DB.prepare('SELECT * FROM team_members WHERE operator_id=? ORDER BY team_id').bind(member).all();
   const historyBefore = await env.DB.prepare('SELECT * FROM issue_comments WHERE actor_operator_id=? ORDER BY id').bind(member).all();
   expect((await api(token.token)).status).toBe(200);
   expect((await api(oauth.access_token)).status).toBe(200);
   expect((await mcp(token.token)).status).toBe(200);
+  const remote=await suspensionAgentFixture(member,email);
+  const seen=await remote.credential('synthetic-vector-9367'),unseen=await remote.credential('synthetic-vector-9368');
+  expect(await remote.call(seen)).toBe(200);
   const beforeCount = (await json(await f.call('/settings'))).operators.length;
   const refusedTables = ['operators','oa_operators','oa_sessions','oa_tokens','integration_tokens','vector_oauth_grants','member_lifecycle_events','audit_records','issues','saved_views','team_members'];
   const before = await snapshot(refusedTables);
@@ -60,6 +67,8 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect((await call(memberCookie,'/settings')).status).toBe(401);
   for (const credential of [token.token,oauth.access_token]) expect((await api(credential)).status).toBe(401);
   expect((await mcp(token.token)).status).toBe(401);
+  expect(await remote.call(seen)).toBe(401);
+  expect(await remote.call(unseen)).toBe(401);
   expect(await env.DB.prepare('SELECT revoked FROM agent_door_agents WHERE id=?').bind('vector-token:'+token.credential.id).first('revoked')).toBe(1);
   expect((await request('/api/oauth/token','POST',{...exchangeBody,code:pendingCode})).status).toBe(400);
   expect(await env.DB.prepare('SELECT count(*) n FROM vector_oauth_grants WHERE operator_id=? AND revoked_at IS NULL').bind(member).first('n')).toBe(0);
@@ -88,6 +97,12 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   const profile = await json(await call(admin,`/settings/operators/${member}/suspension`));
   expect(profile).toMatchObject({id:member,state:'suspended',assignedIssues:[expect.objectContaining({identifier:issue.identifier,flag:'Assignee suspended'})]});
   expect(profile.activity.length).toBeGreaterThan(0);
+  expect(JSON.stringify(profile)).not.toContain(hiddenIssue.identifier);
+  expect(JSON.stringify(profile)).not.toContain(hiddenIssue.title);
+  expect((await json(await f.call(`/settings/operators/${member}/suspension`))).assignedIssues).toHaveLength(2);
+  const beforeLastTeamOwner = await snapshot(['team_members','team_departures','audit_records']);
+  expect((await f.call(`/teams/${hiddenTeam.id}/leave`,'POST',{})).status).toBe(409);
+  expect(await snapshot(['team_members','team_departures','audit_records'])).toEqual(beforeLastTeamOwner);
   expect((await env.DB.prepare('SELECT * FROM team_members WHERE operator_id=? ORDER BY team_id').bind(member).all()).results).toEqual(teamsBefore.results);
   expect((await env.DB.prepare('SELECT * FROM issue_comments WHERE actor_operator_id=? ORDER BY id').bind(member).all()).results).toEqual(historyBefore.results);
   expect(await env.DB.prepare('SELECT owner_operator_id FROM saved_views WHERE id=?').bind(privateView.id).first('owner_operator_id')).toBe(member);
@@ -109,6 +124,14 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   for (const credential of [token.token,oauth.access_token]) expect((await api(credential)).status).toBe(401);
   expect((await mcp(token.token)).status).toBe(401);
   expect(await env.DB.prepare('SELECT revoked FROM agent_door_agents WHERE id=?').bind('vector-token:'+token.credential.id).first('revoked')).toBe(1);
+  expect(await remote.call(seen)).toBe(401);
+  expect(await remote.call(unseen)).toBe(401);
+  vi.useFakeTimers({toFake:['Date']});
+  try {
+    vi.setSystemTime(new Date((remote.issuedAt+60)*1000));
+    expect(await remote.call(await remote.credential('synthetic-vector-9369',remote.issuedAt+60))).toBe(200);
+    expect(await remote.call(unseen)).toBe(401);
+  } finally {vi.useRealTimers();}
   await resetLimits();
   const fresh = await signIn(email);
   expect(await actor(fresh)).toBe(member);

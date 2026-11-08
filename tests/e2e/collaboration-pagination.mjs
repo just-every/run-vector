@@ -67,7 +67,7 @@ export async function paginationAndRemoval({
       });
       await navigate(page, runtime.base + "/app/settings/people/" + operator.id);
       await page
-        .getByRole("button", { name: "Remove " + operator.name, exact: true })
+        .getByRole("button", { name: "Suspend " + operator.name, exact: true })
         .click();
       await capture("operator-removal-confirmation");
       await receipt(
@@ -76,7 +76,7 @@ export async function paginationAndRemoval({
         "DELETE",
         () =>
           page
-            .getByRole("button", { name: "Confirm removal", exact: true })
+            .getByRole("button", { name: "Confirm suspension", exact: true })
             .click(),
       );
       await poll(

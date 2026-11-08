@@ -1,3 +1,4 @@
+import { memberSuspensionJourney } from './member-suspension-journey.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {rolePrivateCells} from './role-private-cells.mjs';
@@ -324,7 +325,7 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     assert.equal(await peer.getByLabel("Role", { exact: true }).count(), 0, "a Member does not change roles");
     await navigate(peer, base + "/app/settings/people");
     await peer.getByRole("link", { name: new RegExp(owner.name) }).first().click();
-    assert.equal(await peer.getByRole("button", { name: /^(Remove|Leave)/ }).count(), 0);
+    assert.equal(await peer.getByRole("button", { name: /^(Remove|Suspend|Leave)/ }).count(), 0);
     // A Member's list holds only their own sections; a denied path is one plain line, not a page.
     await navigate(peer, base + "/app/settings");
     const entries = peer.getByRole("navigation", { name: "Settings sections" }).locator(".settings-nav-name");
@@ -356,5 +357,6 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   await privateTeamJourney({page,peer,memberId,runtime,clause,evidence});
   await rolePrivateCells({page,peer,memberId,runtime,clause});
   await viewerRoleJourney({page,peer,memberId,browser,runtime,clause,evidence});
+  await memberSuspensionJourney({page,browser,runtime,clause,evidence});
   return { context, peer, memberId };
 }

@@ -87,7 +87,7 @@ async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWor
   expect(retainedOriginals.every(row => row.original.status === 'unavailable' && row.original.reason === 'unavailable-after-erasure')).toBe(true);
   while (pending.progress.unfinished) pending = await f.resume(pending);
   expect(pending.state).toBe('completed');
-  const report = await f.call('/data/import/runs/' + pending.id + '/report');expect(report.status).toBe(200);
+  const report = await f.call('/data/import/runs/' + pending.id + '/report');expect(report.status,await report.clone().text()).toBe(200);
   const mappingRows = (await report.json() as { mapping: { row: number; identifier: string | null }[] }).mapping;
   expect(mappingRows.filter(row => row.identifier).map(row => row.row)).toEqual([4]);
   const survivor = await f.call('/issues/' + mappingRows[3].identifier);expect(survivor.status).toBe(200);

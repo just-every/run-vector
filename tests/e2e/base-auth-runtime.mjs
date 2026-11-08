@@ -51,7 +51,7 @@ try {
   await mkdir(evidence,{recursive:true});
   run(['d1','migrations','apply','vector-local','--local','--config','wrangler.jsonc','--persist-to',state]);
   await start();
-  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
+  browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,args:['--use-mock-keychain','--password-store=basic',...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?['--no-sandbox']:[])]});
   const context=await browser.newContext({viewport:{width:1440,height:1000}});
   const page=await context.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
@@ -133,18 +133,18 @@ try {
   const memberLink=link('member@auth-runtime.test');
   await page.reload();
   await page.getByRole('link',{name:/Invited peer/}).click();
-  await page.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor();
+  await page.getByRole('button',{name:'Suspend Invited peer',exact:true}).waitFor();
   await page.screenshot({path:resolve(evidence,'base-invite-settings-1440.jpg'),type:'jpeg',quality:85,fullPage:true});
   await page.setViewportSize({width:390,height:844});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);
   await page.screenshot({path:resolve(evidence,'base-invite-settings-390.jpg'),type:'jpeg',quality:85,fullPage:true});
-  await page.getByRole('button',{name:'Remove Invited peer',exact:true}).click();
+  await page.getByRole('button',{name:'Suspend Invited peer',exact:true}).click();
   const removed=page.waitForResponse(response=>response.url().startsWith(origin+'/api/settings/operators/')&&response.request().method()==='DELETE');
-  await page.getByRole('button',{name:'Confirm removal',exact:true}).click();
+  await page.getByRole('button',{name:'Confirm suspension',exact:true}).click();
   assert.equal((await removed).status(),200);
   await page.getByRole('link',{name:/Invited peer/}).waitFor({state:'detached'});
   // The removal answers by returning to the People list without them.
-  await page.getByRole('group',{name:'Remove this member?',exact:true}).waitFor({state:'detached'});
+  await page.getByRole('group',{name:'Suspend this member?',exact:true}).waitFor({state:'detached'});
   await page.getByRole('list',{name:'People',exact:true}).waitFor();
   assert.equal(new URL(page.url()).pathname,'/app/settings/people');
   assert.equal((await peer.request.get(origin+'/api/session')).status(),401);
