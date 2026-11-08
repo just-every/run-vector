@@ -2038,7 +2038,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
+      "sha256": "222ed6bfe68c3433b6b9bb7f981d1a35c24a4664d67218b46aff5dc446ef40d9",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -9682,7 +9682,7 @@
       "executable": false
     },
     "tests/worker/issue-session-projection.test.ts": {
-      "sha256": "6d1afe1d3843f3a2725263a5fb470f1ce54830d827d8fc1d6bc5518828136ed7",
+      "sha256": "de0a61583e3b2abc2a521599d00025f528ab9284ec5d2030dd01cadd50026b41",
       "executable": false
     },
     "tests/worker/issue-templates.test.ts": {
