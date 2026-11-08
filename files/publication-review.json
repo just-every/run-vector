@@ -78,7 +78,13 @@
     "prior-run/typecheck-probe.log",
     "prior-run/views-check-mechanical.log",
     "prior-run/views-write-mechanical.log",
-    "publication-review.json"
+    "publication-review.json",
+    "evidence-initial-readback.json",
+    "ci-receipt.json",
+    "publication-hooks.json",
+    "github-call-7.json",
+    "github-call-8.json",
+    "cleanup-receipt.json"
   ],
   "regular_files": true,
   "credential_pattern_scan": "passed",

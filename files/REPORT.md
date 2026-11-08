@@ -4,7 +4,7 @@ Repository: just-every/run-vector.
 Product branch: cloud/sd-vector-c-f201-fix2.
 Product head: dd03105c358e930529e188bc10b0aa7c731d7fc8.
 Product tree: 49ed82020c048a0c77f59b4422c91a1f34910b24.
-Product custody: PUSHED; exact-SHA Verify is being observed separately.
+Product custody: READY; exact-SHA Verify completed successfully.
 Verify run: 42522291237, https://github.com/just-every/run-vector/actions/runs/42522291237.
 No PR was created; the named cloud branch has a push Verify entry point and no PR-only landing rule was found in repository instructions. No landing, acceptance or deployment is claimed.
 
@@ -72,3 +72,9 @@ The author and committer of all ten origin/main..HEAD commits, including both me
 The current exact-SHA observation and subsequent polling receipts are github-call-*.json and github-calls.json. A single watcher loads only the injected bundle token into gh without printing it, waits at least 300 seconds between calls, counts the prior five calls, and uses at most ten total. READY requires completed/success on dd03105c358e930529e188bc10b0aa7c731d7fc8, except the specifically permitted generated-view-only failure. Evidence publication is separate from product custody and signals no acceptance or landing.
 
 Complete command outputs, actual receipts, counts, source provenance and the plan are selected explicitly for evidence publication. No credentials, environment dump, private runtime database or held-out gate material is included. Cleanup removes the fresh successful clone and its node_modules only after evidence return; the external packet and prior rescue bundle remain available.
+
+Exact-SHA observation at 2026-11-08T21:07:21Z: Verify 42522291237 remains in_progress with null conclusion on dd03105c358e930529e188bc10b0aa7c731d7fc8. Seven of ten GitHub calls used, including the five retained prior-run receipts. The initial evidence ref was fetched back with expected head e42c8e9b3101b9f2e1ee0d42c5aa8bc5195885d2, and all 77 file hashes plus the product identity were verified (evidence-initial-readback.json).
+
+## Final result
+
+Exact-SHA Verify 42522291237 was observed completed/success at 2026-11-08T21:22:21Z on dd03105c358e930529e188bc10b0aa7c731d7fc8. This is a full workflow success; no generated-view exemption was needed. ci-receipt.json and github-call-8.json are the actual current-head receipts. Eight GitHub calls were counted in total (five retained older-head observations and three current-head observations). All touched checks, mechanical checks and broader local verification passed. Counts and every clause status remain unchanged. No PR, deployment or landing was performed, and no blocker remains. The final report and complete relevant receipt packet are published only through the evidence ref.

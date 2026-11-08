@@ -1,6 +1,6 @@
 {
-  "calls": 6,
-  "last": 1794171141.0911133,
+  "calls": 8,
+  "last": 1794172941.1635644,
   "records": [
     {
       "call": 1,
@@ -14,9 +14,35 @@
       ],
       "exit": 0,
       "file": "github-call-1.json"
+    },
+    {
+      "call": 7,
+      "at": 1794172041.1270747,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42522291237",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "file": "github-call-7.json"
+    },
+    {
+      "call": 8,
+      "at": 1794172941.1635644,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42522291237",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "file": "github-call-8.json"
     }
   ],
   "prior_invocation_calls": 5,
-  "current_invocation_calls": 1,
+  "current_invocation_calls": 3,
   "note": "Five retained prior-run REST receipts for earlier product SHA 7131292c; one current discovery for dd03105c. Counted conservatively toward the same task ten-call budget. Current discovery last timestamp governs next permitted call."
 }

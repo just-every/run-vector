@@ -22,8 +22,17 @@
   "sdk_sha256": "30f6b0bff5a6c4251e2980dfb23960572cf791bd2af8ad5b3fa9637142014c54",
   "sources_lock_sha256": "f0fe2c99fac5879306669853cdc4fc20e67902f886eae3f98c9299638feee8e4",
   "verify_run_id": 42522291237,
-  "github_calls_used": 1,
+  "github_calls_used": 8,
   "local_runtime_node": "v24.19.0 (provided cloud toolchain kept newer Node; rer internally selected project Node 22.20.0)",
   "pnpm": "10.12.4",
-  "local_verify_receipt_note": "local-build-checks.json records pre-commit HEAD 1f64f9b9 while testing the regenerated working tree; that tree equals final product tree. Exact-SHA Verify is separate."
+  "local_verify_receipt_note": "local-build-checks.json records pre-commit HEAD 1f64f9b9 while testing the regenerated working tree; that tree equals final product tree. Exact-SHA Verify is separate.",
+  "product_status": "READY",
+  "verify": {
+    "conclusion": "success",
+    "head_sha": "dd03105c358e930529e188bc10b0aa7c731d7fc8",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42522291237",
+    "status": "completed",
+    "run_id": 42522291237,
+    "observed_at": "2026-11-08T21:22:21Z"
+  }
 }

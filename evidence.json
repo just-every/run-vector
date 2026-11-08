@@ -55,16 +55,16 @@
       "sha256": "ce7cf7ea63d80f204e2f366cedacdab91fc893b8c93fe3c874cff00dc9a40cf6"
     },
     {
-      "blob": "36552b51363deeaeca7c19fc2bc7ba1f7d2e3a4b",
-      "bytes": 5701,
+      "blob": "6fc7c8d2718fdab0289416f17da3709f129017ad",
+      "bytes": 5834,
       "path": "RECEIPT.json",
-      "sha256": "bf6d3ab035ce3fcdbbb75f022d311deecd15dcd57ed3bc0627b84a27cb6db281"
+      "sha256": "3fd4f522eebd067009a9aca62d20fdedcda42225575bd5734adc71f377790388"
     },
     {
-      "blob": "6d9e12b495ee11b5a625bddcecefda9f87b70ea6",
-      "bytes": 9055,
+      "blob": "2e2831d9c0682a173a422a42c93556dd88423477",
+      "bytes": 10189,
       "path": "REPORT.md",
-      "sha256": "d106c81ad2a4f55df5d55768aa0511e706ced1759d3e77fce5d8298bd5a0ed70"
+      "sha256": "fbbb8a004ea3f9483ca57c2ccbaa25a8df664c8551ce07c244d2add37fd99057"
     },
     {
       "blob": "081ba6b01432979a5e5c18fcd87f90bc39a6fd46",
@@ -103,10 +103,28 @@
       "sha256": "d2c97d24e251d2471def6d04835789478ddb7cc519983cc966c3c2fed77019df"
     },
     {
+      "blob": "c088d97ca1e0c54a9e250a26542e3e6d0ee5fc94",
+      "bytes": 196,
+      "path": "ci-receipt.json",
+      "sha256": "8c60a55c639dee7c5a239cffaeabb76ff7c397543ba35bc44493bd48f0d26851"
+    },
+    {
       "blob": "c58250e9b6153e4f33e1e3f918e3c2464629e39a",
       "bytes": 519,
       "path": "clause-counts.json",
       "sha256": "52d10fe71646a25e8866321a93e93942804188a141e60e136cc46ca901f11fd6"
+    },
+    {
+      "blob": "6a9d1d0641a67823fd2d9b74d3764330f65ea81d",
+      "bytes": 316,
+      "path": "cleanup-receipt.json",
+      "sha256": "db0b1c2af682199f5dbe086fd4ed4ad6c425e7cef4ed383d3a54d4743aa0f926"
+    },
+    {
+      "blob": "82b7300a84d0cd67e9608a3222eb4c20bf882c48",
+      "bytes": 17189,
+      "path": "evidence-initial-readback.json",
+      "sha256": "edc3e683c3076d84eec8f21b5acdfc2be3907c97adc5b421038522de89a64974"
     },
     {
       "blob": "27c4e0c3600267ba7dfbb46c9db66137cff62f31",
@@ -115,10 +133,22 @@
       "sha256": "2a55159619d91061f2bebcc0dd1403f4b5a207163928772046f5cac949de64c4"
     },
     {
-      "blob": "fdd5719c16cf7f5030462e83f15da8777bf8e194",
-      "bytes": 751,
+      "blob": "bb46ebaf8695c9c828b4abf23bf06ac8a8500a68",
+      "bytes": 176,
+      "path": "github-call-7.json",
+      "sha256": "109f7497d9c9422b2aeb74ebd8c03e4900f54491049b6d6cdfbbe2e5d4a81abb"
+    },
+    {
+      "blob": "6ad5785df7da4b5a2d022065e60240ede925ceee",
+      "bytes": 179,
+      "path": "github-call-8.json",
+      "sha256": "28cc48310f2b8e51eab180d72e17dfc908fc7c39234d4f656e2bd39a4af6adb4"
+    },
+    {
+      "blob": "b7cb7382c78c4d51222cd9309cb962f1ea444336",
+      "bytes": 1349,
       "path": "github-calls.json",
-      "sha256": "bcde5f18759693cb6cf6bdc86b3d3f1bf3ae4c65f05a1b8e4b10fa14f4ea8d3c"
+      "sha256": "0bbd6c6a119d78b780e94b52e885ff5a87ebb2d46635df6adbc4fedd434a7d59"
     },
     {
       "blob": "727949e38f3ae7c9c5bb10bd1af5fdf59d385d45",
@@ -409,16 +439,22 @@
       "sha256": "22e076bc33e187672b9a3f798d1ddc49231df53abbe5eb68bd285cbc22cce924"
     },
     {
-      "blob": "33732690f2944aca72a19e0a1739bd4117afd826",
-      "bytes": 1613,
+      "blob": "b6250d3f7889c463eae1585e6be98b7ba300f166",
+      "bytes": 1931,
       "path": "product-receipt.json",
-      "sha256": "492f47a8359ac058ca4279431d65d18bba5ae23c3f3e89e9a758b3bb6c63aed2"
+      "sha256": "0e014420f7a8bc86886d49d5f39ee918fd43f92544bb3e08892c587967b91284"
     },
     {
-      "blob": "37b71c5a85df927ddd31aa4fb83bfa119c41414b",
-      "bytes": 2754,
+      "blob": "072799b422f43ecad7c9886aad16d97c50252d71",
+      "bytes": 312,
+      "path": "publication-hooks.json",
+      "sha256": "4d58f4a72db8bb5557fa8ff08513a1bc229449fafc509bbd78bbb4629e0fd132"
+    },
+    {
+      "blob": "96a3ac0587441eebab02c8545e88c10a1b3736d7",
+      "bytes": 2925,
       "path": "publication-review.json",
-      "sha256": "0f07722fbdd746e717a0f27ae5abf92d2d39e124901ef2a5ba79d166009a4b0c"
+      "sha256": "60afbaf82977784fd64d64f26b669b1677b62547f569d8e8f3ee022ed1b26f7c"
     },
     {
       "blob": "a2e0b7b78e77b49dd31e3f784e76bceaedeb6392",

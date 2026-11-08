@@ -1,0 +1,7 @@
+{
+  "active_hooks_path": "/workspace/run-vector/.git/fleet-cloud-hooks",
+  "cleanup_hook_sha256": "3ef1954dea66789bc897f57c2b3de9d0df1a1e514eeec06fbdde942f5c3b360a",
+  "repository_hooks_preserved": "/workspace/run-vector/.git/hooks",
+  "candidate_commits": 10,
+  "full_identity_messages": "identity-scan.json"
+}
