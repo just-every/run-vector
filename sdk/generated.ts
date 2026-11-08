@@ -14,7 +14,7 @@ export interface Components {
 export interface Operations {
   "schema_get_0": { input: Record<string, never>; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "metadata_get_1": { input: Record<string, never>; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
-  "issues_list_2": { input: { query?: { "cursor"?: string; "limit"?: number; "q"?: string; "scope"?: string; "category"?: string; "status"?: string; "priority"?: string; "assignee"?: string; "team"?: string; "project"?: string; "cycle"?: string; "label"?: string; "due"?: string; "dueFrom"?: string; "dueTo"?: string; "blocked"?: string; "parent"?: string; "orderView"?: string; "sort"?: "newest" | "oldest" | "priority" | "status" | "start" | "due" | "updated" | "manual"; "grouping"?: string; "start"?: "all" | "overdue" | "range" | "none" | "this_week"; "startFrom"?: string; "startTo"?: string } }; output: { "issues"?: ({ "startDate": string | null; "dueDate": string | null; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issues_list_2": { input: { query?: { "cursor"?: string; "limit"?: number; "q"?: string; "scope"?: string; "category"?: string; "status"?: string; "priority"?: string; "assignee"?: string; "team"?: string; "project"?: string; "cycle"?: string; "label"?: string; "due"?: string; "dueFrom"?: string; "dueTo"?: string; "blocked"?: string; "parent"?: string; "orderView"?: string; "sort"?: "newest" | "oldest" | "priority" | "status" | "start" | "due" | "updated" | "manual"; "grouping"?: string; "start"?: "all" | "overdue" | "range" | "none" | "this_week"; "startFrom"?: string; "startTo"?: string; "includeSubTeams"?: "false" | "true" } }; output: { "issues"?: ({ "startDate": string | null; "dueDate": string | null; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_create_3": { input: { body: { "startDate"?: string | null; "dueDate"?: string | null; "templateId"?: string; "templateVersion"?: number; "customFields"?: { [key: string]: unknown }; [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_get_4": { input: { path: { "identifier": string } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; "customFields"?: { [key: string]: unknown }; "fields"?: ({ "id": string; "teamId": string; "name": string; "description": string; "type": "single_select"; "version": number; "options": ({ "id": string; "name": string; [key: string]: unknown })[]; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_update_5": { input: { path: { "identifier": string }; body: { "startDate"?: string | null; "dueDate"?: string | null; "customFields"?: { [key: string]: unknown }; [key: string]: unknown } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; "customFields"?: { [key: string]: unknown }; "fields"?: ({ "id": string; "teamId": string; "name": string; "description": string; "type": "single_select"; "version": number; "options": ({ "id": string; "name": string; [key: string]: unknown })[]; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
@@ -44,7 +44,7 @@ export interface Operations {
   "cycles_get_29": { input: { path: { "id": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "labels_create": { input: { body: { "name": string; "color": string; "projectsEnabled"?: boolean } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "labels_list": { input: { query?: { "cursor"?: string; "limit"?: number; "name"?: string; "projectsEnabled"?: "true" | "false" } }; output: { "labels": (Components["Label"])[]; "total": number; "nextCursor": string | null }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
-  "teams_create": { input: { body: { "name": string; "identifierPrefix": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "teams_create": { input: { body: { "name": string; "identifierPrefix": string; "parentTeamId"?: string | null; "isPrivate"?: boolean } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "releases_list_get": { input: { query?: { "cursor"?: string; "limit"?: number; "team"?: string; "status"?: "planned" | "in_progress" | "released" } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "releases_create_post": { input: { body: { "name": string; "teamId"?: string | null; "targetDate"?: string | null; "status"?: "planned" | "in_progress" | "released"; "description"?: string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "releases_get_get": { input: { path: { "id": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
@@ -68,6 +68,7 @@ export interface Operations {
   "issue_template_delete": { input: { path: { "id": string }; body: { "expectedVersion": number } }; output: { "deleted": boolean; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "project_dependency_set": { input: { path: { "id": string; "blockingId": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "project_dependency_remove": { input: { path: { "id": string; "blockingId": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "teams_hierarchy_put": { input: { path: { "id": string }; body: { "version": number; "parentTeamId"?: string | null; "workflowInherited"?: boolean; "permissionsInherited"?: boolean; "settingsPermission"?: "team_owners" | "all_members"; "planningPermission"?: "team_owners" | "all_members" } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
 }
 export const operations = {
   "schema_get_0": {
@@ -525,6 +526,14 @@ export const operations = {
     "path": "/projects/{id}/dependencies/{blockingId}",
     "scopes": [
       "projects:write"
+    ],
+    "authenticated": true
+  },
+  "teams_hierarchy_put": {
+    "method": "PUT",
+    "path": "/teams/{id}/hierarchy",
+    "scopes": [
+      "teams:write"
     ],
     "authenticated": true
   }

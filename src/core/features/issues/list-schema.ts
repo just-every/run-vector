@@ -33,7 +33,12 @@ export const issueListQuerySchema = z
       .default("all"),
     assignee: z.union([z.enum(["all", "unassigned"]), id]).default("all"),
     team: target,
-    includeSubTeams: z.enum(["false","true"]).default("false"),
+    // URLSearchParams supplies strings, while the browser router decodes
+    // boolean-looking search values before applying this same schema.
+    includeSubTeams: z.preprocess(
+      value => typeof value === "boolean" ? String(value) : value,
+      z.enum(["false", "true"]).default("false"),
+    ),
     project: nullableTarget,
     cycle: nullableTarget,
     label: nullableTarget,

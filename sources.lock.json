@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "1a5b293a26e913b7192b65fd1e49af75cd98c8eee7e3fefeb393cb4ad3ee9e7d",
+      "sha256": "a5fcf223c784667fa95cf86a4b66a05e1eb51112693a4079b882db268f0879f8",
       "executable": false
     },
     "DEMO.md": {
@@ -3598,7 +3598,7 @@
       "executable": false
     },
     "sdk/generated.ts": {
-      "sha256": "bdd9322dc00398d065624b9159c23efc8ecf47fadf4b1868ad153e8eb134f5a5",
+      "sha256": "a8c6a450154a08155a833794ea80d3085d0460c328344eefff2e784cce1bdb61",
       "executable": false
     },
     "sdk/tsconfig.json": {
@@ -6050,7 +6050,7 @@
       "executable": false
     },
     "src/core/features/issues/list-schema.ts": {
-      "sha256": "24175497d3dd7e7e61e47051119a885dc5030d1842050809d88837def19ffd24",
+      "sha256": "e9a874c8514f9a8cbed032b9f49ca7f0fd52d1424361cfba68babcdb3071025a",
       "executable": false
     },
     "src/core/features/issues/list.ts": {
@@ -9990,7 +9990,7 @@
       "executable": false
     },
     "tests/worker/sub-teams.test.ts": {
-      "sha256": "2c108d88f0cd9fc7b6be538849a8d5fb7d221b5999a27c5b1694a00288601fa4",
+      "sha256": "0dda33f72f15d88c66fc73da27a8980c482f5eb513b9955cf390b2d5f155b07d",
       "executable": false
     },
     "tests/worker/subissues-access.test.ts": {
