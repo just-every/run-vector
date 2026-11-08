@@ -35,6 +35,7 @@ import {
 import {
   createAdministrationIssue,
   exerciseCycleCommitments,
+  severityFieldJourney,
 } from "./admin-issue-journey.mjs";
 import { exerciseCycleList } from "./admin-cycle-list-journey.mjs";
 import { archiveRestoreTeam } from "./admin-archive-team-journey.mjs";
@@ -160,6 +161,8 @@ await contract(
           cycles,
         });
         await exerciseCycleList({ ...shared, issue, cycles });
+        await severityFieldJourney({ ...shared, team, issue, evidence });
+        await page.setViewportSize(viewport);
         await removeUsedStatus({ ...shared, team, issue });
         await deleteAppliedLabel({ ...shared, label, issue });
         await archiveProject({ ...shared, project, issue });

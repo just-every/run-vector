@@ -1,4 +1,5 @@
 import { notificationRemovalStatements } from '../notifications/removal';
+import { anonymizeTitleEvents } from '../agent-door/title-event';
 import { anonymizeActivityStatements } from "./removal-history";
 import { pendingOperatorFiles } from "./removal-files";
 import { assertRemovalAllowed, removalId, SettingsError } from "./repository";
@@ -116,7 +117,7 @@ export async function removeOperator(
       )
       .bind(target, id),
   ];
-  statements.push(...anonymizeActivityStatements(db, target, id), ...notificationRemovalStatements(db,target,id));
+  statements.push(anonymizeTitleEvents(db, target, id), ...anonymizeActivityStatements(db, target, id), ...notificationRemovalStatements(db,target,id));
   statements.push(
     // Non-null legacy comment/decision/file foreign keys retain an anonymous tombstone.
     db

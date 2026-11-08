@@ -1,4 +1,5 @@
 import {projectDeletionJourney} from './core-project-deletion-journey.mjs';
+import { projectDependenciesJourney } from './core-project-dependencies-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {initiativesJourney} from './initiatives-journey.mjs';
 import {releasesJourney} from './releases-journey.mjs';
@@ -42,6 +43,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
     }
     await contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId:member.operatorId});
     await projectDeletionJourney({page,base,api,navigate,capture,team,memberId:member.operatorId,memberContext});
+    await projectDependenciesJourney({page,memberPage,memberContext,base,api,capture,memberId:member.operatorId,team});
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
       await memberPage.setViewportSize({ width, height: 1000 });

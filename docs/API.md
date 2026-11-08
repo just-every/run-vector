@@ -59,6 +59,21 @@ activity. Lists accept `start=this_week`, `start=range` with `startFrom` and
 `startTo`, `start=none`, or `start=overdue` (before today), and `sort=start`.
 Week boundaries use the workspace timezone, Monday through Sunday.
 
+## Team custom fields (FIELD-001)
+
+A team's owners, Owners and Admins, or every team member while the team's *Who
+manages team settings* is All team members, define single-select fields in
+Settings → Teams → Fields (`POST /api/settings/teams/TEAM_ID/custom-fields` and
+`PATCH .../custom-fields/FIELD_ID` with `expectedVersion`). A name is unique in
+its team; options keep their ids when renamed and new options are added last.
+`GET /api/v1/metadata` lists each visible team's `customFields` with option ids,
+and an issue's `fields` lists its team's fields. Set a value through
+`customFields` on issue create or update: the field id maps to an option id, and
+`null` clears it. Numbers, unknown options and other teams' fields return 400
+without a change; each actual change is one attributed activity entry with the
+previous and new option ids. Untyped legacy keys are stored as sent. Imports do
+not map source columns onto team fields yet and report them as omitted.
+
 ## Project planning
 
 Project create accepts `name`, `description`, `leadOperatorId`, `startDate`,
@@ -96,8 +111,11 @@ the command palette open the same review form.
 The 201 response contains `issue`, `copies` (source and new identifiers),
 `mappings` (source/destination status, labels and custom-field keys), and
 `droppedValues` (source identifier, field, original value and reason). Every new
-issue starts in the destination's first Backlog status. Labels and custom fields
-are workspace scoped and map unchanged between teams. A cross-team cycle is
+issue starts in the destination's first Backlog status. Labels and untyped
+custom-field keys are workspace scoped and map unchanged between teams. A team
+custom field (FIELD-001) keeps its field and option ids when the copy stays in
+its team; copied into another team, its value is dropped, mapped to `null` and
+reported as `customFields.FIELD_ID`. A cross-team cycle is
 dropped and reported; a same-team open cycle is preserved. A closed or missing
 cycle, or an unavailable project, is also reported when dropped.
 
@@ -240,7 +258,11 @@ Expired or revoked access and removed issuers cannot read either operation.
 A read grant cannot create a label. Label update and deletion remain owed;
 these two reads qualify no other object operation. Pagination uses the same
 actor-bound snapshot protocol below, including invalidation after a native
-rename, recolor or change to project availability in the filtered result.
+rename, recolor, addition, removal or change to project availability in the
+filtered result. Changes outside that result retain the cursor. Removing a
+label through Settings also makes its detail read return 404. Personal tokens
+without the read scope return 401; an otherwise valid OAuth grant without it
+returns 403 with `insufficient_scope`.
 
 ### Pagination and limits
 
@@ -643,3 +665,31 @@ may leave gaps after a refusal. Template deletion never deletes created issues.
 Apply `migrations/core/0125_issue_templates.sql` after unchanged 0124. Templates are portable content; deleting one retains its created issues. Retain the additive schema on compatible-source rollback.
 
 Project recovery is also available in Settings → Workspace. The deleting native session receives a ten-second Undo control. Bearer clients use Recently deleted and the versioned restore receipt; they receive no native-session Undo. Restored archives retain project deletion history and content but exclude Undo session bindings. Configurable retention, permanent erase, scheduled purge and full keyboard qualification remain owed in PROJ-017.
+
+Direct project blockers use `PUT /api/v1/projects/{id}/dependencies/{blockingId}` and
+`DELETE /api/v1/projects/{id}/dependencies/{blockingId}` with the existing
+`projects:write` scope. The project named by `id` is blocked by `blockingId`.
+Both endpoints must be currently visible in the token holder's workspace, and
+its current role must be Owner, Admin or Member. Guest and Viewer writes are
+refused. Missing, foreign and private endpoints receive the same 404 response.
+Self-links and cyclic edges return 400. The cycle check is serialized with the
+write and includes hidden intermediate projects without disclosing them.
+
+Project detail reads expose `directDependencies.blockedBy` and
+`directDependencies.blocking`, each with a stable edge `id` and the visible
+other project's `id` and `name`. These edges are independent of issue links.
+Each `project.dependency_added` or `project.dependency_removed` activity entry
+also carries `dependency.direction` and the other endpoint as
+`dependency.project`, which is `null` once that project is deleted.
+Repeating a set or removal is a no-op. Each actual change commits one activity
+on each project and an Inbox notice once per eligible current lead, excluding
+the actor, in the same transaction. These native project notices respect current
+access and erasure, use the blocking notification preference, and have no email
+or external-channel delivery. Archive restore retains edges and notice history
+without recreating or delivering historical events.
+
+The project page lists both directions and lets Owners, Admins and Members set
+or remove a direct blocker through the same native door. Project-list editing,
+roadmap connectors, timeline conflict flags, Linear import and broader
+notification-channel qualification remain owed under PROJ-015 and its
+receiving clauses.

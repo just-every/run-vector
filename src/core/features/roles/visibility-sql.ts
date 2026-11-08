@@ -50,6 +50,8 @@ export function visibilityCtes(actor: string) {
         OR json_extract(r.next_value_json,'$.sourceDocumentId') IN(SELECT id FROM documents)) AND ${issue()})
       AND (${safeHistory('previous_value_json',true)} AND ${safeHistory('next_value_json',true)}))`,
     ...['project_labels', 'project_milestones'].map(t => scoped(t, project())),
+    scoped('project_dependencies', 'r.blocked_project_id IN(SELECT id FROM projects) AND r.blocking_project_id IN(SELECT id FROM projects)'),
+    scoped('project_notifications', 'r.project_id IN(SELECT id FROM projects) AND r.related_project_id IN(SELECT id FROM projects)'),
     scoped('project_activity', `${project()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')}`),
     scoped('project_membership_events', `${project()} AND (NOT (${restricted}) OR r.identifier IN(SELECT identifier FROM issues) OR r.identifier IN(SELECT identifier FROM issue_deletions))`),
     scoped('cycle_membership_events', `r.cycle_id IN(SELECT id FROM cycles) AND (NOT (${restricted}) OR r.identifier IN(SELECT identifier FROM issues) OR r.identifier IN(SELECT identifier FROM issue_deletions))`),

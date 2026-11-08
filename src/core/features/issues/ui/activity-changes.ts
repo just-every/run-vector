@@ -36,18 +36,35 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
 const record = (value: unknown): Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 
-export function activityChanges(kind: string, previousValue: unknown, nextValue: unknown, options: StreamOptions | null, formatDate: (value: string) => string): Change[] {
+/** A typed team field (FIELD-001) whose stored values are option identities. */
+type TypedField = { id: string; name: string; options: Named[] };
+/** Each typed field that changed reads "Severity: Minor → Critical", by the
+ * option's current name; any other custom-field key is only said to be edited. */
+function customFieldChanges(previous: unknown, next: unknown, fields: TypedField[]): Change[] {
+  const before = record(previous), after = record(next);
+  const typed = fields.filter((field) => before[field.id] !== after[field.id]).map((field) => ({
+    field: field.name,
+    from: name(field.options, before[field.id], "None", "a removed option"),
+    to: name(field.options, after[field.id], "None", "a removed option"),
+  }));
+  const untyped = [...new Set([...Object.keys(before), ...Object.keys(after)])]
+    .some((key) => !fields.some((field) => field.id === key) && JSON.stringify(before[key]) !== JSON.stringify(after[key]));
+  return untyped ? [...typed, { field: FIELDS.customFields!.label }] : typed;
+}
+
+export function activityChanges(kind: string, previousValue: unknown, nextValue: unknown, options: StreamOptions | null, formatDate: (value: string) => string, fields: TypedField[] = []): Change[] {
   // A created or imported issue's values are the issue itself, not a change.
   if (kind === "issue.created" || kind === "issue.imported") return [];
   const before = record(previousValue), after = record(nextValue);
   return Object.keys(FIELDS)
     .filter((key) => key in after || key in before)
-    .map((key) => {
+    .flatMap((key): Change[] => {
+      if (key === "customFields") return customFieldChanges(before[key], after[key], fields);
       const field = FIELDS[key]!;
       const show = (key === "dueDate" || key === "startDate") ? (value: unknown) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value) ? formatDate(value.slice(0, 10)) : "Not set" : field.show;
-      return show
+      return [show
         ? { field: field.label, from: show(before[key], options), to: show(after[key], options) }
-        : { field: field.label };
+        : { field: field.label }];
     })
     .filter((change) => change.from === undefined || change.from !== change.to);
 }

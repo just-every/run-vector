@@ -111,6 +111,9 @@ const issueTemplateDoors: Door[] = [
 ]
 
 export const doors: Door[] = [
+  {method:'GET',path:'/settings/teams/:id/sla',row:'teams.settings',teams:team('id')},
+  {method:'PUT',path:'/settings/teams/:id/sla',row:'teams.settings',teams:team('id')},
+  {method:'GET',path:'/issues/:identifier/sla',row:'work.read',teams:issue},
   {method:'GET',path:'/settings/report-exports',row:'reports.export'},
   {method:'POST',path:'/settings/report-exports',row:'reports.export'},
   {method:'PATCH',path:'/settings/report-exports/:id',row:'reports.export'},
@@ -255,6 +258,8 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/labels/:id/merge', row: 'labels.manage' },
   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
+  { method: 'POST', path: '/settings/teams/:id/custom-fields', row: 'custom-fields.team', teams: team('id') },
+  { method: 'PATCH', path: '/settings/teams/:id/custom-fields/:fieldId', row: 'custom-fields.team', teams: team('id') },
   // Intake and triage
   { method: 'POST', path: '/intake', row: 'intake.create', teams: bodyTeam },
   ...(['accept', 'defer', 'decline', 'return'] as const).map((action): Door => ({ method: 'POST', path: '/issues/:identifier/' + action, row: 'intake.decide', teams: issue })),
@@ -264,6 +269,8 @@ export const doors: Door[] = [
   { method: 'GET', path: '/projects/recently-deleted', row: 'projects.delete' },
   { method: 'POST', path: '/projects/restore', row: 'projects.delete' },
   { method: 'POST', path: '/projects/undo-deletion', row: 'projects.delete' },
+  { method: 'PUT', path: '/projects/:id/dependencies/:blockingId', row: 'projects.dependencies' },
+  { method: 'DELETE', path: '/projects/:id/dependencies/:blockingId', row: 'projects.dependencies' },
   { method: 'POST', path: '/settings/projects', row: channelOr('projects.write') },
   { method: 'PATCH', path: '/settings/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
   { method: 'DELETE', path: '/settings/projects/:id', row: 'projects.delete', project },
@@ -334,6 +341,8 @@ export const apiDoors: Door[] = [
   { method: 'PATCH', path: '/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
   { method: 'GET', path: '/projects/recently-deleted', row: 'projects.delete' },
   { method: 'POST', path: '/projects/restore', row: 'projects.delete' },
+  { method: 'PUT', path: '/projects/:id/dependencies/:blockingId', row: 'projects.dependencies' },
+  { method: 'DELETE', path: '/projects/:id/dependencies/:blockingId', row: 'projects.dependencies' },
   { method: 'DELETE', path: '/projects/:id', row: 'projects.delete', project },
   { method: 'POST', path: '/projects/:id/milestones', row: 'milestones.write' },
   { method: 'PATCH', path: '/projects/:id/milestones/:milestoneId', row: 'milestones.write' },
