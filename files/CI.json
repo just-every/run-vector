@@ -1,0 +1,87 @@
+{
+  "ghCalls": 8,
+  "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "lastCurrentObservation": "2026-11-08T18:45:19Z",
+  "nextPollNotBefore": "2026-11-08T18:44:54Z",
+  "observations": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "26dd6c1117bf0201e55854c3eaff39eef6c5fcc5",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42510287470",
+      "id": 42510287470,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_sha": "26dd6c1117bf0201e55854c3eaff39eef6c5fcc5",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42510287470",
+      "id": 42510287470,
+      "status": "completed"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42511092094",
+      "id": 42511092094,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42511092094",
+      "id": 42511092094,
+      "status": "in_progress"
+    }
+  ],
+  "priorJobs": [
+    {
+      "conclusion": "success",
+      "id": 128821679902,
+      "name": "plan",
+      "status": "completed",
+      "steps": []
+    },
+    {
+      "conclusion": "failure",
+      "id": 128821731137,
+      "name": "build",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Build the shared production output",
+          "number": 6
+        }
+      ]
+    },
+    {
+      "conclusion": "failure",
+      "id": 128821963436,
+      "name": "verify",
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "failure",
+          "name": "Require the complete verification wall",
+          "number": 2
+        }
+      ]
+    },
+    {
+      "conclusion": "skipped",
+      "id": 128821964356,
+      "name": "shards",
+      "status": "completed",
+      "steps": []
+    }
+  ],
+  "remainingCallsReservedForFailureAnalysis": 2,
+  "repository": "just-every/run-vector",
+  "terminalStatus": "PUSHED"
+}

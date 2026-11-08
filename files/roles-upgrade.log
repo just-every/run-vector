@@ -1,0 +1,14 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /workspace/run-vector-sd-vector-c-f204
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  18:21:55
+   Duration  222.05s (transform 4.42s, setup 0ms, import 13.92s, tests 206.91s, environment 0ms)
+

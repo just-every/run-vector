@@ -1,0 +1,28 @@
+{
+  "baseMain": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "branch": "cloud/sd-vector-c-f204",
+  "commits": [
+    "4c65e3c6c3ef6b141ce64c929ae072abd9beec25 Add durable label workflow rule backend and public-door proof [skip ci]",
+    "26dd6c1117bf0201e55854c3eaff39eef6c5fcc5 Qualify workflow rule retries, restore holds and role refusal storage",
+    "3a2537c1d37eff9008b842168e54fc5f09bbc6bc Fix workflow rule reference classification for production builds"
+  ],
+  "generatedViewDiff": "",
+  "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "observedAt": "2026-11-08T18:41:58.255729+00:00",
+  "remoteRefs": [
+    {
+      "head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+      "ref": "refs/heads/cloud/sd-vector-c-f204"
+    },
+    {
+      "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+      "ref": "refs/heads/main"
+    }
+  ],
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "shallow": false,
+  "terminalRuntimeDiffFromTestedHead": "",
+  "tree": "6164294d3651b7daa12bae5124fb6a41939a747b",
+  "workingTreeClean": true
+}

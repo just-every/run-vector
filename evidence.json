@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "blob": "9faea726a502a7455c15a30d307127b9cdb00230",
+      "bytes": 2297,
+      "path": "CI.json",
+      "sha256": "7ac39f01efd0f34f68045375c17ea567c2374a07f68319e016e0e2732b984366"
+    },
+    {
+      "blob": "1c264ac0bb636a7f793ca0f6c6a31db0d4fd39aa",
+      "bytes": 1047,
+      "path": "PRODUCT.json",
+      "sha256": "6eb6c6ec9acb9b0ff0305fb21925dd96f27e5c5944161da51730a82adb52c6b6"
+    },
+    {
+      "blob": "c7b10269290ee9dfda3b47d26f373db4b19dd280",
+      "bytes": 7491,
+      "path": "RECEIPT.json",
+      "sha256": "0821e5756d38afe83284f6c6bbb224ba1dd18f03e2aa91c02764d9370ba2d989"
+    },
+    {
+      "blob": "60e7814bd080df7053540e297d866cc72c908b00",
+      "bytes": 24023,
+      "path": "REPORT.md",
+      "sha256": "ec7a7201b701cae3575f2bfb69b1a5c9e9dfc0d088592bb2934df52f6bcaecc8"
+    },
+    {
+      "blob": "2dd229c299e711666dfe12c4d3bfceece7050aab",
+      "bytes": 385,
+      "path": "VERIFY_REPRODUCED.json",
+      "sha256": "44754c5caaf691fc0021c1e1b7028521a59b118745fe26ae982be9b69177efbe"
+    },
+    {
+      "blob": "1ea148d5e125f1f5565fa6c1567a04faa4c2e32b",
+      "bytes": 356,
+      "path": "automation-candidate.log",
+      "sha256": "70b9658de225cb321fce31b2425a354a88750d4cca06f2d21e1ca8dd8c33468f"
+    },
+    {
+      "blob": "154fd2a5d7653077576c874ca9bae14b84143d62",
+      "bytes": 34091,
+      "path": "build-repaired.log",
+      "sha256": "e1e8b6316f780533b479d112f20fb8f4b02b191b0948667912c7d66367fa99b6"
+    },
+    {
+      "blob": "901d94757c6d7994ad89b503b9a5974a6aac5c19",
+      "bytes": 5263,
+      "path": "build-reproduce.log",
+      "sha256": "75534f2ed31ba2a63cd234f920ee25d2147a078a5424bc5c9cd64129aef2e261"
+    },
+    {
+      "blob": "ea055162c5effbbdf4c8ab8b4e8fbae2d6b926dc",
+      "bytes": 393,
+      "path": "channels-reminders.log",
+      "sha256": "c1d9a0570a468e73eee383277adaced6fc50c7d97ee1179d7822c7343300b877"
+    },
+    {
+      "blob": "5ce7263faec1b56d6d1b2112ebc8d7128cb8cd73",
+      "bytes": 428,
+      "path": "combined-candidate.log",
+      "sha256": "efe7a9f97bfff6b8b58e7b8f97a1bf48c6ca74310070d405ce991896446e0e35"
+    },
+    {
+      "blob": "2831e0985311bc5e0aca04a1aa102da5e1276da9",
+      "bytes": 74,
+      "path": "contract-views-repaired.log",
+      "sha256": "018dcaa827cbee708688c6858327bf7ccc61f53c841ae99df384b1e862719361"
+    },
+    {
+      "blob": "2831e0985311bc5e0aca04a1aa102da5e1276da9",
+      "bytes": 74,
+      "path": "contract-views.log",
+      "sha256": "018dcaa827cbee708688c6858327bf7ccc61f53c841ae99df384b1e862719361"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party-terminal.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "2931db29767a92e27db784b7885fabbe72ac73f9",
+      "bytes": 368,
+      "path": "matrix-expanded.log",
+      "sha256": "f846781d95a6f93f692fc3225c503af97fe6e3e655248a56639bf0423159f8c0"
+    },
+    {
+      "blob": "4f41b619062b6eacd42bb1ee9a4b12b7364b0168",
+      "bytes": 244,
+      "path": "migration-ledger.log",
+      "sha256": "b2c83173cc70973ff5ce99c15efa8b74eff2d48cc971f39df1db7e4ca13320ee"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "pinned-first-party-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "9cccd99bcd7ccdafb380f4c00818a7ab95185f9a",
+      "bytes": 393,
+      "path": "roles-upgrade.log",
+      "sha256": "dd21aa5c91f4ec7fc17d7ef90bdd767452d6527ddf272f46d90e55a41b04f6f9"
+    },
+    {
+      "blob": "9a3e633ea18d6905b3cbe727ad1c35edb701def4",
+      "bytes": 181,
+      "path": "typecheck.log",
+      "sha256": "c6306780b7f6c2d9f98c3d9bef11673878677225b801b15e82e491f57bc0235f"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f204",
+  "product_head": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
+  "ref": "refs/heads/evidence/sd-vector-c-f204",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f204"
+}

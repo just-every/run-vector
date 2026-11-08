@@ -1,0 +1,12 @@
+{
+  "command": "pnpm build",
+  "exit": 1,
+  "failure": "docs/site.json is invalid: docs/AUTOMATION-RULES.md is neither a page nor in githubOnly; add it to one with a reason",
+  "head": "26dd6c1117bf0201e55854c3eaff39eef6c5fcc5",
+  "job": 128821731137,
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "repairRound": 1,
+  "run": 42510287470,
+  "test": "Build the shared production output"
+}

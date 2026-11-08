@@ -1,0 +1,81 @@
+
+> vector@0.4.1 build /workspace/run-vector-sd-vector-c-f204
+> rer build
+
+Heavy job admitted: Vector build:workflow [5d72a0bf8697]
+Checking pinned pnpm
+10.12.4
+Building your application
+
+> vector@0.4.1 build:source [REDACTED]
+> pnpm typecheck && vite build
+
+
+> vector@0.4.1 typecheck [REDACTED]
+> tsc -b
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+vite v8.2.2 building client environment for production...
+transforming...
+[plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/loaders.ts:4:29 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+[plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/public/sign-in-loader.ts:5:27 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+✓ 1322 modules transformed.
+✗ Build failed in 1.54s
+error during build:
+Build failed with 1 error:
+
+[plugin vector:docs]
+Error: docs/site.json is invalid:
+- docs/AUTOMATION-RULES.md is neither a page nor in githubOnly; add it to one with a reason
+    at readManifest (file://[REDACTED]/node_modules/.vite-temp/vite.config.ts.timestamp-1794163008396-f7860d42c0e1d.mjs:188:29)
+    at buildDocs (file://[REDACTED]/node_modules/.vite-temp/vite.config.ts.timestamp-1794163008396-f7860d42c0e1d.mjs:315:23)
+    at LoadPluginContextImpl.load (file://[REDACTED]/node_modules/.vite-temp/vite.config.ts.timestamp-1794163008396-f7860d42c0e1d.mjs:363:17)
+    at LoadPluginContextImpl.handler (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:34054:13)
+    at plugin (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/bindingify-input-options-C0gEvtnB.mjs:1758:30)
+    at file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/bindingify-input-options-C0gEvtnB.mjs:2118:21
+    at plugin.<computed> (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/bindingify-input-options-C0gEvtnB.mjs:2316:18)
+    at aggregateBindingErrorsIntoJsError (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/error-Dsqzw0Oa.mjs:49:18)
+    at unwrapBindingResult (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/error-Dsqzw0Oa.mjs:19:128)
+    at #build (file://[REDACTED]/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/rolldown-D_vNlorD.mjs:133:34)
+    at async buildEnvironment (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:33821:66)
+    at async Object.build (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:34242:19)
+    at async buildStartViteEnvironments (file://[REDACTED]/node_modules/.pnpm/@tanstack+start-plugin-core@1.171.49_@tanstack+react-router@1.170.41_react-dom@19.2.8_r_4459ac5ce2231ca7e7f27d99ec194c19/node_modules/@tanstack/start-plugin-core/dist/esm/vite/planning.js:95:23)
+    at async Object.buildApp (file://[REDACTED]/node_modules/.pnpm/@tanstack+start-plugin-core@1.171.49_@tanstack+react-router@1.170.41_react-dom@19.2.8_r_4459ac5ce2231ca7e7f27d99ec194c19/node_modules/@tanstack/start-plugin-core/dist/esm/vite/plugin.js:113:8)
+    at async Object.buildApp (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/chunks/node.js:34234:6)
+    at async CAC.<anonymous> (file://[REDACTED]/node_modules/.pnpm/vite@8.2.2_@types+node@24.19.2_esbuild@0.28.1_jiti@2.7.0/node_modules/vite/dist/node/cli.js:776:3) {
+  errors: [Getter/Setter]
+}
+ ELIFECYCLE  Command failed with exit code 1.
+Building your application: exit 1, signal none.
+Installation stopped while building the application. Ask your agent to check the edition's operating command for that step, correct the cause, then select Start again. Your setup answers are saved; you may need to supply credentials again.
+Command: pnpm
+Last output (up to 40 lines):
+> pnpm typecheck && vite build
+
+
+> vector@0.4.1 typecheck [REDACTED]
+> tsc -b
+
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+vite v8.2.2 building client environment for production...
+transforming...
+[plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/loaders.ts:4:29 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+[plugin tanstack-start-core::server-fn:client] [REDACTED]/src/core/app/public/sign-in-loader.ts:5:27 createServerFn().inputValidator() is deprecated. Use createServerFn().validator() instead.
+✓ 1322 modules transformed.
+✗ Build failed in 1.54s
+error during build:
+Build failed with 1 error:
+
+[plugin vector:docs]
+docs/site.json is invalid:
+- docs/AUTOMATION-RULES.md is neither a page nor in githubOnly; add it to one with a reason
+  errors: [Getter/Setter]
+}
+ ELIFECYCLE  Command failed with exit code 1.
+Log: [REDACTED]/.seed/installer/commands-6131/install.log
+build: failed (exit 1)
+ ELIFECYCLE  Command failed with exit code 1.
