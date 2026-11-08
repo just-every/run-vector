@@ -1,0 +1,718 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "clause": "HOME-001",
+      "passed": true,
+      "detail": "Installed Lobby server-renders its heading and sign-in action for the persisted owner claim; metadata and assets verified."
+    },
+    {
+      "clause": "RENDER-404",
+      "passed": true,
+      "detail": "Unknown documents/assets/dev paths and unsupported host return genuine 404, including navigate requests."
+    },
+    {
+      "clause": "RENDER-SSR",
+      "passed": true,
+      "detail": "Initial private HTML renders bound native identity; changed D1 name appears in the next raw document."
+    },
+    {
+      "clause": "BASE-ACCESS-002",
+      "passed": true,
+      "detail": "Missing, expired and revoked native sessions denied on known/unknown Hono APIs, all private document families and the only generated function; same-wire positive control and raw matrix retained."
+    },
+    {
+      "clause": "CORE-PERSISTENCE",
+      "passed": true,
+      "detail": "Created/updated issue, native session, comment and R2 file survive emitted runtime restart; stale update changes nothing."
+    },
+    {
+      "clause": "BASE-OPS-005",
+      "passed": true,
+      "detail": "Actual emitted scheduled export recovers a persisted file-removal intent; download denies removed bytes, metadata is erased, and repeated local cron produces one deletion audit."
+    },
+    {
+      "clause": "CURR-001",
+      "passed": true,
+      "detail": "disjoint-1440"
+    },
+    {
+      "clause": "CURR-001",
+      "passed": true,
+      "detail": "disjoint-started-1440"
+    },
+    {
+      "clause": "CURR-001",
+      "passed": true,
+      "detail": "disjoint-390"
+    },
+    {
+      "clause": "CURR-001",
+      "passed": true,
+      "detail": "disjoint-started-390"
+    },
+    {
+      "clause": "CURR-005",
+      "passed": true,
+      "detail": "recently-done-1440"
+    },
+    {
+      "clause": "CURR-005",
+      "passed": true,
+      "detail": "reopened-1440"
+    },
+    {
+      "clause": "CURR-005",
+      "passed": true,
+      "detail": "recently-done-390"
+    },
+    {
+      "clause": "CURR-005",
+      "passed": true,
+      "detail": "reopened-390"
+    },
+    {
+      "clause": "CURR-003",
+      "passed": true,
+      "detail": "now-1440"
+    },
+    {
+      "clause": "CURR-003",
+      "passed": true,
+      "detail": "overdue-detail-1440"
+    },
+    {
+      "clause": "CURR-003",
+      "passed": true,
+      "detail": "now-390"
+    },
+    {
+      "clause": "CURR-003",
+      "passed": true,
+      "detail": "overdue-detail-390"
+    },
+    {
+      "clause": "CURR-004",
+      "passed": true,
+      "detail": "next-1440"
+    },
+    {
+      "clause": "CURR-004",
+      "passed": true,
+      "detail": "started-from-next-1440"
+    },
+    {
+      "clause": "CURR-004",
+      "passed": true,
+      "detail": "next-390"
+    },
+    {
+      "clause": "CURR-004",
+      "passed": true,
+      "detail": "started-from-next-390"
+    },
+    {
+      "clause": "CURR-008",
+      "passed": true,
+      "detail": "Already-open Current observes a genuine separate-request intake decision after worst-phase successful poll, without navigation, reload or synthetic refresh; exact request/response/visible timestamps recorded."
+    },
+    {
+      "clause": "CMD-001",
+      "passed": true,
+      "detail": "Up/down wrap and scroll overflowing real results while input focus stays put; query changes reset selection, asynchronous results preserve the selected command, Enter opens an issue/project/view and executes a command, and Escape leaves the URL unchanged."
+    },
+    {
+      "clause": "VIEW-002-PALETTE",
+      "passed": true,
+      "detail": "A real newly created private saved view is found by palette search and Enter opens its persisted view page."
+    },
+    {
+      "clause": "CMD-002",
+      "passed": true,
+      "detail": "Control+k and Meta+k each open a palette that navigates with Enter and closes with Escape; c and g m/c/p navigate, while title/description typing remains editable."
+    },
+    {
+      "clause": "SEARCH-004",
+      "passed": true,
+      "detail": "Typed and menu Boolean filters yield the same exact rows and totals, reject unsupported terms visibly, preserve keyboard input and reopen a saved expression unchanged. Current private-team withdrawal, invited Guest scope and Viewer read-only admission remain enforced. Changed screens captured at 1440 and 390 with accessibility and overflow checks."
+    },
+    {
+      "clause": "VIEW-008",
+      "passed": true,
+      "detail": "Milestone and parent groups retain stable identities, complete filtered totals over two pages, duplicate names, unassigned groups and both saved modes after reload. Current private membership withdrawal hides parent identity, invited Guest queries stay scoped, and Viewers cannot change saved views. Grouped screens have desktop and phone accessibility and overflow proof."
+    },
+    {
+      "clause": "VIEW-009",
+      "passed": true,
+      "detail": "Member saves a shared filtered cross-team issue view; a second Member opens it by keyboard palette and reloads with both public teams, exact identifiers, totals, group counts and query retained. Current private membership grants and withdraws rows without changing the definition or session. An invited Guest cannot open the workspace-wide shared view and their equivalent issue query stays scoped; a Viewer is read-only with unchanged storage. Palette and view screens pass accessibility and overflow proof at 1440 and 390."
+    },
+    {
+      "clause": "CMD-003",
+      "passed": true,
+      "detail": "Rendered-group arrows, X selection, Enter detail and Escape return preserve the mounted list and selection; grouping/sort preserve row DOM focus, exclusion focuses the first row, and filter typing keeps its own focus."
+    },
+    {
+      "clause": "CMD-004",
+      "passed": true,
+      "detail": "Two selected real issues change status, assignee, priority, labels, estimate and due date without a mouse; native API reads verify saved fields, ? opens help, and Control-. copies one branch name per selected issue. Multi-team move and duplicate shortcuts remain partial."
+    },
+    {
+      "clause": "VIEW-004",
+      "passed": true,
+      "detail": "Keyboard bulk status is one atomic request; a genuine concurrent version conflict names the stale issue and changes neither issue or activity. The dialog blocks retry until current values are explicitly reviewed and accepted. Undo remains partial."
+    },
+    {
+      "clause": "CMD-003-STREAMS",
+      "passed": true,
+      "detail": "Current and My work support rendered-order arrows, X selection, one atomic keyboard edit, and Enter/Escape with selection and row focus preserved."
+    },
+    {
+      "clause": "CMD-004-SELECTED",
+      "passed": true,
+      "detail": "M atomically moves selected Intake and Started issues with explicit category mappings; Shift-D marks and removes their duplicate decisions through one request per action."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "A selected bulk edit offers one Undo; Cmd-Z and the visible control restore both previous priorities with one reversal activity each, while Ctrl-Z in a text control makes no Undo request."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "1440px: status/completion timestamps, assignee, priority, labels, cycle and team restore through toast and Ctrl/Cmd-Z; stale Undo refuses atomically; expired keyboard Undo does nothing."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "A selected bulk edit offers one Undo; Cmd-Z and the visible control restore both previous priorities with one reversal activity each, while Ctrl-Z in a text control makes no Undo request."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "390px: status/completion timestamps, assignee, priority, labels, cycle and team restore through toast and Ctrl/Cmd-Z; stale Undo refuses atomically; expired keyboard Undo does nothing."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "Native parent set, change and clear offer the current Undo control; the control and both keyboard shortcuts restore the previous relation and first sibling position with one attributed reversal. Editable text owns its Undo; parent and Undo controls are inspected at 1440 and 390."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "After manual completion with two unfinished children, clear reopens the parent and Undo restores its exact previous status and completedAt."
+    },
+    {
+      "clause": "ISSUE-020",
+      "passed": true,
+      "detail": "An invited Member sets, changes and clears a readable parent under a private ancestor, receives Undo each time, and reverses through the control, Ctrl-Z and Command-Z with one attributed activity and no private ancestor in any response."
+    },
+    {
+      "clause": "ISSUE-003",
+      "passed": true,
+      "detail": "The public create API persists all five explicit priorities and omitted priority as none; ordinary-list and rendered-board priority sort place urgent, high, medium, low, then both No priority issues."
+    },
+    {
+      "clause": "VIEW-005",
+      "passed": true,
+      "detail": "1440/390 browser board uses an explicit team, authored empty columns, matching full-result totals and 100-card paging; card moves are version checked, real stale409s preserve the server issue and restore destination focus/column, including a hidden completed receipt; decision cards open detail and completed work appears only when requested."
+    },
+    {
+      "clause": "CURR-007",
+      "passed": true,
+      "detail": "HTTP Current as-of fixture independently proves priority, overdue/future/absent due dates, most recent update, and identifier ties using a native bulk team move with a common timestamp."
+    },
+    {
+      "clause": "CURR-009",
+      "passed": true,
+      "detail": "At 1440px and 390px, Current filters team/project/priority/Intake-vs-Issue/assignee/attention reason (primary or context), combines all six, restores stored controls on reload, resets durably, retains Recently done by default and wraps every control with 44px touch targets."
+    },
+    {
+      "clause": "WORK-003",
+      "passed": true,
+      "detail": "My work shows exactly one context row for each of two qualifying fixture teams, with API-backed start/end dates and timezone, 2/5 points (40%) and 1/2 issues (50%); an unrelated active team is absent at desktop and mobile widths. Old three-field My work controls normalize and reset correctly."
+    },
+    {
+      "clause": "CURR-007",
+      "passed": true,
+      "detail": "HTTP Current as-of fixture independently proves priority, overdue/future/absent due dates, most recent update, and identifier ties using a native bulk team move with a common timestamp."
+    },
+    {
+      "clause": "CURR-009",
+      "passed": true,
+      "detail": "At 1440px and 390px, Current filters team/project/priority/Intake-vs-Issue/assignee/attention reason (primary or context), combines all six, restores stored controls on reload, resets durably, retains Recently done by default and wraps every control with 44px touch targets."
+    },
+    {
+      "clause": "WORK-003",
+      "passed": true,
+      "detail": "My work shows exactly one context row for each of two qualifying fixture teams, with API-backed start/end dates and timezone, 2/5 points (40%) and 1/2 issues (50%); an unrelated active team is absent at desktop and mobile widths. Old three-field My work controls normalize and reset correctly."
+    },
+    {
+      "clause": "RENDER-AUDIT",
+      "passed": true,
+      "detail": "App pages and plausible route aliases survive document reloads, a serious/critical axe audit and desktop/mobile overflow checks."
+    },
+    {
+      "clause": "PROJ-004",
+      "passed": true,
+      "detail": "Real portfolio rows expose API completed/total counts beside their percentage; null progress has no invented percentage."
+    },
+    {
+      "clause": "ISSUE-008 ISSUE-009",
+      "passed": true,
+      "detail": "Browser creates/removes named HTTPS issue and comment links; deleting the comment erases its link name/URL and records one deletion audit without fetching external URLs."
+    },
+    {
+      "clause": "ISSUE-006",
+      "passed": true,
+      "detail": "Open editor keeps its draft and original expectedVersion through a parent refresh; concurrent API write causes PATCH409 without overwrite, and explicit validated reload replaces the draft."
+    },
+    {
+      "clause": "ISSUE-001",
+      "passed": true,
+      "detail": "Native browser New Issue submits persisted Backlog work and navigates to the returned stable identifier without a document reload."
+    },
+    {
+      "clause": "INTAKE-001",
+      "passed": true,
+      "detail": "Native browser creates operator-attributed Intake with primitive measurements and customer reports, durable first evidence and no invented policy assertion; Current includes its persisted identifier."
+    },
+    {
+      "clause": "INTAKE-005",
+      "passed": true,
+      "detail": "Browser-created native operator Intake defers, returns early and accepts with persisted evidence, version increments and retained decisions; signed source delivery is pending."
+    },
+    {
+      "clause": "INTAKE-006",
+      "passed": true,
+      "detail": "Actual emitted scheduled export clears due persisted deferral once with named automation/version/activity, retains old decision, and repeated cron does not duplicate; browser early return is separately verified."
+    },
+    {
+      "clause": "RENDER-BROWSER",
+      "passed": true,
+      "detail": "Hydration and internal navigation retain performance.timeOrigin; UI issue/comment/link persistence works; raw HTML is removed; only the intentional metadata GET500 and stale-edit PATCH409 and stale-bulk POST409 resource console events are classified; no unexpected page/console/request errors or external URL fetches; desktop/mobile screenshots captured."
+    },
+    {
+      "clause": "BASE-ACCESS-001",
+      "passed": true,
+      "detail": "Native allow-listed single-use sign-in and persisted session revoke work through emitted Worker and browser. Local outbox only; external delivery remains unverified."
+    }
+  ],
+  "documents": [
+    "/signin",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app",
+    "/",
+    "/app/current/FLW-844",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/issues",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app/my-work",
+    "/app/issues",
+    "/app/issues",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/issues",
+    "/app/issues",
+    "/app/issues/USYFBYVMZ-1",
+    "/app/issues/USYFBYVMZ-1",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/issues",
+    "/app/issues",
+    "/app/issues/USAFLIRDB-1",
+    "/app/issues/USAFLIRDB-1",
+    "/",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app/settings/people",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/issues/CXHAJBEC-36",
+    "/app/issues/CXHAJBEC-36",
+    "/",
+    "/",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app/settings/people",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/board",
+    "/app/board",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app",
+    "/app",
+    "/app/my-work",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app",
+    "/app",
+    "/app",
+    "/app/my-work",
+    "/",
+    "/app",
+    "/app",
+    "/app/my-work",
+    "/app/my-work",
+    "/app/issues",
+    "/app/issues",
+    "/app/issues/backlog",
+    "/app/issues/backlog",
+    "/app/board",
+    "/app/board",
+    "/app/projects",
+    "/app/projects",
+    "/app/projects/new",
+    "/app/projects/new",
+    "/app/cycles",
+    "/app/cycles",
+    "/app/inbox",
+    "/app/inbox",
+    "/app/inbox/snoozed",
+    "/app/inbox/snoozed",
+    "/app/views",
+    "/app/views",
+    "/app/settings",
+    "/app/settings",
+    "/app/settings/people",
+    "/app/settings/people",
+    "/app/search",
+    "/app/search",
+    "/app/new-issue",
+    "/app/new-issue",
+    "/app/new",
+    "/app/new-issue",
+    "/app/new-issue",
+    "/app/issues/FLW-843",
+    "/app/issues/FLW-843",
+    "/app",
+    "/app/issues/FLW-843",
+    "/app/new-issue",
+    "/app/new-issue",
+    "/app/issues/FLW-845",
+    "/app/new-issue",
+    "/app/issues/FLW-843",
+    "/signin"
+  ],
+  "requestLedger": {
+    "fixedWindowSeconds": 60,
+    "limit": 600,
+    "peak": 392,
+    "total": 3247,
+    "operators": 28,
+    "buckets": [
+      {
+        "operator": 1,
+        "window": 29902844,
+        "requests": 26
+      },
+      {
+        "operator": 1,
+        "window": 29902845,
+        "requests": 23
+      },
+      {
+        "operator": 1,
+        "window": 29902851,
+        "requests": 6
+      },
+      {
+        "operator": 1,
+        "window": 29902852,
+        "requests": 28
+      },
+      {
+        "operator": 1,
+        "window": 29902853,
+        "requests": 40
+      },
+      {
+        "operator": 1,
+        "window": 29902854,
+        "requests": 121
+      },
+      {
+        "operator": 1,
+        "window": 29902855,
+        "requests": 95
+      },
+      {
+        "operator": 2,
+        "window": 29902844,
+        "requests": 113
+      },
+      {
+        "operator": 3,
+        "window": 29902844,
+        "requests": 95
+      },
+      {
+        "operator": 4,
+        "window": 29902844,
+        "requests": 32
+      },
+      {
+        "operator": 4,
+        "window": 29902845,
+        "requests": 17
+      },
+      {
+        "operator": 5,
+        "window": 29902845,
+        "requests": 83
+      },
+      {
+        "operator": 6,
+        "window": 29902845,
+        "requests": 70
+      },
+      {
+        "operator": 6,
+        "window": 29902846,
+        "requests": 2
+      },
+      {
+        "operator": 6,
+        "window": 29902847,
+        "requests": 2
+      },
+      {
+        "operator": 6,
+        "window": 29902848,
+        "requests": 1
+      },
+      {
+        "operator": 6,
+        "window": 29902849,
+        "requests": 5
+      },
+      {
+        "operator": 6,
+        "window": 29902850,
+        "requests": 6
+      },
+      {
+        "operator": 7,
+        "window": 29902845,
+        "requests": 38
+      },
+      {
+        "operator": 7,
+        "window": 29902846,
+        "requests": 38
+      },
+      {
+        "operator": 8,
+        "window": 29902845,
+        "requests": 36
+      },
+      {
+        "operator": 8,
+        "window": 29902846,
+        "requests": 8
+      },
+      {
+        "operator": 9,
+        "window": 29902846,
+        "requests": 5
+      },
+      {
+        "operator": 10,
+        "window": 29902846,
+        "requests": 19
+      },
+      {
+        "operator": 11,
+        "window": 29902846,
+        "requests": 154
+      },
+      {
+        "operator": 11,
+        "window": 29902847,
+        "requests": 71
+      },
+      {
+        "operator": 12,
+        "window": 29902846,
+        "requests": 60
+      },
+      {
+        "operator": 12,
+        "window": 29902847,
+        "requests": 22
+      },
+      {
+        "operator": 13,
+        "window": 29902847,
+        "requests": 19
+      },
+      {
+        "operator": 14,
+        "window": 29902847,
+        "requests": 54
+      },
+      {
+        "operator": 15,
+        "window": 29902848,
+        "requests": 85
+      },
+      {
+        "operator": 16,
+        "window": 29902848,
+        "requests": 27
+      },
+      {
+        "operator": 17,
+        "window": 29902848,
+        "requests": 67
+      },
+      {
+        "operator": 18,
+        "window": 29902848,
+        "requests": 12
+      },
+      {
+        "operator": 19,
+        "window": 29902848,
+        "requests": 24
+      },
+      {
+        "operator": 20,
+        "window": 29902849,
+        "requests": 58
+      },
+      {
+        "operator": 21,
+        "window": 29902849,
+        "requests": 89
+      },
+      {
+        "operator": 22,
+        "window": 29902849,
+        "requests": 174
+      },
+      {
+        "operator": 22,
+        "window": 29902850,
+        "requests": 5
+      },
+      {
+        "operator": 23,
+        "window": 29902850,
+        "requests": 179
+      },
+      {
+        "operator": 24,
+        "window": 29902850,
+        "requests": 104
+      },
+      {
+        "operator": 24,
+        "window": 29902851,
+        "requests": 4
+      },
+      {
+        "operator": 25,
+        "window": 29902850,
+        "requests": 11
+      },
+      {
+        "operator": 25,
+        "window": 29902851,
+        "requests": 62
+      },
+      {
+        "operator": 26,
+        "window": 29902851,
+        "requests": 229
+      },
+      {
+        "operator": 27,
+        "window": 29902851,
+        "requests": 183
+      },
+      {
+        "operator": 27,
+        "window": 29902852,
+        "requests": 253
+      },
+      {
+        "operator": 28,
+        "window": 29902852,
+        "requests": 392
+      }
+    ]
+  }
+}

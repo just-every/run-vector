@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "branch": "cloud/sd-vector-c-f199-pc1",
+  "node": "22.20.0",
+  "chromium": "/usr/bin/chromium",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:worker tests/worker/leadership-digests.test.ts",
+      "exit": 0,
+      "files": 1,
+      "tests": 2
+    },
+    {
+      "command": "pnpm test:worker tests/worker/leadership-digest-upgrade.test.ts tests/worker/data-http.test.ts",
+      "exit": 0,
+      "files": 2,
+      "tests": 2
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests": 1
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write INIT-004 && node scripts/contract-docs.mjs check INIT-004",
+      "exit": 0,
+      "generated_views_restored_from": "origin/main"
+    },
+    {
+      "command": "pnpm sources:lock && pnpm sources:check",
+      "exit": 0,
+      "lock_diff": false
+    }
+  ],
+  "repair_save": {
+    "head": "a50160b9e990196df16a00b993f987deb0a38714",
+    "push": "success",
+    "repair_round": 1,
+    "change": "Remove duplicate project-membership call from shared current phase; retain isolated projects phase and all assertions"
+  },
+  "declaration_edit_checks": [
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:worker tests/worker/leadership-digests.test.ts",
+      "exit": 0,
+      "tests": 2
+    }
+  ],
+  "browser": {
+    "head": "b129d446e12236048b21c1f5942fb184db29bbb1",
+    "journey": "tests/e2e/leadership-digest-journey.mjs#leadershipDigestJourney",
+    "entrypoint": "pnpm verify:ci --shard core-runtime -> core-runtime current -> core-runtime projects -> projectMembershipJourney -> initiativesJourney",
+    "widths": [
+      1440,
+      390
+    ],
+    "passed": true,
+    "captures": [
+      "leadership-digest-channels-1440.png",
+      "leadership-digest-channels-390.png",
+      "leadership-initiative-subscription-1440.png",
+      "leadership-initiative-subscription-390.png"
+    ],
+    "captured_on_exact_candidate": true
+  },
+  "repair_shard": {
+    "head": "a50160b9e990196df16a00b993f987deb0a38714",
+    "command": "pnpm verify:ci --shard core-runtime",
+    "exit": 0,
+    "shared_checks": 59,
+    "project_checks": 54
+  },
+  "main_comparison": {
+    "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "command": "pnpm verify:ci --shard core-runtime",
+    "exit": 0,
+    "shared_checks": 59,
+    "project_checks": 54
+  },
+  "product_head": "b129d446e12236048b21c1f5942fb184db29bbb1",
+  "product_branch": "cloud/sd-vector-c-f199-pc1",
+  "candidate_checks": [
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm integration:check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:worker tests/worker/leadership-digests.test.ts",
+      "exit": 0,
+      "tests": 2
+    },
+    {
+      "command": "timeout 1200 node tests/e2e/core-runtime.mjs projects",
+      "result": "passed",
+      "checks": 54,
+      "receipt": "candidate-project-runtime.json",
+      "note": "Recovered process output and runtime result after context resume; shell exit status unavailable"
+    }
+  ],
+  "contract_status_rows_changed": false,
+  "generated_views_committed": false,
+  "new_test_registrations": 0,
+  "removed_assertions": 0,
+  "duplicate_invocations_removed": 1
+}

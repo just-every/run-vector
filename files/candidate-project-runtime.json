@@ -1,0 +1,418 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "clause": "HOME-001",
+      "passed": true,
+      "detail": "Installed Lobby server-renders its heading and sign-in action for the persisted owner claim; metadata and assets verified."
+    },
+    {
+      "clause": "RENDER-404",
+      "passed": true,
+      "detail": "Unknown documents/assets/dev paths and unsupported host return genuine 404, including navigate requests."
+    },
+    {
+      "clause": "RENDER-SSR",
+      "passed": true,
+      "detail": "Initial private HTML renders bound native identity; changed D1 name appears in the next raw document."
+    },
+    {
+      "clause": "BASE-ACCESS-002",
+      "passed": true,
+      "detail": "Missing, expired and revoked native sessions denied on known/unknown Hono APIs, all private document families and the only generated function; same-wire positive control and raw matrix retained."
+    },
+    {
+      "clause": "CORE-PERSISTENCE",
+      "passed": true,
+      "detail": "Created/updated issue, native session, comment and R2 file survive emitted runtime restart; stale update changes nothing."
+    },
+    {
+      "clause": "BASE-OPS-005",
+      "passed": true,
+      "detail": "Actual emitted scheduled export recovers a persisted file-removal intent; download denies removed bytes, metadata is erased, and repeated local cron produces one deletion audit."
+    },
+    {
+      "clause": "VIEW-006",
+      "passed": true,
+      "detail": "list-1440"
+    },
+    {
+      "clause": "VIEW-006",
+      "passed": true,
+      "detail": "board-1440"
+    },
+    {
+      "clause": "VIEW-006",
+      "passed": true,
+      "detail": "saved-view-1440"
+    },
+    {
+      "clause": "VIEW-006",
+      "passed": true,
+      "detail": "list-390"
+    },
+    {
+      "clause": "VIEW-006",
+      "passed": true,
+      "detail": "board-390"
+    },
+    {
+      "clause": "VIEW-006",
+      "passed": true,
+      "detail": "saved-view-390"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "cycle-1440"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "assigned-1440"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "date-range-1440"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "date-capacity-1440"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "cycle-390"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "assigned-390"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "date-range-390"
+    },
+    {
+      "clause": "REPORT-004",
+      "passed": true,
+      "detail": "date-capacity-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "contributing-project-public-team-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "contributing-project-public-team-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "contributing-project-private-team-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "contributing-project-private-team-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "project-both-contributing-teams-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "project-both-contributing-teams-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "nonmember-public-team-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "nonmember-public-team-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "nonmember-private-team-unavailable-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "nonmember-private-team-unavailable-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "member-private-team-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "member-private-team-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "withdrawn-member-public-team-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "withdrawn-member-public-team-390"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "withdrawn-member-private-team-unavailable-1440"
+    },
+    {
+      "clause": "PROJ-014",
+      "passed": true,
+      "detail": "withdrawn-member-private-team-unavailable-390"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-blocked-by-1440"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-blocked-by-390"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-blocking-1440"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-blocking-390"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-inbox-1440"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-inbox-390"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-cycle-refused-1440"
+    },
+    {
+      "clause": "PROJ-015",
+      "passed": true,
+      "detail": "project-dependency-remove-tooltip-1440"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "member-project-deletion-disabled-1440"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "member-lead-deletion-denied-1440"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "confirm-delete-1440"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "deleted-portfolio-1440"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "retained-issue-1440"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "member-project-deletion-disabled-390"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "member-lead-deletion-denied-390"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "confirm-delete-390"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "deleted-portfolio-390"
+    },
+    {
+      "clause": "PROJ-003",
+      "passed": true,
+      "detail": "retained-issue-390"
+    }
+  ],
+  "documents": [
+    "/signin",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/issues",
+    "/app/issues/backlog",
+    "/app/views/01M6YFX6X404841QQG3FCVQE1V",
+    "/app/issues",
+    "/app/issues/backlog",
+    "/app/issues",
+    "/app/issues/backlog",
+    "/app/views/01M6YFXGYBFQ4ZS2CCNVZACR0E",
+    "/app/issues",
+    "/app/issues/backlog",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/cycles/01M6YFXYTJ9YERYB1Q1HW9R35C",
+    "/app/cycles/01M6YFXYTJ9YERYB1Q1HW9R35C",
+    "/",
+    "/app/settings/people",
+    "/auth/confirm",
+    "/auth/confirm",
+    "/app",
+    "/app/teams/01M6YFYE5637CZSSEWMV8EZGR7",
+    "/app/projects/01M6YFYEAPFPWRVJ4TBNZ6VB3Z",
+    "/app/teams/01M6YFYE8YTBAAXBACA8PVXQZ2",
+    "/app/projects/01M6YFYEAPFPWRVJ4TBNZ6VB3Z",
+    "/app/projects/01M6YFZG9WE4RSNVHF9AY5CHBZ",
+    "/app/projects/01M6YFZG5KN2BE2N0VSVVDN91P",
+    "/app/projects/01M6YFZG9WE4RSNVHF9AY5CHBZ",
+    "/app/projects/01M6YFZG5KN2BE2N0VSVVDN91P",
+    "/",
+    "/app/issues/MRBGADID-7",
+    "/app/projects/01M6YG08B0BN1VBMTWQWQFWQGV",
+    "/app/issues/MRBGADID-8",
+    "/app/issues/MRBGADID-9",
+    "/app/projects/01M6YG0KQDHFA42P5NVBFBSB65",
+    "/app/issues/MRBGADID-10",
+    "/",
+    "/"
+  ],
+  "requestLedger": {
+    "fixedWindowSeconds": 60,
+    "limit": 600,
+    "peak": 242,
+    "total": 1328,
+    "operators": 9,
+    "buckets": [
+      {
+        "operator": 1,
+        "window": 29902869,
+        "requests": 24
+      },
+      {
+        "operator": 1,
+        "window": 29902870,
+        "requests": 2
+      },
+      {
+        "operator": 2,
+        "window": 29902869,
+        "requests": 82
+      },
+      {
+        "operator": 3,
+        "window": 29902869,
+        "requests": 50
+      },
+      {
+        "operator": 4,
+        "window": 29902870,
+        "requests": 129
+      },
+      {
+        "operator": 4,
+        "window": 29902871,
+        "requests": 242
+      },
+      {
+        "operator": 4,
+        "window": 29902872,
+        "requests": 195
+      },
+      {
+        "operator": 4,
+        "window": 29902873,
+        "requests": 210
+      },
+      {
+        "operator": 4,
+        "window": 29902874,
+        "requests": 73
+      },
+      {
+        "operator": 5,
+        "window": 29902870,
+        "requests": 81
+      },
+      {
+        "operator": 5,
+        "window": 29902871,
+        "requests": 51
+      },
+      {
+        "operator": 6,
+        "window": 29902871,
+        "requests": 1
+      },
+      {
+        "operator": 6,
+        "window": 29902872,
+        "requests": 64
+      },
+      {
+        "operator": 6,
+        "window": 29902873,
+        "requests": 64
+      },
+      {
+        "operator": 7,
+        "window": 29902872,
+        "requests": 17
+      },
+      {
+        "operator": 8,
+        "window": 29902873,
+        "requests": 17
+      },
+      {
+        "operator": 9,
+        "window": 29902874,
+        "requests": 26
+      }
+    ]
+  }
+}

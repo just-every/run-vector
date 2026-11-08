@@ -1,0 +1,18 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f199-pc1/run-vector
+> vitest run --config vitest.config.ts tests/worker/leadership-digest-upgrade.test.ts tests/worker/data-http.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f199-pc1/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  2 passed (2)
+      Tests  2 passed (2)
+   Start at  20:33:12
+   Duration  121.64s (transform 5.49s, setup 0ms, import 15.47s, tests 104.88s, environment 1ms)
+

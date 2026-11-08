@@ -1,0 +1,11 @@
+{
+  "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "job": 128810444261,
+  "command": "pnpm verify:ci --shard core-runtime",
+  "test": "withInvitedOperator at tests/e2e/core-runtime.mjs:797",
+  "exit": 1,
+  "failure": "invitation confirmation succeeds within the native proof budget: 429 !== 303",
+  "node": "22.20.0",
+  "TZ": "UTC",
+  "reusedBuildSha": "389f173eb6ff277885dbc1f6fbf81790571136c0"
+}

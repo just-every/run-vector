@@ -1,0 +1,14 @@
+{
+  "prior_run": 42506503396,
+  "prior_head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "failed_job": 128810444261,
+  "failed_step": "Verify the independent shard",
+  "log_command": "gh run view 42506503396 --repo just-every/run-vector --job 128810444261 --log-failed",
+  "log_exit": 0,
+  "log_bytes": 0,
+  "artifact_command": "gh api repos/just-every/run-vector/actions/artifacts/13628285714/zip",
+  "artifact_http_status": 403,
+  "artifact_error": "Forbidden at redirected blob host; signed query omitted",
+  "github_calls_used": 5,
+  "retry": false
+}

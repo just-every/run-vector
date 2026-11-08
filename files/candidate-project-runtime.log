@@ -1,0 +1,127 @@
+(node:21861) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21861) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed RENDER-SSR
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-OPS-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[PROJ-014] two actual team project lists and contributor names; same Member session observes current private-team membership and withdrawal
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[Vector runtime] Passed PROJ-015
+[PROJ-015] project-page controls set, show, refuse and remove direct project edges with attributed endpoint activity and lead Inbox notices
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+[Vector runtime] Passed PROJ-003
+INIT-004 leadershipDigestJourney: subscription and both channels persist, keyboard withdrawal succeeds; screens 1440 and 390
+INIT-001 reason {"width":1440,"code":"approval_withdrawn","door":{"code":"approval_withdrawn","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":null},{"role":"owner","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 reason {"width":1440,"code":"approved_again","door":{"code":"approved_again","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: #delivery is approved again. Save to post there.","header":null},{"role":"owner","panel":"Not posting: #delivery is approved again. Save to post there.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · #delivery is approved again. The Member saves again to post there. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: #delivery is approved again. The Member saves again to post there.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 reason {"width":1440,"code":"binder_cannot_edit","door":{"code":"binder_cannot_edit","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"memberPanel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","panel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}
+INIT-001 binder settings {"width":1440,"text":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 reason {"width":1440,"code":"workspace_changed","door":{"code":"workspace_changed","binderName":"synthetic-vector-1798","approvedWorkspace":"TSYNTHETIC33001","currentWorkspace":"Harbor Slack"},"text":[{"role":"member","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":null},{"role":"owner","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-1440 → Slack #delivery\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-1440"}
+INIT-001 approval reason {"width":1440,"text":"synthetic-vector-1794-1440 → Slack #delivery, approved for workspace members\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nWithdraw approval for synthetic-vector-1794-1440 #delivery"}
+INIT-001 header saved {"width":1440,"panel":"Posting to Discord #synthetic-vector-1860-1440: Initiative update.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nPosts to Discord #synthetic-vector-1860-1440 · Initiative update · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}
+INIT-001 header withdrawn {"width":1440,"panel":"No channel posts this initiative’s changes.","header":"← Initiatives\nsynthetic-vector-1794-1440\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posted to a channel · Set up\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}
+INIT-001 reason {"width":390,"code":"approval_withdrawn","door":{"code":"approval_withdrawn","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":null},{"role":"owner","panel":"Not posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; then save to post there.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: The approval for #delivery was withdrawn. An Owner or Admin can approve it again; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 reason {"width":390,"code":"approved_again","door":{"code":"approved_again","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"text":[{"role":"member","panel":"Not posting: #delivery is approved again. Save to post there.","header":null},{"role":"owner","panel":"Not posting: #delivery is approved again. Save to post there.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · #delivery is approved again. The Member saves again to post there. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: #delivery is approved again. The Member saves again to post there.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 reason {"width":390,"code":"binder_cannot_edit","door":{"code":"binder_cannot_edit","binderName":"synthetic-vector-1798","approvedWorkspace":null,"currentWorkspace":"Delivery workspace"},"memberPanel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","panel":"Not posting: synthetic-vector-1798 can no longer edit this initiative. Save to post as yourself.\n\nApproved channel\nChoose an approved channel\nSlack #delivery\nEvents to post\nInitiative created\nInitiative update\nInitiative projects changed\nSave initiative channel\nWithdraw initiative channel","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}
+INIT-001 binder settings {"width":390,"text":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: synthetic-vector-1798 can no longer edit this initiative. Save on the initiative to post as yourself.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 reason {"width":390,"code":"workspace_changed","door":{"code":"workspace_changed","binderName":"synthetic-vector-1798","approvedWorkspace":"TSYNTHETIC33001","currentWorkspace":"Harbor Slack"},"text":[{"role":"member","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":null},{"role":"owner","panel":"Not posting: Slack is now connected to Harbor Slack. An Owner or Admin must approve a channel there; then save again.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posting to Slack #delivery · Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again. · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}],"settings":"synthetic-vector-1794-390 → Slack #delivery\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nInitiative update\n\nRemove binding for synthetic-vector-1794-390"}
+INIT-001 approval reason {"width":390,"text":"synthetic-vector-1794-390 → Slack #delivery, approved for workspace members\n\nNot posting: Its approval is for Slack workspace TSYNTHETIC33001. Slack is now connected to Harbor Slack. Approve a channel in the current Slack workspace; the Member then saves again.\n\nWithdraw approval for synthetic-vector-1794-390 #delivery"}
+INIT-001 header saved {"width":390,"panel":"Posting to Discord #synthetic-vector-1860-390: Initiative update.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nPosts to Discord #synthetic-vector-1860-390 · Initiative update · Change\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}
+INIT-001 header withdrawn {"width":390,"panel":"No channel posts this initiative’s changes.","header":"← Initiatives\nsynthetic-vector-1794-390\n\nCompleted · Owner: Project maintenance teammate · Target: 2027-04-01\n\nNot posted to a channel · Set up\n\nUnsubscribe from initiative\n\nChoose weekly leadership digest channels in Settings\n\nsynthetic-vector-1793 across teams"}
+PROBE RELEASE-003 native HTTP: six exact completed sources, current titles and project groups; edited draft retained after fresh read and scope change; stale saves refused; no release publication
+PROBE RELEASE-003 browser: keyboard generation from six completed issues -> grouped Markdown; exact human edit survives save and reload; stale save preserves local text; explicit reload and scope edits retain accountable draft; read-only view has no draft mutations; release description and publication remain separate
+PROBE RELEASE-003 private access: recorded Member owner generates notes; source membership withdrawn -> save refused 404, private saved and unsaved text disappear, storage unchanged and reload remains unavailable
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Operator request ledger] {"fixedWindowSeconds":60,"limit":600,"peak":242,"total":1328,"operators":9,"buckets":[{"operator":1,"window":29902869,"requests":24},{"operator":1,"window":29902870,"requests":2},{"operator":2,"window":29902869,"requests":82},{"operator":3,"window":29902869,"requests":50},{"operator":4,"window":29902870,"requests":129},{"operator":4,"window":29902871,"requests":242},{"operator":4,"window":29902872,"requests":195},{"operator":4,"window":29902873,"requests":210},{"operator":4,"window":29902874,"requests":73},{"operator":5,"window":29902870,"requests":81},{"operator":5,"window":29902871,"requests":51},{"operator":6,"window":29902871,"requests":1},{"operator":6,"window":29902872,"requests":64},{"operator":6,"window":29902873,"requests":64},{"operator":7,"window":29902872,"requests":17},{"operator":8,"window":29902873,"requests":17},{"operator":9,"window":29902874,"requests":26}]}
+{
+  "passed": true,
+  "checks": 54,
+  "evidence": "/home/agent/rer-consolidation/work/sd-vector-c-f199-pc1/run-vector/.artifacts/verification/project-runtime"
+}

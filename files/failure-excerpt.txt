@@ -1,0 +1,19 @@
+AssertionError [ERR_ASSERTION]: invitation confirmation succeeds within the native proof budget
+
+429 !== 303
+
+    at withInvitedOperator (file:///home/agent/rer-consolidation/work/sd-vector-c-f199-pc1/run-vector/tests/e2e/core-operator-journey.mjs:34:76)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+    at async file:///home/agent/rer-consolidation/work/sd-vector-c-f199-pc1/run-vector/tests/e2e/core-runtime.mjs:797:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 429,
+  expected: 303,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0
+ ELIFECYCLE  Command failed with exit code 1.
