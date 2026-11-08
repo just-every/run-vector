@@ -6310,7 +6310,7 @@
       "executable": false
     },
     "src/core/features/leadership-digests/preferences.ts": {
-      "sha256": "500cfc087225b3278cd965ae040a689c6762ca1defb37d1645d19254cad0d1e8",
+      "sha256": "035c8a54d60d15aaedfdb37d1299541681c8e29ce454796a9e8c0d2553faec13",
       "executable": false
     },
     "src/core/features/leadership-digests/receipts.ts": {
@@ -8874,7 +8874,7 @@
       "executable": false
     },
     "tests/e2e/leadership-digest-journey.mjs": {
-      "sha256": "8d213d74725f85e8532c962af25004c91bdf0471ec27b083fe1fd4c5643888a3",
+      "sha256": "b2ceedfeb8e5a97bde52d2f0f79c572b7b8fd682c552b11e98d7a9e9371a9c80",
       "executable": false
     },
     "tests/e2e/local-d1-read.mjs": {
@@ -9662,7 +9662,7 @@
       "executable": false
     },
     "tests/worker/leadership-digests.test.ts": {
-      "sha256": "beb15b95c6a4a9590728ab9219d521b59e7cbdc5d03847f997e3300c1a6f7866",
+      "sha256": "36e7c7abc51ce5e0f3bd45fcc22de8502e21e2d49e7a52142a423f9fcc1a8462",
       "executable": false
     },
     "tests/worker/linear-api-import.test.ts": {

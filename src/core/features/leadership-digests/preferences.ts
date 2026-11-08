@@ -1,3 +1,4 @@
+import { audit } from '../administration/transaction';
 import { leadershipPreferencesSchema } from './schema';
 import { mutationDatabase } from '../auth/mutation-database';
 import { settingsActor, SettingsError } from '../settings/repository';
@@ -11,11 +12,12 @@ export async function leadershipPreferences(db: D1Database, actor: string) {
 export async function saveLeadershipPreferences(db: D1Database, actor: string, input: unknown) {
   const parsed = leadershipPreferencesSchema.safeParse(input);
   if (!parsed.success) throw new SettingsError('invalid_request','Choose valid leadership digest channels.',400);
-  await settingsActor(db, actor);
+  const access=await settingsActor(db, actor),previous=await leadershipPreferences(db,actor),at=new Date().toISOString();
   db = mutationDatabase(db, actor);
-  await db.prepare(`INSERT INTO leadership_digest_preferences(operator_id,email_enabled,slack_enabled,revision)
+  await db.batch([db.prepare(`INSERT INTO leadership_digest_preferences(operator_id,email_enabled,slack_enabled,revision)
     VALUES(?,?,?,?) ON CONFLICT(operator_id) DO UPDATE SET email_enabled=excluded.email_enabled,
     slack_enabled=excluded.slack_enabled,revision=excluded.revision`)
-    .bind(actor,Number(parsed.data.email),Number(parsed.data.slack),crypto.randomUUID()).run();
+    .bind(actor,Number(parsed.data.email),Number(parsed.data.slack),crypto.randomUUID()),
+    ...audit({db,actor,workspace:access.workspace_id,at},'leadership_digest.channels_changed',actor,'Leadership digest',previous,parsed.data)]);
   return leadershipPreferences(db, actor);
 }

@@ -25,6 +25,7 @@ it('weekly leadership scheduled delivery deduplicates owners and subscribers in 
       edge.users(email!,user,'synthetic-vector-4003');
       await json(await send('/settings/notifications/slack/link','POST',{slackUserId:user}));
       await json(await send('/settings/notifications/leadership-digest','PUT',{email:true,slack:true}));
+      expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE action='leadership_digest.channels_changed' AND actor_operator_id=?").bind(id).first<number>('n')).toBe(1);
       await json(await send('/settings/personal-time','PATCH',{timezone:'America/New_York',workingHoursStart:'09:00',workingHoursEnd:'17:00',workingDays:[1,2,3,4,5]}));
     }
     let root=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-4004',ownerOperatorId:f.owner,targetDate:'2027-04-01',description:'NEVER_SEND_INITIATIVE_BODY'}),201);
@@ -133,7 +134,12 @@ it('weekly leadership delivery revalidates withdrawal, unlinking, disabled insta
     await tick('2027-02-01T09:00:00Z');expect(posts()).toHaveLength(beforeUnlink);edge.beforeCall();
     sub=await json(call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
     await owner('/settings/integrations/slack','DELETE');
+    mailStatus=429;
     await tick('2027-02-08T09:00:00Z');expect(posts()).toHaveLength(beforeUnlink);
+    await tick('2027-02-08T09:01:00Z');await tick('2027-02-08T09:06:00Z');
+    expect(await env.DB.prepare("SELECT status,attempts FROM leadership_digest_receipts WHERE recipient_id=? AND slot='2027-02-08' AND channel='email'").bind(member).first()).toEqual({status:'failed',attempts:3});
+    const exhausted=mailCount;await tick('2027-02-08T10:00:00Z');expect(mailCount).toBe(exhausted);
+    mailStatus=202;
     // Expired claims and lost acknowledgements are terminal, even after restart.
     const beforeCrash=mailCount;
     await expect(tick('2027-02-15T09:00:00Z',undefined,async()=>{throw Error('synthetic-vector-settlement-crash');})).rejects.toThrow('synthetic-vector-settlement-crash');

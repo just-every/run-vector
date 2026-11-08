@@ -32,8 +32,10 @@ export async function leadershipDigestJourney({page,runtime,call,evidence}) {
   const choose=async(name,value)=>{
     const control=panel.getByRole('checkbox',{name,exact:true});
     const saved=page.waitForResponse(r=>r.request().method()==='PUT'&&new URL(r.url()).pathname==='/api/settings/notifications/leadership-digest');
-    await control.setChecked(value);assert.equal((await saved).status(),200);
+    assert.equal(await control.isChecked(),!value);
+    await control.click();assert.equal((await saved).status(),200);
     await panel.getByText('Leadership digest channels saved.',{exact:true}).waitFor();
+    assert.equal(await control.isChecked(),value);
   };
   await choose('Email leadership digest',true);
   await choose('Slack direct message leadership digest',true);
