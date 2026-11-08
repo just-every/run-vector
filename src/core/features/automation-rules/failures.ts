@@ -14,6 +14,7 @@ export async function reconcileRuleDeliveries(env:WorkerBindings,now:Date) {
     JOIN vector_webhook_events event ON event.id='rule:'||run.id
     LEFT JOIN integration_deliveries delivery ON delivery.namespace=r.workspace_id AND delivery.id=event.id
     WHERE run.state='succeeded' AND r.version=run.rule_version AND r.failure IS NULL
+    AND (delivery.state IS NULL OR delivery.state<>'accepted' OR NOT (${eligibleDestination}))
     AND NOT EXISTS(SELECT 1 FROM automation_rule_restore_holds h WHERE h.rule_id=r.id)
     AND ${liveRule()} LIMIT 100`).all<{id:string;rule_id:string;version:number;workspace_id:string;delivery_state:string|null;destination_live:number}>()).results;
   for(const row of rows) {

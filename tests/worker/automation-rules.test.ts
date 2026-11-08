@@ -92,7 +92,7 @@ it('[AUTO-002 ROLE-008 ROLE-009] label rules dry-run without effects and commit 
     expect((await json(owner.call(api+'/'+saved.id+'/runs'))).runs.find((row:any) => row.issue_id === exhausted.id)).toMatchObject({state:'budget_exhausted',reason:'monthly_budget_exhausted'});
     await automationSafety(w,edge);
     // Restore stops all old runs permanently, even after review. Proven separately with native archives.
-    await automationArchive(w,saved.id);
+    await automationArchive(w,saved.id,input,posts);
     expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
   } finally { edge.restore(); }
 },240_000);

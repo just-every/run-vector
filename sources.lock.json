@@ -4382,7 +4382,7 @@
       "executable": false
     },
     "src/core/features/automation-rules/failures.ts": {
-      "sha256": "c372c65d57deedb9fda322e48ed7b0c26091fdc1141501d4f90a030ad771641c",
+      "sha256": "003a024de6d6c45cc44aa2c11b4c42bb59b25862d60291198dea3b8306b028bb",
       "executable": false
     },
     "src/core/features/automation-rules/policy.ts": {
@@ -5410,7 +5410,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/delivery.ts": {
-      "sha256": "c8cda6f5d0dd13bb8bd1f5b09e2e843f6716ce19d2d49e4a9ab6f087a82b04f6",
+      "sha256": "6b48b6c3f105806995a3d63bbce8f9b3ee6223e08386ba9b50e00d993e550946",
       "executable": false
     },
     "src/core/features/integrations/channels/initiative-approval.ts": {
@@ -9294,7 +9294,7 @@
       "executable": false
     },
     "tests/worker/automation-rule-archive.ts": {
-      "sha256": "d33f0fc369da0883e65ab44fce2a58af7298e8dc7936f265a15dfe9032db1b3e",
+      "sha256": "79fb495536f4640348cb780cf91e8fdb104d880213507059d4f2417f5662ed2f",
       "executable": false
     },
     "tests/worker/automation-rule-roles.ts": {
@@ -9302,7 +9302,7 @@
       "executable": false
     },
     "tests/worker/automation-rule-safety.ts": {
-      "sha256": "c04ff079e4f407721f956051c6ab4e2ad46dedff95d12d726cb8f93373a69501",
+      "sha256": "b71aa8abc985b779f1cf9cfd61f32814ac8d98bafb8ac22645c45bc7adad6206",
       "executable": false
     },
     "tests/worker/automation-rule-writers.ts": {
@@ -9310,7 +9310,7 @@
       "executable": false
     },
     "tests/worker/automation-rules.test.ts": {
-      "sha256": "6950729f95e1dbf01d3b4dbe44f695785f611160044f03e2dd33518ec27d99e3",
+      "sha256": "3d0cc33aaccfc02f68b4b116c22e3e3c3df5d51e8066a17853df8e8467e50205",
       "executable": false
     },
     "tests/worker/base-auth-fixture.ts": {
@@ -9946,7 +9946,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "57a022df81ea0738fe7f59b85ea5b565b7e10031f52c58613327cd88dff1e6e5",
+      "sha256": "0b17ba2ddbec946d1e41bc002a6e6e23978df76f4f4d95e0f39bb0407a14e816",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {

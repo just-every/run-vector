@@ -87,4 +87,31 @@ export async function automationSafety(w:Workspace,edge:ReturnType<typeof channe
   const beforeDemotion=posts().length; await tick();
   expect((await json(owner.call('/issues/'+pending.identifier))).priority).toBe('low'); expect(posts()).toHaveLength(beforeDemotion);
   expect((await json(owner.call(api+'/'+owned.id+'/runs'))).runs.find((r:any)=>r.issue_id===pending.id)).toMatchObject({state:'stopped',reason:'rule_or_access_changed'});
+  // A provider rate limit retries the same immutable delivery. Neither worker
+  // restart nor a transport retry repeats the already committed priority act.
+  const retryRule=await json(owner.call(api,'POST',{...input,monthlyBudget:50,destinationId:freshBinding.id,expectedVersion:0}),201);
+  const retryIssue=await issue(),retryBefore=posts().length;
+  edge.postMode('retry');await tick();
+  expect(posts()).toHaveLength(retryBefore+1);
+  expect((await json(owner.call('/issues/'+retryIssue.identifier))).priority).toBe('urgent');
+  const workspace=(await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(owner.id).first<string>('workspace_id'))!;
+  edge.postMode('accepted');
+  await outboundService(bindings,workspace,()=>Date.now()+60_000).dispatchDue(20);
+  await tick();
+  expect(posts()).toHaveLength(retryBefore+2);
+  expect((await json(owner.call(api+'/'+retryRule.id+'/runs'))).runs.filter((r:any)=>r.issue_id===retryIssue.id)).toHaveLength(1);
+  expect((await env.DB.prepare("SELECT id FROM issue_activity WHERE issue_id=? AND json_extract(next_value_json,'$.automationRuleId')=?").bind(retryIssue.id,retryRule.id).all()).results).toHaveLength(1);
+  expect(await env.DB.prepare("SELECT state FROM integration_deliveries WHERE id=(SELECT 'rule:'||id FROM automation_rule_runs WHERE rule_id=? AND issue_id=?)").bind(retryRule.id,retryIssue.id).first('state')).toBe('accepted');
+  // Two original rules may act on one addition. Their own priority acts never
+  // feed either rule, so different target priorities cannot form a cycle.
+  const loopLabels=await json(owner.call('/settings/labels','POST',{name:'synthetic-vector-loop-label',color:'#225599'}));
+  const loopLabel=loopLabels.labels.find((l:any)=>l.name==='synthetic-vector-loop-label').id;
+  const loopRules=[];
+  for(const priority of ['urgent','high'])loopRules.push(await json(owner.call(api,'POST',{...input,labelId:loopLabel,priority,destinationId:freshBinding.id,monthlyBudget:50,expectedVersion:0}),201));
+  const loopIssue=await json(owner.call('/issues','POST',{teamId:team.id,title:'synthetic-vector-loop-issue',priority:'low',labelIds:[loopLabel]}),201);
+  const loopBefore=posts().length;await tick();
+  expect(posts()).toHaveLength(loopBefore+2);
+  for(let n=0;n<3;n++)await tick();
+  expect(posts()).toHaveLength(loopBefore+2);
+  for(const rule of loopRules)expect((await json(owner.call(api+'/'+rule.id+'/runs'))).runs).toHaveLength(1);
 }

@@ -31,6 +31,7 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
    JOIN automation_rule_runs run ON run.rule_id=r.id JOIN issues i ON i.id=run.issue_id JOIN teams t ON t.id=i.team_id
    WHERE r.id=? AND r.version=? AND r.destination_id=? AND r.enabled=1 AND r.failure IS NULL
    AND run.id=? AND run.state IN ('pending','succeeded') AND r.workspace_id=? AND i.id=?
+   AND (r.team_id IS NULL OR r.team_id=i.team_id) AND i.archived_at IS NULL AND t.archived_at IS NULL
    AND NOT EXISTS(SELECT 1 FROM automation_rule_restore_holds h WHERE h.rule_id=r.id)
    AND ${liveRule()} AND ${eligibleDestination} AND ${ownerReadsIssue} AND ${effectsAllowed}`)
    .bind(event.ruleId,event.ruleVersion,id,event.runId,workspace,event.issueId).first())return false;
