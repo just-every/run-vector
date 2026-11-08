@@ -42,3 +42,10 @@ export async function unsubscribe(db:D1Database,actor:string,id:string){
  const row=await db.prepare('SELECT id FROM subject_subscriptions WHERE id=? AND operator_id=?').bind(id,actor).first();if(!row)throw new IntegrationError(404,'subscription_not_found');
  await db.prepare('DELETE FROM subject_subscriptions WHERE id=? AND operator_id=?').bind(id,actor).run();return {removed:true};
 }
+
+/** Read only current initiative subscriptions; no notification-event replay or inferred following. */
+export async function initiativeSubscriptions(db:D1Database,actor:string,workspace:string) {
+ return (await db.prepare(`SELECT s.subject_id id FROM subject_subscriptions s
+  JOIN initiatives n ON n.id=s.subject_id AND n.workspace_id=?
+  WHERE s.operator_id=? AND s.subject_type='initiative'`).bind(workspace,actor).all<{id:string}>()).results.map(row=>row.id);
+}
