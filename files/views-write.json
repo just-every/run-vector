@@ -1,0 +1,13 @@
+{
+  "name": "views-write",
+  "command": [
+    "node",
+    "scripts/contract-docs.mjs",
+    "write",
+    "TEAM-006"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.12,
+  "log": "views-write.log",
+  "sha256": "a3291e1ce7c738351bd94d47cd116c3ef8a2782926d022c66ec15b5030393b5e"
+}

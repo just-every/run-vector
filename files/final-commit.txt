@@ -1,0 +1,19 @@
+commit cf2bb091b0e6168b3a3924f31d1ef812e5be3b31
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 19:43:58 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 19:43:58 2026 +0000
+
+    Fix sub-team permission authority and preserve inherited Git targets
+    
+    Keep permission values behind the ROLE-009 team-owner decision and transactional authority fence. Remap configured Git rules before removing inherited statuses, advancing their versions so stale editors cannot overwrite the target. Prove both regressions through real doors, retain exact migration defaults in upgrade fixtures, and regenerate deployment metadata and the source lock.
+
+ management/integration/deployment-spec.json |  6 ++++
+ sources.lock.json                           | 14 ++++----
+ src/core/features/sub-teams/hierarchy.ts    | 10 +++++-
+ src/core/features/sub-teams/workflow.ts     |  8 +++++
+ tests/worker/dependencies.test.ts           |  2 +-
+ tests/worker/sub-teams.test.ts              | 54 ++++++++++++++++++++++++++++-
+ tests/worker/team-cycles-journey.ts         |  4 +--
+ tests/worker/triage-upgrade.ts              |  9 ++++-
+ 8 files changed, 94 insertions(+), 13 deletions(-)

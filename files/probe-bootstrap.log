@@ -1,0 +1,16 @@
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts tests/worker/base-auth.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  19:42:11
+   Duration  14.61s (transform 5.65s, setup 0ms, import 12.05s, tests 1.89s, environment 0ms)
+

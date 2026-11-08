@@ -1,0 +1,11 @@
+{
+  "name": "spec-check",
+  "command": [
+    "pnpm",
+    "integration:check"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.37,
+  "log": "spec-check.log",
+  "sha256": "0c6a886b8f76834bacec833ea9fdde9c03395093e75fffd4b415fab07652b8a4"
+}

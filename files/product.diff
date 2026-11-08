@@ -1,0 +1,251 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index a0f25e22..7ae2b844 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -808,6 +808,12 @@
+       "name": "0133_release_notes.sql",
+       "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+       "sql": "-- Historical releases keep unknown ownership; only native creation supplies it.\nALTER TABLE releases ADD COLUMN owner_operator_id TEXT REFERENCES operators(id);\n\nCREATE TABLE release_note_drafts (\n release_id TEXT PRIMARY KEY REFERENCES releases(id) ON DELETE CASCADE,\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n version INTEGER NOT NULL CHECK(version>0),\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n erased_at TEXT\n);\n\nCREATE TABLE release_note_revisions (\n release_id TEXT NOT NULL REFERENCES releases(id) ON DELETE CASCADE,\n version INTEGER NOT NULL CHECK(version>0),\n owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT NOT NULL,\n sources_json TEXT NOT NULL CHECK(json_valid(sources_json)),\n source_release_version INTEGER NOT NULL CHECK(source_release_version>0),\n created_at TEXT NOT NULL,\n PRIMARY KEY(release_id,version)\n);\n"
++    },
++    {
++      "binding": "DB",
++      "name": "0134_sub_teams.sql",
++      "sha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
++      "sql": "-- Forward-only hierarchy. Existing teams remain independent roots.\nALTER TABLE teams ADD COLUMN parent_team_id TEXT;\nALTER TABLE teams ADD COLUMN workflow_inherited INTEGER NOT NULL DEFAULT 0 CHECK(workflow_inherited IN (0,1));\nALTER TABLE teams ADD COLUMN permissions_inherited INTEGER NOT NULL DEFAULT 0 CHECK(permissions_inherited IN (0,1));\nALTER TABLE teams ADD COLUMN hierarchy_version INTEGER NOT NULL DEFAULT 1;\nALTER TABLE workflow_statuses ADD COLUMN inherited_from TEXT;\nCREATE INDEX teams_parent_idx ON teams(parent_team_id);\nCREATE UNIQUE INDEX workflow_inherited_idx ON workflow_statuses(team_id,inherited_from) WHERE inherited_from IS NOT NULL;\n"
+     }
+   ],
+   "compatibilityDate": "2026-09-08",
+diff --git a/sources.lock.json b/sources.lock.json
+index edfeafc5..9e7a6be9 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -2034,7 +2034,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "f4c1870901258804053420053f0fd4835d72d01ea9b83f89d53bfcc6f12d974a",
++      "sha256": "486da42f309f7145da4db94b67d5b554246f821aed6e5a1e865f56f63bab632b",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {
+@@ -7634,11 +7634,11 @@
+       "executable": false
+     },
+     "src/core/features/sub-teams/hierarchy.ts": {
+-      "sha256": "f368f04f4051f57e16270e82a2f0075f987af79bb25a046226a1a52f545e27a1",
++      "sha256": "5284c214d2b32c4074b6b9e26bd3720c75beb654b1979219078939119bfa1f03",
+       "executable": false
+     },
+     "src/core/features/sub-teams/workflow.ts": {
+-      "sha256": "7a91cd797d0f244ee16f3670a4bd85085e53b182ab6d164b9d3e5d9e07389f24",
++      "sha256": "f05b528c151af57c0798cf108f06a185ecae7e5e76c85d30f4e419b09eeb139c",
+       "executable": false
+     },
+     "src/core/features/subissues/access.ts": {
+@@ -9434,7 +9434,7 @@
+       "executable": false
+     },
+     "tests/worker/dependencies.test.ts": {
+-      "sha256": "b10ee7d744d1107544cb018ed67579a7ef91395cb5362e000c4c5864b228fb20",
++      "sha256": "14da343b9576f827c9403941c4cf0485936a193bda4beec34b6c1c9b4aed586a",
+       "executable": false
+     },
+     "tests/worker/description-history.test.ts": {
+@@ -9990,7 +9990,7 @@
+       "executable": false
+     },
+     "tests/worker/sub-teams.test.ts": {
+-      "sha256": "40c80e8b38d7226eda4660e8168e7feca4a2c153fc5e023091515a698f191dd3",
++      "sha256": "2c108d88f0cd9fc7b6be538849a8d5fb7d221b5999a27c5b1694a00288601fa4",
+       "executable": false
+     },
+     "tests/worker/subissues-access.test.ts": {
+@@ -10014,7 +10014,7 @@
+       "executable": false
+     },
+     "tests/worker/team-cycles-journey.ts": {
+-      "sha256": "13deb5f74063c307671d781e8d01df61f9ab6f2225ff4e59f3d11a05ece23cd4",
++      "sha256": "9b4d6302b1689f6677f67c0679771b2aab330bec1d62dc6aa454e696d6b3e9df",
+       "executable": false
+     },
+     "tests/worker/team-membership-journey.ts": {
+@@ -10026,7 +10026,7 @@
+       "executable": false
+     },
+     "tests/worker/triage-upgrade.ts": {
+-      "sha256": "e5f71a4de946053df4b0283b44ddae50066685f38c4f02f71d3dd156a00e2e6a",
++      "sha256": "8374d0c795cf4cef2c6c84f77edda82c986395ccf2c422c10a63bddf359b1021",
+       "executable": false
+     },
+     "tests/worker/video-preview-journey.ts": {
+diff --git a/src/core/features/sub-teams/hierarchy.ts b/src/core/features/sub-teams/hierarchy.ts
+index 59d9834e..856a7e69 100644
+--- a/src/core/features/sub-teams/hierarchy.ts
++++ b/src/core/features/sub-teams/hierarchy.ts
+@@ -70,10 +70,11 @@ export function hierarchyFence(
+ export async function hierarchyAuthority(
+   ctx: AdministrationContext,
+   ids: string[],
++  row: "teams.hierarchy" | "teams.permissions" = "teams.hierarchy",
+ ) {
+   const teams = [...new Set(ids)],
+     authority = await loadAuthority(ctx.db, ctx.actor, teams);
+-  const question = { row: "teams.hierarchy" as const, teams };
++  const question = { row, teams };
+   if (!authority || decide(authority, question) !== "allow")
+     throw new SettingsError(
+       "forbidden",
+@@ -194,6 +195,12 @@ export async function changeHierarchy(
+       (v): v is string => !!v,
+     ),
+   ]);
++  // Permission values keep ROLE-009's team-owner authority even when every
++  // member may edit ordinary team settings through the hierarchy door.
++  const permissionsAllowed =
++    input.settingsPermission !== undefined || input.planningPermission !== undefined
++      ? [await hierarchyAuthority(ctx, [id], "teams.permissions")]
++      : [];
+   const graphFence = hierarchyFence(ctx, teams);
+   validHierarchy(teams.map((t) => (t.id === id ? next : t)));
+   next.settings_permission = next.permissions_inherited
+@@ -214,6 +221,7 @@ export async function changeHierarchy(
+       ];
+   await commit(ctx, [
+     allowed,
++    ...permissionsAllowed,
+     graphFence,
+     ctx.db
+       .prepare(
+diff --git a/src/core/features/sub-teams/workflow.ts b/src/core/features/sub-teams/workflow.ts
+index 79b801fc..dde0669e 100644
+--- a/src/core/features/sub-teams/workflow.ts
++++ b/src/core/features/sub-teams/workflow.ts
+@@ -149,6 +149,14 @@ export async function inheritedWorkflowWrites(
+           "UPDATE issues SET status_id=?,version=version+1,updated_at=? WHERE team_id=? AND status_id=?",
+         )
+         .bind(target.id, ctx.at, childId, status.id),
++      // The status FK clears automation targets on deletion. Move configured
++      // rules to the same replacement as issues before removing the old row;
++      // advance the version so an open editor cannot overwrite that remap.
++      ctx.db
++        .prepare(
++          "UPDATE github_automation_rules SET status_id=?,version=version+1,updated_at=? WHERE team_id=? AND status_id=?",
++        )
++        .bind(target.id, ctx.at, childId, status.id),
+       ctx.db
+         .prepare("DELETE FROM workflow_statuses WHERE id=?")
+         .bind(status.id),
+diff --git a/tests/worker/dependencies.test.ts b/tests/worker/dependencies.test.ts
+index 2c6142fd..084b3588 100644
+--- a/tests/worker/dependencies.test.ts
++++ b/tests/worker/dependencies.test.ts
+@@ -412,7 +412,7 @@ it("[REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclos
+       timestamp,
+       timestamp,
+     ),
+-    env.DB.prepare("INSERT INTO workflow_statuses VALUES(?,?,?,?,?,?,?)").bind(
++    env.DB.prepare("INSERT INTO workflow_statuses(id,team_id,name,category,position,created_at,updated_at) VALUES(?,?,?,?,?,?,?)").bind(
+       status,
+       team,
+       "Foreign Todo",
+diff --git a/tests/worker/sub-teams.test.ts b/tests/worker/sub-teams.test.ts
+index f44dc95a..c06689a7 100644
+--- a/tests/worker/sub-teams.test.ts
++++ b/tests/worker/sub-teams.test.ts
+@@ -1,4 +1,4 @@
+-import { it } from "vitest";
++import { expect, it } from "vitest";
+ import { teamMembershipJourney } from "./team-membership-journey";
+ import {subTeamHierarchy} from "./sub-team-workflow-journey";
+ import {subTeamList} from "./sub-team-list-journey";
+@@ -10,3 +10,55 @@ it("[TEAM-006 TEAM-007 TEAM-008 ROLE-007 OPS-001] team hierarchy, membership, wo
+   await subTeamHierarchy();
+   await subTeamList();
+ }, 120_000);
++
++
++import { env } from "cloudflare:workers";
++import { roleWorkspace, resetLimits, snapshot } from "./role-fixture";
++import { team, current, change } from "./sub-team-fixture";
++
++it("[TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door", async () => {
++  const w = await roleWorkspace();
++  expect((await w.call(`/settings/teams/${w.team.id}/permissions`, "PUT", {
++    settings: "all_members", planning: "all_members",
++  })).status).toBe(200);
++  for (const surface of ["call", "api"] as const) {
++    await resetLimits();
++    const before = await snapshot(["teams", "workflow_statuses", "audit_records", "administration_audit_details"]);
++    expect((await w.member.call(`/settings/teams/${w.team.id}/permissions`, "PUT", {
++      settings: "all_members", planning: "team_owners",
++    })).status).toBe(403);
++    expect((await change(w, w.team.id, { planningPermission: "team_owners" }, w.member, surface)).status).toBe(403);
++    expect(await snapshot(["teams", "workflow_statuses", "audit_records", "administration_audit_details"])).toEqual(before);
++  }
++  for (const who of [w.lead, w.admin, w.people.owner]) {
++    expect((await change(w, w.team.id, { planningPermission: "team_owners" }, who)).status).toBe(200);
++    expect((await current(w, w.team.id)).planningPermission).toBe("team_owners");
++  }
++});
++
++it("[TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody", async () => {
++  const w = await roleWorkspace();
++  const child = await team(w, "synthetic-vector-6250", "GITSUB", w.team.id);
++  const destination = await team(w, "synthetic-vector-6251", "GITDEST");
++  const descendant = await team(w, "synthetic-vector-6252", "GITDESC", child.id);
++  for (const selected of [child, descendant]) {
++    const status = selected.statuses.find(s => s.category === "started")!;
++    expect((await w.call(`/settings/teams/${selected.id}`, "PATCH", {
++      githubAutomation: { trigger: "review", statusId: status.id, allowReopen: true, expectedVersion: 0 },
++    })).status).toBe(200);
++  }
++  expect((await change(w, child.id, { parentTeamId: destination.id })).status).toBe(200);
++  for (const selected of [child, descendant]) {
++    const effective = await current(w, selected.id);
++    const rule = await env.DB.prepare("SELECT status_id,allow_reopen,version,production_environment FROM github_automation_rules WHERE team_id=? AND trigger='review'").bind(selected.id).first();
++    expect(rule).toMatchObject({
++      status_id: effective.statuses.find(s => s.category === "started")!.id,
++      allow_reopen: 1, version: 2, production_environment: "production",
++    });
++    // An editor holding the old target cannot overwrite the remapped rule.
++    expect((await w.call(`/settings/teams/${selected.id}`, "PATCH", {
++      githubAutomation: { trigger: "review", statusId: effective.statuses.find(s => s.category === "backlog")!.id, allowReopen: false, expectedVersion: 1 },
++    })).status).toBe(409);
++  }
++  expect((await env.DB.prepare("PRAGMA foreign_key_check").all()).results).toEqual([]);
++});
+diff --git a/tests/worker/team-cycles-journey.ts b/tests/worker/team-cycles-journey.ts
+index ef4b615b..5a1faeb1 100644
+--- a/tests/worker/team-cycles-journey.ts
++++ b/tests/worker/team-cycles-journey.ts
+@@ -126,8 +126,8 @@ export async function proveTeamCyclesUpgrade() {
+   const commitments=(await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results;
+   await applyD1Migrations(db,migrations.slice(boundary));
+   const after=(await db.prepare('SELECT * FROM teams ORDER BY id').all()).results;
+-  expect(after.map(({cycles_enabled,...team})=>team)).toEqual(before);
+-  expect(after.every(t=>t.cycles_enabled===1)).toBe(true);
++  expect(after).toEqual(before.map(team=>({...team,cycles_enabled:1,
++    parent_team_id:null,workflow_inherited:0,permissions_inherited:0,hierarchy_version:1})));
+   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).results).toEqual(cycles);
+   expect((await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results).toEqual(commitments);
+   expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+diff --git a/tests/worker/triage-upgrade.ts b/tests/worker/triage-upgrade.ts
+index feaf3c45..be956ec1 100644
+--- a/tests/worker/triage-upgrade.ts
++++ b/tests/worker/triage-upgrade.ts
+@@ -7,7 +7,14 @@ import { insertHistoricalSample } from "./historical-sample-fixture";
+  * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1.
+  */
+ const addedAfterBoundary: Record<string, Record<string, unknown>> = {
+-  teams: { cycles_enabled: 1 },
++  teams: {
++    cycles_enabled: 1,
++    parent_team_id: null,
++    workflow_inherited: 0,
++    permissions_inherited: 0,
++    hierarchy_version: 1,
++  },
++  workflow_statuses: { inherited_from: null },
+ };
+ /** A populated prior head retains every value, including queued candidates and mutes. */
+ export async function triageUpgrade() {

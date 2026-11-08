@@ -1,0 +1,11 @@
+{
+  "name": "spec-write",
+  "command": [
+    "pnpm",
+    "integration:sync"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.42,
+  "log": "spec-write.log",
+  "sha256": "bfaf74c145cdd74c30cc251d737c04ddedda4cfc7d34cd001fc2238b6b1535e3"
+}

@@ -1,0 +1,37 @@
+{
+  "product_head": "cf2bb091b0e6168b3a3924f31d1ef812e5be3b31",
+  "first_parent": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+  "unchanged_main_files": [
+    {
+      "path": "CONTRACT.md",
+      "sha256": "1a5b293a26e913b7192b65fd1e49af75cd98c8eee7e3fefeb393cb4ad3ee9e7d",
+      "equals_main": true
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "sha256": "d823097503bde3f21f3d8cf0630461942592071876800939047000e4d0a59f14",
+      "equals_main": true
+    },
+    {
+      "path": "docs/CLAIMS.md",
+      "sha256": "a47bd22f32a22237632ac39506b9dec18a8e2c896a6dbcf1fafb736458760078",
+      "equals_main": true
+    }
+  ],
+  "fix_files": [
+    "management/integration/deployment-spec.json",
+    "sources.lock.json",
+    "src/core/features/sub-teams/hierarchy.ts",
+    "src/core/features/sub-teams/workflow.ts",
+    "tests/worker/dependencies.test.ts",
+    "tests/worker/sub-teams.test.ts",
+    "tests/worker/team-cycles-journey.ts",
+    "tests/worker/triage-upgrade.ts"
+  ],
+  "main_ancestor": true,
+  "id_map": {
+    "tracked_on_main": false,
+    "tracked_on_candidate": false,
+    "note": "No tracked path matching ID-MAP or idmap exists in either tree; no map file was modified."
+  }
+}

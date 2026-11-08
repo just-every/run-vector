@@ -1,0 +1,13 @@
+{
+  "name": "role-door-inventory",
+  "command": [
+    "node",
+    "--input-type=module",
+    "-e",
+    "import {assertRoleDoorCoverage} from \"./tests/e2e/role-door-coverage.mjs\"; console.log(await assertRoleDoorCoverage());"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 6.85,
+  "log": "role-door-inventory.log",
+  "sha256": "a3221044568391868995caa276101dc5bb5c633a5b303ae3d62e79413edeb531"
+}

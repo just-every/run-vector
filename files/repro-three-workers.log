@@ -1,0 +1,188 @@
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts tests/worker/dependencies.test.ts tests/worker/source-ingest.test.ts tests/worker/cycle-schedule.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/dependencies.test.ts (9 tests | 1 failed) 5796ms
+   × [REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclose related DTOs only when both endpoints remain authorized 165ms
+Using secrets defined in .dev.vars
+stderr | tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+Operator intake persistence failed Error: D1_ERROR: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/workspace/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at createOperatorIntake (/workspace/run-vector/src/core/features/operator-intake/repository.ts:121:18)
+      at Object.createOperatorIntakeRoute [as handler] (/workspace/run-vector/src/core/features/operator-intake/routes.ts:24:20)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+ ❯ tests/worker/source-ingest.test.ts (3 tests | 1 failed) 7058ms
+   × [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe 5989ms
+Using secrets defined in .dev.vars
+ ❯ tests/worker/cycle-schedule.test.ts (2 tests | 1 failed) 1825ms
+   × [TEAM-005 CYCLE-007] cadence edits preserve started cycles and future identities, validate ranges and keep teams independent 726ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/cycle-schedule.test.ts > [TEAM-005 CYCLE-007] cadence edits preserve started cycles and future identities, validate ranges and keep teams independent
+AssertionError: expected [ { …(18) }, { …(18) } ] to deeply equal [ { …(14) }, { …(14) } ]
+
+- Expected
++ Received
+
+@@ -2,33 +2,41 @@
+    {
+      "archived_at": null,
+      "auto_cycle_completed": 0,
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
++     "hierarchy_version": 1,
+      "id": "01J00000000000000000000010",
+      "identifier_prefix": "FLW",
+      "is_private": 0,
+      "membership_mode": "open",
+      "name": "Flow",
++     "parent_team_id": null,
++     "permissions_inherited": 0,
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+      "updated_at": "2026-09-01T00:00:00.000Z",
++     "workflow_inherited": 0,
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "archived_at": null,
+      "auto_cycle_completed": 0,
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
++     "hierarchy_version": 1,
+      "id": "01J00000000000000000000011",
+      "identifier_prefix": "PLT",
+      "is_private": 0,
+      "membership_mode": "open",
+      "name": "Platform",
++     "parent_team_id": null,
++     "permissions_inherited": 0,
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+      "updated_at": "2026-09-01T00:00:00.000Z",
++     "workflow_inherited": 0,
+      "workspace_id": "01J00000000000000000000001",
+    },
+  ]
+
+ ❯ proveTeamCyclesUpgrade tests/worker/team-cycles-journey.ts:129:55
+    127|   await applyD1Migrations(db,migrations.slice(boundary));
+    128|   const after=(await db.prepare('SELECT * FROM teams ORDER BY id').all…
+    129|   expect(after.map(({cycles_enabled,...team})=>team)).toEqual(before);
+       |                                                       ^
+    130|   expect(after.every(t=>t.cycles_enabled===1)).toBe(true);
+    131|   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).…
+ ❯ tests/worker/cycle-schedule.test.ts:79:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/worker/dependencies.test.ts > [REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclose related DTOs only when both endpoints remain authorized
+Error: D1_ERROR: table workflow_statuses has 8 columns but 7 values were supplied: SQLITE_ERROR
+ ❯ D1DatabaseSessionAlwaysPrimary._sendOrThrow cloudflare-internal:d1-api:188:19
+ ❯ cloudflare-internal:d1-api:137:19
+ ❯ tests/worker/dependencies.test.ts:401:3
+    399|     status = createUlid(new Date());
+    400|   // Foreign-workspace boundary is an explicit D1 fixture in this sing…
+    401|   await env.DB.batch([
+       |   ^
+    402|     env.DB.prepare(
+    403|       "INSERT INTO workspace_settings(id,name,timezone,created_at,upda…
+
+Caused by: Error: table workflow_statuses has 8 columns but 7 values were supplied: SQLITE_ERROR
+ ❯ D1DatabaseSessionAlwaysPrimary._sendOrThrow cloudflare-internal:d1-api:189:24
+ ❯ cloudflare-internal:d1-api:137:19
+ ❯ tests/worker/dependencies.test.ts:401:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+AssertionError: teams: expected [ { …(19) }, { …(19) } ] to deeply equal [ { …(15) }, { …(15) } ]
+
+- Expected
++ Received
+
+@@ -3,34 +3,42 @@
+      "archived_at": null,
+      "auto_cycle_completed": 0,
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "cycles_enabled": 1,
++     "hierarchy_version": 1,
+      "id": "01J00000000000000000000010",
+      "identifier_prefix": "FLW",
+      "is_private": 0,
+      "membership_mode": "open",
+      "name": "Flow",
++     "parent_team_id": null,
++     "permissions_inherited": 0,
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+      "updated_at": "2026-09-01T00:00:00.000Z",
++     "workflow_inherited": 0,
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "archived_at": null,
+      "auto_cycle_completed": 0,
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "cycles_enabled": 1,
++     "hierarchy_version": 1,
+      "id": "01J00000000000000000000011",
+      "identifier_prefix": "PLT",
+      "is_private": 0,
+      "membership_mode": "open",
+      "name": "Platform",
++     "parent_team_id": null,
++     "permissions_inherited": 0,
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+      "updated_at": "2026-09-01T00:00:00.000Z",
++     "workflow_inherited": 0,
+      "workspace_id": "01J00000000000000000000001",
+    },
+  ]
+
+ ❯ triageUpgrade tests/worker/triage-upgrade.ts:87:7
+     85|       ).results,
+     86|       table.name,
+     87|     ).toEqual(
+       |       ^
+     88|       table.rows.map((row) => ({
+     89|         ...row,
+ ❯ tests/worker/source-ingest.test.ts:50:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  3 failed | 11 passed (14)
+   Start at  19:38:11
+   Duration  35.68s (transform 4.97s, setup 0ms, import 19.27s, tests 14.68s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

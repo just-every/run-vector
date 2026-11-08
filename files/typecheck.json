@@ -1,0 +1,11 @@
+{
+  "name": "typecheck",
+  "command": [
+    "pnpm",
+    "typecheck"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 25.96,
+  "log": "typecheck.log",
+  "sha256": "6ad442e32185facfd7923a8504b23de25ea437c6f9426de027d1e98b6154e972"
+}

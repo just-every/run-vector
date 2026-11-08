@@ -1,0 +1,12 @@
+{
+  "name": "probe-bootstrap",
+  "command": [
+    "pnpm",
+    "test:worker",
+    "tests/worker/base-auth.test.ts"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 16.88,
+  "log": "probe-bootstrap.log",
+  "sha256": "ad62fcbc696dbca32a5d554633e336e6a1acb31687b1a66e8b58230add495572"
+}

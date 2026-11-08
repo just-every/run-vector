@@ -1,0 +1,157 @@
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts tests/worker/base-auth.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/base-auth.test.ts (9 tests | 9 failed) 800ms
+   × [OPS-001 OPS-002 TEAM-002 ROLE-001] configured bootstrap atomically maps one Base operator as the installation Owner and remains idempotent 23ms
+   × [BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once and unfinished owner review takes precedence 13ms
+   × [OPS-001 OPS-002 ROLE-001 BASE-ACCESS-002] unauthorized invites make no records; a Member invites only Members, only while the workspace allows it, and removes nobody else 3ms
+   × [BASE-ACCESS-001] remote configuration fails visibly and legacy local credentials cannot authenticate a remote deployment 3ms
+   × [BASE-ACCESS-001] real Base SendGrid serialization and rejected/uncertain delivery revoke links without retry or local fallback 4ms
+   × [CAL-001 OPS-004 BASE-ACCESS-002] removal revokes calendar capabilities, Base sessions, unused links and invitations issued by the removed actor 6ms
+   × [OPS-004 BASE-ACCESS-002] a Base session revoked after validation cannot commit an application mutation 20ms
+   × [BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine Base secure session and signout revokes it 4ms
+   × [OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner remains, who succeeds them, and the last Owner cannot leave 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [OPS-001 OPS-002 TEAM-002 ROLE-001] configured bootstrap atomically maps one Base operator as the installation Owner and remains idempotent
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/worker/base-auth.test.ts:16:82
+     14|   expect((await request('/health')).status).toBe(200)
+     15|   for (const table of ['operators','oa_operators','vector_auth_operato…
+     16|     expect((await env.DB.prepare(`SELECT count(*) n FROM ${table}`).fi…
+       |                                                                                  ^
+     17|   expect((await env.DB.prepare('SELECT count(DISTINCT category) n FROM…
+     18|   expect((await env.DB.prepare('SELECT role,status FROM oa_operators')…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once and unfinished owner review takes precedence
+AssertionError: expected null not to be null
+ ❯ mailToken tests/worker/base-auth-fixture.ts:26:19
+
+ ❯ tests/worker/base-auth.test.ts:26:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [OPS-001 OPS-002 ROLE-001 BASE-ACCESS-002] unauthorized invites make no records; a Member invites only Members, only while the workspace allows it, and removes nobody else
+AssertionError: expected 401 to be 202 // Object.is equality
+
+- Expected
++ Received
+
+- 202
++ 401
+
+ ❯ invite tests/worker/base-auth-fixture.ts:43:27
+     41| export async function invite(email: string, cookie: string, role?: 'ow…
+     42|   const response = await request('/api/settings/operators/invite', 'PO…
+     43|   expect(response.status).toBe(202)
+       |                           ^
+     44|   return confirm(await mailToken(email))
+     45| }
+ ❯ tests/worker/base-auth.test.ts:48:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [BASE-ACCESS-001] remote configuration fails visibly and legacy local credentials cannot authenticate a remote deployment
+Error: D1_TYPE_ERROR: Type 'undefined' not supported for value 'undefined'
+ ❯ cloudflare-internal:d1-api:423:19
+ ❯ D1PreparedStatement.bind cloudflare-internal:d1-api:395:42
+ ❯ legacyCookie tests/worker/historical-auth-fixture.ts:29:81
+     27|  const token=opaqueToken(),now=new Date().toISOString();
+     28|  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-…
+     29|  await env.DB.prepare('INSERT INTO operator_sessions VALUES(?,?,?,?,NU…
+       |                                                                                 ^
+     30|  return 'vector_session='+token;
+     31| }
+ ❯ tests/worker/base-auth.test.ts:68:56
+
+Caused by: Error: Type 'undefined' not supported for value 'undefined'
+ ❯ cloudflare-internal:d1-api:424:24
+ ❯ D1PreparedStatement.bind cloudflare-internal:d1-api:395:42
+ ❯ legacyCookie tests/worker/historical-auth-fixture.ts:29:81
+ ❯ tests/worker/base-auth.test.ts:68:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [BASE-ACCESS-001] real Base SendGrid serialization and rejected/uncertain delivery revoke links without retry or local fallback
+AssertionError: expected 202 to be 503 // Object.is equality
+
+- Expected
++ Received
+
+- 503
++ 202
+
+ ❯ tests/worker/base-auth.test.ts:78:31
+     76|       send.mockResolvedValueOnce(new Response('{}',{status}))
+     77|       const response = await request('/auth/request','POST',{email:bin…
+     78|       expect(response.status).toBe(503)
+       |                               ^
+     79|       expect(await response.json()).toEqual({error:'mail_unavailable'})
+     80|       const row = await env.DB.prepare('SELECT revoked_at FROM oa_toke…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [CAL-001 OPS-004 BASE-ACCESS-002] removal revokes calendar capabilities, Base sessions, unused links and invitations issued by the removed actor
+AssertionError: expected null not to be null
+ ❯ mailToken tests/worker/base-auth-fixture.ts:26:19
+
+ ❯ signIn tests/worker/base-auth-fixture.ts:38:18
+ ❯ tests/worker/base-auth.test.ts:93:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [OPS-004 BASE-ACCESS-002] a Base session revoked after validation cannot commit an application mutation
+AssertionError: expected null not to be null
+ ❯ mailToken tests/worker/base-auth-fixture.ts:26:19
+
+ ❯ signIn tests/worker/base-auth-fixture.ts:38:18
+ ❯ tests/worker/base-auth.test.ts:111:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine Base secure session and signout revokes it
+TypeError: Cannot read properties of undefined (reading '1')
+ ❯ tests/worker/base-auth.test.ts:128:54
+    126|   try {
+    127|     expect((await request('/auth/request','POST',{email:bindings.FIRST…
+    128|     const wire = JSON.parse(String(send.mock.calls[0][1]!.body))
+       |                                                      ^
+    129|     token = new URL(wire.content[0].value.match(/https:\/\/[^\s]+/)[0]…
+    130|   } finally { send.mockRestore() }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/worker/base-auth.test.ts > [OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner remains, who succeeds them, and the last Owner cannot leave
+AssertionError: expected null not to be null
+ ❯ mailToken tests/worker/base-auth-fixture.ts:26:19
+
+ ❯ signIn tests/worker/base-auth-fixture.ts:38:18
+ ❯ tests/worker/base-auth.test.ts:145:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed (9)
+   Start at  19:38:26
+   Duration  11.73s (transform 5.36s, setup 0ms, import 10.22s, tests 800ms, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

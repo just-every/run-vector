@@ -1,0 +1,11 @@
+{
+  "name": "lock-write",
+  "command": [
+    "pnpm",
+    "sources:lock"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.77,
+  "log": "lock-write.log",
+  "sha256": "5643b43b3dd8d1f683b27b1e957b7b6d1b86e4259b116c9c86d2ba9ba01700d2"
+}

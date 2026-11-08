@@ -1,0 +1,13 @@
+{
+  "name": "verify",
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "verify"
+  ],
+  "exit": 143,
+  "elapsed_seconds": 75.7,
+  "log": "verify.log",
+  "sha256": "4516329c19ab7ca53427f3d30bd00f3b2334f7c0f58b829d598305c91d79464b"
+}

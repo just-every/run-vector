@@ -1,0 +1,12 @@
+{
+  "name": "repro-bootstrap",
+  "command": [
+    "pnpm",
+    "test:worker",
+    "tests/worker/base-auth.test.ts"
+  ],
+  "exit": 1,
+  "elapsed_seconds": 14.2,
+  "log": "repro-bootstrap.log",
+  "sha256": "e7f11bdb166b96ce6f8678612ddf30dc31cf280d6e493df3e6f3e1db0c3f363d"
+}

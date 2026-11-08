@@ -1,0 +1,14 @@
+{
+  "candidate": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "shallow": "false",
+  "counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "team006": "missing",
+  "migration_main_highest": "migrations/core/0133_release_notes.sql",
+  "migration_candidate": "migrations/core/0134_sub_teams.sql",
+  "identity": "69464a9b Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>\n\n569212d1 Run Edit Run fleet <fleet@runeditrun.com>\nRun Edit Run fleet <fleet@runeditrun.com>"
+}

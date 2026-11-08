@@ -1,0 +1,12 @@
+{
+  "name": "probe-security-automation",
+  "command": [
+    "pnpm",
+    "test:worker",
+    "tests/worker/sub-teams.test.ts"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 39.97,
+  "log": "probe-security-automation.log",
+  "sha256": "4183c7fe52845444f823b60577b16cd9fd6f9e8bf4308840e2f332f40057c90f"
+}

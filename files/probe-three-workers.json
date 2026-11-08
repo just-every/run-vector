@@ -1,0 +1,14 @@
+{
+  "name": "probe-three-workers",
+  "command": [
+    "pnpm",
+    "test:worker",
+    "tests/worker/dependencies.test.ts",
+    "tests/worker/source-ingest.test.ts",
+    "tests/worker/cycle-schedule.test.ts"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 44.76,
+  "log": "probe-three-workers.log",
+  "sha256": "a5f4d2c9249cc84b25175980cabfac2dcd3f916f67043c67ab44472b848d87bb"
+}

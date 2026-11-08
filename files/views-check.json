@@ -1,0 +1,13 @@
+{
+  "name": "views-check",
+  "command": [
+    "node",
+    "scripts/contract-docs.mjs",
+    "check",
+    "TEAM-006"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.17,
+  "log": "views-check.log",
+  "sha256": "51d122a8b3b9ff17eb5b6d79f7bc872b7a2fd584429abf41e2d066f0cafdd205"
+}

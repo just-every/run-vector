@@ -1,0 +1,13 @@
+{
+  "name": "build",
+  "command": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "build"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 33.67,
+  "log": "build.log",
+  "sha256": "e145387df986157d75701c8f4f5d7c2e8963f9ed5d9050f1267316432022fa91"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "lock-check",
+  "command": [
+    "pnpm",
+    "sources:check"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 0.62,
+  "log": "lock-check.log",
+  "sha256": "2509bfe70cc1b8303715fa7597567fd6be8b3a03c72dff12b043cc4864bc96c2"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "verify-system-chromium",
+  "command": [
+    "env",
+    "NODE_OPTIONS=--require=/tmp/rer-system-chromium.cjs",
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "verify"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 146.57,
+  "log": "verify-system-chromium.log",
+  "sha256": "3be7601eebb5e3e2903f184360b2732552e93140f8cf29b9cdbae44c4c89ba3a"
+}

@@ -1,0 +1,97 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+console warning; message = Called .text() on an HTTP body which does not appear to be text. The body's Content-Type is "application/x-www-form-urlencoded". The result will probably be corrupted. Consider checking the Content-Type header before interpreting entities as text.
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ❯ tests/worker/dependencies.test.ts (9 tests | 1 failed) 5243ms
+   × [REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclose related DTOs only when both endpoints remain authorized 110ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+stderr | tests/worker/source-ingest.test.ts > [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe
+Operator intake persistence failed Error: D1_ERROR: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-9118: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/workspace/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at createOperatorIntake (/workspace/run-vector/src/core/features/operator-intake/repository.ts:121:18)
+      at Object.createOperatorIntakeRoute [as handler] (/workspace/run-vector/src/core/features/operator-intake/routes.ts:24:20)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+ ❯ tests/worker/source-ingest.test.ts (3 tests | 1 failed) 6557ms
+   × [ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe 5567ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ❯ tests/worker/base-auth.test.ts (9 tests | 9 failed) 731ms
+   × [OPS-001 OPS-002 TEAM-002 ROLE-001] configured bootstrap atomically maps one Base operator as the installation Owner and remains idempotent 19ms
+   × [BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once and unfinished owner review takes precedence 11ms
+   × [OPS-001 OPS-002 ROLE-001 BASE-ACCESS-002] unauthorized invites make no records; a Member invites only Members, only while the workspace allows it, and removes nobody else 4ms
+   × [BASE-ACCESS-001] remote configuration fails visibly and legacy local credentials cannot authenticate a remote deployment 2ms
+   × [BASE-ACCESS-001] real Base SendGrid serialization and rejected/uncertain delivery revoke links without retry or local fallback 5ms
+   × [CAL-001 OPS-004 BASE-ACCESS-002] removal revokes calendar capabilities, Base sessions, unused links and invitations issued by the removed actor 5ms
+   × [OPS-004 BASE-ACCESS-002] a Base session revoked after validation cannot commit an application mutation 5ms
+   × [BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine Base secure session and signout revokes it 4ms
+   × [OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner remains, who succeeds them, and the last Owner cannot leave 5ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ELIFECYCLE  Command failed with exit code 143.

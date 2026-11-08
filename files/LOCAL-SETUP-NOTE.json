@@ -1,0 +1,11 @@
+{
+  "preliminary_full_worker_exit": 143,
+  "preliminary_full_worker_completed": false,
+  "reason": "Stopped owned exploratory baseline process after the complete scoped three-failure reproduction finished. No incomplete wall was claimed green.",
+  "setup_settings_isolation": "Generated local settings moved outside the checkout without reading or publishing values; original 9 bootstrap/auth tests then pass without product edits.",
+  "toolchain_before": "Node 24.19.0, pnpm 10.12.4 (initial provided cloud shim accepts a newer VM Node)",
+  "toolchain_final": "Node 22.20.0, pnpm 10.12.4 (repository exact Node pin installed for the scoped three-worker reproduction and every final check)",
+  "initial_optional_verify_exit": 143,
+  "initial_optional_verify_completed": false,
+  "initial_optional_verify_reason": "Stopped its owned CLI process before finishing so the final hydration proof can explicitly use /usr/bin/chromium and --no-sandbox through an external Node launch adapter. No product dependency or assertion was edited."
+}

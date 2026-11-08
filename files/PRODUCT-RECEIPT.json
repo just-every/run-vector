@@ -1,0 +1,31 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix1",
+  "head": "cf2bb091b0e6168b3a3924f31d1ef812e5be3b31",
+  "candidate": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "full_history": true,
+  "main_is_ancestor": true,
+  "working_tree_clean": true,
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "clause_changes": [],
+  "team006_status": "missing (unchanged)",
+  "push": "success (first attempt)",
+  "ci_run": 42516503223,
+  "ci_state": "completed/failure",
+  "pr": null,
+  "migration": "0134_sub_teams.sql",
+  "migration_main_highest": "0133_release_notes.sql",
+  "migration_renumber_needed": false,
+  "outcome": "BLOCKED on exact-SHA Verify",
+  "blocker": "dashboard full issue list navigation never shows #issue-row-SYNDS-28; locator.waitFor timeout 20000ms at tests/e2e/dashboards-journey.mjs:88:65"
+}

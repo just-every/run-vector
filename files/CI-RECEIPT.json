@@ -1,0 +1,212 @@
+{
+  "repository": "just-every/run-vector",
+  "run_id": 42516503223,
+  "conclusion": "failure",
+  "head_sha": "cf2bb091b0e6168b3a3924f31d1ef812e5be3b31",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42516503223",
+  "status": "completed",
+  "github_budget": 10,
+  "github_calls_used": 10,
+  "github_calls": [
+    {
+      "time": 1794166328.6582446,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs?head_sha=69464a9b035333e4b9bcbdbd6d2ceed672c3a378&per_page=100",
+        "--jq",
+        ".workflow_runs[]|{id,name,status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "time": 1794166649.1819785,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42510260429/jobs",
+        "--jq",
+        ".jobs[]|{id,name,status,conclusion}"
+      ]
+    },
+    {
+      "time": 1794166666.6975706,
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42510260429",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128821907371",
+        "--log-failed"
+      ]
+    },
+    {
+      "time": 1794166668.1060855,
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42510260429",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128821907393",
+        "--log-failed"
+      ]
+    },
+    {
+      "time": 1794166687.513573,
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42510260429",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128821907446",
+        "--log-failed"
+      ]
+    },
+    {
+      "time": 1794167073.4841835,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs?head_sha=cf2bb091b0e6168b3a3924f31d1ef812e5be3b31&per_page=100",
+        "--jq",
+        ".workflow_runs[]|{id,name,status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "time": 1794167973.513062,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42516503223",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "time": 1794168573.9218712,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42516503223",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ]
+    },
+    {
+      "time": 1794168605.9609482,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42516503223/jobs",
+        "--jq",
+        ".jobs[]|{id,name,status,conclusion}"
+      ]
+    },
+    {
+      "time": 1794168627.9430392,
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42516503223",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128840864547",
+        "--log-failed"
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 128840572215,
+      "name": "plan",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128840612346,
+      "name": "build",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128840864479,
+      "name": "shards (worker-2, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128840864509,
+      "name": "shards (administration, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128840864538,
+      "name": "shards (portability, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128840864547,
+      "name": "shards (collaboration, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128840864548,
+      "name": "shards (core-runtime, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128840864565,
+      "name": "shards (imports, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128840864595,
+      "name": "shards (hosted-artifact, true, true, false)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "id": 128840864615,
+      "name": "shards (core-runtime-planning, true, true, true)",
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "id": 128847015275,
+      "name": "verify",
+      "status": "completed"
+    }
+  ],
+  "worker_partition_jobs_passed": [
+    128840864479,
+    128840864538,
+    128840864565
+  ],
+  "all_six_worker_partitions_passed": true,
+  "inspected_failure_job": 128840864547,
+  "failure_log_command": "gh run view 42516503223 --repo just-every/run-vector --job 128840864547 --log-failed",
+  "failure_log_exit": 0,
+  "blocking_symptom": "dashboard full issue list navigation never shows #issue-row-SYNDS-28; locator.waitFor timeout 20000ms at tests/e2e/dashboards-journey.mjs:88:65",
+  "uninspected_failed_job_ids": [
+    128840864548,
+    128840864595
+  ],
+  "uninspected_reason": "ten-call GitHub budget exhausted",
+  "readiness": "BLOCKED; no READY or generated-view exemption claimed"
+}

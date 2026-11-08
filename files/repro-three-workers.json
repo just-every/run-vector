@@ -1,0 +1,14 @@
+{
+  "name": "repro-three-workers",
+  "command": [
+    "pnpm",
+    "test:worker",
+    "tests/worker/dependencies.test.ts",
+    "tests/worker/source-ingest.test.ts",
+    "tests/worker/cycle-schedule.test.ts"
+  ],
+  "exit": 1,
+  "elapsed_seconds": 38.11,
+  "log": "repro-three-workers.log",
+  "sha256": "d155c3cfc8bfa640d7f14a7243d1b8e47f06ccd31f3d6946bcb6ce38a58460d4"
+}

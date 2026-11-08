@@ -1,0 +1,69 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+ ❯ tests/worker/sub-teams.test.ts (3 tests | 2 failed) 19614ms
+   × [TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door 433ms
+   × [TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody 489ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door
+AssertionError: expected 200 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 200
+
+ ❯ tests/worker/sub-teams.test.ts:30:107
+     28|       settings: "all_members", planning: "team_owners",
+     29|     })).status).toBe(403);
+     30|     expect((await change(w, w.team.id, { planningPermission: "team_own…
+       |                                                                                                           ^
+     31|     expect(await snapshot(["teams", "workflow_statuses", "audit_record…
+     32|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/worker/sub-teams.test.ts > [TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody
+AssertionError: expected { status_id: null, …(3) } to match object { …(4) }
+
+- Expected
++ Received
+
+  {
+    "allow_reopen": 1,
+    "production_environment": "production",
+-   "status_id": "01M6YA4A9X74MCV1Y2HDNZC1CV",
+-   "version": 2,
++   "status_id": null,
++   "version": 1,
+  }
+
+ ❯ tests/worker/sub-teams.test.ts:54:18
+     52|     const effective = await current(w, selected.id);
+     53|     const rule = await env.DB.prepare("SELECT status_id,allow_reopen,v…
+     54|     expect(rule).toMatchObject({
+       |                  ^
+     55|       status_id: effective.statuses.find(s => s.category === "started"…
+     56|       allow_reopen: 1, version: 2, production_environment: "production…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  19:27:57
+   Duration  28.65s (transform 3.74s, setup 0ms, import 8.46s, tests 19.61s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,0 +1,14 @@
+{
+  "name": "probe-workers",
+  "command": [
+    "pnpm",
+    "test:worker"
+  ],
+  "exit": 124,
+  "elapsed_seconds": 1500.01,
+  "log": "probe-workers.log",
+  "sha256": "0db9e82a56da700d760299e060e4ef0a0b85fbc3b99df38803f8c56de73a88ce",
+  "log_closed_after_owned_child_cleanup": true,
+  "completed_suite": false,
+  "reported_assertion_failures_before_timeout": 0
+}

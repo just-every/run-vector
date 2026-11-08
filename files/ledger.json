@@ -1,0 +1,12 @@
+{
+  "name": "ledger",
+  "command": [
+    "node",
+    "--test",
+    "scripts/deployment/tests/migration-head.test.mjs"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 1.25,
+  "log": "ledger.log",
+  "sha256": "0d37b58b814f0bfb73cdd37d20bf54bebbc11ee6da8f2a4306002ede767cd049"
+}

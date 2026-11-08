@@ -1,0 +1,208 @@
+{
+  "product_head": "cf2bb091b0e6168b3a3924f31d1ef812e5be3b31",
+  "checks": [
+    {
+      "name": "repro-three-workers",
+      "command": [
+        "pnpm",
+        "test:worker",
+        "tests/worker/dependencies.test.ts",
+        "tests/worker/source-ingest.test.ts",
+        "tests/worker/cycle-schedule.test.ts"
+      ],
+      "exit": 1,
+      "elapsed_seconds": 38.11,
+      "log": "repro-three-workers.log",
+      "sha256": "d155c3cfc8bfa640d7f14a7243d1b8e47f06ccd31f3d6946bcb6ce38a58460d4"
+    },
+    {
+      "name": "probe-security-automation",
+      "command": [
+        "pnpm",
+        "test:worker",
+        "tests/worker/sub-teams.test.ts"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 39.97,
+      "log": "probe-security-automation.log",
+      "sha256": "4183c7fe52845444f823b60577b16cd9fd6f9e8bf4308840e2f332f40057c90f"
+    },
+    {
+      "name": "probe-three-workers",
+      "command": [
+        "pnpm",
+        "test:worker",
+        "tests/worker/dependencies.test.ts",
+        "tests/worker/source-ingest.test.ts",
+        "tests/worker/cycle-schedule.test.ts"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 44.76,
+      "log": "probe-three-workers.log",
+      "sha256": "a5f4d2c9249cc84b25175980cabfac2dcd3f916f67043c67ab44472b848d87bb"
+    },
+    {
+      "name": "probe-bootstrap",
+      "command": [
+        "pnpm",
+        "test:worker",
+        "tests/worker/base-auth.test.ts"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 16.88,
+      "log": "probe-bootstrap.log",
+      "sha256": "ad62fcbc696dbca32a5d554633e336e6a1acb31687b1a66e8b58230add495572"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 25.96,
+      "log": "typecheck.log",
+      "sha256": "6ad442e32185facfd7923a8504b23de25ea437c6f9426de027d1e98b6154e972"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 33.67,
+      "log": "build.log",
+      "sha256": "e145387df986157d75701c8f4f5d7c2e8963f9ed5d9050f1267316432022fa91"
+    },
+    {
+      "name": "role-door-inventory",
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {assertRoleDoorCoverage} from \"./tests/e2e/role-door-coverage.mjs\"; console.log(await assertRoleDoorCoverage());"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 6.85,
+      "log": "role-door-inventory.log",
+      "sha256": "a3221044568391868995caa276101dc5bb5c633a5b303ae3d62e79413edeb531"
+    },
+    {
+      "name": "ledger",
+      "command": [
+        "node",
+        "--test",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 1.25,
+      "log": "ledger.log",
+      "sha256": "0d37b58b814f0bfb73cdd37d20bf54bebbc11ee6da8f2a4306002ede767cd049"
+    },
+    {
+      "name": "views-write",
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "TEAM-006"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.12,
+      "log": "views-write.log",
+      "sha256": "a3291e1ce7c738351bd94d47cd116c3ef8a2782926d022c66ec15b5030393b5e"
+    },
+    {
+      "name": "views-check",
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "TEAM-006"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.17,
+      "log": "views-check.log",
+      "sha256": "51d122a8b3b9ff17eb5b6d79f7bc872b7a2fd584429abf41e2d066f0cafdd205"
+    },
+    {
+      "name": "spec-write",
+      "command": [
+        "pnpm",
+        "integration:sync"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.42,
+      "log": "spec-write.log",
+      "sha256": "bfaf74c145cdd74c30cc251d737c04ddedda4cfc7d34cd001fc2238b6b1535e3"
+    },
+    {
+      "name": "spec-check",
+      "command": [
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.37,
+      "log": "spec-check.log",
+      "sha256": "0c6a886b8f76834bacec833ea9fdde9c03395093e75fffd4b415fab07652b8a4"
+    },
+    {
+      "name": "lock-write",
+      "command": [
+        "pnpm",
+        "sources:lock"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.77,
+      "log": "lock-write.log",
+      "sha256": "5643b43b3dd8d1f683b27b1e957b7b6d1b86e4259b116c9c86d2ba9ba01700d2"
+    },
+    {
+      "name": "lock-check",
+      "command": [
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 0.62,
+      "log": "lock-check.log",
+      "sha256": "2509bfe70cc1b8303715fa7597567fd6be8b3a03c72dff12b043cc4864bc96c2"
+    },
+    {
+      "name": "verify-system-chromium",
+      "command": [
+        "env",
+        "NODE_OPTIONS=--require=/tmp/rer-system-chromium.cjs",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "verify"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 146.57,
+      "log": "verify-system-chromium.log",
+      "sha256": "3be7601eebb5e3e2903f184360b2732552e93140f8cf29b9cdbae44c4c89ba3a"
+    },
+    {
+      "name": "probe-workers",
+      "command": [
+        "pnpm",
+        "test:worker"
+      ],
+      "exit": 124,
+      "elapsed_seconds": 1500.01,
+      "log": "probe-workers.log",
+      "sha256": "0db9e82a56da700d760299e060e4ef0a0b85fbc3b99df38803f8c56de73a88ce",
+      "log_closed_after_owned_child_cleanup": true,
+      "completed_suite": false,
+      "reported_assertion_failures_before_timeout": 0
+    }
+  ],
+  "full_worker_state": "incomplete: serial invocation reached 1500-second hard limit, exit 124, with no reported assertion failures; owned Vitest child stopped and reaped",
+  "ci_state": "completed/failure; worker partition jobs pass; dashboard/UI and hosted-artifact jobs red",
+  "ci_run_id": 42516503223
+}
