@@ -2666,7 +2666,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "2f8030b300b5f98193b7b2f520382b19e1311bdf42c603c90f3ce377783d1dfd",
+      "sha256": "70de27c7d763c927650430cca4090127ac99d7de3229c2c0506d6a29a5c584c9",
       "executable": false
     },
     "schema/importers.schema.json": {
@@ -9942,7 +9942,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "e3e0ac6eaefdf1307773c0c115d5fb8db42dfc9271827a2ff8fc59a8d070df01",
+      "sha256": "dfcf97a8730fc0e146c0eec71e8770abc106cb8fae784fcffc24c3c887f8f648",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

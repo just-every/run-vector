@@ -2132,6 +2132,10 @@
                   },
                   "archived": {
                     "type": "boolean"
+                  },
+                  "expectedVersion": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
                   }
                 },
                 "additionalProperties": false

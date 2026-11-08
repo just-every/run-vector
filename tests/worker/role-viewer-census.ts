@@ -1,3 +1,4 @@
+import {roadmapChange} from '../../src/core/features/roadmap/schema';
 import {generateReleaseNotes,editReleaseNotes} from '../../src/core/features/releases/notes/schema';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
@@ -248,6 +249,9 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/oauth/consent',{request:oauthRequest,decision:'approve'});
   native('POST','/settings/integrations/tokens',{name:'synthetic-vector-31074',scopes:['issues:read']});native('DELETE','/settings/integrations/tokens/:id',undefined,{id:personalToken.credential.id});native('ALL','/portability/*',{}, {},'/portability/exports');
   native('POST','/data/import/preview',importInput);native('POST','/data/import/apply',applyBody);native('POST','/data/import/runs/:id/resume',{}, {id:run.id});native('POST','/data/import/runs/:id/rollback',{confirmed:true},{id:run.id});native('POST','/data/erasure/preview',subject);native('POST','/data/erasure',{subject,confirmation:erasure.confirmation});
+  const roadmapProject=(await call(owner,'/roadmap')).projects.find((row:any)=>row.id===project.id);
+  expect(roadmapProject).toBeDefined();
+  native('PATCH','/roadmap/projects/:id',{expectedVersion:roadmapProject.version,priority:'urgent'},pp);
   // Validate the administration/resource family bodies with the same schemas
   // their handlers use, independently of the role gate's early refusal.
   const schemas:Record<string,{parse(input:unknown):unknown}>={
@@ -267,6 +271,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'POST /settings/labels/:id/merge':administrationInput.labelMergeSchema,
    'POST /settings/projects':administrationInput.projectCreateSchema,
    'PATCH /settings/projects/:id':administrationInput.projectUpdateSchema,
+   'PATCH /roadmap/projects/:id':roadmapChange,
    'POST /settings/projects/:id/milestones':administrationInput.projectMilestoneCreateSchema,
    'PATCH /settings/projects/:id/milestones/:milestoneId':administrationInput.projectMilestoneUpdateSchema,
    'PUT /settings/projects/:id/milestones/order':administrationInput.projectMilestoneOrderSchema,
