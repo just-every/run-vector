@@ -1,0 +1,29 @@
+{
+  "startedAt": "2026-11-08T22:46:40.804Z",
+  "sourceCommit": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+  "note": "Vector CI test suites and build checks.",
+  "passed": true,
+  "checks": [
+    {
+      "command": "node tests/e2e/core-runtime.mjs planning",
+      "startedAt": "2026-11-08T22:46:40.809Z",
+      "completedAt": "2026-11-08T23:04:30.982Z",
+      "passed": true
+    },
+    {
+      "command": "test:wave-b",
+      "startedAt": "2026-11-08T23:04:30.983Z",
+      "completedAt": "2026-11-08T23:05:53.832Z",
+      "passed": true
+    },
+    {
+      "command": "test:base-auth",
+      "startedAt": "2026-11-08T23:05:53.833Z",
+      "completedAt": "2026-11-08T23:06:52.698Z",
+      "passed": true
+    }
+  ],
+  "shard": "core-runtime-planning",
+  "reusedBuildSha": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+  "completedAt": "2026-11-08T23:06:52.699Z"
+}

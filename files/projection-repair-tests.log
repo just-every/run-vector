@@ -1,0 +1,16 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f204-pc1/run-vector
+> vitest run --config vitest.config.ts tests/worker/dependencies.test.ts tests/worker/issue-session-projection.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f204-pc1/run-vector
+
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  22:26:46
+   Duration  28.05s (transform 6.17s, setup 0ms, import 17.61s, tests 8.95s, environment 1ms)
+

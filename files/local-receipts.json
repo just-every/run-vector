@@ -94,9 +94,45 @@
       "command": "pnpm sources:lock && pnpm sources:check",
       "exit": 0,
       "tree": "final merged source"
+    },
+    {
+      "command": "pnpm test:worker tests/worker/dependencies.test.ts tests/worker/issue-session-projection.test.ts",
+      "head": "0f4d8cefed45a0a135458fd576c30c9f0ae0bb72",
+      "tests": 12,
+      "exit": 0,
+      "durationSeconds": 28.05,
+      "note": "Verification-plan-only final change leaves both tested suites and runtime source unchanged."
+    },
+    {
+      "command": "pnpm typecheck; pnpm exec rer check --profile first-party; pnpm integration:check; node scripts/contract-docs.mjs write AUTO-002; node scripts/contract-docs.mjs check AUTO-002; pnpm sources:lock; pnpm sources:check",
+      "tree": "final staged source, then committed unchanged as 9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+      "exit": 0,
+      "generatedViews": "restored whole from origin/main before lock"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "head": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+      "exit": 0
+    },
+    {
+      "command": "pnpm verify:ci --shard administration",
+      "head": "442b61455234c57befcb642bf4afdaa2dc459922",
+      "exit": 0,
+      "durationSeconds": 1535.264,
+      "receipt": "main-administration-shard.json",
+      "note": "Serialized retry after an initial local fixed-port collision."
+    },
+    {
+      "command": "pnpm verify:ci --shard core-runtime-planning",
+      "head": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+      "exit": 0,
+      "durationSeconds": 1211.895,
+      "planningRuntimeChecks": 66,
+      "authenticationChecks": 9,
+      "allMovedCommandsPassed": true,
+      "receipt": "final-planning-shard.json"
     }
   ],
-  "candidateHead": "405fa07a857585a7b3c3d48f4b709797120451e4",
   "baseline": {
     "source": "3a2537c1d37eff9008b842168e54fc5f09bbc6bc",
     "coreRuntimeExit": 0,
@@ -111,5 +147,7 @@
     "projectBrowserChecks": 54,
     "sessionProjectionTests": 3,
     "sessionProjectionExit": 0
-  }
+  },
+  "initialCandidateHead": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "candidateHead": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a"
 }

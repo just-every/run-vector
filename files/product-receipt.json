@@ -1,9 +1,8 @@
 {
   "branch": "cloud/sd-vector-c-f204-pc1",
-  "head": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "head": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
   "parents": [
-    "b2ea97e0b67e65ddca17a89631080860d054e3a3",
-    "442b61455234c57befcb642bf4afdaa2dc459922"
+    "0f4d8cefed45a0a135458fd576c30c9f0ae0bb72"
   ],
   "integratedMain": "442b61455234c57befcb642bf4afdaa2dc459922",
   "savedHeadRetained": true,
@@ -20,5 +19,18 @@
   },
   "mainEquality": false,
   "runSite": "fleet gate after landing",
-  "pr": null
+  "pr": null,
+  "latestVerify": "not queried: ten-call GitHub budget exhausted",
+  "lastKnownVerify": {
+    "head": "405fa07a857585a7b3c3d48f4b709797120451e4",
+    "run": 42526577795,
+    "conclusion": "failure"
+  },
+  "runtimeDiffSinceLastVerify": "",
+  "remoteRefConfirmed": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+  "finalPlanning": {
+    "exit": 0,
+    "receipt": "final-planning-shard.json"
+  },
+  "allLocalCommandsComplete": true
 }

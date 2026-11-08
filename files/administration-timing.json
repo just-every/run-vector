@@ -1,0 +1,47 @@
+{
+  "startedAt": "2026-11-08T22:16:52.359Z",
+  "sourceCommit": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "note": "Vector CI test suites and build checks.",
+  "passed": true,
+  "checks": [
+    {
+      "command": "test:admin",
+      "startedAt": "2026-11-08T22:16:52.365Z",
+      "completedAt": "2026-11-08T22:34:52.684Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/current-intake-runtime.mjs",
+      "startedAt": "2026-11-08T22:34:52.685Z",
+      "completedAt": "2026-11-08T22:36:19.022Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/theme-runtime.mjs",
+      "startedAt": "2026-11-08T22:36:19.023Z",
+      "completedAt": "2026-11-08T22:38:33.483Z",
+      "passed": true
+    },
+    {
+      "command": "node tests/e2e/housekeeping-runtime.mjs",
+      "startedAt": "2026-11-08T22:38:33.491Z",
+      "completedAt": "2026-11-08T22:40:25.447Z",
+      "passed": true
+    },
+    {
+      "command": "test:wave-b",
+      "startedAt": "2026-11-08T22:40:25.448Z",
+      "completedAt": "2026-11-08T22:41:45.755Z",
+      "passed": true
+    },
+    {
+      "command": "test:base-auth",
+      "startedAt": "2026-11-08T22:41:45.756Z",
+      "completedAt": "2026-11-08T22:42:43.476Z",
+      "passed": true
+    }
+  ],
+  "shard": "administration",
+  "reusedBuildSha": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "completedAt": "2026-11-08T22:42:43.477Z"
+}

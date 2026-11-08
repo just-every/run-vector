@@ -1,0 +1,15 @@
+{
+  "oldCommandExit": 0,
+  "oldGroupSeconds": 1551.118,
+  "ciJobBudgetSeconds": 1500,
+  "movedCommandsSeconds": 138.027,
+  "retainedGroupMeasuredSeconds": 1413.091,
+  "note": "Measured command time excludes GitHub installation overhead. Runtime and browser source bytes were unchanged from the failed SHA; only an unrelated dependency fixture and source lock were saved while this command drained.",
+  "mainComparison": {
+    "head": "442b61455234c57befcb642bf4afdaa2dc459922",
+    "passed": true,
+    "durationSeconds": 1535.264,
+    "exceedsOldCiJobBudgetSeconds": 35.264,
+    "receipt": "main-administration-shard.json"
+  }
+}

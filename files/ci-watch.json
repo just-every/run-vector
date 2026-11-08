@@ -1,8 +1,8 @@
 {
-  "logicalCalls": 7,
+  "logicalCalls": 10,
   "run": 42526577795,
   "head": "405fa07a857585a7b3c3d48f4b709797120451e4",
-  "lastPollEpoch": 1794174520.2255623,
+  "lastPollEpoch": 1794176016.966049,
   "polls": [
     {
       "at": "2026-11-08T21:48:40.714361+00:00",
@@ -13,6 +13,27 @@
         "status": "in_progress"
       },
       "exit": 0
+    },
+    {
+      "at": "2026-11-08T22:08:35.857992+00:00",
+      "result": {
+        "conclusion": null,
+        "head_sha": "405fa07a857585a7b3c3d48f4b709797120451e4",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42526577795",
+        "status": "in_progress"
+      },
+      "exit": 0
+    },
+    {
+      "at": "2026-11-08T22:13:37.352482+00:00",
+      "result": {
+        "conclusion": "failure",
+        "head_sha": "405fa07a857585a7b3c3d48f4b709797120451e4",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42526577795",
+        "status": "completed"
+      },
+      "exit": 0
     }
-  ]
+  ],
+  "logCommand": "gh run view 42526577795 --repo just-every/run-vector --log-failed"
 }

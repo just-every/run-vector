@@ -1,0 +1,24 @@
+{
+  "head": "405fa07a857585a7b3c3d48f4b709797120451e4",
+  "job": "shards (imports, true, true, true)",
+  "command": "pnpm verify:ci --shard imports",
+  "exit": 1,
+  "test": "tests/worker/dependencies.test.ts: native related-issue lookup and stale conflict DTOs reauthorize after projection",
+  "failure": "expected 200 to be 401 at sample-auth-fixture.ts:59; subsequent invite returns 403 instead of 202 and Waiting assertion fails",
+  "diagnosis": "Another actor projection hook matched the obsolete SELECT prefix. Its finally block failed session cleanup, cascading into two later cases. The original failing test ran before the hook edit; the remaining shard process completed after that edit.",
+  "mainComparison": {
+    "head": "442b61455234c57befcb642bf4afdaa2dc459922",
+    "tests": 9,
+    "exit": 0
+  },
+  "repair": {
+    "assertions": "all retained",
+    "files": [
+      "tests/worker/dependencies.test.ts"
+    ],
+    "focusedTests": 12,
+    "exit": 0,
+    "durationSeconds": 28.05
+  },
+  "administrationComparisonNote": "Initial parallel attempt collided on the fixed port before checks; subsequent serialized main run passed every command in 1535.264 seconds, exceeding the old 1500-second CI job budget. See main-administration-shard.json."
+}

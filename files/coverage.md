@@ -22,8 +22,8 @@ The clause's first named journey is supported through native HTTP for build, dry
 
 1. FAIL for full DONE: Settings journey and broader rule outcomes remain unproved; backend and role coverage is partial.
 2. PASS for built backend slice: populated positive paths, denied role cells and unchanged storage, private-team and revoked-destination safety through mounted HTTP.
-3. PENDING: final exact-SHA Verify. Initial run 42511092094 had successful Worker and administration jobs but failed three other shards. Local role-matrix rerun passes all six tests in 217.88 seconds; the touched Worker rerun passes all five tests in 88.40 seconds.
-4. PASS by unchanged relevant source: continuation changes test scheduling hook and generated deployment metadata, preserving backend and its assertions. Final run rechecks candidate.
+3. PENDING: final exact-SHA Verify is unobserved after the ten-call API budget. Initial run 42511092094 had successful Worker and administration jobs but failed three other shards. Local role-matrix rerun passes all six tests in 217.88 seconds; the touched Worker rerun passes all five tests in 88.40 seconds.
+4. PASS by unchanged relevant source: continuation changes two test scheduling hooks, generated deployment metadata and the grouping of two unchanged verification commands, preserving backend and its assertions. Exact candidate planning group passed all commands, 66 planning checks and 9 authentication checks; Worker runtime bytes are unchanged.
 5. INSPECTED: existing clause already names ROLE-009; no acceptance rewrite or new inherited-duty claim.
 6. PASS mechanical: scoped generator write and check pass; generated views restored to main. Status and Gap remain untouched.
 7. PASS: no acceptance changes.
@@ -34,4 +34,6 @@ The clause's first named journey is supported through native HTTP for build, dry
 
 ## Pre-ready scope
 
-No existing outcome assertion is removed, narrowed or skipped. The repaired session test still requires its projection hook and forced signout to be reached, then a 401 with unchanged retained data. Automation replay, current authority and restore safety remain covered. No new screen or UI edit is included, so this continuation cannot qualify the pending Settings interface. Source lock and exact-SHA CI are recorded separately in final receipts. Cloud publication scanning and landing remain fleet gates; no scan-complete claim is made here.
+No existing outcome assertion is removed, narrowed or skipped. The repaired projection tests still require their projection hooks and forced signout to be reached, then a 401 with unchanged retained data. Automation replay, current authority and restore safety remain covered. No new screen or UI edit is included, so this continuation cannot qualify the pending Settings interface. Source lock and exact-SHA CI are recorded separately in final receipts. Cloud publication scanning and landing remain fleet gates; no scan-complete claim is made here.
+
+Final candidate: 9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a. Prior Verify 42526577795 failed on 405fa07a; its dependency fixture and administration deadline were addressed in forward commits. Final CI is unobserved because the ten-call budget is exhausted. No READY or DONE claim.

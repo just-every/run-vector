@@ -1,0 +1,49 @@
+{
+  "tag": "sd-vector-c-f204-pc1",
+  "repo": "/home/agent/rer-consolidation/work/sd-vector-c-f204-pc1/run-vector",
+  "branch": "cloud/sd-vector-c-f204-pc1",
+  "latestPublishedHead": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+  "apiCallsUsed": 10,
+  "apiCallsRemaining": 0,
+  "lastVerify": {
+    "id": 42526577795,
+    "head": "405fa07a857585a7b3c3d48f4b709797120451e4",
+    "status": "completed",
+    "conclusion": "failure",
+    "roots": [
+      "imports: stale dependency projection hook, now fixed and saved",
+      "administration: cancelled at its 25-minute job limit"
+    ]
+  },
+  "workerRepair": "dependencies and session projection suites pass all 12 tests; main dependency suite passes 9",
+  "currentTimingRun": {
+    "command": "pnpm verify:ci --shard administration",
+    "exit": 0,
+    "durationSeconds": 1551.118,
+    "receipt": "administration-timing.json"
+  },
+  "baselineAdministration": {
+    "head": "442b61455234c57befcb642bf4afdaa2dc459922",
+    "exit": 0,
+    "durationSeconds": 1535.264,
+    "receipt": "main-administration-shard.json"
+  },
+  "proposal": {
+    "applied": true,
+    "move": [
+      "test:wave-b",
+      "test:base-auth"
+    ],
+    "from": "administration",
+    "to": "core-runtime-planning",
+    "proof": "plan-wall-proof.json"
+  },
+  "next": "Publish and verify the complete final evidence packet, remove clean checkouts and generated private setup file, then hand off PUSHED. New exact-SHA Verify remains unobserved because all ten GitHub calls were used.",
+  "finalPlanning": {
+    "head": "9701a277e3f2398f1b13a4dd1a4541e0c4d6ee3a",
+    "exit": 0,
+    "durationSeconds": 1211.895,
+    "receipt": "final-planning-shard.json"
+  },
+  "allLocalCommandsComplete": true
+}
