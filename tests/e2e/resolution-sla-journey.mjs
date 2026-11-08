@@ -253,6 +253,30 @@ export async function exerciseResolutionSla({
       ],
     );
     assert.equal((await notices()).length, 1);
+    // An archive and restoration between real scheduler requests is a durable
+    // withdrawal. The issue must show its stopped clock after native reload.
+    const archived = await send("/issues", "POST", {
+      title: "synthetic-vector-197", teamId: team.id, priority: "urgent",
+      assigneeOperatorId: owner.operatorId,
+    }, memberCookie);
+    await send(`/settings/teams/${team.id}`, "PATCH", { archived: true });
+    await send(`/settings/teams/${team.id}`, "PATCH", { archived: false });
+    const archiveStop = await send(`/issues/${archived.identifier}/sla`);
+    assert.equal(archiveStop.state, "stopped");
+    assert.ok(archiveStop.stoppedAt);
+    await tick(start + 122 * 60000);
+    const afterTick = await send(`/issues/${archived.identifier}/sla`);
+    assert.equal(afterTick.state, "stopped");
+    assert.equal(afterTick.remainingMinutes, archiveStop.remainingMinutes);
+    assert.equal(runtime.sql("SELECT count(*) n FROM issue_sla_occurrences WHERE issue_id='" + archived.id + "'")[0].n, 0);
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+      await navigate(page, runtime.base + "/app/issues/" + archived.identifier);
+      const countdown = page.getByRole("note", { name: "Resolution SLA remaining time", exact: true });
+      await countdown.waitFor();
+      if (width === 1440) assert.match(await countdown.innerText(), /Stopped/);
+      await page.screenshot({ path: join(output, `archive-countdown-${width}.png`) });
+    }
     assert.deepEqual(errors, [], "no hydration or browser errors");
     const labelState = await send("/settings/labels", "POST", {
       name: "synthetic-vector-193",

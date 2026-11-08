@@ -1,4 +1,6 @@
 import { resolutionSlaUpgrade } from "./resolution-sla-upgrade";
+import { resolutionSlaStateJourney } from "./resolution-sla-state-scenario";
+import { resolutionSlaRecipientJourney } from "./resolution-sla-recipient-scenario";
 import { env } from "cloudflare:workers";
 import { expect, vi } from "vitest";
 import type { setupAdministration } from "./administration-fixture";
@@ -349,6 +351,8 @@ export async function resolutionSlaJourney(
       viewerCookie,
       guestCookie,
     });
+    await resolutionSlaStateJourney(f, tick);
+    await resolutionSlaRecipientJourney(f, tick);
     // A late completion before the first tick cannot generate an early warning.
     const resolved = await f.create({ priority: "urgent" });
     await tick("2026-11-02T16:27:00Z");
