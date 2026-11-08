@@ -103,3 +103,11 @@ GAP INIT-003: Supplied Claude Opus interface implementation and independent qual
 ### Publication and landing boundary
 
 Candidate Verify run: 42505077963, event push, exact head 52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b. Latest observed state is recorded in the accompanying actual CI receipt. Full-history publication scan: commit=52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b complete=unestablished historyScanned=unestablished findings=unestablished. The cloud adaptation assigns that scan to the maintained Mac lander; this report does not invent a COMPLETE or zero-findings receipt. Candidate main equality, guarded landing, candidate Run site and independent interface qualification are pending fleet work. Existing main's successful runs are separately labelled above.
+
+### Terminal custody
+
+At 2026-11-08T17:50:39Z, the fourth status poll still returned in_progress and no conclusion for push Verify 42505077963 on exact candidate 52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b. Seven of the ten allowed GitHub calls have been used; the remaining calls are retained for failure analysis rather than further status polling. No failed run or assertion has been observed, and no green result from another SHA is substituted. The candidate is handed off as PUSHED, with all local touched checks, typecheck, first-party validation, generated-view checks, source lock and exact-SHA browser proof passing. It is not represented as exact-SHA Verify green or as landed.
+
+The complete relevant packet is published separately to refs/heads/evidence/sd-vector-c-f202. Its initial publication was fetched back and all 18 files were verified against the manifest and local bytes; the terminal receipt is republished after this update. Product checkout, index and head are unchanged by evidence publication. Browsers and local Workers are stopped. The pushed clone is removed only after both remote refs and the final packet have been verified.
+
+PUSHED branch=cloud/sd-vector-c-f202 head=52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b

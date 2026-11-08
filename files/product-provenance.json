@@ -17,5 +17,10 @@
     "historyScanned": "unestablished in cloud",
     "findings": "unestablished; retained fleet scan required"
   },
-  "landing": "not performed in cloud"
+  "landing": "not performed in cloud",
+  "verifyConclusion": null,
+  "verifyObservedAt": "2026-11-08T17:50:39Z",
+  "githubCallsUsed": 7,
+  "githubCallBudget": 10,
+  "terminalCustody": "PUSHED; Verify still running; no green assertion"
 }
