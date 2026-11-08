@@ -1,0 +1,20 @@
+{
+  "scenario": "body",
+  "phase": "probe",
+  "width": 1440,
+  "bodyHit": "Move One-day project · 2026-11-09 to 2026-11-09",
+  "request": {
+    "expectedVersion": "2e730eaa7952921a69ed198c97ccb9f68c3478812574f77ce2a310b01690c148",
+    "startDate": "2026-11-12",
+    "targetDate": "2026-11-12"
+  },
+  "before": {
+    "startDate": "2026-11-09",
+    "targetDate": "2026-11-09"
+  },
+  "after": {
+    "startDate": "2026-11-12",
+    "targetDate": "2026-11-12"
+  },
+  "result": "PASS"
+}

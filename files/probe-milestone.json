@@ -1,0 +1,14 @@
+{
+  "scenario": "milestone",
+  "phase": "probe",
+  "width": 1440,
+  "apiMilestones": [
+    {
+      "name": "Dated milestone on undated project",
+      "targetDate": "2026-11-14"
+    }
+  ],
+  "desktopMarkers": 1,
+  "mobileMilestoneVisible": true,
+  "result": "PASS"
+}

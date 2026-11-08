@@ -1,0 +1,52 @@
+{
+  "setup": {
+    "command": "cloud_run timeout 900 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+    "exit": 0
+  },
+  "build_and_typecheck": {
+    "command": "cloud_run timeout 600 npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "ledger": {
+    "command": "cloud_run timeout 300 node --test scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0,
+    "tests": 1
+  },
+  "views": {
+    "write": "node scripts/contract-docs.mjs write INIT-003",
+    "check": "node scripts/contract-docs.mjs check INIT-003",
+    "exit": 0,
+    "restored": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md"
+  },
+  "spec": {
+    "write": "pnpm integration:sync",
+    "check": "pnpm integration:check",
+    "exit": 0,
+    "changed": false
+  },
+  "sdk": {
+    "write": "node sdk/generate.mjs",
+    "check": "node sdk/generate.mjs --check",
+    "exit": 0,
+    "operations": 56,
+    "changed": false
+  },
+  "migration_preservation": {
+    "files": 134,
+    "unchanged_from_main": true,
+    "candidate_migrations": 0,
+    "renumbering_needed": false
+  },
+  "lock": {
+    "write": "pnpm sources:lock",
+    "check": "pnpm sources:check",
+    "exit": 0,
+    "run_after_final_source_edit": true
+  },
+  "worker": {
+    "command": "cloud_run timeout 300 pnpm exec vitest run --config vitest.config.ts tests/worker/roadmap.test.ts",
+    "exit": 0,
+    "files": 1,
+    "tests": 1
+  }
+}

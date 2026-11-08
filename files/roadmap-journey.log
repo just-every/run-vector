@@ -1,0 +1,10 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+Roadmap placements and milestone rendered
+Roadmap target diamond drag accepted
+Roadmap Unscheduled drag accepted
+Roadmap body and endpoint drags accepted, including a one-day body
+Roadmap keyboard and fields accepted; stale edit refused
+INIT-003 roadmapJourney PASS: placements, spans, milestones, diamond and Unscheduled drag, body and ends, keyboard, planning fields, stale refusal, roles, phone, themes and AA
+{"scenario":"journey","phase":"probe2","width":1440,"result":"PASS"}

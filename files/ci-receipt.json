@@ -1,0 +1,21 @@
+{
+  "repository": "just-every/run-vector",
+  "head": "c39e92e479af0387250fbff2d96c69a754fd640f",
+  "calls": [
+    {
+      "number": 1,
+      "at": "2026-11-08T23:01:55.406372+00:00",
+      "command": "gh api repos/just-every/run-vector/actions/runs?head_sha=c39e92e479af0387250fbff2d96c69a754fd640f&per_page=100",
+      "exit": 0,
+      "run_id": 42533113770,
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "c39e92e479af0387250fbff2d96c69a754fd640f",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42533113770"
+    }
+  ],
+  "run_id": 42533113770,
+  "status": "in_progress",
+  "conclusion": null,
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42533113770"
+}

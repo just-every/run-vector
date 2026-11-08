@@ -1,0 +1,14 @@
+{
+  "scenario": "milestone",
+  "phase": "repro",
+  "width": 1440,
+  "apiMilestones": [
+    {
+      "name": "Dated milestone on undated project",
+      "targetDate": "2026-11-14"
+    }
+  ],
+  "desktopMarkers": 0,
+  "result": "FAIL",
+  "error": "dated milestone on undated project has a desktop marker\n\n0 !== 1\n"
+}

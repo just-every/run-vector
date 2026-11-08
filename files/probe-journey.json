@@ -1,0 +1,7 @@
+{
+  "scenario": "journey",
+  "phase": "probe",
+  "width": 1440,
+  "result": "FAIL",
+  "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+}

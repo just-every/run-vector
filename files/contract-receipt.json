@@ -1,0 +1,17 @@
+{
+  "before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "init003Before": "missing",
+  "init003After": "missing",
+  "judgmentChanges": []
+}

@@ -1,0 +1,20 @@
+{
+  "scenario": "body",
+  "phase": "repro",
+  "width": 1440,
+  "bodyHit": "Drag target date for One-day project",
+  "request": {
+    "expectedVersion": "1751263b3948efb8706017d4ffddd1cc290f41a2721b3b0dff050ea17a4da165",
+    "targetDate": "2026-11-12"
+  },
+  "before": {
+    "startDate": "2026-11-09",
+    "targetDate": "2026-11-09"
+  },
+  "after": {
+    "startDate": "2026-11-09",
+    "targetDate": "2026-11-12"
+  },
+  "result": "FAIL",
+  "error": "one-day body drag moves start date"
+}
