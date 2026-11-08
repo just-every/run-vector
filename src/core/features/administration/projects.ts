@@ -78,13 +78,13 @@ export async function updateProject(
   actor: string,
   id: string,
   input: z.infer<typeof projectUpdateSchema>,
-  options: {combineDates?: boolean} = {},
+  options: {combineDates?: boolean; expectedVersion?: string} = {},
 ) {
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Project>(ctx, "projects", id);
   const oldLabels = await readProjectLabelIds(ctx, id);
   const revision = await projectFieldRevision(ctx.db, id);
-  if (input.expectedVersion && input.expectedVersion !== await projectFieldVersion(old, oldLabels, revision))
+  if (options.expectedVersion && options.expectedVersion !== await projectFieldVersion(old, oldLabels, revision))
     throw new SettingsError('stale_project', 'This project changed. Refresh before trying again.', 409);
   const previous = {
     name: old.name,

@@ -117,7 +117,6 @@ export const projectUpdateSchema = projectCreateSchema.omit({createSlackChannel:
       .enum(["planned", "active", "completed", "canceled"])
       .optional(),
     archived: z.boolean().optional(),
-    expectedVersion: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   })
   .strict()
   .refine((v) => Object.keys(v).length > 0);
