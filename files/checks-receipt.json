@@ -1,0 +1,85 @@
+{
+  "checks": [
+    {
+      "command": "node scripts/contract-docs.mjs write RELEASE-003",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check RELEASE-003",
+      "exit": 0,
+      "note": "passed with regenerated views; both view files subsequently restored from origin/main"
+    },
+    {
+      "command": "pnpm integration:sync",
+      "exit": 0
+    },
+    {
+      "command": "pnpm integration:check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "note": "after staging sources and restoring views; last generation step"
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "timeout 600 pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run timeout 900 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "note": "first attempt exited 2 while merge inventory was unresolved; rerun after resolution succeeded"
+    },
+    {
+      "command": "cloud_run timeout 900 npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run timeout 600 pnpm exec node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "command": "cloud_run timeout 300 pnpm check",
+      "exit": 0
+    },
+    {
+      "command": "cloud_run timeout 300 pnpm sources:verify-base",
+      "exit": 0,
+      "note": "offline pinned copy verification"
+    },
+    {
+      "command": "cloud_run timeout 900 pnpm exec vitest run --config vitest.config.ts tests/worker/release-notes.test.ts tests/worker/data-http.test.ts tests/worker/project-fields-upgrade.test.ts tests/worker/role-matrix.test.ts",
+      "exit": 1,
+      "files_passed": 3,
+      "files_failed": 1,
+      "tests_passed": 8,
+      "tests_failed": 1,
+      "failure": "role-matrix.test.ts:525 private/invited teams and Viewer census timed out at the unchanged 120000ms limit; rerun alone pending",
+      "duration_seconds": 500.38
+    },
+    {
+      "command": "cloud_run timeout 900 env PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium node tests/e2e/core-runtime.mjs projects",
+      "exit": 0,
+      "checks": 54,
+      "notes": "existing full Projects entry point; includes release-note HTTP, editing, stale recovery, access withdrawal, archive-relevant work flows and 1440/390 captures"
+    },
+    {
+      "command": "cloud_run timeout 300 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'current private and invited teams scope native'",
+      "exit": 0,
+      "tests_passed": 1,
+      "other_tests_not_selected": 5,
+      "duration_seconds": 50.54,
+      "test_duration_seconds": 36.78,
+      "note": "the failed test rerun alone under its unchanged 120000ms timeout and assertions; the other five role tests had already passed. No source test skipped, removed or weakened."
+    }
+  ],
+  "all_nine_distinct_worker_tests_passed_across_runs": true
+}

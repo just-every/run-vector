@@ -1,0 +1,14 @@
+{
+  "conclusion": "success",
+  "head_sha": "14b8e8a430a5011d2d605a052a94d3e1c297bce3",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42493186695",
+  "status": "completed",
+  "repository": "just-every/run-vector",
+  "workflow": "Verify",
+  "run_id": 42493186695,
+  "custody": "READY",
+  "branch": "cloud/sd-vector-c-f177-fix1",
+  "generated_view_exception_used": false,
+  "github_calls_used": 7,
+  "github_call_budget": 10
+}

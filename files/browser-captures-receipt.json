@@ -1,0 +1,17 @@
+{
+  "captures": [
+    {
+      "file": "release-notes-edited-1440.png",
+      "viewport_width": 1440,
+      "sha256": "111c68a81f5477188a8ceff299172fab77dcf7470d493f252e9c306a66ee71da",
+      "content": "synthetic six-source release-note draft version 2, exact human edit and live Markdown preview; visually inspected"
+    },
+    {
+      "file": "release-notes-edited-390.png",
+      "viewport_width": 390,
+      "sha256": "6578d4a9fb028f81ca783cf1755a7ff271ab585b70bde08f041130e069cf9942",
+      "content": "synthetic six-source release-note draft version 2, exact human edit and live Markdown preview; visually inspected"
+    }
+  ],
+  "secret_review": "Synthetic issue/project text only; no credentials, private links or held-out material selected."
+}

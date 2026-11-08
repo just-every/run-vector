@@ -1,0 +1,34 @@
+{
+  "candidate_head": "e8afc82af42c6722da5a3820e19d46b40399e014",
+  "merged_main": "243b843de99e0ed460e736a27aa2622c13a52ddd",
+  "status_rows": 272,
+  "candidate_counts": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66
+  },
+  "main_counts": {
+    "done": 136,
+    "partial": 71,
+    "missing": 65
+  },
+  "merged_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "repair_judgment_changes": [],
+  "preserved_release_003": "partial",
+  "all_other_main_rows_exact": true,
+  "newer_main_judgments_retained": [
+    {
+      "id": "AUTO-004",
+      "status": "partial"
+    },
+    {
+      "id": "BASE-AGENT-010",
+      "status": "partial"
+    }
+  ],
+  "note": "No status was judged or promoted by this repair. Main additions explain candidate-relative counts; RELEASE-003 inherits the published candidate partial judgment. All 271 other Status rows equal main byte for byte."
+}

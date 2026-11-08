@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f177-fix1",
+  "head": "14b8e8a430a5011d2d605a052a94d3e1c297bce3",
+  "parents": [
+    "e8afc82af42c6722da5a3820e19d46b40399e014",
+    "243b843de99e0ed460e736a27aa2622c13a52ddd"
+  ],
+  "tree": "35cb96485a8489c8a43f514a304707f9adcd06e2",
+  "push_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f177-fix1",
+  "push_exit": 0,
+  "push_attempts": 1,
+  "product_push_count": 1,
+  "identity_message_audit": "6 candidate commits, side parents included, all fleet authors and committers, no trailers",
+  "worktree_clean": true,
+  "pr_created": false,
+  "landing_claimed": false,
+  "local_tests_tree_matches_product_tree": true
+}

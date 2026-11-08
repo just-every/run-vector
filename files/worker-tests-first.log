@@ -1,0 +1,29 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f177-fix1/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ❯ tests/worker/role-matrix.test.ts (6 tests | 1 failed) 286101ms
+   × [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 146718ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/worker/role-matrix.test.ts:525:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 8 passed (9)
+   Start at  14:55:55
+   Duration  500.38s (transform 7.87s, setup 0ms, import 35.94s, tests 459.89s, environment 0ms)
+

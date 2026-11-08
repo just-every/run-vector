@@ -1,0 +1,12 @@
+{
+  "write_command": "pnpm integration:sync",
+  "write_exit": 0,
+  "check_command": "pnpm integration:check",
+  "check_exit": 0,
+  "changed_files": [
+    "management/integration/deployment-spec.json"
+  ],
+  "release_notes_migration": "0132_release_notes.sql",
+  "migration_sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+  "migration_count": 132
+}

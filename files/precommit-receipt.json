@@ -1,0 +1,10 @@
+{
+  "candidate_head": "e8afc82af42c6722da5a3820e19d46b40399e014",
+  "merged_main": "243b843de99e0ed460e736a27aa2622c13a52ddd",
+  "staged_tree": "35cb96485a8489c8a43f514a304707f9adcd06e2",
+  "generated_views_equal_main": true,
+  "conflicts_remaining": [],
+  "untracked_sources": [],
+  "commit_hook_active": true,
+  "all_main_migrations_byte_identical": true
+}

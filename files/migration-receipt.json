@@ -1,0 +1,16 @@
+{
+  "all_main_migrations_unchanged": true,
+  "main_migration_count": 131,
+  "after_migration_count": 132,
+  "candidate_spec_migration_count": 125,
+  "main_spec_migration_count": 131,
+  "after_spec_migration_count": 132,
+  "renamed_from": "0126_release_notes.sql",
+  "renamed_to": "0132_release_notes.sql",
+  "identical_sql_bytes": true,
+  "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
+  "duplicate_numbers": [],
+  "ledger_check": "pnpm exec node --test scripts/deployment/tests/migration-head.test.mjs",
+  "ledger_exit": 0,
+  "ledger_checks": "apply complete source migration history, exact hash/name/applied-state ledger, second migrate has zero writes, foreign_key_check empty"
+}

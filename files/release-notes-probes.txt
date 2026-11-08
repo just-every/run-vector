@@ -1,0 +1,3 @@
+PROBE RELEASE-003 native HTTP: six exact completed sources, current titles and project groups; edited draft retained after fresh read and scope change; stale saves refused; no release publication
+PROBE RELEASE-003 browser: keyboard generation from six completed issues -> grouped Markdown; exact human edit survives save and reload; stale save preserves local text; explicit reload and scope edits retain accountable draft; read-only view has no draft mutations; release description and publication remain separate
+PROBE RELEASE-003 private access: recorded Member owner generates notes; source membership withdrawn -> save refused 404, private saved and unsaved text disappear, storage unchanged and reload remains unavailable

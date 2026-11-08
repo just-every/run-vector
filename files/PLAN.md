@@ -1,0 +1,13 @@
+# sd-vector-c-f177-fix1 plan
+
+1. Set fleet Git identity, refresh launcher, install decrypted-bundle Git authentication, push guard and clone-local commit hook.
+2. Clone just-every/run-vector with full history and blob filtering. Verify cloud/sd-vector-c-f177 is exactly e8afc82af42c6722da5a3820e19d46b40399e014; branch cloud/sd-vector-c-f177-fix1 from that head and merge fresh origin/main without rebasing.
+3. Resolve CONTRACT.md first by lines, preserving main's newer judgments and the inherited RELEASE-003 partial judgment. Preserve all parent Status rows, tests and main's ID-MAP. Regenerate RELEASE-003 views and summary with the documented generator; check; restore generated views wholly from main.
+4. Preserve main's migration numbers. Move candidate-only 0126_release_notes.sql above main's highest 0131, to 0132_release_notes.sql, retaining identical SQL bytes and updating any references. Join additive archive inventory, archive test setup and comments, retaining main's SLA import comparison and candidate's release-note deletion guard.
+5. Run setup under the cloud subreaper, reinstall clone-local hooks after setup, run candidate-added/changed worker tests, deployment migration ledger validation and typecheck with hard timeouts. Run candidate release-note HTTP and browser journeys through their existing Projects runtime entry point, at 1440 with browser captures at 1440 and 390.
+6. Regenerate deployment-spec using pnpm integration:sync and check pnpm integration:check. Prove only deployment-spec changes in this generator step. Stage all intended sources, regenerate sources.lock.json LAST using pnpm sources:lock; run pnpm sources:check.
+7. Complete one fleet-authored merge/repair commit without skip-ci, audit all candidate identities and complete messages including side parents, and push only cloud/sd-vector-c-f177-fix1 via cloud-push.py.
+8. Discover and watch exact-SHA Verify through REST within ten GitHub calls, no more than one call per run every 300 seconds. Investigate failed jobs once per job if necessary. Generated-view-only red follows the explicit READY exception; other unresolved failures are blockers.
+9. Write full non-secret reports and actual receipts here; explicitly publish them only to evidence/sd-vector-c-f177-fix1 through cloud_evidence.py. Retain recovery data if pushes fail. After successful publication, remove the product clone and its node_modules as requested. Return provenance and POST line; make no landing claim.
+
+No clause judgment promotions, test deletions, skips or weakened assertions. No deployment or provider commissioning. Generated views remain main's versions in the product commit.
