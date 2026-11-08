@@ -467,6 +467,11 @@
                   "templateVersion": {
                     "type": "integer",
                     "minimum": 1
+                  },
+                  "customFields": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back."
                   }
                 },
                 "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue. A template selection needs both templateId and templateVersion. Explicit native fields win; omitted fields receive template defaults."
@@ -548,6 +553,69 @@
                       ],
                       "format": "date",
                       "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                    },
+                    "customFields": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Stored custom-field values: a team field's id maps to an option id; other keys are untyped values."
+                    },
+                    "fields": {
+                      "type": "array",
+                      "description": "Custom fields of the issue's current team, each with its stable option ids. Renaming a field or option changes no stored value.",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "teamId",
+                          "name",
+                          "description",
+                          "type",
+                          "version",
+                          "options"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "teamId": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "single_select"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "options": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "name"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                   "additionalProperties": true,
@@ -668,6 +736,69 @@
                       ],
                       "format": "date",
                       "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                    },
+                    "customFields": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Stored custom-field values: a team field's id maps to an option id; other keys are untyped values."
+                    },
+                    "fields": {
+                      "type": "array",
+                      "description": "Custom fields of the issue's current team, each with its stable option ids. Renaming a field or option changes no stored value.",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "teamId",
+                          "name",
+                          "description",
+                          "type",
+                          "version",
+                          "options"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "teamId": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "single_select"
+                            ]
+                          },
+                          "version": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "options": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "required": [
+                                "id",
+                                "name"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                   "additionalProperties": true,
@@ -739,6 +870,11 @@
                     ],
                     "format": "date",
                     "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                  },
+                  "customFields": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Custom-field values. A key that is the id of a custom field of the issue's team (FIELD-001, listed in /metadata teams[].customFields and in the issue's fields) takes one of that field's option ids, or null to clear it; a number, another option or another team's field returns 400 without changing the issue. Any other key is an untyped value kept as sent. On update the object replaces the stored map, so send unchanged keys back."
                   }
                 },
                 "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue."
@@ -4964,6 +5100,138 @@
                   }
                 },
                 "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/dependencies/{blockingId}": {
+      "put": {
+        "operationId": "project_dependency_set",
+        "summary": "set a direct project blocker",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "projects:write"
+        ],
+        "x-object": "projects",
+        "x-operation": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          },
+          {
+            "name": "blockingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "project_dependency_remove",
+        "summary": "remove a direct project blocker",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "projects:write"
+        ],
+        "x-object": "projects",
+        "x-operation": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          },
+          {
+            "name": "blockingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
               }
             }
           }

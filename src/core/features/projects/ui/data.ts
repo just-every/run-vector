@@ -71,6 +71,10 @@ export const projectPortfolioSchema = z.object({
 });
 
 export const projectDetailSchema = projectSummarySchema.extend({
+  directDependencies: z.object({
+    blockedBy:z.array(z.object({id:z.string(),project:personSchema})),
+    blocking:z.array(z.object({id:z.string(),project:personSchema})),
+  }),
   milestones: z.array(z.object({
     id: z.string(), projectId: z.string(), name: z.string(), description: z.string(),
     targetDate: z.string().nullable(), position: z.number(), completed: z.boolean(),
@@ -80,7 +84,8 @@ export const projectDetailSchema = projectSummarySchema.extend({
   report: projectReportSchema,
   forecast: projectForecastSchema,
   cycleHistory: z.array(historicalCycleSchema),
-  activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable()})),
+  activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable(),
+    dependency:z.object({direction:z.enum(['blocked-by','blocking']),project:personSchema.nullable()}).optional()})),
   cycles: z.array(
     z.object({
       id: z.string(),

@@ -30,6 +30,7 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
     await thread.getByRole('textbox', { name: 'Reply to thread', exact: true }).fill(replyText);
     await thread.getByRole('button', { name: 'Post reply', exact: true }).click();
     await thread.getByText(replyText, { exact: true }).waitFor();
+    await settleReads(page);
     await page.reload();
     await thread.getByText(rootText, { exact: true }).waitFor();
     await thread.getByText(replyText, { exact: true }).waitFor();
@@ -44,6 +45,7 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
       await call('/issues/' + issue.identifier + '/comments/' + id, 'PATCH', { body: 'synthetic-vector-9084' });
       await call('/issues/' + issue.identifier + '/comments/' + id, 'DELETE');
     }
+    await settleReads(page);
     await page.reload();
     await page.getByRole('heading', { name: 'Discussion', exact: true }).waitFor();
     await settleReads(page);
