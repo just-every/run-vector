@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f205",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205",
+  "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+  "origin_main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "main_equals_candidate": false,
+  "product_pushed": true,
+  "product_commits": [
+    "569212d1b2eb44a7ebb45eec4ee5b0a25d025572",
+    "69464a9b035333e4b9bcbdbd6d2ceed672c3a378"
+  ],
+  "checks": [
+    {
+      "name": "worker",
+      "command": "cloud_run pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/role-matrix.test.ts tests/worker/base-refresh-upgrade.test.ts",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "worker.log",
+      "raw_stdout_sha256": "f6c688ba91e39913246edac1ec99dec056925ae100d6cf93c5f05685604e1ae7"
+    },
+    {
+      "name": "typecheck",
+      "command": "pnpm typecheck",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "typecheck.log",
+      "raw_stdout_sha256": "4e00814de0f06da5496b568541b3231133eb7daba50aa988c431d609c8a663e0"
+    },
+    {
+      "name": "build",
+      "command": "cloud_run npx -y @runeditrun/rer build",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "build.log",
+      "raw_stdout_sha256": "778619b194ceae154b3f1d97b2cb234071dfe7e555a39d916ae201c2fd37f85e"
+    },
+    {
+      "name": "first_party",
+      "command": "cloud_run pnpm exec rer check --profile first-party",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "first-party.log",
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "migration_ledger",
+      "command": "cloud_run node --test scripts/deployment/tests/migration-head.test.mjs",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "migration-ledger.log",
+      "raw_stdout_sha256": "a0bb7636d200e707de437e8e15464408d8461dc1694f2ddfd50e7fe7e7a92979"
+    },
+    {
+      "name": "views_write",
+      "command": "node scripts/contract-docs.mjs write TEAM-006",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "views-write.log",
+      "raw_stdout_sha256": "a3291e1ce7c738351bd94d47cd116c3ef8a2782926d022c66ec15b5030393b5e"
+    },
+    {
+      "name": "views_check",
+      "command": "node scripts/contract-docs.mjs check TEAM-006",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "log": "views-check.log",
+      "raw_stdout_sha256": "51d122a8b3b9ff17eb5b6d79f7bc872b7a2fd584429abf41e2d066f0cafdd205"
+    },
+    {
+      "name": "source_lock",
+      "command": "pnpm sources:lock, then pnpm sources:check",
+      "head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+      "exit": 0,
+      "sources_lock_sha256": "511f74954d75c8bdf51d32bf449a13b55cc2ea50f1237779464e76ec1095a204",
+      "raw_check_stdout_sha256": "f3d9eb1120199c424ea25dd86871c8c57f068e2a40c29f4c7c862e2a21787261"
+    }
+  ],
+  "worker_summary": {
+    "files": 3,
+    "tests_passed": 7,
+    "tests_failed": 0,
+    "duration_seconds": 236.94
+  },
+  "contract_counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "contract_counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "source_clause_status_before": "missing",
+  "source_clause_status_after": "missing",
+  "builder_claim": "PARTIAL",
+  "complete_acceptance_points_claimed": [],
+  "generated_views_committed": false,
+  "contract_diff_empty": true,
+  "worktree_clean": true,
+  "identity_audit": {
+    "commits": 2,
+    "result": "pass",
+    "trailers": []
+  },
+  "publication_scan": {
+    "commit": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+    "complete": false,
+    "historyScanned": false,
+    "findings": null,
+    "status": "not_run_cloud_route_fleet_custody"
+  },
+  "browser_proof": {
+    "status": "not_run",
+    "reason": "Required interface implementation and independent gate are reserved for Claude Opus; that executor is unavailable. No UI source changed."
+  },
+  "scope_gap": "Required rendered hierarchy, creation, list-toggle and workflow-override journey; held full-clause integrations remain owed.",
+  "pr": null,
+  "main_ci": {
+    "verify": [
+      42503991437,
+      42501646337
+    ],
+    "run_site": 42503991458,
+    "conclusion": "success",
+    "head": "0e8a686c06eddd55943ed1d2690df32a8fc82213"
+  },
+  "recorded_at": "2026-11-08T18:30:44.536480+00:00",
+  "candidate_ci": {
+    "conclusion": null,
+    "event": "push",
+    "head_sha": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42510260429",
+    "id": 42510260429,
+    "name": "Verify",
+    "status": "in_progress"
+  },
+  "github_api_calls": 3,
+  "candidate_ci_observed_at": "2026-11-08T18:31:29.124553+00:00",
+  "terminal_product_custody": "READY for guarded fleet evaluation of PARTIAL backend progress; exact-SHA Verify remains in progress"
+}

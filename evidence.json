@@ -1,0 +1,76 @@
+{
+  "files": [
+    {
+      "blob": "be06df156c594f60d3371483cbf316fd8f14889c",
+      "bytes": 164,
+      "path": "ASSERTION-CUSTODY.json",
+      "sha256": "68b21fea21b3d50aaa08b8cf8dfe1a742995347a32f90abd402dbe05ec15230e"
+    },
+    {
+      "blob": "499a0a667f5eebc6715b7a1b5ffb8c8b26443bbf",
+      "bytes": 260,
+      "path": "CI.json",
+      "sha256": "bc7beb6c097c5cb9c3265993708b157e24436f0940eda359cde44ebb2f0373ed"
+    },
+    {
+      "blob": "1be3b200e93bc5cabe1815450140ccbb25fee15a",
+      "bytes": 5082,
+      "path": "RECEIPT.json",
+      "sha256": "5c3910391e950bc3ab7425138c99f30e42f16c7a69cd86642d2ba1fd7693a6dc"
+    },
+    {
+      "blob": "7ca595e13f32a23e5abea63378503cf2eb7b60ae",
+      "bytes": 13873,
+      "path": "REPORT.md",
+      "sha256": "4202942d00d1800e193803b1d457d91cf546ee440b77e8ba061b5805bb8a6b58"
+    },
+    {
+      "blob": "e0b49c0fe66f78754c2f1e0d9f1fd368216f00f3",
+      "bytes": 34280,
+      "path": "build.log",
+      "sha256": "778619b194ceae154b3f1d97b2cb234071dfe7e555a39d916ae201c2fd37f85e"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "3680326670c88f4c06a3bb6fb93572f77c5cd458",
+      "bytes": 243,
+      "path": "migration-ledger.log",
+      "sha256": "a0bb7636d200e707de437e8e15464408d8461dc1694f2ddfd50e7fe7e7a92979"
+    },
+    {
+      "blob": "dac7f24055396c4d81e654f2bf6c8839ec347aa7",
+      "bytes": 205,
+      "path": "typecheck.log",
+      "sha256": "4e00814de0f06da5496b568541b3231133eb7daba50aa988c431d609c8a663e0"
+    },
+    {
+      "blob": "c143c1c85bd1025ca40e5e56716089b0739d6866",
+      "bytes": 36,
+      "path": "views-check.log",
+      "sha256": "51d122a8b3b9ff17eb5b6d79f7bc872b7a2fd584429abf41e2d066f0cafdd205"
+    },
+    {
+      "blob": "8bdf3942caed28a9d9e06bd4dc4b504b63f70c93",
+      "bytes": 38,
+      "path": "views-write.log",
+      "sha256": "a3291e1ce7c738351bd94d47cd116c3ef8a2782926d022c66ec15b5030393b5e"
+    },
+    {
+      "blob": "af732982e976ddd0722ee84aa3cf4a4b432661f7",
+      "bytes": 452,
+      "path": "worker.log",
+      "sha256": "fe11a5ead9d5ccd55e0e85ce67e041770c0ef41a92ac3f9045dbff24c2eef270"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f205",
+  "product_head": "69464a9b035333e4b9bcbdbd6d2ceed672c3a378",
+  "ref": "refs/heads/evidence/sd-vector-c-f205",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f205"
+}
