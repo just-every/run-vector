@@ -26,7 +26,9 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
     SELECT parent_issue_id,issue_id,'parent' FROM issue_parents WHERE parent_issue_id IN (SELECT value FROM json_each(?1)) AND issue_id NOT IN (SELECT value FROM json_each(?1))
     UNION SELECT second_issue_id,first_issue_id,'related' FROM issue_relations WHERE second_issue_id IN (SELECT value FROM json_each(?1)) AND first_issue_id NOT IN (SELECT value FROM json_each(?1))
     UNION SELECT blocking_issue_id,blocked_issue_id,'dependency' FROM issue_dependencies WHERE blocking_issue_id IN (SELECT value FROM json_each(?1)) AND blocked_issue_id NOT IN (SELECT value FROM json_each(?1))
-    UNION SELECT canonical_issue_id,issue_id,'duplicate' FROM issue_duplicates WHERE canonical_issue_id IN (SELECT value FROM json_each(?1)) AND issue_id NOT IN (SELECT value FROM json_each(?1)))
+    UNION SELECT canonical_issue_id,issue_id,'duplicate' FROM issue_duplicates WHERE canonical_issue_id IN (SELECT value FROM json_each(?1)) AND issue_id NOT IN (SELECT value FROM json_each(?1))
+    UNION SELECT json_extract(source.value,'$.id'),d.release_id,'release_notes' FROM release_note_drafts d,json_each(d.sources_json) source
+      WHERE d.erased_at IS NULL AND json_extract(source.value,'$.id') IN(SELECT value FROM json_each(?1)))
     SELECT link.id,link.other,EXISTS(SELECT 1 FROM issue_activity a JOIN issues target ON target.id=link.id WHERE a.issue_id=link.other AND (
       (link.relation='parent' AND a.kind='issue.parent_changed' AND json_extract(a.next_value_json,'$.parentIdentifier')=target.identifier) OR
       (link.relation='dependency' AND a.kind='issue.dependency_added' AND json_extract(a.next_value_json,'$.relatedIdentifier')=target.identifier AND json_extract(a.next_value_json,'$.direction')='blocked-by') OR

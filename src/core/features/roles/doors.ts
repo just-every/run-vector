@@ -1,3 +1,4 @@
+import {releaseNotesTeams} from '../releases/notes/authority'
 import {documentDoorRow,documentDoorTeams} from '../documents/authority'
 import type { RowId, SettingsPage } from './matrix'
 
@@ -138,6 +139,9 @@ export const doors: Door[] = [
   {method:'POST',path:'/initiatives',row:'initiatives.write'},
   {method:'PATCH',path:'/initiatives/:id',row:'initiatives.write'},
   {method:'PUT',path:'/initiatives/:id/projects',row:'initiatives.write'},
+  {method:'GET',path:'/releases/:id/notes',row:'work.read',teams:releaseNotesTeams},
+  {method:'POST',path:'/releases/:id/notes',row:'releases.write',teams:releaseNotesTeams,workMutation:true},
+  {method:'PATCH',path:'/releases/:id/notes',row:'releases.write',teams:releaseNotesTeams,workMutation:true},
   {method:'POST',path:'/releases',row:'releases.write',teams:bodyTeam},
   {method:'PATCH',path:'/releases/:id',row:'releases.write'},
   {method:'PUT',path:'/releases/:id/scope',row:'releases.write'},

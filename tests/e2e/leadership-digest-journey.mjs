@@ -42,7 +42,7 @@ export async function leadershipDigestJourney({page,runtime,call,evidence}) {
   await page.reload();await panel.getByRole('checkbox',{name:'Email leadership digest',exact:true}).waitFor();
   assert.equal(await panel.getByRole('checkbox',{name:'Email leadership digest',exact:true}).isChecked(),true);
   assert.equal(await panel.getByRole('checkbox',{name:'Slack direct message leadership digest',exact:true}).isChecked(),true);
-  assert.deepEqual(await call('/settings/notifications/leadership-digest'),{email:true,slack:true});
+  assert.deepEqual(await call('/settings/notifications/leadership-digest'),{email:true,slack:true,deliveries:[]});
   await inspect(page,panel,'leadership-digest-channels');
   await page.setViewportSize({width:1440,height:1000});
   const email=panel.getByRole('checkbox',{name:'Email leadership digest',exact:true});
@@ -51,7 +51,7 @@ export async function leadershipDigestJourney({page,runtime,call,evidence}) {
   await page.keyboard.press('Space');assert.equal((await off).status(),200);
   await panel.getByText('Leadership digest channels saved.',{exact:true}).waitFor();
   await choose('Slack direct message leadership digest',false);
-  assert.deepEqual(await call('/settings/notifications/leadership-digest'),{email:false,slack:false});
+  assert.deepEqual(await call('/settings/notifications/leadership-digest'),{email:false,slack:false,deliveries:[]});
   await navigate(page,base+'/app/initiatives/'+root.id);
   const removed=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname.startsWith('/api/subscriptions/'));
   await page.getByRole('button',{name:'Unsubscribe from initiative',exact:true}).click();assert.equal((await removed).status(),200);

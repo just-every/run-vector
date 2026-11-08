@@ -1,3 +1,7 @@
+// Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.
+// Actor names and mail remain in native identity custody; notes retain opaque references.
+// Human edits and issue-title text follow DATA-011's existing free-text boundary.
+// Restore never generates notes, publishes releases or schedules delivery from that history.
 // SLA targets, clock snapshots, terminal stops and occurrence receipts are portable domain state.
 // Direct project edges and Inbox receipts are portable domain data. Restore
 // retains them without deriving edges from issues or replaying lead notices.

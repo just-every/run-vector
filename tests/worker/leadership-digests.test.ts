@@ -20,6 +20,9 @@ it('weekly leadership scheduled delivery deduplicates owners and subscribers in 
   const tick=(date:string,beforeAdmission?:any)=>scheduled({scheduledTime:Date.parse(date)},remote,{fetch:network,beforeAdmission});
   try {
     await read('/settings/integrations/slack','POST',{botToken:edge.token});
+    let root=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-4004',ownerOperatorId:f.owner,targetDate:'2027-04-01',description:'NEVER_SEND_INITIATIVE_BODY'}),201);
+    expect(await read('/settings/notifications/leadership-digest')).toEqual({email:false,slack:false,deliveries:[]});
+    await tick('2027-03-01T14:00:00Z');expect(mail).toHaveLength(0);expect(edge.calls.filter(c=>c.method==='chat.postMessage')).toHaveLength(0);
     for (const [id,user,send] of [[f.owner,'UDIGEST1',f.call],[member,'UDIGEST2',call]] as const) {
       const email=await env.DB.prepare('SELECT email FROM operators WHERE id=?').bind(id).first<string>('email');
       edge.users(email!,user,'synthetic-vector-4003');
@@ -28,7 +31,6 @@ it('weekly leadership scheduled delivery deduplicates owners and subscribers in 
       expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE action='leadership_digest.channels_changed' AND actor_operator_id=?").bind(id).first<number>('n')).toBe(1);
       await json(await send('/settings/personal-time','PATCH',{timezone:'America/New_York',workingHoursStart:'09:00',workingHoursEnd:'17:00',workingDays:[1,2,3,4,5]}));
     }
-    let root=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-4004',ownerOperatorId:f.owner,targetDate:'2027-04-01',description:'NEVER_SEND_INITIATIVE_BODY'}),201);
     await json(await f.call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
     const subscription=await json(await call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
     const privateTeam=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-4005',identifierPrefix:'PRVDIG',isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-4005')!;
@@ -55,6 +57,7 @@ it('weekly leadership scheduled delivery deduplicates owners and subscribers in 
     expect(posts().find(c=>c.body.channel==='DDIGEST2')!.body.text).not.toContain(projects[1].name);
     expect(posts().find(c=>c.body.channel==='DDIGEST1')!.body.text).toContain(projects[1].name);
     for(const entry of mail)expect(entry.content[0].value).not.toContain('NEVER_SEND');
+    for(const entry of posts())expect(JSON.stringify(entry.body)).not.toContain('NEVER_SEND');
     await read('/settings/teams/'+privateTeam.id+'/members/'+member,'PUT',{role:'member'});
     root=await read('/initiatives/'+root.id,'PATCH',{expectedVersion:root.version,targetDate:'2027-04-09'});
     await read('/settings/projects/'+projects[0].id,'PATCH',{targetDate:'2027-04-08'});
@@ -96,8 +99,8 @@ it('weekly leadership delivery revalidates withdrawal, unlinking, disabled insta
   const call=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
   const mine=(path:string,method='GET',body?:unknown)=>json(call(path,method,body));
   const owner=(path:string,method='GET',body?:unknown)=>json(f.call(path,method,body));
-  let mailCount=0,mailStatus=202;
-  const network:typeof fetch=async()=>{mailCount++;return new Response(null,{status:mailStatus});};
+  let mailCount=0,mailStatus=202,duringMail:(()=>Promise<void>)|undefined;
+  const network:typeof fetch=async()=>{mailCount++;await duringMail?.();return new Response(null,{status:mailStatus});};
   const tick=(at:string,beforeAdmission?:any,afterSubmission?:()=>Promise<void>)=>scheduled({scheduledTime:Date.parse(at)},remote,{fetch:network,beforeAdmission,afterSubmission});
   const posts=()=>edge.calls.filter(c=>c.method==='chat.postMessage');
   try {
@@ -138,6 +141,7 @@ it('weekly leadership delivery revalidates withdrawal, unlinking, disabled insta
     await tick('2027-02-08T09:00:00Z');expect(posts()).toHaveLength(beforeUnlink);
     await tick('2027-02-08T09:01:00Z');await tick('2027-02-08T09:06:00Z');
     expect(await env.DB.prepare("SELECT status,attempts FROM leadership_digest_receipts WHERE recipient_id=? AND slot='2027-02-08' AND channel='email'").bind(member).first()).toEqual({status:'failed',attempts:3});
+    expect((await mine('/settings/notifications/leadership-digest')).deliveries).toContainEqual(expect.objectContaining({channel:'email',status:'failed',attempts:3}));
     const exhausted=mailCount;await tick('2027-02-08T10:00:00Z');expect(mailCount).toBe(exhausted);
     mailStatus=202;
     // Expired claims and lost acknowledgements are terminal, even after restart.
@@ -145,6 +149,7 @@ it('weekly leadership delivery revalidates withdrawal, unlinking, disabled insta
     await expect(tick('2027-02-15T09:00:00Z',undefined,async()=>{throw Error('synthetic-vector-settlement-crash');})).rejects.toThrow('synthetic-vector-settlement-crash');
     await tick('2027-02-15T10:00:00Z');expect(mailCount).toBe(beforeCrash+1);
     expect(await env.DB.prepare("SELECT status FROM leadership_digest_receipts WHERE recipient_id=? AND slot='2027-02-15' AND channel='email'").bind(member).first<string>('status')).toBe('uncertain');
+    expect((await mine('/settings/notifications/leadership-digest')).deliveries).toContainEqual(expect.objectContaining({channel:'email',status:'uncertain',attempts:1}));
     // Restore fences stop later weeks, not merely the already consumed receipt.
     await env.DB.prepare("INSERT INTO vector_restore_status(id,import_id,effects_held) VALUES(1,'synthetic-vector-4013',1)").run();
     const held=mailCount;await tick('2027-02-22T09:00:00Z');expect(mailCount).toBe(held);
@@ -155,5 +160,16 @@ it('weekly leadership delivery revalidates withdrawal, unlinking, disabled insta
     expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_receipts WHERE recipient_id=?').bind(member).first<number>('n')).toBe(0);
     expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_preferences WHERE operator_id=?').bind(member).first<number>('n')).toBe(0);
     await tick('2027-03-08T09:00:00Z');expect(mailCount).toBe(held);
+    // A successful late acknowledgement must not recreate an erased recipient's receipts.
+    const lateCookie=await invite(['synthetic-vector-4014','vector.test'].join('@'),f.cookie),lateMember=await actor(lateCookie);
+    const late=(path:string,method='GET',body?:unknown)=>json(request('/api'+path,method,body,lateCookie));
+    await late('/settings/notifications/leadership-digest','PUT',{email:true,slack:false});
+    await json(request('/api/subscriptions','POST',{subjectType:'initiative',subjectId:root.id},lateCookie),201);
+    duringMail=async()=>{await owner('/settings/operators/'+lateMember,'DELETE');};
+    await tick('2027-03-15T09:00:00Z');duringMail=undefined;expect(mailCount).toBe(held+1);
+    expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_receipts WHERE recipient_id=?').bind(lateMember).first<number>('n')).toBe(0);
+    expect(await env.DB.prepare('SELECT count(*) n FROM leadership_digest_preferences WHERE operator_id=?').bind(lateMember).first<number>('n')).toBe(0);
+    await tick('2027-03-22T09:00:00Z');expect(mailCount).toBe(held+1);
+
   } finally {edge.restore();}
 });
