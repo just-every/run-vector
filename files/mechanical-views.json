@@ -1,0 +1,17 @@
+[
+  {
+    "name": "views-write",
+    "command": "node scripts/contract-docs.mjs write ISSUE-021",
+    "exit": 0
+  },
+  {
+    "name": "views-check",
+    "command": "node scripts/contract-docs.mjs check ISSUE-021",
+    "exit": 0
+  },
+  {
+    "name": "views-restore",
+    "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+    "exit": 0
+  }
+]

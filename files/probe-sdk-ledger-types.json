@@ -1,0 +1,30 @@
+[
+  {
+    "phase": "PROBE",
+    "finding": "sdk-freshness",
+    "command": "timeout 60 node sdk/generate.mjs --check",
+    "exit": 0,
+    "seconds": 0.06
+  },
+  {
+    "phase": "PROBE",
+    "finding": "sdk-build",
+    "command": "timeout 180 node sdk/build.mjs",
+    "exit": 0,
+    "seconds": 0.64
+  },
+  {
+    "phase": "PROBE",
+    "finding": "ledger",
+    "command": "timeout 300 node --test --test-concurrency=1 scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0,
+    "seconds": 1.0
+  },
+  {
+    "phase": "PROBE",
+    "finding": "typecheck",
+    "command": "timeout 300 pnpm typecheck",
+    "exit": 0,
+    "seconds": 19.28
+  }
+]

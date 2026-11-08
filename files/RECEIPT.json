@@ -1,0 +1,174 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201-fix2",
+  "head": "dd03105c358e930529e188bc10b0aa7c731d7fc8",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "base_candidate": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "preexisting_remote_head": "7131292c5cb5aa95fe26960e13c1efbe32967bb6",
+  "new_sdk_commit": "e3034575143f257922a6ad3abeedddd49d12e67e",
+  "tree": "49ed82020c048a0c77f59b4422c91a1f34910b24",
+  "preexisting_remote_tree": "49ed82020c048a0c77f59b4422c91a1f34910b24",
+  "local_tested_tree": "49ed82020c048a0c77f59b4422c91a1f34910b24",
+  "shallow": false,
+  "clone_command": "git clone --filter=blob:none https://github.com/just-every/run-vector.git /workspace/run-vector",
+  "merge_main": "Already up to date; origin/main is an ancestor of the required fix1 head",
+  "push": "succeeded after merging preexisting published branch; no force push or rebase",
+  "clean": true,
+  "incremental_paths": [
+    "sdk/generated.ts",
+    "sources.lock.json"
+  ],
+  "clause_changes": [],
+  "sdk_sha256": "30f6b0bff5a6c4251e2980dfb23960572cf791bd2af8ad5b3fa9637142014c54",
+  "sources_lock_sha256": "f0fe2c99fac5879306669853cdc4fc20e67902f886eae3f98c9299638feee8e4",
+  "verify_run_id": 42522291237,
+  "github_calls_used": 6,
+  "local_runtime_node": "v24.19.0 (provided cloud toolchain kept newer Node; rer internally selected project Node 22.20.0)",
+  "pnpm": "10.12.4",
+  "local_verify_receipt_note": "local-build-checks.json records pre-commit HEAD 1f64f9b9 while testing the regenerated working tree; that tree equals final product tree. Exact-SHA Verify is separate.",
+  "schema": 1,
+  "tag": "sd-vector-c-f201-fix2",
+  "product_status": "PUSHED",
+  "verify": {
+    "run": 42522291237,
+    "head_sha": "dd03105c358e930529e188bc10b0aa7c731d7fc8",
+    "status": "in_progress",
+    "conclusion": null
+  },
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "issue021_before": "missing",
+  "issue021_after": "missing",
+  "checks": [
+    {
+      "phase": "REPRO",
+      "finding": "sdk-freshness",
+      "command": "node sdk/generate.mjs --check",
+      "exit": 1
+    },
+    {
+      "phase": "REPRO",
+      "finding": "integration",
+      "command": "node scripts/sync-integration.mjs --check",
+      "exit": 1
+    },
+    {
+      "phase": "REPRO",
+      "finding": "role-door-census",
+      "command": "timeout 180 node --input-type=module -e const {assertRoleDoorCoverage}=await import('./tests/e2e/role-door-coverage.mjs'); console.log(JSON.stringify(await assertRoleDoorCoverage()));",
+      "exit": 0,
+      "seconds": 5.83
+    },
+    {
+      "phase": "REPRO",
+      "finding": "integration",
+      "command": "timeout 180 pnpm integration:check",
+      "exit": 0,
+      "seconds": 0.37
+    },
+    {
+      "phase": "REPRO",
+      "finding": "snapshots",
+      "command": "timeout 900 pnpm test:worker tests/worker/cycle-schedule.test.ts tests/worker/source-ingest.test.ts tests/worker/outbound-webhooks.test.ts",
+      "exit": 0,
+      "seconds": 35.26
+    },
+    {
+      "phase": "PROBE",
+      "finding": "role-door-census",
+      "command": "timeout 180 node --input-type=module -e const {assertRoleDoorCoverage}=await import('./tests/e2e/role-door-coverage.mjs'); console.log(JSON.stringify(await assertRoleDoorCoverage()));",
+      "exit": 0,
+      "seconds": 5.78
+    },
+    {
+      "phase": "PROBE",
+      "finding": "integration",
+      "command": "timeout 180 pnpm integration:check",
+      "exit": 0,
+      "seconds": 0.35
+    },
+    {
+      "phase": "PROBE",
+      "finding": "snapshots",
+      "command": "timeout 900 pnpm test:worker tests/worker/cycle-schedule.test.ts tests/worker/source-ingest.test.ts tests/worker/outbound-webhooks.test.ts",
+      "exit": 0,
+      "seconds": 34.92
+    },
+    {
+      "phase": "PROBE",
+      "finding": "sdk-freshness",
+      "command": "timeout 60 node sdk/generate.mjs --check",
+      "exit": 0,
+      "seconds": 0.06
+    },
+    {
+      "phase": "PROBE",
+      "finding": "sdk-build",
+      "command": "timeout 180 node sdk/build.mjs",
+      "exit": 0,
+      "seconds": 0.64
+    },
+    {
+      "phase": "PROBE",
+      "finding": "ledger",
+      "command": "timeout 300 node --test --test-concurrency=1 scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "seconds": 1.0
+    },
+    {
+      "phase": "PROBE",
+      "finding": "typecheck",
+      "command": "timeout 300 pnpm typecheck",
+      "exit": 0,
+      "seconds": 19.28
+    },
+    {
+      "name": "views-write",
+      "command": "node scripts/contract-docs.mjs write ISSUE-021",
+      "exit": 0
+    },
+    {
+      "name": "views-check",
+      "command": "node scripts/contract-docs.mjs check ISSUE-021",
+      "exit": 0
+    },
+    {
+      "name": "views-restore",
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    }
+  ],
+  "mechanical": {
+    "ledger": {
+      "command": "timeout 300 node --test --test-concurrency=1 scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0
+    },
+    "lock": {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "check": "pnpm sources:check",
+      "check_exit": 0
+    },
+    "views": {
+      "command": "node scripts/contract-docs.mjs write ISSUE-021 && node scripts/contract-docs.mjs check ISSUE-021",
+      "exit": 0,
+      "restore": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "restore_exit": 0
+    },
+    "contract_changed": false
+  },
+  "broader_verification": {
+    "command": "timeout 900 npx -y @runeditrun/rer verify (cloud_run)",
+    "exit": 0
+  }
+}

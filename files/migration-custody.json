@@ -1,0 +1,10 @@
+{
+  "main_migrations": 133,
+  "all_migrations": 134,
+  "main_highest": "migrations/core/0133_release_notes.sql",
+  "candidate_additions": [
+    "migrations/core/0134_issue_types.sql"
+  ],
+  "main_migrations_unchanged": true,
+  "unique_numbers": true
+}

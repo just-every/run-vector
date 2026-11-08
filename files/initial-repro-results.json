@@ -1,0 +1,14 @@
+[
+  {
+    "phase": "REPRO",
+    "finding": "sdk-freshness",
+    "command": "node sdk/generate.mjs --check",
+    "exit": 1
+  },
+  {
+    "phase": "REPRO",
+    "finding": "integration",
+    "command": "node scripts/sync-integration.mjs --check",
+    "exit": 1
+  }
+]

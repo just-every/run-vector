@@ -1,0 +1,29 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201-fix2",
+  "head": "dd03105c358e930529e188bc10b0aa7c731d7fc8",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "base_candidate": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "preexisting_remote_head": "7131292c5cb5aa95fe26960e13c1efbe32967bb6",
+  "new_sdk_commit": "e3034575143f257922a6ad3abeedddd49d12e67e",
+  "tree": "49ed82020c048a0c77f59b4422c91a1f34910b24",
+  "preexisting_remote_tree": "49ed82020c048a0c77f59b4422c91a1f34910b24",
+  "local_tested_tree": "49ed82020c048a0c77f59b4422c91a1f34910b24",
+  "shallow": false,
+  "clone_command": "git clone --filter=blob:none https://github.com/just-every/run-vector.git /workspace/run-vector",
+  "merge_main": "Already up to date; origin/main is an ancestor of the required fix1 head",
+  "push": "succeeded after merging preexisting published branch; no force push or rebase",
+  "clean": true,
+  "incremental_paths": [
+    "sdk/generated.ts",
+    "sources.lock.json"
+  ],
+  "clause_changes": [],
+  "sdk_sha256": "30f6b0bff5a6c4251e2980dfb23960572cf791bd2af8ad5b3fa9637142014c54",
+  "sources_lock_sha256": "f0fe2c99fac5879306669853cdc4fc20e67902f886eae3f98c9299638feee8e4",
+  "verify_run_id": 42522291237,
+  "github_calls_used": 1,
+  "local_runtime_node": "v24.19.0 (provided cloud toolchain kept newer Node; rer internally selected project Node 22.20.0)",
+  "pnpm": "10.12.4",
+  "local_verify_receipt_note": "local-build-checks.json records pre-commit HEAD 1f64f9b9 while testing the regenerated working tree; that tree equals final product tree. Exact-SHA Verify is separate."
+}

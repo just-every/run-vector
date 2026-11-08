@@ -1,0 +1,62 @@
+[
+  {
+    "sha": "dd03105c358e930529e188bc10b0aa7c731d7fc8",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Merge published issue-type SDK regeneration without rewriting history\n"
+  },
+  {
+    "sha": "e3034575143f257922a6ad3abeedddd49d12e67e",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Regenerate issue-type SDK declarations\n"
+  },
+  {
+    "sha": "7131292c5cb5aa95fe26960e13c1efbe32967bb6",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Regenerate ISSUE-021 SDK types from the published API schema\n"
+  },
+  {
+    "sha": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Fix ISSUE-021 census, deployment spec and upgrade snapshots\n"
+  },
+  {
+    "sha": "02470ada018c84f79ab67091bb1d6dfd30fae998",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Prove typed issue Undo restores values and respects current requirements\n"
+  },
+  {
+    "sha": "6ccfe6f2cf60de86d58437fe266777a6a775fca3",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Preserve pre-type Jira review and source compatibility\n"
+  },
+  {
+    "sha": "074c4350aa80f2a5a778e5142f277cc3f25f0750",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Retain batched issue projections and qualify allowed typed writers\n"
+  },
+  {
+    "sha": "2ba0e558313ea368c586085b63a9f9f00d911781",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Merge main and preserve both additive domain upgrades\n"
+  },
+  {
+    "sha": "92d21c91ed0ae7314b088f3eaf3b388044d02d59",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Qualify issue type custody and preserve legacy activity records\n"
+  },
+  {
+    "sha": "1b8a924c8435ae463972d72c7369f7f835d73d2b",
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "message": "Add team issue type admission and reviewed Jira mapping [skip ci]\n"
+  }
+]

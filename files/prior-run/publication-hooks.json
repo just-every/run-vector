@@ -1,0 +1,8 @@
+{
+  "active_hooks_path": "/home/agent/rer-consolidation/work/sd-vector-c-f201-fix2/run-vector/.git/fleet-cloud-hooks",
+  "cleanup_hook_sha256": "729f5cb7f77240f9e2fb528fc13be15122e318f21ad2a93d8bec640dc048c4a0",
+  "original_hooks_preserved": "/home/agent/rer-consolidation/work/sd-vector-c-f201-fix2/run-vector/.git/hooks",
+  "candidate_commit_count": 8,
+  "candidate_log": "candidate-commits.txt",
+  "identity_log": "identity-check.txt"
+}

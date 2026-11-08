@@ -1,0 +1,350 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f201-fix2",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f201-fix2",
+  "head": "7131292c5cb5aa95fe26960e13c1efbe32967bb6",
+  "source_parent": "1f64f9b95b0316367438e9f95e1ce65dfae28386",
+  "main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+  "full_history": true,
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_changes": [],
+  "issue021_before": "missing",
+  "issue021_after": "missing",
+  "status_rows_preserved": true,
+  "contract_source_equals_main": true,
+  "generated_views_equal_main": true,
+  "changes": [
+    "sdk/generated.ts",
+    "sources.lock.json"
+  ],
+  "checks": [
+    {
+      "name": "sdk-freshness",
+      "phase": "repro",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "sdk/generate.mjs",
+        "--check"
+      ],
+      "exit": 1,
+      "time": "2026-11-08T20:15:25.529462+00:00"
+    },
+    {
+      "name": "role-door-census",
+      "phase": "repro",
+      "command": [
+        "timeout",
+        "180",
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {assertRoleDoorCoverage} from \"./tests/e2e/role-door-coverage.mjs\"; console.log(JSON.stringify(await assertRoleDoorCoverage()));"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:15:58.666784+00:00",
+      "ended": "2026-11-08T20:16:04.565322+00:00",
+      "log": "role-door-census-repro.log"
+    },
+    {
+      "name": "integration",
+      "phase": "repro",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 1,
+      "started": "2026-11-08T20:16:04.590077+00:00",
+      "ended": "2026-11-08T20:16:04.908411+00:00",
+      "log": "integration-repro.log"
+    },
+    {
+      "name": "snapshots",
+      "phase": "repro",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/cycle-schedule.test.ts",
+        "tests/worker/source-ingest.test.ts",
+        "tests/worker/outbound-webhooks.test.ts"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:16:04.951010+00:00",
+      "ended": "2026-11-08T20:16:40.860920+00:00",
+      "log": "snapshots-repro.log"
+    },
+    {
+      "name": "production-build",
+      "phase": "repro",
+      "command": [
+        "timeout",
+        "900",
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "build"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:16:20.052224+00:00",
+      "ended": "2026-11-08T20:16:50.589801+00:00",
+      "log": "production-build-repro.log"
+    },
+    {
+      "name": "integration-built",
+      "phase": "repro",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:17:52.790010+00:00",
+      "ended": "2026-11-08T20:17:53.173801+00:00",
+      "log": "integration-built-repro.log"
+    },
+    {
+      "name": "sdk-generation",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "sdk/generate.mjs"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:17:53.204923+00:00",
+      "ended": "2026-11-08T20:17:53.257160+00:00",
+      "log": "sdk-generation-probe.log"
+    },
+    {
+      "name": "sdk-freshness",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "sdk/generate.mjs",
+        "--check"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:17:53.288021+00:00",
+      "ended": "2026-11-08T20:17:53.344376+00:00",
+      "log": "sdk-freshness-probe.log"
+    },
+    {
+      "name": "sdk-build",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "180",
+        "node",
+        "sdk/build.mjs"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:17:53.368928+00:00",
+      "ended": "2026-11-08T20:17:53.953480+00:00",
+      "log": "sdk-build-probe.log"
+    },
+    {
+      "name": "role-door-census",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "180",
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {assertRoleDoorCoverage} from \"./tests/e2e/role-door-coverage.mjs\"; console.log(JSON.stringify(await assertRoleDoorCoverage()));"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:17:53.980170+00:00",
+      "ended": "2026-11-08T20:17:59.617337+00:00",
+      "log": "role-door-census-probe.log"
+    },
+    {
+      "name": "integration",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:17:59.642289+00:00",
+      "ended": "2026-11-08T20:18:00.006800+00:00",
+      "log": "integration-probe.log"
+    },
+    {
+      "name": "snapshots",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "600",
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/cycle-schedule.test.ts",
+        "tests/worker/source-ingest.test.ts",
+        "tests/worker/outbound-webhooks.test.ts"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:18:00.047454+00:00",
+      "ended": "2026-11-08T20:18:30.085332+00:00",
+      "log": "snapshots-probe.log"
+    },
+    {
+      "name": "typecheck",
+      "phase": "probe",
+      "command": [
+        "timeout",
+        "300",
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:18:30.118391+00:00",
+      "ended": "2026-11-08T20:18:48.056483+00:00",
+      "log": "typecheck-probe.log"
+    },
+    {
+      "name": "migration-ledger",
+      "phase": "mechanical",
+      "command": [
+        "timeout",
+        "300",
+        "node",
+        "--test",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:18:48.097411+00:00",
+      "ended": "2026-11-08T20:18:48.948643+00:00",
+      "log": "migration-ledger-mechanical.log"
+    },
+    {
+      "name": "views-write",
+      "phase": "mechanical",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "ISSUE-021"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:18:48.978403+00:00",
+      "ended": "2026-11-08T20:18:49.072911+00:00",
+      "log": "views-write-mechanical.log"
+    },
+    {
+      "name": "views-check",
+      "phase": "mechanical",
+      "command": [
+        "timeout",
+        "60",
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "ISSUE-021"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:18:49.098184+00:00",
+      "ended": "2026-11-08T20:18:49.185930+00:00",
+      "log": "views-check-mechanical.log"
+    },
+    {
+      "name": "source-lock",
+      "phase": "mechanical",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "sources:lock"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:19:19.137449+00:00",
+      "ended": "2026-11-08T20:19:19.812213+00:00",
+      "log": "source-lock-mechanical.log"
+    },
+    {
+      "name": "source-lock-check",
+      "phase": "mechanical",
+      "command": [
+        "timeout",
+        "180",
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0,
+      "started": "2026-11-08T20:19:19.838844+00:00",
+      "ended": "2026-11-08T20:19:20.576350+00:00",
+      "log": "source-lock-check-mechanical.log"
+    }
+  ],
+  "github_calls": 2,
+  "ci_observations": [
+    {
+      "conclusion": null,
+      "created_at": "2026-11-08T20:19:24Z",
+      "event": "push",
+      "head_sha": "7131292c5cb5aa95fe26960e13c1efbe32967bb6",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519524580",
+      "id": 42519524580,
+      "name": "Verify",
+      "status": "queued"
+    },
+    {
+      "conclusion": null,
+      "head_sha": "7131292c5cb5aa95fe26960e13c1efbe32967bb6",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42519524580",
+      "status": "in_progress"
+    }
+  ],
+  "product_push": {
+    "status": "success",
+    "attempts": 1,
+    "log": "product-push.log"
+  },
+  "custody": "PUSHED",
+  "pr": null,
+  "landing_claim": false,
+  "sdk_sha256": "30f6b0bff5a6c4251e2980dfb23960572cf791bd2af8ad5b3fa9637142014c54",
+  "local_toolchain": {
+    "direct_node": "24.19.0",
+    "rer_build_node": "22.20.0",
+    "pnpm": "10.12.4"
+  },
+  "migration": {
+    "main_highest": "0133_release_notes.sql",
+    "candidate_added": "0134_issue_types.sql",
+    "renumbered": false
+  },
+  "limitation": "Independent acceptance/publication scans and landing remain with the fleet. FOLLOW-UP C and stream-control 429 are outside this lease."
+}

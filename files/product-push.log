@@ -1,0 +1,16 @@
+fleet Git: removed 0 credential-bearing GitHub URL rewrite sections
+PUSH attempt=1/5 command=git push --porcelain origin HEAD:refs/heads/cloud/sd-vector-c-f201-fix2
+PUSH_CREDENTIAL sha256_16=8addacf6ac95b0bc bundle_file_age_seconds=501 token_issue_age=unknown
+fleet Git: removed 0 credential-bearing GitHub URL rewrite sections
+To https://github.com/just-every/run-vector.git
+!	HEAD:refs/heads/cloud/sd-vector-c-f201-fix2	[rejected] (non-fast-forward)
+Done
+error: failed to push some refs to 'https://github.com/just-every/run-vector.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. If you want to integrate the remote changes,
+hint: use 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+PUSH_REJECTED attempt=1 exit=1 HTTP=unknown (not supplied by Git) command=git push --porcelain origin HEAD:refs/heads/cloud/sd-vector-c-f201-fix2
+BUNDLE path=/home/agent/rer-consolidation/work/push-rescue/cloud_sd-vector-c-f201-fix2-20261108T205121Z-e3034575143f.bundle head=e3034575143f257922a6ad3abeedddd49d12e67e sha256=7f1248453c1c80a67dba4fe266860a825179afc732f4f0f74fda77aaa21de5ff verified=true
+Preserve this VM/clone and retrieve the bundle before ending its retention period.
+BLOCKED command=git push --porcelain origin HEAD:refs/heads/cloud/sd-vector-c-f201-fix2 HTTP=unknown (not supplied by Git); retain verified bundle and clone

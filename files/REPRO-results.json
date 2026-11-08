@@ -1,0 +1,23 @@
+[
+  {
+    "phase": "REPRO",
+    "finding": "role-door-census",
+    "command": "timeout 180 node --input-type=module -e const {assertRoleDoorCoverage}=await import('./tests/e2e/role-door-coverage.mjs'); console.log(JSON.stringify(await assertRoleDoorCoverage()));",
+    "exit": 0,
+    "seconds": 5.83
+  },
+  {
+    "phase": "REPRO",
+    "finding": "integration",
+    "command": "timeout 180 pnpm integration:check",
+    "exit": 0,
+    "seconds": 0.37
+  },
+  {
+    "phase": "REPRO",
+    "finding": "snapshots",
+    "command": "timeout 900 pnpm test:worker tests/worker/cycle-schedule.test.ts tests/worker/source-ingest.test.ts tests/worker/outbound-webhooks.test.ts",
+    "exit": 0,
+    "seconds": 35.26
+  }
+]

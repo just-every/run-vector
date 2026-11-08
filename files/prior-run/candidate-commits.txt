@@ -1,0 +1,64 @@
+commit 7131292c5cb5aa95fe26960e13c1efbe32967bb6
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 20:19:20 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 20:19:20 2026 +0000
+
+    Regenerate ISSUE-021 SDK types from the published API schema
+
+commit 1f64f9b95b0316367438e9f95e1ce65dfae28386
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 19:16:45 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 19:16:45 2026 +0000
+
+    Fix ISSUE-021 census, deployment spec and upgrade snapshots
+
+commit 02470ada018c84f79ab67091bb1d6dfd30fae998
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 17:57:22 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 17:57:22 2026 +0000
+
+    Prove typed issue Undo restores values and respects current requirements
+
+commit 6ccfe6f2cf60de86d58437fe266777a6a775fca3
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 17:33:01 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 17:34:53 2026 +0000
+
+    Preserve pre-type Jira review and source compatibility
+
+commit 074c4350aa80f2a5a778e5142f277cc3f25f0750
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 17:25:50 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 17:25:50 2026 +0000
+
+    Retain batched issue projections and qualify allowed typed writers
+
+commit 2ba0e558313ea368c586085b63a9f9f00d911781
+Merge: 92d21c91 0e8a686c
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 17:22:16 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 17:22:16 2026 +0000
+
+    Merge main and preserve both additive domain upgrades
+
+commit 92d21c91ed0ae7314b088f3eaf3b388044d02d59
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 17:21:01 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 17:21:01 2026 +0000
+
+    Qualify issue type custody and preserve legacy activity records
+
+commit 1b8a924c8435ae463972d72c7369f7f835d73d2b
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Sun Nov 8 17:09:48 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Sun Nov 8 17:09:48 2026 +0000
+
+    Add team issue type admission and reviewed Jira mapping [skip ci]
