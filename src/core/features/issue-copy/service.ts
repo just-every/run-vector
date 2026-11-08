@@ -1,3 +1,4 @@
+import { currentTypeRequirements, typeMutationError } from "../issue-types/requirements";
 import { issueReferenceStatements } from "../issue-references/repository";
 import {
   mutationDatabase,
@@ -42,7 +43,7 @@ export async function copyIssue(
     snapshot.rows.map(async (row) => ({
       row,
       id: createUlid(now),
-      mapped: await mapCopyValues(db, row, teamId, original.workspace_id),
+      mapped: await mapCopyValues(db, row, teamId, original.workspace_id, input),
     })),
   );
   // Reserve in order: each durable identifier is used at most once, even when
@@ -99,6 +100,8 @@ export async function copyIssue(
       AND (? IS NULL OR EXISTS(SELECT 1 FROM cycles c JOIN teams t ON t.id=c.team_id WHERE c.id=? AND c.team_id=? AND t.cycles_enabled=1 AND c.closed_at IS NULL))
       AND NOT EXISTS(SELECT value FROM json_each(?) WHERE NOT EXISTS(SELECT 1 FROM labels WHERE id=value AND workspace_id=?))
       AND ${currentFieldValues("?")}
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM issue_types ty JOIN teams t ON t.id=ty.team_id WHERE ty.id=? AND ty.team_id=? AND t.issue_types_enabled=1))
+      AND ${currentTypeRequirements}
       THEN 1 ELSE json('copy option changed') END`,
         )
         .bind(
@@ -116,13 +119,15 @@ export async function copyIssue(
           original.workspace_id,
           JSON.stringify(mapped.fieldValues),
           teamId,
+          mapped.issueTypeId,mapped.issueTypeId,teamId,
+          mapped.issueTypeId,JSON.stringify(mapped.customFields),teamId,
         ),
     );
     writes.push(
       db
         .prepare(
-          `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,project_id,milestone_id,cycle_id,start_date,due_date,estimate,expected_outcome,customer_impact,custom_fields_json,version,created_at,updated_at)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`,
+          `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,project_id,milestone_id,cycle_id,start_date,due_date,estimate,expected_outcome,customer_impact,custom_fields_json,issue_type_id,version,created_at,updated_at)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`,
         )
         .bind(
           id,
@@ -143,6 +148,7 @@ export async function copyIssue(
           row.expected_outcome,
           row.customer_impact,
           JSON.stringify(mapped.customFields),
+          mapped.issueTypeId,
           at,
           at,
         ),
@@ -154,7 +160,7 @@ export async function copyIssue(
     );
     const copiedActivityId = createUlid(now);
     for (const [issueId, kind, next] of [
-      [id, "issue.copied_from", { identifier: row.identifier }],
+      [id, "issue.copied_from", { identifier: row.identifier, issueTypeId: mapped.issueTypeId }],
       [row.id, "issue.copied_to", { identifier: plan.identifier }],
     ] as const)
       writes.push(
@@ -201,6 +207,7 @@ export async function copyIssue(
     await db.batch(writes);
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
+    const typed = typeMutationError(error); if (typed) throw typed;
     await requireIssueAccess(db, identifier, actor);
     if (
       (
@@ -229,6 +236,7 @@ export async function copyIssue(
     mappings: allocated.map((plan) => ({
       identifier: plan.row.identifier,
       status: { from: plan.row.status_id, to: target.status_id },
+      issueType: { from: plan.row.issue_type_id, to: plan.mapped.issueTypeId },
       labels: plan.mapped.labels.map((id) => ({ from: id, to: id })),
       customFields: plan.mapped.customFieldMappings,
     })),

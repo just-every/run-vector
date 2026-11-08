@@ -203,6 +203,9 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('PUT','/settings/teams/:teamId/email-intake',{...email.settings,enabled:false},teamId);native('PUT','/settings/teams/:teamId/email-intake/event-key',{key:eventKey},teamId);native('PATCH','/teams/:teamId/subissue-rule',{expectedVersion:children.rule.version,enabled:true},teamId);
   const fieldTeam=(await call(owner,'/settings/teams/'+w.team.id+'/custom-fields','POST',{name:'synthetic-vector-31130',type:'single_select',options:[{name:'synthetic-vector-31131'}]})).teams.find((row:any)=>row.id===w.team.id);
   const teamField=fieldTeam.customFields.find((row:any)=>row.name==='synthetic-vector-31130');
+  const typeTeam=await call(owner,'/settings/teams/'+w.team.id+'/issue-types','PUT',{enabled:true});
+  native('PUT','/settings/teams/:id/issue-types',{enabled:true},tp);
+  native('PATCH','/settings/teams/:id/issue-types/:typeId',{expectedVersion:1,name:'synthetic-vector-type'},{...tp,typeId:typeTeam.types[0].id});
   native('POST','/settings/teams/:id/custom-fields',{name:'synthetic-vector-31132',type:'single_select',options:[{name:'synthetic-vector-31133'}]},tp);
   native('PATCH','/settings/teams/:id/custom-fields/:fieldId',{expectedVersion:teamField.version,name:'synthetic-vector-31134'},{...tp,fieldId:teamField.id});
   native('POST','/settings/teams/:id/statuses',{name:'synthetic-vector-31046',category:'started'},tp);native('PUT','/settings/teams/:id/statuses/order',{statusIds:workflow.map((row:any)=>row.id)},tp);native('PATCH','/settings/teams/:id/statuses/:statusId',{name:'synthetic-vector-31047'},{...tp,statusId:workflowStatus.id});native('DELETE','/settings/teams/:id/statuses/:statusId',{destinationStatusId:w.team.statuses.find(row=>row.category==='unstarted')!.id},{...tp,statusId:workflowStatus.id});

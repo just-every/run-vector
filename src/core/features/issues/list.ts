@@ -28,6 +28,7 @@ type Row = {
   projectName: string | null;
   milestoneId: string | null;
   milestoneName: string | null;
+  issueTypeId: string | null; issueTypeName: string | null; issueTypeIcon: string | null;
   cycleName: string | null;
   parentIdentifier: string | null;
   parentTitle: string | null;
@@ -69,7 +70,7 @@ export async function listIssues(
         .prepare(
           `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.start_date startDate,i.due_date dueDate,
  s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,p.id projectId,p.name projectName,c.name cycleName,
- m.id milestoneId,m.name milestoneName,
+ m.id milestoneId,m.name milestoneName,ty.id issueTypeId,ty.name issueTypeName,ty.icon issueTypeIcon,
  parent.identifier parentIdentifier,parent.title parentTitle,${blockedSql} blocked,${group.key} groupKey,
  (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (SELECT l.id,l.name,l.color FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id ORDER BY l.name,l.id)) labels
  ${relation} ORDER BY ${order} LIMIT ${query.pageSize} OFFSET ?`,
@@ -131,6 +132,7 @@ export async function listIssues(
       updatedAt: row.updatedAt,
       startDate: row.startDate,
       dueDate: row.dueDate,
+      issueType: row.issueTypeId ? {id:row.issueTypeId,name:row.issueTypeName!,icon:row.issueTypeIcon!} : null,
       milestoneId: row.milestoneId,
       milestone: row.milestoneId ? { id: row.milestoneId, name: row.milestoneName!, projectId: row.projectId! } : null,
       status: {

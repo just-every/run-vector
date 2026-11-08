@@ -1,3 +1,4 @@
+import { jiraIssueTypesJourney } from './jira-issue-types-journey';
 import { env } from 'cloudflare:workers';
 import { expect,it } from 'vitest';
 import { Buffer } from 'node:buffer';
@@ -142,5 +143,6 @@ it(contractTitle('DATA-009','Jira loss review counts every source concept and re
  expect(await env.DB.prepare('SELECT start_date,due_date FROM issues WHERE id IN (SELECT target_id FROM ik_provenance WHERE job_id=?)').bind(mappedRun.id).first()).toEqual({start_date:'2026-10-27',due_date:'2026-10-30'});
  const mappedRollback=await f.call('/data/import/runs/'+mappedRun.id+'/rollback','POST',{confirmed:true});expect(mappedRollback.status).toBe(200);await f.finish(await mappedRollback.json());
 
+ await jiraIssueTypesJourney(f);
  // Exact originals, source identity, native effects and rollback are asserted above.
 },180_000);

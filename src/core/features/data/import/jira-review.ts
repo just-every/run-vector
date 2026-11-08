@@ -8,7 +8,7 @@ import type { ImportDiagnostic,ImportInput } from './types';
 export type JiraOccurrence={row:number;sourceId:string;sourceKey:string;column:number;value:string;action:'planned'|'not_imported'|'error'|'review_only';reason:string;metadata?:{time:string;author:string;body?:string;filename?:string;url?:string}};
 export type JiraConcept={name:string;headers:{name:string;column:number}[];action:string;rowCount:number;rows:number[];valueCount:number;values:{value:string;count:number;rows:number[]}[];occurrences:JiraOccurrence[];dispositions:{action:JiraOccurrence['action'];reason:string;rows:number[];rowCount:number;valueCount:number}[]};
 export type JiraConfirmation={source:string;rows:number[];categories:string[];suggestion:string|null;target:string|null};
-export type JiraReview={concepts:JiraConcept[];statuses:JiraConfirmation[];priorities:JiraConfirmation[];unresolved:(ImportDiagnostic&{sourceId:string;sourceKey:string;value:string})[];policies:string[]};
+export type JiraReview={concepts:JiraConcept[];statuses:JiraConfirmation[];priorities:JiraConfirmation[];issueTypes:JiraConfirmation[];unresolved:(ImportDiagnostic&{sourceId:string;sourceKey:string;value:string})[];policies:string[]};
 const actions:Record<string,string>={
  rank:'Team manual order, ascending by source rank; ties use the new identifier. Existing ranked work stays ahead of this imported block.',
  'custom field (rank)':'Team manual order, ascending by source rank; ties use the new identifier. Existing ranked work stays ahead of this imported block.',
@@ -19,7 +19,7 @@ const actions:Record<string,string>={
  assignee:'Explicit active existing operator mapping; blank is unassigned; unmapped tokens are omitted.',
  created:'Vector created time.',updated:'Vector updated time.', 'start date':'Vector calendar start date.', 'due date':'Vector calendar due date.',resolved:'Source Resolved supplies Vector completion time for Completed issues; missing values require an explicit fallback policy.',
  labels:'Exact existing label name, once per issue; missing labels are errors. No automatic creation.',
- 'issue type':'Epic becomes an ordinary issue labelled epic (existing label required); every other type is retained only. In-file Parent references become parent relationships in Vector, including subtasks.',
+ 'issue type':'Explicitly reviewed type identity of the chosen team, or a reported omission. Without type mappings the legacy Epic label projection is retained. Parent references retain their existing behavior.',
  sprint:'Last NONEMPTY listed occurrence may map to an exact-name existing open cycle in the same team. Earlier occurrences are rolled over in Jira. Terminal issues cannot join cycles.',
  'story point estimate':'Vector estimate of 1–100 points; takes precedence over original seconds.',
  'original estimate':'Explicit seconds-per-estimate-point policy only, with exact integer 1–100 result and no rounding; otherwise retained only.',
@@ -85,7 +85,7 @@ export function buildJiraReview(records:SourceRecord[],input:ImportInput,errors:
   const target=name==='priority'?ownEntry(input.jira?.priorities,value.value):referenceAlias(input,'status',value.value,teamName);
   return {source:value.value,rows:value.rows,categories,suggestion,target:target??null};
  });
- return {concepts:[...concepts.values()],statuses:confirmations('status'),priorities:confirmations('priority'),unresolved,policies:[
+ return {concepts:[...concepts.values()],statuses:confirmations('status'),priorities:confirmations('priority'),issueTypes:(concepts.get('issue type')?.values??[]).map(value=>({source:value.value,rows:value.rows,categories:[],suggestion:null,target:ownEntry(input.jira?.issueTypes,value.value)??null})),unresolved,policies:[
   'Counts distinguish physical source rows from nonempty occurrences. Every original column name, position and value is retained.',
   'Planned means the field can be written only after the whole run passes errors and review confirmation. Preview writes nothing.',
   'Status categories and priority suggestions are never implicit mappings. Blank assignee stays unassigned; no operators or labels are created.',

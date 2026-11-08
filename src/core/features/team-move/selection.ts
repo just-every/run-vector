@@ -10,7 +10,7 @@ const reasons = {
 };
 export type TeamSelectionRow = {
   identifier: string; id: string; team_id: string; status_id: string;
-  cycle_id: string | null; version: number;
+  issue_type_id: string | null; cycle_id: string | null; version: number;
 } & Record<keyof typeof reasons, number>;
 
 export function teamSelection(db: D1Database, actor: string, input: BulkTeamInput) {
@@ -18,7 +18,7 @@ export function teamSelection(db: D1Database, actor: string, input: BulkTeamInpu
     SELECT json_extract(value,'$.identifier') identifier,json_extract(value,'$.expectedVersion') version,
       json_extract(value,'$.statusId') status_id FROM json_each(?)
     ), target AS (SELECT ? team_id)
-    SELECT r.identifier,i.id,i.team_id,i.status_id,i.cycle_id,i.version,
+    SELECT r.identifier,i.id,i.team_id,i.status_id,i.cycle_id,i.issue_type_id,i.version,
       i.id IS NULL AS unavailable,
       i.id IS NOT NULL AND i.version<>r.version AS stale,
       NOT EXISTS(SELECT 1 FROM teams n WHERE n.id=target.team_id AND n.workspace_id=t.workspace_id AND n.archived_at IS NULL) AS team,

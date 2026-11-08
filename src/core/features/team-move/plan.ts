@@ -13,8 +13,8 @@ export function planSelectedTeamMove(
   if (issue.team_id === teamId) return { writes: [], version: issue.version, changed: false, activityId: null };
   const activity = activityRow({
     issueId: issue.id, actorOperatorId: actor, kind: "issue.team_moved",
-    previousValue: { teamId: issue.team_id, statusId: issue.status_id, cycleId: issue.cycle_id },
-    nextValue: { teamId, statusId, cycleId: null }, now: at,
+    previousValue: { teamId: issue.team_id, statusId: issue.status_id, cycleId: issue.cycle_id, issueTypeId: issue.issue_type_id },
+    nextValue: { teamId, statusId, cycleId: null, issueTypeId: null, droppedTypeId: issue.issue_type_id }, now: at,
   });
   const event = { id: activity.id, issueId: issue.id, actor, at };
   return {
@@ -27,7 +27,7 @@ export function planSelectedTeamMove(
         activity.id, issue.id, actor, activity.previousValueJson, activity.nextValueJson, at, at,
       ),
       ...followerChangeStatements(db, event),
-      db.prepare("UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,version=version+1,updated_at=? WHERE id=?")
+      db.prepare("UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,issue_type_id=NULL,version=version+1,updated_at=? WHERE id=?")
         .bind(teamId, statusId, at, issue.id),
       ...finalizeEvent(db, event),
     ],

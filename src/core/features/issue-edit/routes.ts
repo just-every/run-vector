@@ -11,6 +11,7 @@ import { updateIssueRecord } from "./repository";
 export const updateIssueSchema = z
   .object({
     expectedVersion: z.number().int().positive(),
+    issueTypeId: z.string().length(26).nullable().optional(),
     title: z.string().trim().min(1).max(500).optional(),
     description: z.string().max(100000).optional(),
     priority: z.enum(["urgent", "high", "medium", "low", "none"]).optional(),

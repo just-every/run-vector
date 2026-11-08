@@ -1,3 +1,4 @@
+import { typeMutationError } from "../issue-types/requirements";
 import { isMutationAccessError, mutationDatabase } from "../auth/mutation-database";
 import { IssueAccessError } from "../issues/access";
 import { undoAdmission } from "./admission";
@@ -31,6 +32,8 @@ export async function undoIssueAction(source: D1Database, actor: string, actionI
     await db.batch([admission.guard, ...plan.writes]);
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
+    const typed=typeMutationError(error);
+    if(typed)throw new UndoError('undo_conflict',typed.message,409);
     await inspect();
     throw error;
   }

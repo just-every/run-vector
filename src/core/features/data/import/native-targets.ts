@@ -1,3 +1,5 @@
+import { currentFieldValues } from '../../custom-fields/validation';
+import { currentTypeRequirements } from '../../issue-types/requirements';
 import {importAlias} from '../aliases/import';
 import type { D1TargetAdapter, TargetRow, D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
@@ -50,6 +52,9 @@ export const nativeTargets: D1TargetAdapter = {
         AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)`,issue.team_id,row.destination,issue.origin_prefix,issue.status_id,issue.team_id,imported.statusCategory),
       guard('COALESCE((SELECT last_sequence FROM issue_prefix_sequences WHERE workspace_id=? AND identifier_prefix=?),0)<?',row.destination,issue.origin_prefix,issue.sequence_number),
     ];
+    if(issue.issue_type_id) statements.push(guard(`EXISTS(SELECT 1 FROM issue_types ty JOIN teams t ON t.id=ty.team_id WHERE ty.id=? AND ty.team_id=? AND t.issue_types_enabled=1) AND ${currentTypeRequirements}`,
+      issue.issue_type_id,issue.team_id,issue.issue_type_id,issue.custom_fields_json,issue.team_id));
+    if(issue.custom_fields_json!=='{}') statements.push(guard(currentFieldValues('?'),issue.custom_fields_json,issue.team_id));
     if (issue.assignee_operator_id) statements.push(guard(`EXISTS(SELECT 1 FROM operators o WHERE id=? AND workspace_id=? AND removed_at IS NULL${imported.format==='jira-csv'?" AND EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id WHERE m.operator_id=o.id AND a.status='active')":''})`,issue.assignee_operator_id,row.destination));
     if (issue.project_id) statements.push(guard('EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND archived_at IS NULL)',issue.project_id,row.destination));
     if (issue.cycle_id) statements.push(guard(`EXISTS(SELECT 1 FROM cycles WHERE id=? AND team_id=? AND closed_at IS NULL)

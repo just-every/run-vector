@@ -3,7 +3,7 @@ import { ImportError,type ImportField,type ImportInput } from './types';
 import { ownEntry,referenceAliasKey,referenceMatches } from './lookup';
 
 export type ReferenceRow = Record<string,Json> & { id:string };
-export type ImportReferences = Record<'teams'|'statuses'|'operators'|'projects'|'cycles'|'labels',ReferenceRow[]>;
+export type ImportReferences = Record<'teams'|'statuses'|'operators'|'projects'|'cycles'|'labels'|'issueTypes',ReferenceRow[]>;
 export async function loadImportReferences(db:D1Database,workspace:string): Promise<ImportReferences> {
   const queries = {
     teams:'SELECT * FROM teams WHERE workspace_id=? ORDER BY name,id',
@@ -12,6 +12,7 @@ export async function loadImportReferences(db:D1Database,workspace:string): Prom
     projects:'SELECT * FROM projects WHERE workspace_id=? ORDER BY name,id',
     cycles:'SELECT c.* FROM cycles c JOIN teams t ON t.id=c.team_id WHERE t.workspace_id=? ORDER BY c.name,c.id',
     labels:'SELECT * FROM labels WHERE workspace_id=? ORDER BY name,id',
+    issueTypes:'SELECT ty.*,t.issue_types_enabled enabled FROM issue_types ty JOIN teams t ON t.id=ty.team_id WHERE t.workspace_id=? ORDER BY ty.name,ty.id',
   };
   const entries=await Promise.all(Object.entries(queries).map(async([name,query])=>{
     const rows=(await db.prepare(query+' LIMIT 5001').bind(workspace).all<ReferenceRow>()).results;

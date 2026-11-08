@@ -1,3 +1,4 @@
+import { typeMutationError } from "../issue-types/requirements";
 import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
 import { isMutationAccessError } from "../auth/mutation-database";
 import { drizzle } from "drizzle-orm/d1";
@@ -32,6 +33,7 @@ export async function updateIssueRecord(
   try { results = await commitUndoable(db, actor, capture, plan.writes, [{ identifier, version: plan.version }]); }
   catch (error) {
     if (isMutationAccessError(error)) throw error;
+    const typed = typeMutationError(error); if (typed) throw typed;
     if (!(error instanceof UndoCaptureConflict)) throw error;
     const current = await requireIssue(drizzle(db), identifier);
     if (current.version !== input.expectedVersion) return "stale" as const;

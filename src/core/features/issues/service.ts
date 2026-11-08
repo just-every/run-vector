@@ -1,3 +1,4 @@
+import { issueTypeSchema } from '../issue-types/schema';
 import {issueSpecificationStatement,type SpecificationRow} from '../documents/projection';
 import { referenceSourceVisible } from "../issue-references/projection";
 import { relatedIssuesStatement } from '../related/repository';
@@ -44,12 +45,15 @@ export function issueDetailReadStatements(binding: D1Database, issueId: string) 
     relatedIssuesStatement(binding, issueId),
     issueSpecificationStatement(binding, issueId),
     issueFieldsStatement(binding, issueId),
+    binding.prepare(`SELECT t.issue_types_enabled enabled,ty.id,ty.team_id AS teamId,ty.name,ty.icon,ty.default_key AS defaultKey,ty.version,
+      (SELECT json_group_array(field_id) FROM issue_type_required_fields WHERE type_id=ty.id) requiredFields
+      FROM issues i JOIN teams t ON t.id=i.team_id LEFT JOIN issue_types ty ON ty.id=i.issue_type_id WHERE i.id=?`).bind(issueId),
   ] as const;
 }
 
 export function enrichIssueDetail(
   detail: NonNullable<ReturnType<typeof buildIssueDetail>>,
-  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult, relatedResult, specificationResult, fieldResult]: readonly D1Result[],
+  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult, relatedResult, specificationResult, fieldResult, typeResult]: readonly D1Result[],
 ) {
   const metadataRows = metadataResult.results as EvidenceMetadata[];
   const actorRows = actorResult.results as Array<{ id: string; actor_name: string }>;
@@ -83,7 +87,9 @@ export function enrichIssueDetail(
     ...row,
     actor: actors.get(row.id) ?? row.actor,
   }));
-  return { ...detail, fields: fieldProjection(fieldResult.results), specification:(specificationResult.results[0] as SpecificationRow|undefined)??null, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
+  const typeRow = typeResult.results[0] as Record<string,unknown> | undefined;
+  const issueType = typeRow?.id ? issueTypeSchema.parse({...typeRow,requiredFieldIds:JSON.parse(String(typeRow.requiredFields))}) : null;
+  return { ...detail, issueTypeId: issueType?.id ?? null, issueTypesEnabled: typeRow?.enabled === 1, issueType: typeRow?.enabled === 1 ? issueType : null, fields: fieldProjection(fieldResult.results), specification:(specificationResult.results[0] as SpecificationRow|undefined)??null, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
 }
 
 export function buildIssueDetail(

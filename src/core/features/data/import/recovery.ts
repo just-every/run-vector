@@ -19,6 +19,8 @@ export async function explainResumeFailure(id:string,context:D1ImportContext,err
   const changed=(field:string,description:string)=>new ImportError(409,'import_option_changed',`${description} after review (source issue ${entry.source.sourceId}). The failed batch published nothing. Review this run's rollback, confirm it if there is no later native work, then preview the file again with current options.`,{runId:id,sourceId:entry.source.sourceId,field});
   const team=refs.teams.find(row=>row.id===issue.team_id),status=refs.statuses.find(row=>row.id===issue.status_id);
   if(!team||team.archived_at||team.identifier_prefix!==issue.origin_prefix)return changed('team','The selected team or its identifier prefix changed');
+  if(issue.issue_type_id&&!refs.issueTypes.some(type=>type.id===issue.issue_type_id&&type.team_id===issue.team_id&&type.enabled===1))return changed('issueType','The selected issue type is no longer enabled');
+  if(/issue_type_required_field/.test(String(error)))return changed('issueType','A required custom field changed');
   const activity=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string};
   if(!status||status.team_id!==issue.team_id||status.category!==activity.statusCategory)return changed('status','The selected status changed');
   for(const label of value.labels)if(!refs.labels.some(row=>row.id===label.label_id)){

@@ -1,3 +1,4 @@
+import { issueTypeSchema } from '../issue-types/schema';
 import { roles } from "../roles/matrix";
 import { projectColor, projectIcon } from "../projects/appearance";
 import {
@@ -177,6 +178,8 @@ export const administrationSchema = z.object({
       autoCycleStarted: z.boolean(),
       autoCycleCompleted: z.boolean(),
       statuses: z.array(administrationStatusSchema),
+      issueTypesEnabled: z.boolean(),
+      issueTypes: z.array(issueTypeSchema),
       customFields: z.array(customFieldSchema),
       membershipMode: z.enum(["open","invite_only"]),
       requestsEnabled: z.boolean(),

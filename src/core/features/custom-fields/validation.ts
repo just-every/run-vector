@@ -1,6 +1,8 @@
+import { admitTypeRequirements } from '../issue-types/requirements'
 import { IssueMutationError } from '../issues/errors'
 
 export type FieldValues = Record<string, unknown>
+export type FieldCatalogue = { definitions: Definition[]; options: {id:string;field_id:string;name:string}[]; types:{id:string;team_id:string;enabled:number}[]; requirements:{type_id:string;field_id:string;name:string}[] }
 type Definition = { id: string; team_id: string | null; name: string; type: string }
 
 // JSON object order is not a change.
@@ -35,9 +37,9 @@ export async function namedDefinitions(db: D1Database, keys: string[]) {
  * a legacy untyped value and passes unchanged, as does a retained typed value
  * the request leaves as it was. Returns the map to store and the typed values the
  * write transaction must still find current (see currentFieldValues). */
-export async function admitFieldValues(db: D1Database, teamId: string, previous: FieldValues, next: FieldValues) {
+export async function admitFieldValues(db: D1Database, teamId: string, previous: FieldValues, next: FieldValues, issueTypeId: string | null = null, catalogue?: FieldCatalogue) {
   const changed = Object.keys(next).filter(key => !Object.hasOwn(previous, key) || canonical(previous[key]) !== canonical(next[key]))
-  const { definitions, options } = await namedDefinitions(db, changed)
+  const { definitions, options } = catalogue ? {definitions:catalogue.definitions.filter(d=>changed.includes(d.id)),options:catalogue.options} : await namedDefinitions(db, changed)
   const values = { ...next }, checked: Record<string, string> = {}
   for (const definition of definitions) {
     const value = next[definition.id]
@@ -50,5 +52,6 @@ export async function admitFieldValues(db: D1Database, teamId: string, previous:
       throw new IssueMutationError('invalid_option', `${definition.name} accepts only one of its options.`)
     checked[definition.id] = value
   }
+  await admitTypeRequirements(db, teamId, issueTypeId, values, catalogue)
   return { values, checked }
 }

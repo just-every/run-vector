@@ -33,6 +33,7 @@ export const issueListQuerySchema = z
       .default("all"),
     assignee: z.union([z.enum(["all", "unassigned"]), id]).default("all"),
     team: target,
+    issueType: nullableTarget,
     project: nullableTarget,
     cycle: nullableTarget,
     label: nullableTarget,
@@ -61,6 +62,7 @@ export const issueListQuerySchema = z
         "priority",
         "project",
         "cycle",
+        "issueType",
         "milestone",
         "parent",
         "team",
@@ -88,6 +90,7 @@ const groupCount = z.object({
 });
 export const issueListRowSchema = z.object({
   version: z.number(),
+  issueType: named.extend({icon:z.string()}).nullable().optional(),
   cycleId: z.string().nullable(),
   milestoneId: z.string().nullable(),
   milestone: z.object({ id: z.string(), name: z.string(), projectId: z.string() }).nullable(),

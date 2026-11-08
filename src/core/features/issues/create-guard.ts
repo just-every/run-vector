@@ -1,3 +1,4 @@
+import { currentTypeRequirements, typeMutationError } from "../issue-types/requirements";
 import type { CreateIssueInput } from "./input";
 import { IssueMutationError } from "./errors";
 import { isMutationAccessError } from "../auth/mutation-database";
@@ -9,7 +10,7 @@ export function creationGuard(
   workspace: string,
   teamId: string,
   statusId: string,
-  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null; fieldValues?: Record<string, string> },
+  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { issueTypeId?: string | null; customFields?: Record<string,unknown>; milestoneId?: string | null; fieldValues?: Record<string, string> },
   category: string,
   allocatedPrefix: string,
 ) {
@@ -56,6 +57,10 @@ export function creationGuard(
     conditions.push(currentFieldValues("?"));
     values.push(JSON.stringify(input.fieldValues), teamId);
   }
+  if (input.issueTypeId) {
+    conditions.push("EXISTS(SELECT 1 FROM issue_types ty JOIN teams t ON t.id=ty.team_id WHERE ty.id=? AND t.id=? AND t.issue_types_enabled=1)", currentTypeRequirements);
+    values.push(input.issueTypeId, teamId, input.issueTypeId, JSON.stringify(input.customFields ?? {}), teamId);
+  }
   return db
     .prepare(
       `SELECT CASE WHEN ${conditions.join(" AND ")} THEN 1 ELSE json('creation option unavailable') END`,
@@ -69,6 +74,7 @@ export async function creationError(
   archiveConflict = false,
 ): Promise<never> {
   if (isMutationAccessError(error)) throw error;
+  const typed = typeMutationError(error); if (typed) throw typed;
   if (
     (
       await db

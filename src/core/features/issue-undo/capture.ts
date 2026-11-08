@@ -35,7 +35,7 @@ export async function prepareUndoCapture(db: D1Database, actor: string, input: {
   // Keep the pair in new snapshots even when only one side changes. Older
   // actions retain their original fields and remain readable without a milestone.
   const projectFields = input.fields.some(field => field === "projectId" || field === "milestoneId") ? ["projectId", "milestoneId"] : [];
-  const fields = fieldSchema.array().parse([...new Set([...identityFields, ...input.fields, ...projectFields])]);
+  const fields = fieldSchema.array().parse([...new Set([...identityFields, ...input.fields, ...(input.fields.some(field => field === "issueTypeId" || field === "customFields") ? ["issueTypeId", "customFields"] : []), ...projectFields])]);
   const ids = JSON.stringify(rows.map((row) => row.id));
   const snapshot = await db.prepare(`WITH ${memberCte} SELECT ${issueSnapshotSql(fields)} snapshot,
     ${input.kind === "duplicate" ? duplicateGraphSql : "'[]'"} graph`).bind(ids).first<{ snapshot: string; graph: string }>();

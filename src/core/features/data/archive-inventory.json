@@ -618,7 +618,8 @@
     "updated_at",
     "archived_at",
     "milestone_id",
-    "start_date"
+    "start_date",
+    "issue_type_id"
   ],
   "labels": [
     "id",
@@ -1030,7 +1031,8 @@
     "membership_mode",
     "requests_enabled",
     "is_private",
-    "cycles_enabled"
+    "cycles_enabled",
+    "issue_types_enabled"
   ],
   "vector_auth_operators": [
     "auth_id",
@@ -2312,5 +2314,20 @@
   ],
   "issue_sla_restore_holds": [
     "issue_id"
+  ],
+  "issue_types": [
+    "id",
+    "team_id",
+    "default_key",
+    "name",
+    "icon",
+    "position",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "issue_type_required_fields": [
+    "type_id",
+    "field_id"
   ]
 }

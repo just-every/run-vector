@@ -11,7 +11,7 @@ type MoveIssue = {
   identifier: string;
   team_id: string;
   status_id: string;
-  cycle_id: string | null;
+  issue_type_id: string | null; cycle_id: string | null;
   version: number;
   workspace_id: string;
   category: string;
@@ -34,7 +34,7 @@ export async function requireTeamMoveIssue(
     );
   const issue = await binding
     .prepare(
-      `SELECT i.id,i.identifier,i.team_id,i.status_id,i.cycle_id,i.version,t.workspace_id,s.category
+      `SELECT i.id,i.identifier,i.team_id,i.status_id,i.cycle_id,i.issue_type_id,i.version,t.workspace_id,s.category
     FROM issues i JOIN teams t ON t.id=i.team_id JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=i.team_id
     WHERE i.identifier=? AND t.workspace_id=?`,
     )
@@ -127,11 +127,14 @@ export async function moveIssueTeamRecord(
         teamId: issue.team_id,
         statusId: issue.status_id,
         cycleId: issue.cycle_id,
+        issueTypeId: issue.issue_type_id,
       },
       nextValue: {
         teamId: input.teamId,
         statusId: input.statusId,
         cycleId: null,
+        issueTypeId: null,
+        droppedTypeId: issue.issue_type_id,
       },
       now: timestamp,
     });
@@ -161,7 +164,7 @@ export async function moveIssueTeamRecord(
       ...followerWrites,
       binding
         .prepare(
-          `UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,version=version+1,updated_at=? WHERE ${where} RETURNING id`,
+          `UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,issue_type_id=NULL,version=version+1,updated_at=? WHERE ${where} RETURNING id`,
         )
         .bind(input.teamId, input.statusId, timestamp, ...params),
       ...finalizeEvent(binding, event),

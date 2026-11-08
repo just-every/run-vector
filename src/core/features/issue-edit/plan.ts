@@ -1,3 +1,4 @@
+import { admitTypeSelection, currentTypeRequirements } from "../issue-types/requirements";
 import { issueReferenceStatements } from "../issue-references/repository";
 import { titleEventStatement } from "../agent-door/title-event";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
@@ -48,6 +49,7 @@ const columns = {
   canceledAt: "canceled_at",
   archivedAt: "archived_at",
   customFields: "custom_fields_json",
+  issueTypeId: "issue_type_id",
 } as const;
 
 export async function planIssueUpdate(
@@ -81,6 +83,7 @@ export async function planIssueUpdate(
   const values: Record<string, unknown> = {},
     previous: Record<string, unknown> = {};
   for (const key of [
+    "issueTypeId",
     "title",
     "description",
     "priority",
@@ -108,9 +111,12 @@ export async function planIssueUpdate(
   }
   // FIELD-001: the shared typed boundary; retained and untyped legacy values pass unchanged.
   let fieldValues: Record<string, string> = {};
-  if (input.customFields !== undefined) {
+  const typeId = input.issueTypeId === undefined ? issue.issueTypeId : input.issueTypeId;
+  if (input.issueTypeId !== undefined) await admitTypeSelection(binding, issue.teamId, issue.issueTypeId, typeId);
+  const nextFields = input.customFields ?? JSON.parse(issue.customFieldsJson);
+  if (input.customFields !== undefined || input.issueTypeId !== undefined) {
     const old = JSON.parse(issue.customFieldsJson);
-    const admitted = await admitFieldValues(binding, issue.teamId, old, input.customFields);
+    const admitted = await admitFieldValues(binding, issue.teamId, old, nextFields, typeId);
     if (canonical(admitted.values) !== canonical(old)) {
       values.customFields = admitted.values;
       previous.customFields = old;
@@ -247,6 +253,13 @@ export async function planIssueUpdate(
       status.id,
       issue.teamId,
     );
+  }
+  if (input.customFields !== undefined || input.issueTypeId !== undefined) {
+    // Abort instead of a silent no-op if a required association changed after planning.
+    // The database trigger rechecks the same final values on the actual UPDATE.
+    guard(currentTypeRequirements, typeId ?? "", JSON.stringify(nextFields), issue.teamId);
+    if (input.issueTypeId !== undefined && input.issueTypeId !== issue.issueTypeId)
+      guard("EXISTS(SELECT 1 FROM teams WHERE id=? AND issue_types_enabled=1)", issue.teamId);
   }
   if (Object.keys(fieldValues).length)
     guard(currentFieldValues("issues.team_id"), JSON.stringify(fieldValues));

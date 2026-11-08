@@ -52,6 +52,7 @@ import { drainNotificationMail } from '../features/notifications/mail';
 import { deliverCommittedDirectMessages } from '../features/integrations/outbound';
 import { fileSettlementDatabase } from '../features/auth/mutation-database';
 import { addAdministrationRoutes } from '../features/administration/routes';
+import { addIssueTypeRoutes } from '../features/issue-types/routes';
 import { addCustomFieldRoutes } from '../features/custom-fields/routes';
 import { addTeamMembershipRoutes } from '../features/team-membership/routes';
 import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
@@ -400,6 +401,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addPreferenceRoutes(app);
   addAdministrationRoutes(app);
   addCustomFieldRoutes(app);
+  addIssueTypeRoutes(app);
   addProjectDependencyRoutes(app);
   addTriageResponsibilityRoutes(app);
   addSlaRoutes(app);

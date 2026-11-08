@@ -5,14 +5,14 @@ import type { SourceBundle } from '../../../../../vendor/base/import-kit/src/d1/
  * stays within `batchStatements` and `batchBytes`, one batch per request so each
  * request stays inside D1's `executions` per Worker invocation. */
 export const importLimits = { bytes: 4194304, rows: 4000, batchStatements: 500, batchBytes: 1500000, executions: 1000 } as const;
-export const importFields = ['sourceId','sourceUrl','title','description','team','status','priority','assignee','project','cycle','labels','estimate','startDate','dueDate','expectedOutcome','customerImpact','createdAt','updatedAt','parent','dependencies','duplicateOf','archivedAt'] as const;
+export const importFields = ['sourceId','sourceUrl','issueType','title','description','team','status','priority','assignee','project','cycle','labels','estimate','startDate','dueDate','expectedOutcome','customerImpact','createdAt','updatedAt','parent','dependencies','duplicateOf','archivedAt'] as const;
 export type ImportField = typeof importFields[number];
 export type ImportMapping = Partial<Record<ImportField,string>>;
 export type ImportInput = {
   format: 'csv'|'json'|'linear-csv'|'linear-api-json'|'jira-csv'|'plane-csv'|'huly-json'|'shortcut-csv'; name: string; base64: string; source: string;
   /** With linear-api-json: the owner's Linear API file (docs/LINEAR-API-FILE.md). */
   api?: { name: string; base64: string };
-  jira?: { attachmentLinks?: boolean; completedAtFallback?: 'updated'|'created'|'effective'; sourceOffset?: string; shortYearCentury?: number; originalEstimateSecondsPerUnit?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };
+  jira?: { issueTypes?: Record<string,string|null>; customFields?: Record<string,{column:string;options:Record<string,string>}>; attachmentLinks?: boolean; completedAtFallback?: 'updated'|'created'|'effective'; sourceOffset?: string; shortYearCentury?: number; originalEstimateSecondsPerUnit?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };
   mapping: ImportMapping; defaults?: Partial<Record<ImportField,string>>;
   references?: Partial<Record<ImportField,Record<string,string>>>;
   /** Returned by preview; reusing it binds default timestamps to the review. */

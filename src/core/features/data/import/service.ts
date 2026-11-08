@@ -47,7 +47,7 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
   let nativeBytes=0,nativeStatements=0,maxParameters=0,entryStatements=1,entryBytes=1;
   try {
     preview.report=reportInput(input,parsed.headers,parsed.source.records,mapped.omissions,jiraReview);
-    preview.report.effects=effectPlan(mapped.effects,mapped.references.labels,actor.workspace,input.source);
+    preview.report.effects=effectPlan(mapped.effects,mapped.references.labels,actor.workspace,input.source,mapped.references.issueTypes);
     const reportJson=JSON.stringify(preview.report);
     checkSql({sql:'INSERT INTO vector_import_reports(job_id,report_json) VALUES(?,?)',params:['0'.repeat(36),reportJson]});
     preview.measured.reportBytes=Buffer.byteLength(reportJson);

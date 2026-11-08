@@ -258,6 +258,8 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/labels/:id/merge', row: 'labels.manage' },
   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
+  { method: 'PUT', path: '/settings/teams/:id/issue-types', row: null, teams: team('id') },
+  { method: 'PATCH', path: '/settings/teams/:id/issue-types/:typeId', row: null, teams: team('id') },
   { method: 'POST', path: '/settings/teams/:id/custom-fields', row: 'custom-fields.team', teams: team('id') },
   { method: 'PATCH', path: '/settings/teams/:id/custom-fields/:fieldId', row: 'custom-fields.team', teams: team('id') },
   // Intake and triage

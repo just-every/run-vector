@@ -14,6 +14,7 @@ export type CopySource = {
   estimate: number | null;
   expected_outcome: string | null;
   customer_impact: string | null;
+  issue_type_id: string | null;
   custom_fields_json: string;
   version: number;
   parent_id: string | null;
@@ -38,6 +39,7 @@ const fields = [
   "expected_outcome",
   "customer_impact",
   "custom_fields_json",
+  "issue_type_id",
   "version",
 ];
 /** The same ordered SQL snapshot is read and compared inside the final batch.

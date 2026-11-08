@@ -1,3 +1,4 @@
+import { readTeamTypes } from '../issue-types/read';
 import { visibleDirectoryPerson, visibleTeam, requestableTeam } from '../roles/visibility-sql';
 import { readCycleSnapshot, readCycleFailure } from "../cycle-closure/read";
 import seed from "../../../../seed.json";
@@ -81,6 +82,7 @@ export async function readAdministration(db: D1Database, actor: string) {
       teamFieldsStatement(db, workspaceId).all(),
     ]);
   const fields = fieldProjection(fieldRows.results);
+  const types = new Map(await Promise.all(teams.results.map(async team => [team.id,await readTeamTypes(db,String(team.id))] as const)));
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
       "unauthenticated",
@@ -104,6 +106,8 @@ export async function readAdministration(db: D1Database, actor: string) {
       autoCycleStarted: Boolean(t.autoCycleStarted),
       autoCycleCompleted: Boolean(t.autoCycleCompleted),
       statuses: statuses.results.filter((s) => s.teamId === t.id),
+      issueTypesEnabled: types.get(t.id)!.enabled,
+      issueTypes: types.get(t.id)!.enabled ? types.get(t.id)!.types : [],
       customFields: fields.filter((field) => field.teamId === t.id),
       members: members.results.filter((m) => m.teamId === t.id).map(({ operatorId, role }) => ({ operatorId, role })),
       departedAssignments: departed.results.filter((d) => d.teamId === t.id).map(({ teamId: _team, ...issue }) => issue),

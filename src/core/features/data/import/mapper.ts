@@ -1,3 +1,5 @@
+import { importFieldCatalogue } from '../../issue-types/import';
+import { admitFieldValues } from '../../custom-fields/validation';
 import { isProfile } from './profiles';
 import { mapRelated } from './related';
 import { mapManualOrder } from './manual-order';
@@ -15,6 +17,7 @@ import { importFields,type ImportDiagnostic,type ImportInput } from './types';
 
 export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInput,source:SourceBundle,effectiveAt:string,mappingVersion:string,origin:string) {
   const refs=await loadImportReferences(db,actor.workspace),errors:ImportDiagnostic[]=[],omissions:ImportDiagnostic[]=[],rows:MappedRow[]=[],effects=new Map<string,MappingResult>(),counters=new Map<string,number>(),floors=new Map<string,number>(),reusedRanks=new Map<string,number>();
+  const fieldCatalogue=await importFieldCatalogue(db,actor.workspace);
   for(const [field,column] of Object.entries(input.mapping)) {
     if(!(importFields as readonly string[]).includes(field) || typeof column!=='string' || !source.records.some(record=>record.payload && typeof record.payload==='object' && !Array.isArray(record.payload) && Object.hasOwn(record.payload,column)))
       errors.push({row:0,field,code:'invalid_mapping',message:'Choose a column that exists in this file.'});
@@ -73,6 +76,10 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
       }
     }
     const mapped=mapImportRow(record,input,refs,actor,effectiveAt,sequence,inRun);
+    if(mapped.value&&(mapped.value.issue.issue_type_id||mapped.value.issue.custom_fields_json!=='{}')) {
+      try { await admitFieldValues(db,String(mapped.value.issue.team_id),{},JSON.parse(String(mapped.value.issue.custom_fields_json)),mapped.value.issue.issue_type_id as string|null??null,fieldCatalogue); }
+      catch(error) { mapped.errors.push({row:record.location.row!,field:'issueType',code:'invalid_field',message:error instanceof Error?error.message:'Invalid required field.'});delete mapped.value; }
+    }
     rows.push(mapped);errors.push(...mapped.errors);omissions.push(...mapped.omissions);
   }
   // "X blocks Y" belongs to Y's snapshot. Reusing Y cannot change a prior

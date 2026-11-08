@@ -3,6 +3,8 @@ import { z } from "zod";
 export const copyIssueSchema = z
   .object({
     expectedVersion: z.number().int().positive(),
+    issueTypeId: z.string().length(26).nullable().optional(),
+    customFields: z.record(z.string(),z.json()).optional(),
     teamId: z.string().length(26).optional(),
     includeSubissues: z.boolean().default(false),
     includeLinks: z.boolean().default(false),

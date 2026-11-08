@@ -1,3 +1,6 @@
+import { admitTypeSelection } from "../issue-types/requirements";
+import { admitFieldValues } from "../custom-fields/validation";
+import type { CopyIssueInput } from "./schema";
 import type { CopySource } from "./snapshot";
 import type { DroppedCopyValue } from "./schema";
 import { IssueMutationError } from "../issues/errors";
@@ -32,6 +35,7 @@ export async function mapCopyValues(
   source: CopySource,
   teamId: string,
   workspace: string,
+  input: Pick<CopyIssueInput,"issueTypeId" | "customFields"> = {},
 ) {
   const dropped: DroppedCopyValue[] = [];
   const drop = (field: string, value: unknown, reason: string) =>
@@ -80,13 +84,19 @@ export async function mapCopyValues(
     teamId,
   );
   dropped.push(...fields.dropped);
+  const enabled = await db.prepare('SELECT issue_types_enabled FROM teams WHERE id=?').bind(teamId).first<number>('issue_types_enabled');
+  const issueTypeId = input.issueTypeId !== undefined ? input.issueTypeId : source.team_id === teamId && enabled === 1 ? source.issue_type_id : null;
+  if (source.issue_type_id && issueTypeId === null) drop('issueTypeId',source.issue_type_id,'Choose an explicit destination type to carry a type into another team, or enable types in the original team.');
+  await admitTypeSelection(db,teamId,null,issueTypeId);
+  const admitted = await admitFieldValues(db,teamId,{},input.customFields ?? fields.values,issueTypeId);
   return {
     labels,
     milestoneId,
     cycleId,
     projectId,
-    customFields: fields.values,
-    fieldValues: fields.checked,
+    issueTypeId,
+    customFields: admitted.values,
+    fieldValues: admitted.checked,
     customFieldMappings: fields.mappings,
     dropped,
   };

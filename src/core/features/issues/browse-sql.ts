@@ -6,6 +6,7 @@ export const browseJoins = `FROM issues i JOIN teams t ON t.id=i.team_id
  JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=t.id
  LEFT JOIN operators a ON a.id=i.assignee_operator_id AND a.workspace_id=t.workspace_id AND a.removed_at IS NULL
  LEFT JOIN projects p ON p.id=i.project_id AND p.workspace_id=t.workspace_id
+ LEFT JOIN issue_types ty ON ty.id=i.issue_type_id AND ty.team_id=t.id AND t.issue_types_enabled=1
  LEFT JOIN cycles c ON c.id=i.cycle_id AND c.team_id=t.id
  LEFT JOIN project_milestones m ON m.id=i.milestone_id AND m.project_id=p.id
  LEFT JOIN issue_parents link ON link.issue_id=i.id
@@ -62,6 +63,7 @@ export const browseGroup: Record<
     order: "name,key",
     rowOrder: "COALESCE(c.name,'No cycle'),COALESCE(c.id,'none')",
   },
+  issueType: { key: "COALESCE(ty.id,'none')", name: "COALESCE(ty.name,'No type')", order: "name,key", rowOrder: "COALESCE(ty.name,'No type'),COALESCE(ty.id,'none')" },
   milestone: {
     key: "COALESCE(m.id,'none')",
     name: "COALESCE(m.name,'No milestone')",
@@ -125,6 +127,8 @@ export function browseWhere(
     if (value === "none") conditions.push(`${column} IS NULL`);
     else if (value !== "all") equal(column, value);
   }
+  if (query.issueType === "none") conditions.push("ty.id IS NULL");
+  else if (query.issueType !== "all") equal("ty.id",query.issueType);
   if (query.label === "none")
     conditions.push(
       "NOT EXISTS(SELECT 1 FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id)",

@@ -1,3 +1,4 @@
+import { typeMutationError } from "../issue-types/requirements";
 import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
 import {
   isMutationAccessError,
@@ -9,7 +10,7 @@ import { planIssueUpdate } from "../issue-edit/plan";
 import { bulkIssueInputSchema, type BulkIssueInput } from "./input";
 import { bulkFailures, bulkValidation, type BulkFailure } from "./validation";
 export class BulkIssueError extends Error {
-  constructor(readonly failures: BulkFailure[]) {
+  constructor(readonly failures: BulkFailure[], readonly status: 400 | 409 = 409) {
     super("No issues were changed. Resolve the reported issues and try again.");
   }
 }
@@ -62,7 +63,7 @@ export async function bulkUpdateIssues(
       ...planningFailures.filter(
         (row) => !current.some((other) => other.identifier === row.identifier),
       ),
-    ]);
+    ], input.changes.issueTypeId !== undefined || input.changes.customFields !== undefined ? 400 : 409);
   }
   const plans = planned.map((row) => row.plan!);
   const capture = await prepareUndoCapture(db, actor, {
@@ -85,6 +86,8 @@ export async function bulkUpdateIssues(
     ], plans.map(({ identifier, version }) => ({ identifier, version })));
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
+    const typed = typeMutationError(error);
+    if (typed) throw new BulkIssueError(input.issues.map(issue=>({identifier:issue.identifier,reasons:[typed.message]})),400);
     const current = await bulkFailures(db, actor, input);
     if (current.length) throw new BulkIssueError(current);
     if (error instanceof UndoCaptureConflict) throw new BulkIssueError(error.failures);

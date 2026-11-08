@@ -2,26 +2,26 @@
 export const snapshotFields = [
   "id", "identifier", "version", "teamId", "statusId", "statusCategory",
   "title", "description", "priority", "assigneeOperatorId", "projectId", "milestoneId", "cycleId",
-  "startDate", "dueDate", "estimate", "expectedOutcome", "customerImpact", "customFields",
+  "issueTypeId", "startDate", "dueDate", "estimate", "expectedOutcome", "customerImpact", "customFields",
   "completedAt", "canceledAt", "archivedAt", "deferredUntil", "labelIds", "deferralOrigin",
   "canonicalId", "canonicalIdentifier", "canonicalCreatedAt",
   "parentId", "parentIdentifier", "parentCreatedAt", "parentPosition",
 ] as const;
 export type SnapshotField = typeof snapshotFields[number];
 export const identityFields: SnapshotField[] = ["id", "identifier", "version", "teamId", "statusId", "statusCategory"];
-export const teamFields = ["cycleId"];
+export const teamFields = ["cycleId", "issueTypeId", "customFields"];
 export const duplicateFields = ["cycleId", "completedAt", "canceledAt", "deferredUntil", "deferralOrigin", "canonicalId", "canonicalIdentifier", "canonicalCreatedAt"];
 
 /** These are the only issue columns an inverse may write. */
 export const issueColumns = {
-  teamId: "team_id", statusId: "status_id", title: "title", description: "description",
+  issueTypeId: "issue_type_id", teamId: "team_id", statusId: "status_id", title: "title", description: "description",
   priority: "priority", assigneeOperatorId: "assignee_operator_id", projectId: "project_id", milestoneId: "milestone_id",
   cycleId: "cycle_id", startDate: "start_date", dueDate: "due_date", estimate: "estimate", expectedOutcome: "expected_outcome",
   customerImpact: "customer_impact", customFields: "custom_fields_json", completedAt: "completed_at",
   canceledAt: "canceled_at", archivedAt: "archived_at", deferredUntil: "deferred_until",
 } as const;
 const expressions: Record<SnapshotField, string> = {
-  id: "i.id", identifier: "i.identifier", version: "i.version", teamId: "i.team_id",
+  issueTypeId: "i.issue_type_id", id: "i.id", identifier: "i.identifier", version: "i.version", teamId: "i.team_id",
   statusId: "i.status_id", statusCategory: "s.category", title: "i.title", description: "i.description",
   priority: "i.priority", assigneeOperatorId: "i.assignee_operator_id", projectId: "i.project_id", milestoneId: "i.milestone_id",
   cycleId: "i.cycle_id", startDate: "i.start_date", dueDate: "i.due_date", estimate: "i.estimate", expectedOutcome: "i.expected_outcome",

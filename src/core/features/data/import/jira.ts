@@ -39,7 +39,8 @@ export function readJiraCsv(csv:{headers:string[];rows:{row:number;values:string
       if(field)payload[field]=detected.values.get(row.row+':'+column)??raw;
     }
     const values=(name:string)=>headers.flatMap((header,index)=>header===name&&row.values[index]?.trim()?[row.values[index].trim()]:[]);
-    payload.labels=[...new Set([...values('labels'),...(values('issue type').some(value=>value.toLowerCase()==='epic')?['epic']:[])])];
+    payload.issueType=values('issue type')[0]??'';
+    payload.labels=[...new Set([...values('labels'),...(values('issue type').some(value=>value.toLowerCase()==='epic')&&!input.jira?.issueTypes?['epic']:[])])];
     payload.cycle=values('sprint').at(-1)??'';
     payload.$jiraMetadata=csv.headers.flatMap((header,index)=>{
       const kind=jiraHeader(header),raw=row.values[index]??'';
@@ -86,6 +87,9 @@ export function jiraOmissions(record:SourceRecord,input:ImportInput):ImportDiagn
     const name=jiraHeader(column.header);if(!column.value.trim())return [];
     let message='';
     if(name==='sprint'&&column!==sprints.at(-1))message='Rolled over in Jira: earlier nonempty sprint occurrence retained; only the last nonempty occurrence can map to a cycle.';
+    else if(name==='issue type'&&input.jira?.issueTypes&&Object.hasOwn(input.jira.issueTypes,column.value.trim())) {
+      if(input.jira.issueTypes[column.value.trim()]===null)message='This issue type was explicitly left unmapped in review; its source value is retained only.';
+    }
     else if(name==='issue type'&&column.value.trim().toLowerCase()!=='epic')message='This Jira issue type has no matching Vector field. The ordinary issue retains its source type in the original.';
     else if(name==='original estimate') {
       if(jiraValue(record,'story point estimate').trim())message='Story points take precedence. Original estimate seconds are retained without conversion.';
@@ -98,6 +102,7 @@ export function jiraOmissions(record:SourceRecord,input:ImportInput):ImportDiagn
       if(!relation?.target)message='Source reference is outside this file. It cannot bind any Vector issue with the same name or identifier; retained only.';
     }
     else if(name.startsWith('outward issue link'))message='This relationship kind has no matching relationship in Vector; retained in the original without a link.';
+    else if(Object.values(input.jira?.customFields??{}).some(mapping=>mapping.column===column.header)) { /* Explicit typed column; validation supplies any diagnostic. */ }
     else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate','issue key','comment','resolved','rank','custom field (rank)'].includes(name))message='No matching Vector field for this source column; every occurrence is retained in the original and not imported.';
     return message?[{row:record.location.row!,field:`${column.header} [column ${column.column}]`,code:name==='sprint'?'jira_sprint_rollover':message.startsWith('Source reference is outside')?'jira_reference_outside_file':name==='attachment'&&input.jira?.attachmentLinks?'jira_attachment_bytes_absent':'jira_not_imported',message,sourceId:record.sourceId,sourceKey:jiraValue(record,'issue key'),value:column.value}]:[];
   });

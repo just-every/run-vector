@@ -58,6 +58,26 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
     try{return resolveReference(refs.cycles.filter(cycle=>cycle.team_id===team.id),name,'cycle',input,String(team.name));}
     catch(error){if(input.format==='jira-csv'&&error instanceof Error&&error.message.startsWith('Reference was not found')){omissions.push({row,field:'cycle',code:'unresolved_sprint',message:'No explicit sprint mapping. The issue is imported without a cycle; the sprint stays in the original.'});return null;}throw error;}
   }):undefined;
+  const issueTypeId=take('issueType',()=>{
+    const raw=String(payload.issueType??text('issueType')).trim();
+    if(!raw)return null;
+    if(input.format==='jira-csv'&&!input.jira?.issueTypes)return null;
+    const selected=input.format==='jira-csv'?input.jira!.issueTypes![raw]:raw;
+    if(selected===null)return null;
+    if(!selected)throw Error('Confirm an explicit mapping for every Jira issue type, or explicitly leave it unmapped.');
+    const type=refs.issueTypes.find(type=>type.id===selected&&type.team_id===team?.id&&type.enabled===1);
+    if(!type)throw Error('Choose an enabled type of the selected team.');
+    return type.id;
+  });
+  const customFields:Record<string,string>={};
+  if(input.format==='jira-csv')for(const [field,mapping] of Object.entries(input.jira?.customFields??{})) {
+    const columns=(payload.$jiraColumns as {header:string;value:string}[]).filter(column=>column.header===mapping.column);
+    if(columns.length!==1){errors.push({row,field:mapping.column,code:'jira_field_mapping',message:'Choose one unambiguous source column for this typed field.'});continue;}
+    const raw=columns[0].value.trim();if(!raw)continue;
+    const selected=Object.hasOwn(mapping.options,raw)?mapping.options[raw]:undefined;
+    if(!selected){errors.push({row,field:mapping.column,code:'jira_field_mapping',message:'Confirm an explicit option mapping for this field value.'});continue;}
+    customFields[field]=selected;
+  }
   const labelIds=take('labels',()=>listField(importField(input,payload,'labels'),'labels').map(name=>resolveReference(refs.labels,name,'labels',input).id));
   const title=take('title',()=>text('title',500).trim());
   const description=take('description',()=>text('description',100000));
@@ -95,13 +115,13 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   // Finished work's past cycle stays in the original; Vector commits only open work to a cycle.
   const terminal=['completed','canceled','duplicate'].includes(String(status?.category));
   if(cycle && terminal)omissions.push({row,field:'cycle',code:'terminal_cycle_omitted',message:'Finished issues are not committed to a cycle. The cycle stays in the original.'});
-  const validation=createIssueInputSchema.safeParse({title,description,teamId:team?.id,statusId:status?.id,assigneeOperatorId:assignee?.id??null,projectId:project?.id??null,cycleId:terminal?null:cycle?.id??null,priority,labelIds,estimate,startDate,dueDate,expectedOutcome,customerImpact,customFields:{}});
+  const validation=createIssueInputSchema.safeParse({title,description,teamId:team?.id,statusId:status?.id,assigneeOperatorId:assignee?.id??null,projectId:project?.id??null,cycleId:terminal?null:cycle?.id??null,priority,labelIds,estimate,startDate,dueDate,expectedOutcome,customerImpact,issueTypeId,customFields});
   if(!validation.success)errors.push(...importValidationErrors(validation.error.issues,row,errors));
   if(errors.length || !validation.success || !team || !status || !createdAt || !updatedAt)return result;
   const data=validation.data,id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
-  const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,...(data.startDate?{start_date:data.startDate}:{}),due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
+  const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,...(data.startDate?{start_date:data.startDate}:{}),due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:canonicalJson(data.customFields),...(data.issueTypeId?{issue_type_id:data.issueTypeId}:{}),deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
   value.labels=data.labelIds.sort().map(label_id=>({issue_id:id,label_id,created_at:createdAt}));
-  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(sourceUrl?{sourceUrl}:{}),...(input.format==='jira-csv'?{format:input.format,sourceKey:jiraValue(record,'issue key').trim()}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
+  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(sourceUrl?{sourceUrl}:{}),...(input.format==='jira-csv'?{format:input.format,sourceKey:jiraValue(record,'issue key').trim()}:{}),...(data.issueTypeId?{issueTypeId:data.issueTypeId}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
   const activity=value.activity[0];
   value.descriptionRevisions=[{id:activity.id,issue_id:id,description:data.description,actor_operator_id:activity.actor_operator_id,actor_name:activity.actor_name,created_at:activity.created_at,version:value.issue.version}];
   // Snapshot order: native relations are read back ordered by id.

@@ -8,6 +8,7 @@ const optionalText = z.string().trim().max(20_000).nullable().transform((value) 
 export const createIssueInputSchema = z.object({
   title: z.string().trim().min(1).max(500),
   teamId: id,
+  issueTypeId: nullableId.optional().default(null),
   description: z.string().max(100_000).optional().default(''),
   statusId: id.optional(),
   assigneeOperatorId: nullableId.optional().default(null),

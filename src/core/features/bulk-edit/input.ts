@@ -20,6 +20,8 @@ export const bulkIssueInputSchema = z
       ),
     changes: z
       .object({
+        issueTypeId: z.string().length(26).nullable().optional(),
+        customFields: z.record(z.string(),z.json()).optional(),
         statusId: z.string().length(26).optional(),
         assigneeOperatorId: z.string().length(26).nullable().optional(),
         priority: z

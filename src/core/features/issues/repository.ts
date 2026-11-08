@@ -24,6 +24,7 @@ import {
   workflowStatuses,
 } from '../../platform/db/schema'
 import { IssueMutationError } from './errors'
+import { admitTypeSelection } from '../issue-types/requirements'
 import { admitFieldValues } from '../custom-fields/validation'
 import type { AcceptIssueInput, CreateIssueInput, DeclineIssueInput, DeferIssueInput } from './input'
 
@@ -81,7 +82,8 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
   }
   await validateIssueOptions(db, team.workspaceId, team.id, request.input)
   // FIELD-001: one typed boundary for every creating door; untyped legacy keys pass unchanged.
-  const fields = await admitFieldValues(binding, team.id, {}, request.input.customFields)
+  await admitTypeSelection(binding, team.id, null, request.input.issueTypeId)
+  const fields = await admitFieldValues(binding, team.id, {}, request.input.customFields, request.input.issueTypeId)
 
   const allocation = await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)
   const sequenceNumber = allocation.sequence
@@ -106,6 +108,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
     estimate: request.input.estimate,
     expectedOutcome: request.input.expectedOutcome,
     customerImpact: request.input.customerImpact,
+    issueTypeId: request.input.issueTypeId,
     customFieldsJson: JSON.stringify(fields.values),
     deferredUntil: null,
     version: 1,
@@ -136,6 +139,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
     dueDate: request.input.dueDate,
       expectedOutcome: request.input.expectedOutcome,
       customerImpact: request.input.customerImpact,
+      issueTypeId: request.input.issueTypeId,
       customFields: fields.values,
     },
     now,

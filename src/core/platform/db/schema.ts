@@ -136,6 +136,7 @@ export const issues = sqliteTable('issues', {
   estimate: integer('estimate'),
   expectedOutcome: text('expected_outcome'),
   customerImpact: text('customer_impact'),
+  issueTypeId: text('issue_type_id'),
   customFieldsJson: text('custom_fields_json').notNull(),
   deferredUntil: text('deferred_until'),
   version: integer('version').notNull(),

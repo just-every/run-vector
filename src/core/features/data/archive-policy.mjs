@@ -1,3 +1,4 @@
+// Issue types and required field identities are portable team configuration; disabling preserves issue values and history.
 // SLA targets, clock snapshots, terminal stops and occurrence receipts are portable domain state.
 // Direct project edges and Inbox receipts are portable domain data. Restore
 // retains them without deriving edges from issues or replaying lead notices.

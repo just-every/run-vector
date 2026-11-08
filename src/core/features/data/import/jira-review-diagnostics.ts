@@ -4,7 +4,7 @@ import { ownEntry } from './lookup';
 import type { ImportReferences } from './references';
 import type { ImportDiagnostic } from './types';
 
-const nativeFields:Record<string,string>={'issue id':'sourceId',summary:'title',description:'description',status:'status',priority:'priority',assignee:'assignee',created:'createdAt',updated:'updatedAt','start date':'startDate','due date':'dueDate',labels:'labels',sprint:'cycle','story point estimate':'estimate','original estimate':'estimate','issue type':'labels',resolved:'resolved',parent:'parent','parent id':'parent','outward issue link (blocks)':'blocks','outward issue link (duplicate)':'duplicateOf','outward issue link (relates)':'related'};
+const nativeFields:Record<string,string>={'issue id':'sourceId',summary:'title',description:'description',status:'status',priority:'priority',assignee:'assignee',created:'createdAt',updated:'updatedAt','start date':'startDate','due date':'dueDate',labels:'labels',sprint:'cycle','story point estimate':'estimate','original estimate':'estimate','issue type':'issueType',resolved:'resolved',parent:'parent','parent id':'parent','outward issue link (blocks)':'blocks','outward issue link (duplicate)':'duplicateOf','outward issue link (relates)':'related'};
 const position=(column:JiraColumn)=>`${column.header} [column ${column.column}]`;
 
 /** Native diagnostics belong to the selected source inputs, not every column
@@ -17,6 +17,7 @@ export function jiraDiagnosticColumns(record:SourceRecord,item:ImportDiagnostic,
   const name=jiraHeader(column.header);
   if(item.code.startsWith('jira_'))return item.field===name||item.field===column.header;
   if(ownEntry(nativeFields,name)!==item.field)return false;
+  if(item.field==='issueType'&&name==='issue type')return true;
   // Rollover sprints, superseded seconds and ordinary issue types have no native input.
   if(omissions.some(omission=>omission.field===position(column)))return false;
   if(isError&&item.field==='labels') {

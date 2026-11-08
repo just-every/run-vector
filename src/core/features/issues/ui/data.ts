@@ -1,3 +1,4 @@
+import { issueTypeSchema } from '../../issue-types/schema';
 import { z } from "zod";
 
 const personSchema = z.object({ id: z.string(), name: z.string() });
@@ -43,6 +44,9 @@ export const issueDetailSchema = z.object({
   version: z.number(),
   expectedOutcome: z.string().nullable(),
   customerImpact: z.string().nullable(),
+  issueTypeId: z.string().nullable(),
+  issueTypesEnabled: z.boolean(),
+  issueType: issueTypeSchema.nullable(),
   customFields: z.unknown(),
   /** FIELD-001: the typed fields of the issue's team, with their options. */
   fields: z.array(z.object({ id: z.string(), name: z.string(), options: z.array(z.object({ id: z.string(), name: z.string() })) })),
