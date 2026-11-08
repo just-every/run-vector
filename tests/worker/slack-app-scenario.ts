@@ -1,3 +1,4 @@
+import {slackThreadUpgrade} from './slack-thread-upgrade';
 import {slackUnfurlScenario} from './slack-unfurl-scenario';
 import {slackAppArchive,slackProviderUninstall} from './slack-app-recovery-scenario';
 import {setupSlackIntake,slackEventIntake,slackIntakeFixture,slackMemberMapping} from './slack-events-scenario';
@@ -21,7 +22,7 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
   expect(manifest.oauth_config.scopes.bot).toEqual(expect.arrayContaining(['app_mentions:read','channels:history','commands','links:read','links:write']));
   expect(manifest.oauth_config.scopes.bot).not.toContain('admin');
  };
- const calls:{method:string;body:any}[]=[];
+ const calls:{method:string;body:any}[]=[],threadEdge:{status:number;permalink?:string;onInfo?:(()=>Promise<void>)}={status:200};
  let denied=false,grant:'valid'|'wrong-app'|'missing-scope'|'user'='valid';
  const edge=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{
   const url=new URL(String(input));expect(url.origin).toBe('https://slack.com');expect(init?.redirect).toBe('manual');
@@ -37,7 +38,9 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
   if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:grant==='user'?'user':'bot',app_id:grant==='wrong-app'?'synthetic-vector-2099':'synthetic-vector-2000',scope:grant==='missing-scope'?'chat:write':'chat:write,channels:manage,channels:read,im:write,users:read.email,app_mentions:read,channels:history,commands,links:read,links:write',access_token:botToken});}
   if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002',team_id:slackIntakeFixture.team});}
   if(method==='users.lookupByEmail')return Response.json({ok:true,user:{id:slackIntakeFixture.user,team_id:slackIntakeFixture.team,real_name:'Synthetic member'}});
-  if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'synthetic-vector-33001',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});
+  if(method==='conversations.info'){await threadEdge.onInfo?.();return Response.json({ok:true,channel:{id:body.channel,name:'synthetic-vector-33001',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});}
+  if(method==='chat.getPermalink')return Response.json({ok:true,permalink:threadEdge.permalink??('https://synthetic-vector.slack.com/archives/'+body.channel+'/p'+body.message_ts.replace('.',''))});
+  if(method==='chat.postMessage')return body.thread_ts&&threadEdge.status!==200?Response.json({ok:false,error:threadEdge.status===429?'ratelimited':'service_unavailable'},{status:threadEdge.status,headers:{'retry-after':'1'}}):Response.json({ok:true,channel:body.channel,ts:'1730000003.000001'});
   if(method==='chat.unfurl'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true});}
   if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
   throw Error('Unexpected Slack installation edge '+method);
@@ -109,15 +112,22 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
   const mappedMember=await actor(member);
   await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:mappedMember,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}));
   if(phase==='unfurl'){await slackUnfurlScenario(f,secret,member,mappedMember,calls);return;}
-  if(phase==='events'){await slackEventIntake(f,secret,mappedMember);return;}
+  if(phase==='events'){await slackEventIntake(f,secret,mappedMember,member,calls,threadEdge);await slackThreadUpgrade();return;}
   const intake=await setupSlackIntake(f,secret,mappedMember);
-  await intake.read(await intake.send(intake.payload));
+  const intakeIssue=await intake.read(await intake.send(intake.payload));
   if(phase==='archive'){
+   await intake.read(await intake.send({...intake.payload,event_id:'synthetic-vector-archive-reply',event:{...intake.payload.event,type:'message',ts:'1730000000.000020',thread_ts:intake.payload.event.ts,text:'Portable incoming Slack reply'}}));
+   await read(await f.call('/issues/'+intakeIssue.identifier+'/comments','POST',{parentId:intakeIssue.rootCommentId,body:'Portable accepted Vector reply'}),201);
+   const {dispatchWebhooks}=await import('../../src/core/features/integrations/outbound');await dispatchWebhooks(bindings);
+   await read(await f.call('/issues/'+intakeIssue.identifier+'/comments','POST',{parentId:intakeIssue.rootCommentId,body:'Portable queued Vector reply'}),201);
+   threadEdge.status=429;await dispatchWebhooks(bindings);threadEdge.status=200;
+   expect((await env.DB.prepare("SELECT state FROM integration_deliveries WHERE json_extract(envelope,'$.protocol')='slack_thread' ORDER BY state").all()).results).toEqual([{state:'accepted'},{state:'queued'}]);
    await begin();await slackAppArchive(f,[secret,clientSecret,configToken,botToken]);
    return;
   }
   for(const event of ['app_uninstalled','tokens_revoked'] as const){
-   const priorCalls=calls.length;await slackProviderUninstall(f,secret,event);expect(calls).toHaveLength(priorCalls);
+   if(event==='app_uninstalled'){const comment=await f.call('/issues/'+intakeIssue.identifier+'/comments','POST',{parentId:intakeIssue.rootCommentId,body:'Queued reply retired before transport'});expect(comment.status).toBe(201);}
+   const priorCalls=calls.length;await slackProviderUninstall(f,secret,event);expect(calls).toHaveLength(priorCalls);const {dispatchWebhooks}=await import('../../src/core/features/integrations/outbound');await dispatchWebhooks(bindings);expect(calls).toHaveLength(priorCalls);
    await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
    const reconnect=await begin();expect((await callback(reconnect)).status).toBe(303);
   }
