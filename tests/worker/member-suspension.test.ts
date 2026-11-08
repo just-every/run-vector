@@ -144,6 +144,13 @@ it('suspension keeps identity and work, revokes every native credential, and rea
   expect((await json(await call(fresh,`/issues/${issue.identifier}/discussion`))).comments.map((row:any)=>row.actor)).toEqual([memberName,memberName]);
   expect((await json(await api(readerToken.token,'/comments?issue='+issue.identifier))).comments.map((row:any)=>row.author.displayName)).toEqual([memberName,memberName]);
   expect((await env.DB.prepare('SELECT * FROM team_members WHERE operator_id=? ORDER BY team_id').bind(member).all()).results).toEqual(teamsBefore.results);
+  const freshToken = await json(await call(fresh,'/settings/integrations/tokens','POST',{
+    name:'synthetic-vector-9375',scopes:['issues:read'],
+  }),201);
+  await json(await call(fresh,'/settings/integrations/tokens/'+freshToken.credential.id,'DELETE'));
+  const revoked = (await json(await f.call('/settings/audit?subject='+freshToken.credential.id))).entries
+    .find((entry:any)=>entry.action==='token.revoked');
+  expect(revoked).toMatchObject({actorRef:'person:'+member});
   // Repeated offboarding is a new receipt. Re-inviting preserves the old role.
   await json(await call(admin,`/settings/operators/${member}/suspend`,'POST',{assignments:'unassign'}));
   expect((await json(await f.call('/issues/'+issue.identifier))).assignee).toBeNull();

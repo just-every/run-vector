@@ -33,6 +33,13 @@ export async function removeOperator(
 `,
       )
       .bind(id, retainedActor, actor === target ? "left" : "suspended", actor === target ? "self" : "settings", assignments, at, target, actor),
+    // Existing archive consumers and token-revocation audit producers read this
+    // current offboarding receipt. The lifecycle ledger retains every cycle.
+    db.prepare(`INSERT INTO operator_removals(id,operator_id,workspace_id,actor_operator_id,successor_operator_id,created_at)
+      SELECT id,operator_id,workspace_id,actor_operator_id,successor_operator_id,created_at
+      FROM member_lifecycle_events WHERE id=?
+      ON CONFLICT(operator_id) DO UPDATE SET id=excluded.id,workspace_id=excluded.workspace_id,
+        actor_operator_id=excluded.actor_operator_id,successor_operator_id=excluded.successor_operator_id,created_at=excluded.created_at`).bind(id),
     db
       .prepare(
         `UPDATE operator_sessions SET revoked_at=?,updated_at=? WHERE operator_id=? AND ${receipt}`,

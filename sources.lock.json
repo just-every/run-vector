@@ -4734,7 +4734,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/service.ts": {
-      "sha256": "7e19740426af9f608ee4d06a6909094eab814a7ab90ae7fa3d4a93051230904a",
+      "sha256": "b95571e39f52e4d993587b0efec9db1bfa11d00731ec670a9e3d1450eab596e9",
       "executable": false
     },
     "src/core/features/data/erasure/subject.ts": {
@@ -6442,7 +6442,7 @@
       "executable": false
     },
     "src/core/features/member-lifecycle/reactivation.ts": {
-      "sha256": "1e03b84b9852d999847e17695d052f7692e54a3507f3166fb02c8086a9145ecc",
+      "sha256": "99624c8c3f722e0b3cb5872359b37683ba658a32fbee208e0be2e8366486b67f",
       "executable": false
     },
     "src/core/features/member-lifecycle/routes.ts": {
@@ -7182,7 +7182,7 @@
       "executable": false
     },
     "src/core/features/settings/removal.ts": {
-      "sha256": "f8979eacfd4e809452b2740de09f5e9ace2cebf97be677472607229ee01cf53a",
+      "sha256": "aaa573d480426f8df348cb662240ed9db7aefcce7175a4b89e9512e31c3af28f",
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
@@ -9270,7 +9270,7 @@
       "executable": false
     },
     "tests/worker/agent-events.test.ts": {
-      "sha256": "296e8f02779588fb6d32ddae7fed277af9afc23a594e5fd71cd45fe6feeb639f",
+      "sha256": "7b846b73afa9ed02a4eae7067036ccddaaa39837a18ba4750cec1836d6a63bf7",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
@@ -9738,7 +9738,7 @@
       "executable": false
     },
     "tests/worker/member-suspension.test.ts": {
-      "sha256": "13b94950a05746dcca666f865870cfe6b1ba2742182d38e69fa1f934da99618f",
+      "sha256": "be9be43c9528562c272918e6a2e5c20e13ed6ce2c80e82d7e641a20758558775",
       "executable": false
     },
     "tests/worker/my-work-tabs.test.ts": {

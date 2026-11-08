@@ -20,6 +20,9 @@ export async function reactivateOperator(db: D1Database, actor: string, target: 
       AND actor.id=? AND actor.removed_at IS NULL AND (actor.role='owner' OR actor.role='admin' AND target.role IN('member','guest','viewer'))`)
       .bind(id, method, at, target, member.suspended_at, member.role, actor),
     db.prepare(`UPDATE operators SET removed_at=NULL,suspended_at=NULL,suspended_by=NULL,updated_at=? WHERE id=? AND ${receipt}`).bind(at, target, id),
+    // A later self-service token revocation must not inherit the last suspender.
+    // Full offboarding history remains in member_lifecycle_events.
+    db.prepare(`DELETE FROM operator_removals WHERE operator_id=? AND ${receipt}`).bind(target,id),
     db.prepare(`UPDATE oa_operators SET status='active' WHERE id IN(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?) AND ${receipt}`).bind(target,id),
     db.prepare(`INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)
       SELECT ?,?,'operator.reactivated',?,?,?,?,?,'person',? WHERE ${receipt}`)
