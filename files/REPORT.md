@@ -111,3 +111,5 @@ At 2026-11-08T17:50:39Z, the fourth status poll still returned in_progress and n
 The complete relevant packet is published separately to refs/heads/evidence/sd-vector-c-f202. Its initial publication was fetched back and all 18 files were verified against the manifest and local bytes; the terminal receipt is republished after this update. Product checkout, index and head are unchanged by evidence publication. Browsers and local Workers are stopped. The pushed clone is removed only after both remote refs and the final packet have been verified.
 
 PUSHED branch=cloud/sd-vector-c-f202 head=52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b
+
+The packet also retains the actual terminal-transfer verification receipt for evidence head 69ed4accf9abbb9d2b36bc488c7b62eab824dad6, before the verification receipt itself was added to the final manifest. The final evidence ref includes 19 explicitly selected files.
