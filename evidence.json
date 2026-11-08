@@ -1,0 +1,184 @@
+{
+  "files": [
+    {
+      "blob": "7b6b4dbe860d956b0bf14ce844fe6df6e79e2fe6",
+      "bytes": 626,
+      "path": "CI-LOG-READS.json",
+      "sha256": "aac78920df31450923a1a6a6735e17de5cc20533c8b7acce12a970d9f5ee9b44"
+    },
+    {
+      "blob": "0a016286f29ee3b7d922e029a00081a04d5a2fa9",
+      "bytes": 612,
+      "path": "CI-RECEIPT.json",
+      "sha256": "041f982df3e94696cccf0f08af9e05d00468ff3ab4b122d73364963e1ca68983"
+    },
+    {
+      "blob": "b701a64e73a476bd28e13e8db6ba9329f763a2f0",
+      "bytes": 5347,
+      "path": "COVERAGE.md",
+      "sha256": "c66eeb71a8eac0e5b739ec55cfcf4a6b32bfc824c0f34fe120988857d948651a"
+    },
+    {
+      "blob": "c8c5b1b6910307c73096a026e56c43e3847c24df",
+      "bytes": 1798,
+      "path": "LOCAL-RECEIPT.json",
+      "sha256": "10d1606476d0ebd6cc3f7f83087935cbb872c0860673ba08e623216eaafb8a56"
+    },
+    {
+      "blob": "27537b4da4e2fd0f29baea97607168518f76cc39",
+      "bytes": 2182,
+      "path": "PLAN.md",
+      "sha256": "a9e631e1d86b5065242f2c16ac118768cb19361107467615f56f7274e5ae9a93"
+    },
+    {
+      "blob": "9ad350fc1272ef1458ac3d15cae5fa1747919b2d",
+      "bytes": 575,
+      "path": "PROBE-RECEIPT.json",
+      "sha256": "f379ce3c151db300789a4bb37c665342a08878f3b8203bffdc525f99ce151958"
+    },
+    {
+      "blob": "f1da565be5b3a29efdb4811761926022be6e6ee3",
+      "bytes": 456,
+      "path": "PROOF-CONTINUITY.json",
+      "sha256": "3d08a68c9b8cc89a1d1f85a50623c50ce6374e4a3de48e85bff364181a2adf51"
+    },
+    {
+      "blob": "ecdce25cd91b805bd133481ca8892b7983f38734",
+      "bytes": 10404,
+      "path": "REPORT.md",
+      "sha256": "efed256c8f5a5886fd326d630d25cb9d55f8d03091418b47f52aa321cd0121d8"
+    },
+    {
+      "blob": "466ce0136ae1973a5d5da106e839763b808d8ed3",
+      "bytes": 398,
+      "path": "TERMINAL-PROVENANCE.json",
+      "sha256": "f1b56d5cf57455a9181497eaee9fccdc77e8de845cbfc41147e21b03cfc5d44f"
+    },
+    {
+      "blob": "475e0c98618c733aaf11df586cdd00849f607c7d",
+      "bytes": 1585,
+      "path": "VERIFY-REPRODUCED.json",
+      "sha256": "76ab5d0a413d8fd5a5ec0e878074442f08531316d8766b0cbbc7766c0358394f"
+    },
+    {
+      "blob": "47a99dc021f05691b1ad1212db77a40dac4225f3",
+      "bytes": 7170,
+      "path": "browser-results.json",
+      "sha256": "f18cd8404891648ff99624c12aa70e1ffdf9b3af6f742ac5bb937da735cec2d5"
+    },
+    {
+      "blob": "8bbf9bb627618fa0078bf45f105a6c2c385da4fa",
+      "bytes": 465,
+      "path": "clean-first-run.txt",
+      "sha256": "53556da34a8ce1ab9048c9cc40af087776bb84790bd65955d94714d08bcd3e95"
+    },
+    {
+      "blob": "586bb4bcfb69318399b8c5ccb179badfff95a145",
+      "bytes": 255,
+      "path": "commit-identities.txt",
+      "sha256": "c25a9c829a41ff3b6938f4311bbea40664474a5d0bc965f03084b9b336738113"
+    },
+    {
+      "blob": "3b4ebdae84355c9b62f87064ccc0fe906792b725",
+      "bytes": 462,
+      "path": "exact-head-roadmap-probe.txt",
+      "sha256": "87c085f508c1ad2aa63e161ca6fa28831546b7b80fb718a1fecd1ec562351c25"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "first-party.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "45bf1c9f2a804128affe209a8ecd24d41782320b",
+      "bytes": 2027,
+      "path": "original-imports-failure.txt",
+      "sha256": "a60129616ce8da317eb94859224b7b0e7f812c1881def2ee1661d7af2ce04177"
+    },
+    {
+      "blob": "851d9963b677ccba9f8a179f9ec643a8fa512af8",
+      "bytes": 1857,
+      "path": "original-worker2-failure.txt",
+      "sha256": "aa98997257652b0b9d5751ad67ea57c17da85467641c510edf644e86a1cf5488"
+    },
+    {
+      "blob": "491d53ffe2971ba66124a66711c708e9bdc0b631",
+      "bytes": 585,
+      "path": "roadmap-browser.txt",
+      "sha256": "9629853c1a0a70873068a975c6a6927a35512fe586119010a092e23766c37dd8"
+    },
+    {
+      "blob": "12cfd00c8e65f79e2addfdd09239c1a5572644c1",
+      "bytes": 162168,
+      "path": "roadmap-dark-1440.png",
+      "sha256": "0be1c773a5993367943ae58eb261f3634d7af659c474c7c38ce85c3f15f122bd"
+    },
+    {
+      "blob": "86a0d5262c4e054a5eee616f0f150bdb45fa9a98",
+      "bytes": 168249,
+      "path": "roadmap-four-placements-1440.png",
+      "sha256": "ff69ffed6368fcddf3516b3cf58de695721e79fe61453b3b166237c8a60390f4"
+    },
+    {
+      "blob": "78b8cf5d473641e2cb89152b1d300da3ba9f9744",
+      "bytes": 66285,
+      "path": "roadmap-guest-390.png",
+      "sha256": "029cd086396293f72880f263e8e61eeae48887a22dc09bb5703bf34a37fb03e6"
+    },
+    {
+      "blob": "df0251dc17d4a4f27c944ea5042fa1e39dd57179",
+      "bytes": 161810,
+      "path": "roadmap-light-1440.png",
+      "sha256": "7e7efef96934554c171a7609683b1b440abf2d7564fb82c643ef096f956bcae6"
+    },
+    {
+      "blob": "e8148c44a3366b3a608893a197cf57f200625dda",
+      "bytes": 122774,
+      "path": "roadmap-list-390.png",
+      "sha256": "3998bde834339cda407c46244c8359cb5e1642113ddf4b12382e71c02179caea"
+    },
+    {
+      "blob": "2b91f088b0f95a67c1e785039f35cce2173d2929",
+      "bytes": 102114,
+      "path": "roadmap-viewer-390.png",
+      "sha256": "408648101099fab4218021276b868e6ddd7743672e1fe880c1593ef5df99e8ba"
+    },
+    {
+      "blob": "2d94073697995b57e6b95158bf521653c9f20164",
+      "bytes": 463,
+      "path": "roadmap-worker.txt",
+      "sha256": "142a611d6d010a1f125a7e60608614a0a76b7ccdbb29dbf454a48f91ed6ee08c"
+    },
+    {
+      "blob": "bbab4e3a49b96dc23027741988f3a640fa8ac2d6",
+      "bytes": 3563,
+      "path": "touched-workers.txt",
+      "sha256": "7b187400234e971a477589edfc910feb279d5d36a2452721d7bdde8923d8988a"
+    },
+    {
+      "blob": "d9a30f1889939fe17ac1c4a5496bc8d31b65a81b",
+      "bytes": 58,
+      "path": "typecheck.txt",
+      "sha256": "6ad442e32185facfd7923a8504b23de25ea437c6f9426de027d1e98b6154e972"
+    },
+    {
+      "blob": "2a4844da3a7df05dc6e85366ab93777695237590",
+      "bytes": 36,
+      "path": "views-check.txt",
+      "sha256": "023142aa615c938eb9d362152f254d3a5dc626f5f731cabc6ec5185f1c349088"
+    },
+    {
+      "blob": "4b3f7ba5ea70d8f1bca2858480b7593f3ce83bb0",
+      "bytes": 38,
+      "path": "views-write.txt",
+      "sha256": "71f684506ebfd52c9ef7e4ab068b6bf2b96fa93ae181c23d4f800760544ab606"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f202-pc1",
+  "product_head": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+  "ref": "refs/heads/evidence/sd-vector-c-f202-pc1",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f202-pc1"
+}

@@ -1,0 +1,28 @@
+{
+  "reproductions": [
+    {
+      "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+      "job": "128806129399 imports",
+      "command": "TZ=UTC PLAYWRIGHT_SKIP_BROWSER_GC=1 VITEST_MAX_WORKERS=1 VECTOR_VERIFY_PREBUILT_SHA=52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b pnpm verify:ci --shard imports",
+      "test": "[API-003] the versioned schema is published through the real app",
+      "exit": 1,
+      "failure": "project update schema omits expectedVersion: expected {type: string, pattern: ^[a-f0-9]{64}$}, received absent",
+      "result": "reproduced"
+    },
+    {
+      "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+      "job": "128806129408 worker-2",
+      "command": "TZ=UTC PLAYWRIGHT_SKIP_BROWSER_GC=1 VITEST_MAX_WORKERS=1 VECTOR_VERIFY_PREBUILT_SHA=52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b pnpm verify:ci --shard worker-2",
+      "test": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+      "exit": 1,
+      "failure": "native fixture coverage: expected 175 registered mutations, received 174 fixtures; PATCH /roadmap/projects/:id is absent",
+      "result": "reproduced"
+    }
+  ],
+  "additional_local_setup_failure": {
+    "test": "SETUP-001 first-run review",
+    "failure": "expected null not to be null at mailToken",
+    "cause": "setup-generated private development settings loaded into Worker tests",
+    "resolution": "moved local settings outside checkout, clean first-run test passes with no product edit"
+  }
+}

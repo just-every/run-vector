@@ -1,0 +1,12 @@
+{
+  "refs": {
+    "HEAD": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+    "origin/main": "0e8a686c06eddd55943ed1d2690df32a8fc82213",
+    "origin/cloud/sd-vector-c-f202-pc1": "acbc351d9342d843e13a81a9266c58ebcd4818bc"
+  },
+  "branch": "cloud/sd-vector-c-f202-pc1",
+  "working_tree_clean": true,
+  "main_is_ancestor": true,
+  "main_equals_candidate": false,
+  "published_saved_head_retained": true
+}

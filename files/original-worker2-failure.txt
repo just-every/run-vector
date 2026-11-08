@@ -1,0 +1,39 @@
+ FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+AssertionError: native fixture coverage from src/core/features/roles/doors.ts: expected [ 'ALL /portability/*', …(173) ] to deeply equal [ 'ALL /portability/*', …(174) ]
+
+- Expected
++ Received
+
+@@ -42,11 +42,10 @@
+    "PATCH /issues/:identifier/parent",
+    "PATCH /issues/:identifier/subissues",
+    "PATCH /issues/:identifier/subscription",
+    "PATCH /releases/:id",
+    "PATCH /releases/:id/notes",
+-   "PATCH /roadmap/projects/:id",
+    "PATCH /settings",
+    "PATCH /settings/labels/:id",
+    "PATCH /settings/operators/:operatorId/role",
+    "PATCH /settings/projects/:id",
+    "PATCH /settings/projects/:id/milestones/:milestoneId",
+
+ ❯ prepareViewerCensus tests/worker/role-viewer-census.ts:288:244
+    288|    'POST /releases':releaseInput,'PATCH /releases/:id':releaseEdit,'PU…
+    289|    'POST /issue-templates':issueTemplateInputSchema,
+    290|    'POST /views':createViewSchema,'PATCH /views/:id':updateViewSchema,…
+       |                                                                                    ^
+    291|   };
+    292|   for(const [route,schema] of Object.entries(schemas))schema.parse(pla…
+ ❯ viewerVisibilityJourney tests/worker/role-viewer-journey.ts:40:15
+ ❯ tests/worker/role-matrix.test.ts:527:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 18 passed (19)
+      Tests  1 failed | 28 passed (29)
+   Start at  20:08:29
+   Duration  616.77s (transform 5.55s, setup 0ms, import 83.09s, tests 523.53s, environment 1ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

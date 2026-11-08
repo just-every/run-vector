@@ -1,0 +1,49 @@
+ FAIL  tests/worker/first-run.test.ts > [SETUP-001] first-run review belongs to the recorded owner, survives restart and refuses revoked-session completion atomically
+AssertionError: expected null not to be null
+ ❯ mailToken tests/worker/base-auth-fixture.ts:26:19
+
+ ❯ signIn tests/worker/base-auth-fixture.ts:38:18
+ ❯ tests/worker/first-run.test.ts:19:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/worker/integration-api.test.ts > [API-003] the versioned schema is published through the real app
+AssertionError: expected { type: 'object', …(2) } to deeply equal { type: 'object', …(3) }
+
+- Expected
++ Received
+
+@@ -19,14 +19,10 @@
+      },
+      "description": {
+        "maxLength": 100000,
+        "type": "string",
+      },
+-     "expectedVersion": {
+-       "pattern": "^[a-f0-9]{64}$",
+-       "type": "string",
+-     },
+      "icon": {
+        "anyOf": [
+          {
+            "pattern": "^\\p{RGI_Emoji}(?![\\s\\S])",
+            "type": "string",
+
+ ❯ tests/worker/integration-api.test.ts:92:176
+     90|   ['/projects/{id}/milestones/order','put',planning.projectMilestoneOr…
+     91|   ['/cycles','post',planning.cycleCreateSchema],
+     92|  ] as const){const generated=z.toJSONSchema(validator,{io:'input'});de…
+       |                                                                                                                                                                                ^
+     93|  const mounted=f.app.routes.filter(r=>r.method!=='ALL'&&r.path.startsW…
+     94|  expect(mounted).toEqual(apiRoutes.map(r=>r.method+' '+r.path).sort());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 17 passed (19)
+      Tests  2 failed | 45 passed (47)
+   Start at  20:08:48
+   Duration  218.53s (transform 7.10s, setup 0ms, import 92.27s, tests 115.98s, environment 4ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
+ ELIFECYCLE  Command failed with exit code 1.

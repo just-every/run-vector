@@ -1,0 +1,61 @@
+{
+  "tag": "sd-vector-c-f202-pc1",
+  "repository": "just-every/run-vector",
+  "head": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+  "branch": "cloud/sd-vector-c-f202-pc1",
+  "checks": [
+    {
+      "command": "pnpm test:worker tests/worker/role-matrix.test.ts tests/worker/integration-api.test.ts tests/worker/roadmap.test.ts",
+      "exit": 0,
+      "files": 3,
+      "assertions": 12,
+      "proof": "touched-workers.txt"
+    },
+    {
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium perl -e 'alarm 1200; exec @ARGV' -- node tests/e2e/core-runtime.mjs projects",
+      "exit": 0,
+      "checks": 60,
+      "proof": "browser-results.json",
+      "widths": [
+        1440,
+        390
+      ]
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "proof": "typecheck.txt"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "proof": "first-party.txt"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write INIT-003",
+      "exit": 0,
+      "proof": "views-write.txt"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check INIT-003",
+      "exit": 0,
+      "proof": "views-check.txt"
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "lock_sha256": "01b484cfd9d10966e9318de701cb263a26d8686c25f8cb598bdfa1b642034176"
+    }
+  ],
+  "generated_views_committed": false,
+  "migration_ledger": "not applicable, no migration",
+  "proof_binding": "Passing tests ran on the exact source tree committed as this head. Browser proof additionally has explicit source continuity in PROOF-CONTINUITY.json. CI receipt is separate."
+}

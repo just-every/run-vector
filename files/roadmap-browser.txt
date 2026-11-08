@@ -1,0 +1,12 @@
+[Vector runtime] Passed INIT-003
+Roadmap placements and milestone rendered
+Roadmap target diamond drag accepted
+Roadmap Unscheduled drag accepted
+Roadmap body and endpoint drags accepted
+Roadmap keyboard and fields accepted; stale edit refused
+[Vector runtime] Passed INIT-003
+[Vector runtime] Passed INIT-003
+[Vector runtime] Passed INIT-003
+[Vector runtime] Passed INIT-003
+[Vector runtime] Passed INIT-003
+INIT-003 roadmapJourney PASS: placements, spans, milestones, diamond and Unscheduled drag, body and ends, keyboard, planning fields, stale refusal, roles, phone, themes and AA

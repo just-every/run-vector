@@ -1,0 +1,10 @@
+{
+  "browser_start_head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "source_and_browser_journey_changes_since_start": [],
+  "repair_files": [
+    "schema/api-v1.json",
+    "sources.lock.json",
+    "tests/worker/role-viewer-census.ts"
+  ],
+  "explanation": "Roadmap product modules and browser journeys are byte-identical to the source exercised by the successful local browser run. Candidate API schema and permission census are checked separately."
+}

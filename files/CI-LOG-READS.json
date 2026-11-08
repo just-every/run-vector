@@ -1,0 +1,21 @@
+{
+  "run": 42505077963,
+  "head": "52ddd29d9b1099ee45aec00fd0c8e2a6bb964f4b",
+  "calls": [
+    {
+      "command": "gh run view 42505077963 --repo just-every/run-vector --job 128806129399 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "result": "empty response, no failure assertion available"
+    },
+    {
+      "command": "gh run view 42505077963 --repo just-every/run-vector --job 128806129408 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "result": "empty response, no failure assertion available"
+    }
+  ],
+  "direct_blob_retry": false
+}

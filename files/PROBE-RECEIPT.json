@@ -1,0 +1,20 @@
+{
+  "head": "acbc351d9342d843e13a81a9266c58ebcd4818bc",
+  "command": "TZ=UTC VITEST_MAX_WORKERS=1 pnpm test:worker tests/worker/roadmap.test.ts",
+  "exit": 0,
+  "public_doors": [
+    "GET /api/roadmap",
+    "PATCH /api/roadmap/projects/:id"
+  ],
+  "outcomes": [
+    "all placement kinds",
+    "visible initiative spans",
+    "one activity per accepted mutation",
+    "stale and foreign refusal",
+    "current private membership",
+    "Owner, Admin and Member edit",
+    "Guest and Viewer refusal",
+    "removed actor refusal"
+  ],
+  "proof": "exact-head-roadmap-probe.txt"
+}
