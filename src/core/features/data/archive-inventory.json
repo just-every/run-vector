@@ -2335,6 +2335,38 @@
     "source_release_version",
     "created_at"
   ],
+  "vector_slack_thread_events": [
+    "id",
+    "thread_id",
+    "kind",
+    "source_id",
+    "actor_id",
+    "status_name",
+    "enqueued_at",
+    "held",
+    "created_at"
+  ],
+  "vector_slack_thread_messages": [
+    "thread_id",
+    "message_ts",
+    "comment_id"
+  ],
+  "vector_slack_threads": [
+    "id",
+    "workspace_id",
+    "slack_team_id",
+    "channel_id",
+    "thread_ts",
+    "installation_at",
+    "destination_id",
+    "issue_id",
+    "root_comment_id",
+    "operator_id",
+    "linked_at",
+    "permalink",
+    "held",
+    "created_at"
+  ],
   "automation_rules": [
     "id",
     "workspace_id",

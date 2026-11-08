@@ -25,12 +25,18 @@ export async function readRules(db: D1Database, actor: string, teamId: string | 
     EXISTS(SELECT 1 FROM automation_rule_restore_holds h WHERE h.rule_id=r.id) restoreHeld
     FROM automation_rules r WHERE r.workspace_id=? AND r.team_id IS ? ORDER BY r.created_at,r.id`).bind(actor,access.workspace_id,teamId).all<Rule>()).results;
   const labels = (await db.prepare('SELECT id,name FROM labels WHERE workspace_id=? ORDER BY name,id').bind(access.workspace_id).all()).results;
+  // These subjects use the request's visibility CTEs, including current private-team membership.
   const destinations = (await db.prepare(`SELECT d.id,b.channel_name AS name FROM vector_webhook_destinations d JOIN vector_channel_bindings b ON b.destination_id=d.id
     JOIN operators o ON o.id=b.created_by WHERE d.workspace_id=? AND d.enabled=1 AND d.revoked_at IS NULL AND d.kind='slack'
     AND o.role IN ('owner','admin') AND o.removed_at IS NULL AND b.suspended_reason IS NULL
+    AND ((b.scope='team' AND b.object_id IN(SELECT id FROM teams))
+      OR (b.scope='project' AND b.object_id IN(SELECT id FROM projects))
+      OR (b.scope='view' AND b.object_id IN(SELECT id FROM saved_views)))
     AND EXISTS(SELECT 1 FROM json_each(b.events) WHERE value='automation.rule') ORDER BY b.channel_name,d.id`).bind(access.workspace_id).all()).results;
   await ruleAuthority(db,actor,teamId);
-  return { rules, labels, destinations };
+  // A visible team's saved rule may still point at a now-private destination.
+  const visibleDestinations = new Set(destinations.map(destination => destination.id));
+  return { rules: rules.map(rule => ({ ...rule, destination_id: visibleDestinations.has(rule.destination_id) ? rule.destination_id : null })), labels, destinations };
 }
 export async function saveRule(db: D1Database, actor: string, teamId: string | null, id: string | null, input: RuleInput, expectedVersion: number) {
   const access = await ruleAuthority(db,actor,teamId), ctx = await administrationContext(db,actor);

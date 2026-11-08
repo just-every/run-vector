@@ -96,3 +96,35 @@ it('[AUTO-002 ROLE-008 ROLE-009] label rules dry-run without effects and commit 
     expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
   } finally { edge.restore(); }
 },240_000);
+
+it('[AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access', async () => {
+  const w = await roleWorkspace(), { owner, lead, admin } = w.people, edge = channelEdge();
+  const teamApi = `/settings/teams/${w.team.id}/automation-rules`;
+  try {
+    const privateTeam = (await json(owner.call('/settings/teams','POST',{name:'Private automation',identifierPrefix:'PRIV',isPrivate:true}))).teams.find((row:any) => row.identifierPrefix === 'PRIV');
+    await json(owner.call('/settings/integrations/slack','POST',{botToken:edge.token}));
+    const visible = await json(owner.call('/settings/integrations/channels','POST',{scope:'team',objectId:w.team.id,provider:'slack',channelId:'CSECURITY',channelName:'public-automation',events:['automation.rule']}),201);
+    const hidden = await json(owner.call('/settings/integrations/channels','POST',{scope:'team',objectId:privateTeam.id,provider:'slack',channelId:'CPRIVATE',channelName:'private-automation-secret',events:['automation.rule']}),201);
+    const labels = await json(owner.call('/settings/labels','POST',{name:'Private channel rule label',color:'#992222'}));
+    const labelId = labels.labels.find((row:any) => row.name === 'Private channel rule label').id;
+    const saved = await json(owner.call(teamApi,'POST',{name:'Retained rule',labelId,priority:'urgent',destinationId:hidden.id,monthlyBudget:100,enabled:false,expectedVersion:0}),201);
+    const assertHidden = async (call:typeof lead.call,path:string) => {
+      const result = await json(call(path));
+      expect(result.destinations).toContainEqual({id:visible.id,name:'public-automation'});
+      expect(result.destinations).not.toContainEqual(expect.objectContaining({id:hidden.id}));
+      expect(JSON.stringify(result)).not.toContain('private-automation-secret');
+      expect(JSON.stringify(result)).not.toContain('CPRIVATE');
+      expect(JSON.stringify(result)).not.toContain(hidden.id);
+      if(path === teamApi) expect(result.rules.find((row:any) => row.id === saved.id)).toMatchObject({destination_id:null});
+    };
+    await assertHidden(lead.call,teamApi);
+    await assertHidden(admin.call,'/settings/automation-rules');
+    await json(owner.call(`/settings/teams/${privateTeam.id}/members/${lead.id}`,'PUT',{role:'member'}));
+    const joined = await json(lead.call(teamApi));
+    expect(joined.destinations).toContainEqual({id:hidden.id,name:'private-automation-secret'});
+    expect(joined.rules.find((row:any) => row.id === saved.id)).toMatchObject({destination_id:hidden.id});
+    await json(owner.call(`/settings/teams/${privateTeam.id}/members/${lead.id}`,'DELETE'));
+    await assertHidden(lead.call,teamApi);
+    expect((await json(owner.call(teamApi))).destinations).toContainEqual({id:hidden.id,name:'private-automation-secret'});
+  } finally { edge.restore(); }
+});

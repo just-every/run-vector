@@ -6,7 +6,7 @@ Owners and Admins manage workspace rules. Team owners, and team Members while th
 
 Native authenticated routes are rooted at `/api/settings/automation-rules` for workspace rules and `/api/settings/teams/:id/automation-rules` for team rules:
 
-- `GET` lists rules, stable label choices, approved Slack destinations, current monthly usage and restore holds.
+- `GET` lists rules, stable label choices, approved Slack destinations for subjects the current manager can see, current monthly usage and restore holds. Private-team channel names and identities are withheld until the reader has current access.
 - `POST /dry-run` accepts an unsaved rule and returns matching issues among the latest 100 visible issues, planned priority changes and the destination identity. It writes nothing and makes no network request.
 - `POST` creates a rule with `expectedVersion: 0`.
 - `PATCH /:ruleId` replaces that rule's configuration with its current `expectedVersion`. Stale saves return 409.
@@ -21,3 +21,5 @@ The scheduler evaluates committed receipts. Run admission, one budget slot, the 
 Budgets are monthly UTC evaluation buckets and count admitted attempts. Saving a rule does not reset its usage. Exhausted runs retain a visible `budget_exhausted` receipt without changing the issue or posting. A failure pauses the rule and sends its still-authorized owner one native Inbox notice per rule version. A repair requires an explicit versioned save. Recorded changes remain in the run log if delivery later fails.
 
 Archives retain rule configuration, usage and run history. Restored rules remain held after general effect review. An explicit save can admit future additions; it stops all historical pending runs first. Credentials and per-installation restore holds are excluded from archives. Other triggers, conditions and actions from AUTO-002 remain owed, including due-soon rules under AUTO-006.
+
+Apply `0135_automation_rules.sql` after `0134_slack_threads.sql`; existing applied migration bytes remain unchanged.

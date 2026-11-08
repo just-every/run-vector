@@ -486,3 +486,12 @@ so previously accepted mentions cannot recreate issues.
 This installation remains partial: the hosted real-workspace installation needs
 the owner's Slack console setup and reinstallation with the generated scopes and
 URLs. The recorded acceptance uses Slack API fixtures, not a hosted provider.
+
+
+### Slack mapped comment threads
+
+The app manifest declares a **Create Vector issue** message shortcut. A signed shortcut or `@Vector` mention in an explicitly team-bound channel creates an issue with the message text, its Slack author ID and permalink, and one originating root comment. Only an active linked native Member, Admin or Owner may act. A mention beginning `@Vector add VEC-123` adds that message as a separate thread on the visible issue in the same bound team. Ordinary Slack replies enter only their mapped comment thread; a separate top-level Vector comment has no Slack delivery intent.
+
+Mapped replies, resolution markers and issue status changes use the existing durable delivery queue and receipts. Rate-limited posts have finite retries; an unknown post result remains uncertain and is never automatically repeated. Immediately before a post, Vector rechecks the original installation, linking generation, current member access, channel binding and provider channel safety. Private teams send only issue identifiers and status names, never comment bodies, author names or resolution markers. Restored mappings remain permanently held, even after credential re-entry. Source message receipts and mapped roots remain portable history.
+
+This native fixture-qualified slice does not qualify hosted installation, unlinked requesters, emoji filing, request channels, media uploads, templates, customer requests, reactions, Teams or synced-thread erasure. Their receiving clauses retain their duties.

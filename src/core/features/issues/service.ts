@@ -33,12 +33,15 @@ export async function getIssueDetail(
 export function issueDetailReadStatements(binding: D1Database, issueId: string) {
   return [
     evidenceMetadataStatement(binding, issueId),
+    // Retain the native actor projection before decorating automation ownership.
     binding
       .prepare(
-        `SELECT a.id,CASE WHEN json_extract(a.next_value_json,'$.automationRuleId') IS NOT NULL
+        `SELECT a.id,CASE WHEN json_extract(event.next_value_json,'$.automationRuleId') IS NOT NULL
           THEN a.actor_name||' · Owner: '||COALESCE(CASE WHEN owner.removed_at IS NULL THEN owner.name END,'Removed operator')
-          ELSE a.actor_name END actor_name FROM issue_activity a LEFT JOIN operators owner ON owner.id=a.actor_operator_id
-          WHERE a.issue_id=? AND a.actor_name IS NOT NULL`,
+          ELSE a.actor_name END actor_name
+          FROM (SELECT id,actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL) a
+          JOIN issue_activity event ON event.id=a.id
+          LEFT JOIN operators owner ON owner.id=event.actor_operator_id`,
       )
       .bind(issueId),
     parentRelationsStatement(binding, issueId),
