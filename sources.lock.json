@@ -5486,35 +5486,35 @@
       "executable": false
     },
     "src/core/features/integrations/figma/client.ts": {
-      "sha256": "9d34e9c7f6055fe3266865d5e7b833a6e7916f05f5d0d3efa9d2fd3f2b568289",
+      "sha256": "a55ac302616d42361090a14c8929906a8188a51832c6abde3b6d017bc61e3a3f",
       "executable": false
     },
     "src/core/features/integrations/figma/configuration.ts": {
-      "sha256": "b7ce7b22edf6b7c794b2304a3fd24e8c02844af7d32e2161de8e1e0d02d3cf1d",
+      "sha256": "03b56b2fbe5df1a200bef756b86ff0502ef5a5b1af4ed37e018863099c97b5c7",
       "executable": false
     },
     "src/core/features/integrations/figma/connection.ts": {
-      "sha256": "8162f2710d676b2e9461d759986583668cb501a3dfa607f011882e29d56c3e5e",
+      "sha256": "78dafa1e28c2c10948d2d64f3f2d641cfb9580013e9f17f02dd8bd3d2fbf8d8f",
       "executable": false
     },
     "src/core/features/integrations/figma/plugin-cors.ts": {
-      "sha256": "433a100f356d9483c3b3e085e230add39b45473b155566cd6d5e1935d094eab7",
+      "sha256": "3545d5076e03e6828c903d6f88dcc1b446ae2e2fb75f705a029a2e7a8877b042",
       "executable": false
     },
     "src/core/features/integrations/figma/plugin.ts": {
-      "sha256": "7a452f7eae64c5101828815d757f659b73ccdae17d92b8b94002cc2f0dcc2661",
+      "sha256": "710d4e9f54477f8b9cdab929d7c654381010fc5603709ea9c1b10a9feae89c48",
       "executable": false
     },
     "src/core/features/integrations/figma/preview.ts": {
-      "sha256": "b7ad094852627baa9cea0dda19a812d92a6613e6d5c140e7d0596b63d46a6464",
+      "sha256": "7f61021bb8f73cc88740962de519795fa5a080cbc1df42c15003929adce43019",
       "executable": false
     },
     "src/core/features/integrations/figma/routes.ts": {
-      "sha256": "1eab4a8f6fb02a3778599b76103b78b668662049ba6345f5ed929283b75cc0b2",
+      "sha256": "10da6979291aa105b47abb84e7e3a4147cf87d15918c595b40ff32f863b29d6d",
       "executable": false
     },
     "src/core/features/integrations/figma/urls.ts": {
-      "sha256": "c6c1a503d6baa6cb5615c35bd034aa9499e40ca169795e66f117669ebdde6efc",
+      "sha256": "c079303acfeef52c2bbde65eb02c30c2e6dc2bc89c8024c8b57489139b8c955e",
       "executable": false
     },
     "src/core/features/integrations/github-read.ts": {
@@ -9526,11 +9526,11 @@
       "executable": false
     },
     "tests/worker/figma-archive.ts": {
-      "sha256": "d4c64a65e82d28e43ad18a8ebd9b7ff4c218b58cd6e5db4dc196eead79b5a0de",
+      "sha256": "e245b290b0f6bee57f117f0279c2fe6a905a47eb5a0db1bf82654e0859753f63",
       "executable": false
     },
     "tests/worker/figma-journey.ts": {
-      "sha256": "9ee82224ab6363de0347bdabc7d833460c3ab3f8992c0faa2aece83983f78b0a",
+      "sha256": "a93ca419e4b49e855a1ef3cd108b042ddacfeeab451095296cc6a8f25ee44d18",
       "executable": false
     },
     "tests/worker/first-run.test.ts": {
