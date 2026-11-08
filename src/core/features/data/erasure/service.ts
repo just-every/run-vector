@@ -9,15 +9,13 @@ import { personValues, relatedMatchers, type ErasureSubject } from './subject';
 /** Workers' D1 prepared statements carry their text and bindings as `statement` and `params`. */
 const asD1Sql = (prepared: D1PreparedStatement) => { const { statement, params } = prepared as unknown as { statement: string; params: unknown[] }; return { sql: statement, params: [...params] }; };
 
-/** A current member is never erased by name or email: OPS-004 removal comes first.
- * Removal already replaces their email and name on the operator and sign-in rows
- * (migration 0011's removal trigger) and revokes their sessions and tokens, so an
- * erased person's values remain only where imports copied them. */
+/** Native members, active or suspended, require ROLE-012's explicit erasure.
+ * Legacy anonymized removals remain unrelated to reversible suspension. */
 async function refuseActive(db: D1Database, values: string[]) {
-  const active = await db.prepare(`SELECT 1 FROM operators WHERE removed_at IS NULL AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)))
+  const active = await db.prepare(`SELECT 1 FROM main.operators WHERE (removed_at IS NULL OR suspended_at IS NOT NULL) AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)))
     UNION ALL SELECT 1 FROM oa_operators WHERE status<>'inactive' AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(display_name)) IN (SELECT value FROM json_each(?))) LIMIT 1`)
     .bind(...Array(4).fill(JSON.stringify(values))).first();
-  if (active) throw new ImportError(409, 'operator_active', 'This email or name belongs to a current operator or invitation. Remove them in Settings first; removal transfers their work.');
+  if (active) throw new ImportError(409, 'operator_active', 'This email or name belongs to a current or suspended member, or an invitation. Member erasure requires the separate explicit member erasure action.');
   // Door outcomes, reviews and pending arguments can retain imported text.
   // Admission precedes capture, so an admitted agent also covers in-flight work.
   if(await db.prepare('SELECT 1 FROM agent_door_agents LIMIT 1').first())

@@ -62,10 +62,11 @@ export async function exerciseAudit(w: Workspace) {
   await json(owner.call('/data/erasure','POST',{subject:{names:['Departed Author']},confirmation:'erase Departed Author'}));
   await json(owner.call(`/settings/teams/${w.team.id}/cycle-schedule`,'PUT',{weeks:2,startWeekday:1,cooldownWeeks:0,upcomingCount:1}));
   await scheduled({scheduledTime:Date.now()},bindings);
-  // An erased live-person link must retain the opaque original actor.
+  // Suspension retains the named original actor and its opaque provenance.
   const departing=await w.fresh('admin',false);
   const labelState=await json<{labels:{id:string;name:string}[]}>(departing.call('/settings/labels','POST',{name:'Audited author label',color:'#123456'}));
   const label=labelState.labels.find(item=>item.name==='Audited author label')!;
+  const departingName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(departing.id).first<string>('name');
   await json(owner.call('/settings/operators/'+departing.id,'DELETE'));
   await resetLimits();
   const all=auditSchema.parse(await json(owner.call('/settings/audit')));
@@ -73,11 +74,11 @@ export async function exerciseAudit(w: Workspace) {
   for(const action of ['auth.signed_in','operator.invited','operator.joined','operator.role_changed','team.member_added','token.issued','token.revoked',
     'integration.source_registered','integration.source_rotated','integration.source_webhook_rotated','integration.source_revoked','integration.source_received',
     'slack.connected','slack.disconnected','slack.signing_secret_changed','slack.channel_allowed','slack.channel_disallowed','channel.bound','channel.unbound',
-    'view.deleted','project.milestone_removed','project.removed','import.started','archive.export.started','person.erased','cycle.created.automation','issue.deleted','operator.removed']) expect(actions.has(action),action).toBe(true);
+    'view.deleted','project.milestone_removed','project.removed','import.started','archive.export.started','person.erased','cycle.created.automation','issue.deleted','operator.suspended']) expect(actions.has(action),action).toBe(true);
   const deleted=all.entries.find(e=>e.action==='issue.deleted'&&e.subjectRef===work.id)!;
   expect(deleted).toMatchObject({actorRef:'person:'+owner.id,actorKind:'person',subjectRef:work.id});
   const departed=all.entries.find(e=>e.action==='label.created'&&e.subjectRef===label.id)!;
-  expect(departed).toMatchObject({actorName:null,actorRef:'person:'+departing.id,actorKind:'person'});
+  expect(departed).toMatchObject({actorName:departingName+' (Suspended)',actorRef:'person:'+departing.id,actorKind:'person'});
   expect(all.entries.some(e=>e.actorKind==='integration'&&e.actorRef==='integration:'+source.id)).toBe(true);
   expect(all.entries.some(e=>e.actorKind==='automation')).toBe(true);
   const filters={actor:deleted.actorRef,kind:deleted.actorKind,action:deleted.action,subject:deleted.subjectRef,from:deleted.at,to:deleted.at};

@@ -11,7 +11,7 @@ import {reserveWithRacingWriter} from './http-archive-reservation';
 import {populatedHttpSource} from './http-archive-source';
 import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
 import {drainNotificationMail} from '../../src/core/features/notifications/mail';
-import {request,bindings,invite} from './base-auth-fixture';
+import {request,bindings,invite,actor} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
@@ -147,6 +147,15 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  expect((await f.call('/settings/operators/'+f.peer+'/role','PATCH',{role:'owner'})).status).toBe(200);
  await invite('member@http-archive.test',f.cookie);await invite('admin@http-archive.test',f.cookie,'admin');await invite('synthetic-vector-1701@vector.test',f.cookie,'viewer');
  const roles=(db:D1Database)=>db.prepare('SELECT id,email,role FROM operators ORDER BY id').all().then(rows=>rows.results);
+ // One suspended member crosses the actual archive transport with no live credential.
+ const suspendedEmail='synthetic-vector-9340'+String.fromCharCode(64)+'vector.test';
+ const suspendedCookie=await invite(suspendedEmail,f.cookie),suspendedMember=await actor(suspendedCookie);
+ expect((await f.call('/settings/teams/'+f.team.id+'/members/'+suspendedMember,'PUT',{role:'member'})).status).toBe(200);
+ const suspensionTokenResponse=await request('/api/settings/integrations/tokens','POST',{name:'synthetic-vector-9341',scopes:['issues:read']},suspendedCookie);
+ expect(suspensionTokenResponse.status).toBe(201);const suspensionToken=await suspensionTokenResponse.json() as {token:string};
+ expect((await f.call('/settings/operators/'+suspendedMember+'/suspend','POST',{assignments:'keep'})).status).toBe(200);
+ const suspendedRow=await env.DB.prepare('SELECT id,name,email,role,removed_at,suspended_at,suspended_by FROM operators WHERE id=?').bind(suspendedMember).first();
+ const lifecycleRows=(await env.DB.prepare('SELECT * FROM member_lifecycle_events WHERE operator_id=? ORDER BY id').bind(suspendedMember).all()).results;
  const archivedRoles=await roles(env.DB);
  expect(new Set(archivedRoles.map(row=>row.role))).toEqual(new Set(['owner','admin','member','viewer']));
  triageRows=await Promise.all(triageTables.map(async name=>(await env.DB.prepare('SELECT * FROM '+name+' ORDER BY rowid').all()).results));
@@ -215,6 +224,13 @@ it('[AUTO-004 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT stopped_at FROM issue_sla_clocks WHERE issue_id=?').bind(slaStoppedIssue.id).first('stopped_at')).toBe(slaStoppedAt);
  for(const clock of restoredSla[1])expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT 1 FROM issue_sla_restore_holds WHERE issue_id=?').bind(clock.issue_id).first()).not.toBeNull();
 
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT id,name,email,role,removed_at,suspended_at,suspended_by FROM operators WHERE id=?').bind(suspendedMember).first()).toEqual(suspendedRow);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM member_lifecycle_events WHERE operator_id=? ORDER BY id').bind(suspendedMember).all()).results).toEqual(lifecycleRows);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM oa_sessions s JOIN vector_auth_operators m ON m.auth_id=s.operator_id WHERE m.operator_id=?').bind(suspendedMember).first('n')).toBe(0);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM integration_tokens').first('n')).toBe(0);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM team_members WHERE operator_id=?').bind(suspendedMember).first('n')).toBe(1);
+ expect((await targetCall('/auth/request','POST',{email:suspendedEmail})).status).toBe(409);
+ expect((await createServerApp().request(targetBindings.APP_ORIGIN+'/api/v1/issues',{headers:{Authorization:'Bearer '+suspensionToken.token}},targetBindings)).status).toBe(401);
  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);
 
  expect(await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json()).toMatchObject({destinations:expect.arrayContaining([expect.objectContaining({id:f.webhook,...commentSubscriptions,requiresReentry:1})])});

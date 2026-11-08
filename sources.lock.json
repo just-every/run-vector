@@ -2569,6 +2569,10 @@
       "sha256": "1e28223f389f988bf1da1a847e8a528a152716d44230a4f88b3e93fe7ad150a2",
       "executable": false
     },
+    "migrations/core/0134_member_suspension.sql": {
+      "sha256": "863eec9592bcf3ee331a0db60deb6967ec295fcb1e98dfdb9ef01bb0a98b9528",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -4294,7 +4298,7 @@
       "executable": false
     },
     "src/core/features/audit/repository.ts": {
-      "sha256": "4f16da6c48ce99b27b053ba434b0478980642719c994d9f5621edb136cf590ab",
+      "sha256": "3af34490a539f48799aa3725514605c3f4b62b2c8e31a5a15db623080abfb0c0",
       "executable": false
     },
     "src/core/features/audit/routes.ts": {
@@ -4690,7 +4694,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "1ebbfca4ef24c0f49c8c4dfe653c8d804ffe6d642e7216b5b17732366216af95",
+      "sha256": "9086859bb3db6dac8d50dd09276b455ab7ce8b0c4d1842da542ff6525dbe40c3",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4702,7 +4706,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "f1db34a1cb6af991e8ae672d1421949f21fdb7562e848a739c4742c1dedc31ec",
+      "sha256": "55654188f7267b1db4ead84356af1794bb7b75612d79c97e0a47f7374f2b6936",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -4726,7 +4730,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/service.ts": {
-      "sha256": "c5200b0cbab167125f96e5b8bd2d2eac5463d95c5b3333a4b7bd3583d4b46b48",
+      "sha256": "0588e902220f027ca5538e05cb343c4811bd990e3bac9d1954c077932b95143a",
       "executable": false
     },
     "src/core/features/data/erasure/subject.ts": {
@@ -4994,7 +4998,7 @@
       "executable": false
     },
     "src/core/features/description-history/repository.ts": {
-      "sha256": "ad606c19004156c5cdefe8302e9f999af1376894e7507d15a520c99f3e103cb7",
+      "sha256": "321bdddcd5fecc3816c20e6dd1f8d5d4e4dceeeefde18521d4e47bc2671e09cd",
       "executable": false
     },
     "src/core/features/description-history/routes.ts": {
@@ -5034,7 +5038,7 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "86e099f00ad528302496f60fee92c3695fe9339d646c39e642ed3c8699352c41",
+      "sha256": "bc012c14cfaa4ff44697f28e3f31bff89a89ba0022f52a1bd3d4183ad44189cd",
       "executable": false
     },
     "src/core/features/discussion/revision.ts": {
@@ -6014,7 +6018,7 @@
       "executable": false
     },
     "src/core/features/issues/browse-sql.ts": {
-      "sha256": "60e9a05489c03b7b1e717713dbb584eed63d2e3e1892dddc05296521a880165a",
+      "sha256": "32b512bf4c95fcab58a9e3ad81ea201f1935b13001b0b21175603fad31821c15",
       "executable": false
     },
     "src/core/features/issues/create-guard.ts": {
@@ -6046,11 +6050,11 @@
       "executable": false
     },
     "src/core/features/issues/list-schema.ts": {
-      "sha256": "3d2bc6a6f0cca6e00afb3b9ff706a9534ecf734bb2d85dde1671378e4662ccac",
+      "sha256": "564697c64662d4d1f31f1c80845baaa28edc2ca1bd0374d86343c92c8bbc08df",
       "executable": false
     },
     "src/core/features/issues/list.ts": {
-      "sha256": "1a23a3337fff7f1c2055bd9dbe31eb58afde0927dab539ef5febce750cacb30f",
+      "sha256": "6606607615a1e83e601c93acf1aa7f6c3a821dbc60ee0a87df579d555f36ea6e",
       "executable": false
     },
     "src/core/features/issues/mutations.ts": {
@@ -6070,7 +6074,7 @@
       "executable": false
     },
     "src/core/features/issues/service.ts": {
-      "sha256": "4295a1d9d56ad02eb3917793943f81523f5fd8945423f3af0b8c800e2f3a80e6",
+      "sha256": "5b3bdd1d43d6d2739d666165b32cb544648b46eb86883eee2727d793ec4a6409",
       "executable": false
     },
     "src/core/features/issues/ui/activity-changes.ts": {
@@ -6403,6 +6407,18 @@
     },
     "src/core/features/markdown/ui/task-checkbox.tsx": {
       "sha256": "a694e69d25547c617e3d452dffc72434046adea6e53a05078c55c37cb10cd595",
+      "executable": false
+    },
+    "src/core/features/member-lifecycle/directory.ts": {
+      "sha256": "47677fce7064e1d23902ef4b2a18b422958d169479e23de3ccf5d3c443e99bef",
+      "executable": false
+    },
+    "src/core/features/member-lifecycle/reactivation.ts": {
+      "sha256": "1e03b84b9852d999847e17695d052f7692e54a3507f3166fb02c8086a9145ecc",
+      "executable": false
+    },
+    "src/core/features/member-lifecycle/routes.ts": {
+      "sha256": "a453857bcf48f02b4c500e5390e110e50ddf201e3b2d750fd9220d95abee5b4d",
       "executable": false
     },
     "src/core/features/my-work/activity.ts": {
@@ -7022,7 +7038,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "19ae35c39cb29d84bfbe3ec0799a13cafd935e8f8a4c62f0e8d56eb7f58837a6",
+      "sha256": "bb8954e942abec6c8aa3760f298ef0b4f4ba3d2712cacb7bf1946f827b098f46",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -7030,7 +7046,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "9cfb77383c704f4ae7e00bcd69258dee66b0b9f4eb422a508f8571a4462db999",
+      "sha256": "1a1bfe087e79d2d965a9d5458758ba6c3010448a6523de89f26df3231e73a902",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -7046,7 +7062,7 @@
       "executable": false
     },
     "src/core/features/roles/visibility-sql.ts": {
-      "sha256": "574a53a6b0234de1bbee6ce84633c00ee0f65885f28cc6d44b96e03417bd3272",
+      "sha256": "cb63b598cd9d7220156a44e871c0dc2d9ba954f43b5a63d54b79e76d22a6e201",
       "executable": false
     },
     "src/core/features/sample-data/repository.ts": {
@@ -7138,11 +7154,11 @@
       "executable": false
     },
     "src/core/features/settings/removal.ts": {
-      "sha256": "6fc7c01497e483eae55c6a284da92923428c14b6fb847b5143b3fb35c2cb279b",
+      "sha256": "1979b40c5646df399e6439b68c89ee82e6d9a9fc4a90a1abdde126601b7aab70",
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
-      "sha256": "3d21c8c3a0057f542b543b8e4e925b73dc60cfc23bccecfd2a93299b11c15591",
+      "sha256": "b5b53d9145822b0c441950e189ed8e69a107f7ff4f28fa334a94a0a2990e6032",
       "executable": false
     },
     "src/core/features/settings/roles.ts": {
@@ -7150,7 +7166,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "49a2b5ae23c65338002a15956500afdd7f1a09b24aaab0fddcda7dfb86e4eae3",
+      "sha256": "d9655fc22ad15e8fc6f7b1a9c28b3957760ac945a328bdcd43ee10e076d0523c",
       "executable": false
     },
     "src/core/features/settings/schema.ts": {
@@ -7286,7 +7302,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/people/remove-person.tsx": {
-      "sha256": "8a80ca1f1b64a13c2f00a90ed2c4500ac166dfb7784daa7c0d904f2e6977bd2d",
+      "sha256": "83b5bb11188ca38a002a8252a8aefdfab59cf4ebd6eef0337acb91ed675d2a86",
       "executable": false
     },
     "src/core/features/settings/ui/people/roles-fold.tsx": {
@@ -7578,7 +7594,7 @@
       "executable": false
     },
     "src/core/features/streams/projection.ts": {
-      "sha256": "e17b79da118221ee335d1d95b4f336fa93f4b487fe0448ae532fad33bc5cb814",
+      "sha256": "79b7f0d3d39d26608379b0be00cd54b62aaf85e0de5cd124d9ad2e51a27fbdda",
       "executable": false
     },
     "src/core/features/streams/repository.ts": {
@@ -7874,7 +7890,7 @@
       "executable": false
     },
     "src/core/platform/db/schema.ts": {
-      "sha256": "0995ccb4776afe93b59a9330aa3ee6d23b17004952319fa8a326c7ce7232d20d",
+      "sha256": "589c28c30ec6de693ff746c4603cdc4283dcd15fe6588f1a8eea3d8ca317b6e6",
       "executable": false
     },
     "src/core/platform/mail.ts": {
@@ -9218,7 +9234,7 @@
       "executable": false
     },
     "tests/worker/agent-events.test.ts": {
-      "sha256": "cf31c73fcfd7744817dfd42dd6cf5931c63f56a924c07a21a8781b76a0a346eb",
+      "sha256": "296e8f02779588fb6d32ddae7fed277af9afc23a594e5fd71cd45fe6feeb639f",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
@@ -9254,7 +9270,7 @@
       "executable": false
     },
     "tests/worker/audit-scenario.ts": {
-      "sha256": "353c014fc2bf23de3ab4cbdaa1e06fe0d1aa239270c8e195b0ba7eaf7a3fa55b",
+      "sha256": "e0ece7fa65d8bdf612f60f5b6ffb8f4c89cfa9ec3149ef8742e75b8e66fe491e",
       "executable": false
     },
     "tests/worker/base-auth-fixture.ts": {
@@ -9298,7 +9314,7 @@
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {
-      "sha256": "ff0de1457bcc75313fe8a0efdc282dfdce7d980f83a0adc8aabb9cc736295c15",
+      "sha256": "83cc9b422e3963f594d78c7dd16e7c2cbba513a93ae71b56e08a29b38d61e73a",
       "executable": false
     },
     "tests/worker/collaboration-final-admission.test.ts": {
@@ -9410,7 +9426,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "16bf3a1e59f7dfecf675bf125ef44db8fe7020eb6be7f464a3c866d2d0ab40d2",
+      "sha256": "7a2845eeb0ea6e121aa042675bb230316fb20f41ffe18b211d4ec22b83a5054b",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
@@ -9502,7 +9518,7 @@
       "executable": false
     },
     "tests/worker/foundation-rollback.test.ts": {
-      "sha256": "f65904d813e3ed24320b93c56e69d38067e8ab388eed49dbb653176f91570226",
+      "sha256": "a7f1eec02608fb2eea697f62c240ca2ee6aaf18f8d4f99f9cecb140d259d76b9",
       "executable": false
     },
     "tests/worker/github-automation-scenario.ts": {
@@ -9574,7 +9590,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "aadffbcdd9fb5cf938e18ffe2964b1b8b17f043838bd0b4c11d00b39661a25af",
+      "sha256": "00e0ca997dc7f7c154b357e26b27fc332784e22f0463b22c4cb5bd46f2eca5d6",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {
@@ -9679,6 +9695,14 @@
     },
     "tests/worker/manual-order.test.ts": {
       "sha256": "cbed4054ff73b2cc8cda666858e379a1b028a6b65b8068b0771b5ec98b6b0e7d",
+      "executable": false
+    },
+    "tests/worker/member-suspension-upgrade.test.ts": {
+      "sha256": "fc3670c2002ba618774361fb16d020ec6218beed4a7512e4d817ad30e421a740",
+      "executable": false
+    },
+    "tests/worker/member-suspension.test.ts": {
+      "sha256": "1d636e2c5facda9576183ee818e31967f4d651b3685c53021187afc07635f754",
       "executable": false
     },
     "tests/worker/my-work-tabs.test.ts": {
@@ -9838,11 +9862,11 @@
       "executable": false
     },
     "tests/worker/removal-boundary.test.ts": {
-      "sha256": "13ea5e4a13d94d0247faf69f653ae13d42a52dcd909c53c90deb01c8ee27fcfa",
+      "sha256": "4c688284b55555f8f1b2866b6d0e405d645afc6b186e3687f77ac0a97323ce01",
       "executable": false
     },
     "tests/worker/removal-files.test.ts": {
-      "sha256": "b61919adb9607a114d66d0b91880ae0ba1da593c02393e1ab45e449a6318581e",
+      "sha256": "2f5b9c51c20428966c22267dad5a66c5f62c1fda5367ffd08afa195f3101f8a4",
       "executable": false
     },
     "tests/worker/removal-fixture.ts": {
@@ -9850,7 +9874,7 @@
       "executable": false
     },
     "tests/worker/removal-history.test.ts": {
-      "sha256": "76f3a71772499fdb8340358d9d5b4fe6ea14f98d8101cdca5435d1b2f555a082",
+      "sha256": "55478640b846d5cd12fdc7d492dfcb17ecb7807aaebf40b5a3709e18f14b6a04",
       "executable": false
     },
     "tests/worker/removal-interleaving.ts": {
@@ -9890,7 +9914,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "57a022df81ea0738fe7f59b85ea5b565b7e10031f52c58613327cd88dff1e6e5",
+      "sha256": "e09130a1a19be2bf721c8514ba555e6ed74a50e6e22f0dcd8680534599fcff08",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
@@ -9898,7 +9922,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "6198e246338c169e62dec50ae7b031f707f7e14a5d55f769469cf6a8fd59aa34",
+      "sha256": "197b59dee2557d0169fc253046e4ba982965c83177d86c22fef204a8c492ea43",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
@@ -10002,7 +10026,7 @@
       "executable": false
     },
     "tests/worker/views-removal.test.ts": {
-      "sha256": "4ef4c5ed93bf9fee688900fc9a8d4b0b46589e6184c49a8884e3682d442da299",
+      "sha256": "cace7e592ff4adca47df8b82b560f3a7820f0d8ce0c313cf4fa362e04c51bbad",
       "executable": false
     },
     "tests/worker/warehouse-export-journey.ts": {

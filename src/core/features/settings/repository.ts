@@ -123,12 +123,14 @@ export async function assertRemovalAllowed(
     );
   const found = await db
     .prepare(
-      "SELECT id FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL",
+      "SELECT id,role FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL",
     )
     .bind(target, access.workspace_id)
-    .first();
+    .first<{ id: string; role: Role }>();
   if (!found)
     throw new SettingsError("not_found", "Operator is unavailable.", 404);
+  if (actor !== target && !(access.role === "owner" || access.role === "admin" && !["owner", "admin"].includes(found.role)))
+    throw new SettingsError("forbidden", "Only an Owner can suspend an Owner or Admin.", 403);
   if (target === access.setup_operator_id && actor !== target)
     throw new SettingsError(
       "setup_owner_protected",

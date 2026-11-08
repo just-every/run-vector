@@ -35,7 +35,7 @@ export function issueDetailReadStatements(binding: D1Database, issueId: string) 
     evidenceMetadataStatement(binding, issueId),
     binding
       .prepare(
-        "SELECT id,actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL",
+        "SELECT a.id,CASE WHEN o.suspended_at IS NOT NULL AND a.agent_id IS NULL THEN o.name ELSE a.actor_name END actor_name FROM issue_activity a LEFT JOIN operators o ON o.id=a.actor_operator_id WHERE a.issue_id=? AND a.actor_name IS NOT NULL",
       )
       .bind(issueId),
     parentRelationsStatement(binding, issueId),
@@ -241,7 +241,7 @@ export function buildIssueDetail(
       name: team.name,
       identifierPrefix: team.identifierPrefix,
     },
-    assignee: assignee && { id: assignee.id, name: assignee.name },
+    assignee: assignee && { id: assignee.id, name: assignee.name, suspended: assignee.suspendedAt !== null },
     project: project && {
       id: project.id,
       name: project.name,
