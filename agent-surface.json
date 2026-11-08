@@ -8,7 +8,9 @@
     "pause",
     "audit",
     "idempotency",
-    "resources"
+    "resources",
+    "prompts",
+    "events"
   ],
   "tools": [
     {
@@ -142,6 +144,17 @@
       ],
       "clauses": [
         "INTAKE-007"
+      ]
+    },
+    {
+      "name": "vector.events.list",
+      "scope": "events:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BASE-AGENT-010"
       ]
     }
   ],
@@ -556,6 +569,21 @@
           "$from": "intake_decline_read",
           "pointer": "/version"
         }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "tool": "vector.events.list",
+      "args": {
+        "limit": 100
       },
       "expect": [
         {

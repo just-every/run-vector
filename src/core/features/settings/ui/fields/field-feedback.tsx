@@ -1,6 +1,6 @@
 import type { SaveState } from './use-autosave';
 
-/** A quiet "Saved" beside the control that changed. It fades by itself and never echoes the value. */
+/** A quiet "Saved" beside the control that changed. It clears by itself and never echoes the value. */
 export function SavedMark({ state }: { state: SaveState }) {
   return <span className="field-saved" role="status" aria-live="polite">{state === 'saved' ? 'Saved' : ''}</span>;
 }

@@ -34,14 +34,11 @@ export function deletionTargets(operation: ErasureOperation): D1TargetAdapter {
     ...nativeTargets,
     async read(db, destination, kind, id) {
       identity(destination, kind, id);
-      const row = await db
-        .prepare(
-          `${snapshotContext} SELECT ${snapshotExpression} value FROM c,b WHERE EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=c.id AND t.workspace_id=c.workspace)`,
-        )
-        .bind(...context(undefined))
-        .first<{ value: string }>();
-      if (!row) return undefined;
-      before = JSON.parse(row.value) as ErasureSnapshot;
+      const rows=await db.batch(snapshotParts.map(({current,context:partContext})=>db.prepare(
+        `${partContext} SELECT ${current} value FROM c,b WHERE EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=c.id AND t.workspace_id=c.workspace)`
+      ).bind(...context(undefined)))) as {results:{value:string}[]}[];
+      if(!rows[0].results.length)return undefined;
+      before=Object.fromEntries(rows.map((row,index)=>[snapshotParts[index].name,JSON.parse((row.results[0] as {value:string}).value)])) as ErasureSnapshot;
       after = await erasedSnapshot(db, before, operation);
       return {
         destination,

@@ -1,3 +1,4 @@
+import {SlaCountdown} from '../../slas/countdown';
 import {DocumentsSection} from '../../documents/ui/list';
 import {IssueSpecification,documentIssueDetailSchema,type DocumentIssueDetailData} from '../../documents/ui/specification';
 import { useDateFormat } from "../../../shared/date-format";
@@ -213,6 +214,7 @@ function IssueInspector({
               {" · Configured by "}{issue.routing.configuredByName ?? "Former member"}
             </p>
           )}
+          <SlaCountdown identifier={issue.identifier} version={issue.version}/>
           {issue.archivedAt && (
             <p className="issue-archived-notice" role="note">
               Archived {formatInstant(issue.archivedAt)}. It is left out of lists and default search; choosing another status brings it back.
@@ -360,7 +362,7 @@ function IssueInspector({
                         {activity.actor ?? "System"} ·{" "}
                         {relativeTime(activity.at)}
                       </span>
-                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date).map((change) => (
+                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date, issue.fields).map((change) => (
                         <span className="activity-change" key={change.field}>
                           {change.from === undefined ? `${change.field} edited` : `${change.field}: ${change.from} → ${change.to}`}
                         </span>

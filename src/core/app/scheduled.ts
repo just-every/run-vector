@@ -1,3 +1,4 @@
+import {advanceSlas} from '../features/slas/service';
 import {processSubscriptionQueue} from '../features/subscriptions/process';
 import { runReportExports } from '../features/report-exports/scheduled';
 import { captureDailyReports } from "../features/project-report/capture";
@@ -26,6 +27,7 @@ export async function scheduled(
   await Promise.all([
     closeEndedCycles(env, now),
     sendDueReminders(env, now),
+    advanceSlas(env, now),
     deliverFollowups(env, now),
     processFileRemovals(env),
     returnDueIntake(env, now),

@@ -10,6 +10,7 @@ import {slackIntakeFixture} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import * as administrationInput from '../../src/core/features/administration/schema';
+import {slaInput} from '../../src/core/features/slas/schema';
 import {housekeepingSchema} from '../../src/core/features/housekeeping/schema';
 import {rotationInput} from '../../src/core/features/triage-responsibility/schema';
 import {channelDefaultsInputSchema} from '../../src/core/features/notifications/channel-schema';
@@ -165,6 +166,14 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('PATCH','/data/aliases/prefixes/:prefix',{active:false},{prefix:importInput.source});
   native('POST','/settings/integrations/slack/app/members',{operatorId:member.id,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user});native('DELETE','/settings/integrations/slack/app/members/:operatorId',undefined,{operatorId:member.id});native('POST','/settings/integrations/slack/app',appProfile);native('POST','/settings/integrations/slack/app/create',{configurationToken:'synthetic-vector-31081-token'});native('POST','/settings/integrations/slack/app/install',undefined);native('GET','/integrations/slack/oauth/callback',undefined,{},oauthPath);
   const ip={identifier:issue.identifier},cp={...ip,itemId:comment.id},pp={id:project.id},tp={id:w.team.id},teamId={teamId:w.team.id};
+  const dependencyState=await call(owner,'/settings/projects','POST',{name:'synthetic-vector-31501',leadOperatorId:owner.id});
+  const dependencyBlocker=dependencyState.projects.find((row:any)=>row.name==='synthetic-vector-31501');
+  const newDependencyState=await call(owner,'/settings/projects','POST',{name:'synthetic-vector-31502',leadOperatorId:owner.id});
+  const newDependencyBlocker=newDependencyState.projects.find((row:any)=>row.name==='synthetic-vector-31502');
+  await call(owner,'/projects/'+project.id+'/dependencies/'+dependencyBlocker.id,'PUT');
+  both('PUT','/projects/:id/dependencies/:blockingId','/projects/:id/dependencies/:blockingId',undefined,{id:project.id,blockingId:newDependencyBlocker.id});
+  both('DELETE','/projects/:id/dependencies/:blockingId','/projects/:id/dependencies/:blockingId',undefined,{id:project.id,blockingId:dependencyBlocker.id});
+
   for(const method of ['POST','PATCH','PUT'] as const){
    const path=method==='POST'?'/initiatives':method==='PATCH'?'/initiatives/:id':'/initiatives/:id/projects';
    both(method,path,path,method==='POST'?{name:'synthetic-vector-31037',ownerOperatorId:member.id}:method==='PATCH'?{expectedVersion:initiative.version,description:'synthetic-vector-31038'}:{expectedVersion:initiative.version,projectIds:[project.id]},{id:initiative.id});
@@ -190,8 +199,13 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('PUT','/settings/teams/creation',{membersMayCreate:false});both('POST','/settings/teams','/teams',{name:'synthetic-vector-31044',identifierPrefix:'SYNNEW'});both('PUT','/settings/teams/:id/privacy','/teams/:id/privacy',{isPrivate:false},tp);
   native('POST','/teams/:teamId/join',undefined,{teamId:destinationTeam.id});native('POST','/teams/:teamId/leave',undefined,teamId);native('PUT','/settings/teams/:id/members/:operatorId',{role:'member'},{...tp,operatorId:w.lead.id});native('DELETE','/settings/teams/:id/members/:operatorId',undefined,{...tp,operatorId:w.lead.id});native('PUT','/settings/teams/:id/membership',{mode:'invite_only',requestsEnabled:true},tp);native('POST','/settings/teams/:id/requests/:requesterId/decision',{decision:'approved'},{id:requestTeam.id,requesterId});native('POST','/teams/:teamId/requests',undefined,{teamId:requestTeam.id});
   native('PUT','/settings/teams/:id/permissions',{settings:'team_owners',planning:'all_members'},tp);native('PATCH','/settings/teams/:id',{name:'synthetic-vector-31045'},tp);
+  native('PUT','/settings/teams/:id/sla',{enabled:true,priority:'high',labelId:null,targetMinutes:60,warnBeforeMinutes:15,workingDays:[1,2,3,4,5],startsAt:'09:00',endsAt:'17:00'},tp);
   const housekeeping={closeAfterDays:30,archiveAfterDays:60,exemptBugs:true};native('PUT','/settings/teams/:id/housekeeping',housekeeping,tp);native('POST','/settings/teams/:id/housekeeping/preview',housekeeping,tp);
   native('PUT','/settings/teams/:teamId/email-intake',{...email.settings,enabled:false},teamId);native('PUT','/settings/teams/:teamId/email-intake/event-key',{key:eventKey},teamId);native('PATCH','/teams/:teamId/subissue-rule',{expectedVersion:children.rule.version,enabled:true},teamId);
+  const fieldTeam=(await call(owner,'/settings/teams/'+w.team.id+'/custom-fields','POST',{name:'synthetic-vector-31130',type:'single_select',options:[{name:'synthetic-vector-31131'}]})).teams.find((row:any)=>row.id===w.team.id);
+  const teamField=fieldTeam.customFields.find((row:any)=>row.name==='synthetic-vector-31130');
+  native('POST','/settings/teams/:id/custom-fields',{name:'synthetic-vector-31132',type:'single_select',options:[{name:'synthetic-vector-31133'}]},tp);
+  native('PATCH','/settings/teams/:id/custom-fields/:fieldId',{expectedVersion:teamField.version,name:'synthetic-vector-31134'},{...tp,fieldId:teamField.id});
   native('POST','/settings/teams/:id/statuses',{name:'synthetic-vector-31046',category:'started'},tp);native('PUT','/settings/teams/:id/statuses/order',{statusIds:workflow.map((row:any)=>row.id)},tp);native('PATCH','/settings/teams/:id/statuses/:statusId',{name:'synthetic-vector-31047'},{...tp,statusId:workflowStatus.id});native('DELETE','/settings/teams/:id/statuses/:statusId',{destinationStatusId:w.team.statuses.find(row=>row.category==='unstarted')!.id},{...tp,statusId:workflowStatus.id});
   both('POST','/issues','/issues',{title:'synthetic-vector-31048',teamId:w.team.id,projectId:project.id,labelIds:[label.id]});both('PATCH','/issues/:identifier','/issues/:identifier',{expectedVersion:current.version,title:'synthetic-vector-31049',labelIds:[otherLabel.id]},ip);
   for(const method of ['POST','DELETE'] as const){const target=method==='POST'?newRelatedNow:relatedNow;native(method,'/issues/:identifier/dependencies',dependencyInputSchema.parse({expectedVersion:current.version,relatedIdentifier:target.identifier,relatedVersion:target.version,direction:'related'}),ip);}
@@ -263,6 +277,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'PUT /settings/teams/:id/triage-rotation':rotationInput,
    'PUT /settings/triage-routing':routingInput,
    'PUT /settings/teams/:id/triage-routing':routingInput,
+   'PUT /settings/teams/:id/sla':slaInput,
    'PUT /settings/teams/:id/housekeeping':housekeepingSchema,
    'POST /settings/teams/:id/housekeeping/preview':housekeepingSchema,
    'PUT /settings/notifications/channel-defaults':channelDefaultsInputSchema,

@@ -26,6 +26,15 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
   return Boolean(await env.DB.prepare("SELECT 1 FROM initiatives n JOIN operators o ON o.workspace_id=n.workspace_id JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE n.id=? AND n.workspace_id=? AND o.id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member')").bind(event.initiativeId,workspace,event.actorId).first());
  }
  if(event.initiativeId)return false;
+ if(event.eventKind==='sla.warning'&&!await env.DB.prepare("SELECT 1 FROM vector_channel_bindings b WHERE b.destination_id=? AND EXISTS(SELECT 1 FROM json_each(b.events) WHERE value='sla.warning')").bind(id).first())return false;
+ if(event.eventKind==='sla.warning'&&!await env.DB.prepare(`SELECT 1 FROM issue_sla_occurrences occurrence
+   JOIN issue_sla_clocks clock ON clock.issue_id=occurrence.issue_id JOIN issues i ON i.id=clock.issue_id
+   JOIN teams t ON t.id=i.team_id JOIN team_slas r ON r.team_id=clock.team_id JOIN workflow_statuses s ON s.id=i.status_id
+   WHERE i.id=? AND occurrence.kind='warning' AND clock.stopped_at IS NULL AND i.team_id=clock.team_id
+   AND i.archived_at IS NULL AND t.archived_at IS NULL AND s.category NOT IN ('completed','canceled','duplicate')
+   AND json_extract(r.body_json,'$.enabled')=1 AND NOT EXISTS(SELECT 1 FROM issue_sla_restore_holds h WHERE h.issue_id=i.id)`)
+   .bind(event.issueId).first())return false;
+
  if(event.actorId&&!await env.DB.prepare('SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL').bind(event.actorId,workspace).first())return false;
  const issue=await env.DB.prepare('SELECT i.id,i.team_id,i.project_id,t.is_private FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(event.identifier,workspace).first<{id:string;team_id:string;project_id:string|null;is_private:number}>();
  if(!issue)return false;
@@ -49,7 +58,7 @@ export async function channelMessage(env:WorkerBindings,kind:string,channelId:st
  }
  const link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);
  const privateItem=await env.DB.prepare('SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.is_private=1').bind(event.identifier).first();
- const text=privateItem?'Private work changed. Sign in to Vector to view it.':`${event.identifier} · ${event.title}\n${event.actor}: ${event.change}\n${link}`;
+ const text=privateItem?'Private work changed. Sign in to Vector to view it.':event.eventKind==='sla.warning'?`${event.identifier} · Resolution SLA warning\n${link}`:`${event.identifier} · ${event.title}\n${event.actor}: ${event.change}\n${link}`;
  return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]},flags:4});
 }
 export function channelProtocols(env:WorkerBindings,workspace:string):DeliveryProtocol[]{

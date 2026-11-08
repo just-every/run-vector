@@ -100,6 +100,9 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "teams.join": { session: async (_who, actor) => { const id = await team(`Directory team ${unique()}`, "DIR"); return () => actor.call(`/teams/${id}/join`, "POST", {}); } },
     "teams.settings": { permission: "settings", session: async (_who, actor, id) => { const value = unique() % 2 === 0; return () => actor.call(`/settings/teams/${id}`, "PATCH", { autoCycleStarted: value, cyclesEnabled: true }); } },
     "teams.workflow": { permission: "settings", session: async (_who, actor, id) => { const status = await backlog(id), name = `Backlog ${unique()}`; return () => actor.call(`/settings/teams/${id}/statuses/${status}`, "PATCH", { name }); } },
+    // FIELD-001: defining a team field is a team setting, checked under both permission values.
+    "custom-fields.team": { permission: "settings", session: async (_who, actor, id) => { const name = `synthetic-vector-field-${unique()}`;
+      return () => actor.call(`/settings/teams/${id}/custom-fields`, "POST", { name, type: "single_select", options: [{ name: "Minor" }, { name: "Major" }, { name: "Critical" }] }); } },
     // Checked under both settings values: All team members never lets a member archive.
     "teams.archive": { permission: "settings", session: async (_who, actor, id) => async () => {
       const response = await actor.call(`/settings/teams/${id}`, "PATCH", { archived: true });
@@ -165,6 +168,9 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "cycles.commit": { outside: true,
       session: async (_who, actor, id) => { const target = await issue(id), cycleId = await openCycle(id); return () => actor.call(`/issues/${target.identifier}`, "PATCH", { expectedVersion: target.version, cycleId }); },
       api: async (_who, actor, id) => { const target = await issue(id), cycleId = await openCycle(id); return () => actor.api(`/issues/${target.identifier}`, "PATCH", { expectedVersion: target.version, cycleId }); } },
+    "projects.dependencies": {
+      session: async (_who, actor) => { const blocked=await project(),blocking=await project(); return () => actor.call(`/projects/${blocked}/dependencies/${blocking}`, "PUT"); },
+      api: async (_who, actor) => { const blocked=await project(),blocking=await project(); return () => actor.api(`/projects/${blocked}/dependencies/${blocking}`, "PUT"); } },
     "projects.write": {
       session: async (_who, actor) => () => actor.call("/settings/projects", "POST", { name: `Created project ${unique()}`, leadOperatorId: actor.id }),
       api: async (_who, actor) => () => actor.api("/projects", "POST", { name: `Created project ${unique()}`, leadOperatorId: actor.id }) },
