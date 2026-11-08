@@ -68,6 +68,8 @@ export interface Operations {
   "issue_template_delete": { input: { path: { "id": string }; body: { "expectedVersion": number } }; output: { "deleted": boolean; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "project_dependency_set": { input: { path: { "id": string; "blockingId": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "project_dependency_remove": { input: { path: { "id": string; "blockingId": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "figma_capture": { input: Record<string, never>; output: unknown | unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown } };
+  "figma_capture_preflight": { input: Record<string, never>; output: unknown; errors: { "403": unknown } };
 }
 export const operations = {
   "schema_get_0": {
@@ -527,5 +529,19 @@ export const operations = {
       "projects:write"
     ],
     "authenticated": true
+  },
+  "figma_capture": {
+    "method": "POST",
+    "path": "/integrations/figma/issues",
+    "scopes": [
+      "issues:write"
+    ],
+    "authenticated": true
+  },
+  "figma_capture_preflight": {
+    "method": "OPTIONS",
+    "path": "/integrations/figma/issues",
+    "scopes": [],
+    "authenticated": false
   }
 } as const;
