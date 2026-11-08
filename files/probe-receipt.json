@@ -1,0 +1,18 @@
+{
+  "finding": 1,
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1500 node tests/e2e/core-runtime.mjs current",
+  "exit": 0,
+  "attempt": 2,
+  "parent_checks": 59,
+  "child_checks": 54,
+  "total_passed_checks": 113,
+  "before_journey_invocations": 2,
+  "after_journey_invocations": 1,
+  "provider_assertion_unchanged": true,
+  "provider_assertions_passed_at_widths": [
+    1440,
+    390
+  ],
+  "staged_tree": "97be96c853582df9672b7122ad892d1b26d989cd",
+  "prior_429_attempt_retained": "probe-flake-receipt.json"
+}

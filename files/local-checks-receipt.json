@@ -1,0 +1,44 @@
+{
+  "checks": [
+    {
+      "name": "build",
+      "command": "cloud_run timeout 900 npx -y @runeditrun/rer build",
+      "exit": 0
+    },
+    {
+      "name": "typecheck",
+      "command": "cloud_run timeout 180 pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "name": "ledger",
+      "command": "cloud_run timeout 180 node --test --test-concurrency=1 scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0
+    },
+    {
+      "name": "worker",
+      "command": "VITEST_MAX_WORKERS=1 cloud_run timeout 600 pnpm test:worker tests/worker/leadership-digests.test.ts tests/worker/leadership-digest-upgrade.test.ts tests/worker/data-http.test.ts",
+      "exit": 0,
+      "files_passed": 3,
+      "tests_passed": 4
+    }
+  ],
+  "probe": {
+    "finding": 1,
+    "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1500 node tests/e2e/core-runtime.mjs current",
+    "exit": 0,
+    "attempt": 2,
+    "parent_checks": 59,
+    "child_checks": 54,
+    "total_passed_checks": 113,
+    "before_journey_invocations": 2,
+    "after_journey_invocations": 1,
+    "provider_assertion_unchanged": true,
+    "provider_assertions_passed_at_widths": [
+      1440,
+      390
+    ],
+    "staged_tree": "97be96c853582df9672b7122ad892d1b26d989cd",
+    "prior_429_attempt_retained": "probe-flake-receipt.json"
+  }
+}

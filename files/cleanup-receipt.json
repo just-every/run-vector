@@ -1,0 +1,7 @@
+{
+  "test_runtime_exit": 0,
+  "no_active_test_servers_or_browsers_at_review": true,
+  "node_modules_removed": true,
+  "product_clone": "retained only until evidence publish completes; deleted immediately after successful transfer",
+  "packet_retained": "/home/agent/rer-consolidation/work/sd-vector-c-f199-fix1/packet"
+}

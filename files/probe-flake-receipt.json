@@ -1,0 +1,12 @@
+{
+  "attempt": 1,
+  "exit": 1,
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1500 node tests/e2e/core-runtime.mjs current",
+  "assertion": "invitation confirmation succeeds within the native proof budget",
+  "actual": 429,
+  "expected": 303,
+  "finding_1_reached": false,
+  "action": "Rerun the exact unchanged command; HTTP 429 is explicitly out of scope in this FIX brief.",
+  "location": "tests/e2e/core-operator-journey.mjs:34:76",
+  "caller": "tests/e2e/core-runtime.mjs:754:5"
+}

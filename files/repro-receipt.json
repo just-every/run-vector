@@ -1,0 +1,13 @@
+{
+  "finding": 1,
+  "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1500 node tests/e2e/core-runtime.mjs current",
+  "exit": 1,
+  "assertion": "one bound initiative update through the durable dispatcher",
+  "location": "tests/e2e/initiatives-journey.mjs:92:10",
+  "actual": 2,
+  "expected": 1,
+  "parent_passed_checks": 93,
+  "child_started": true,
+  "child_failed": true
+}

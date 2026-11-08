@@ -1,0 +1,19 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f199-fix1/run-vector
+> vitest run --config vitest.config.ts tests/worker/leadership-digests.test.ts tests/worker/leadership-digest-upgrade.test.ts tests/worker/data-http.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f199-fix1/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  3 passed (3)
+      Tests  4 passed (4)
+   Start at  22:18:16
+   Duration  141.61s (transform 4.62s, setup 0ms, import 18.21s, tests 121.53s, environment 0ms)
+

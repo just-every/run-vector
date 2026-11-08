@@ -1,0 +1,27 @@
+{
+  "captures": [
+    {
+      "file": "leadership-digest-channels-1440.png",
+      "viewport_width": 1440,
+      "region_pixels": [
+        658,
+        390
+      ],
+      "sha256": "7216e942a87e8910b92346a55d8f510f26e8aefab81fcca995c2ad380dc6e7c8",
+      "visual_inspection": "Weekly leadership digest panel only; no credentials or private runtime state shown",
+      "source_journey": "leadershipDigestJourney / roleScreens"
+    },
+    {
+      "file": "leadership-digest-channels-390.png",
+      "viewport_width": 390,
+      "region_pixels": [
+        324,
+        454
+      ],
+      "sha256": "675f632880ee6c54d13e0d55698a86a9eb4e8113bd461cc55d5f86a559f7ed8a",
+      "visual_inspection": "Weekly leadership digest panel only; no credentials or private runtime state shown",
+      "source_journey": "leadershipDigestJourney / roleScreens"
+    }
+  ],
+  "assertions": "Existing roleScreens checks no horizontal overflow and no serious or critical axe findings at both widths."
+}

@@ -1,0 +1,130 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f199-fix1",
+  "head": "153ab57b967b64cd4965f16c2caf4b9489206002",
+  "observations": [
+    {
+      "requested_at": 1794178076.1642246,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs?head_sha=153ab57b967b64cd4965f16c2caf4b9489206002&per_page=100",
+        "--jq",
+        "{workflow_runs:[.workflow_runs[] | select(.name==\"Verify\") | {id,status,conclusion,head_sha,html_url}]}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "id": 42532001126,
+        "status": "queued"
+      }
+    },
+    {
+      "requested_at": 1794178376.1848783,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42532001126",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "status": "in_progress"
+      }
+    },
+    {
+      "requested_at": 1794178676.2136648,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42532001126",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "status": "in_progress"
+      }
+    },
+    {
+      "requested_at": 1794178976.246076,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42532001126",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "status": "in_progress"
+      }
+    },
+    {
+      "requested_at": 1794179276.2775826,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42532001126",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "status": "in_progress"
+      }
+    },
+    {
+      "requested_at": 1794179576.3062737,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42532001126",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": null,
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "status": "in_progress"
+      }
+    },
+    {
+      "requested_at": 1794179876.3413758,
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42532001126",
+        "--jq",
+        "{status,conclusion,head_sha,html_url}"
+      ],
+      "exit": 0,
+      "response": {
+        "conclusion": "success",
+        "head_sha": "153ab57b967b64cd4965f16c2caf4b9489206002",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+        "status": "completed"
+      }
+    }
+  ],
+  "outcome": "success",
+  "run_id": 42532001126,
+  "github_calls_used": 7
+}

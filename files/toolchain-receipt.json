@@ -1,0 +1,13 @@
+{
+  "setup_and_commands": "Supplied /tmp/rer-cloud-toolchain.sh sourced in checkout shells; long-running commands used cloud_run",
+  "local_runtime_node": "v24.19.0",
+  "local_pnpm": "10.12.4",
+  "head_and_fixed_runtime_used_same_local_toolchain": true,
+  "verify_workflow_node_pin": "22.20.0",
+  "verify_workflow_pnpm_pin": "10.12.4",
+  "browser_executable": "/usr/bin/chromium",
+  "browser_flags": [
+    "--no-sandbox"
+  ],
+  "private_setup_output_published": false
+}

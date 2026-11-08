@@ -1,0 +1,65 @@
+{
+  "candidate_commits_including_side_parents": [
+    {
+      "head": "153ab57b967b64cd4965f16c2caf4b9489206002",
+      "author": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "committer": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "trailers": []
+    },
+    {
+      "head": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+      "author": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "committer": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "trailers": []
+    },
+    {
+      "head": "9d39042b5a630354bed3a6e0ae2cda58b2640fe2",
+      "author": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "committer": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "trailers": []
+    },
+    {
+      "head": "12c28a86db31926237af4ce0e65736e554af800b",
+      "author": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "committer": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "trailers": []
+    },
+    {
+      "head": "b20ed8d02f71502d55f39cbd4425656470d2fd3f",
+      "author": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "committer": [
+        "Run Edit Run fleet",
+        "fleet@runeditrun.com"
+      ],
+      "trailers": []
+    }
+  ],
+  "all_passed": true
+}

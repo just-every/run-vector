@@ -1,0 +1,47 @@
+{
+  "contract_write": {
+    "command": "node scripts/contract-docs.mjs write INIT-004",
+    "exit": 0
+  },
+  "contract_check": {
+    "command": "node scripts/contract-docs.mjs check INIT-004",
+    "exit": 0
+  },
+  "views_restored": {
+    "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+    "exit": 0
+  },
+  "source_contract_matches_main": true,
+  "sdk_regenerate": {
+    "command": "node sdk/generate.mjs",
+    "exit": 0
+  },
+  "sdk_check": {
+    "command": "node sdk/generate.mjs --check",
+    "exit": 0,
+    "published_operations": 56
+  },
+  "ledger": {
+    "command": "cloud_run timeout 180 node --test --test-concurrency=1 scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0
+  },
+  "spec-write": {
+    "command": "pnpm integration:sync",
+    "exit": 0
+  },
+  "spec-check": {
+    "command": "pnpm integration:check",
+    "exit": 0
+  },
+  "lock-write": {
+    "command": "pnpm sources:lock",
+    "exit": 0
+  },
+  "lock-check": {
+    "command": "pnpm sources:check",
+    "exit": 0
+  },
+  "generation_order": "source staged, deployment spec generated and checked, sources.lock.json generated last and checked",
+  "generated_views_committed": false,
+  "staged_tree": "97be96c853582df9672b7122ad892d1b26d989cd"
+}

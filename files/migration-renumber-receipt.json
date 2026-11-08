@@ -1,0 +1,10 @@
+{
+  "main_head": "442b61455234c57befcb642bf4afdaa2dc459922",
+  "main_highest": 134,
+  "renames": {
+    "0134_leadership_digests.sql": "0135_leadership_digests.sql",
+    "0135_leadership_restore_holds.sql": "0136_leadership_restore_holds.sql"
+  },
+  "main_migrations_edited": false,
+  "updated_fixture": "tests/worker/leadership-digest-upgrade.test.ts"
+}

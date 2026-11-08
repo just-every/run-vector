@@ -1,0 +1,35 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f199-fix1",
+  "head": "153ab57b967b64cd4965f16c2caf4b9489206002",
+  "tree": "97be96c853582df9672b7122ad892d1b26d989cd",
+  "parents": [
+    "389f173eb6ff277885dbc1f6fbf81790571136c0",
+    "442b61455234c57befcb642bf4afdaa2dc459922"
+  ],
+  "push_command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f199-fix1",
+  "push_exit": 0,
+  "push_attempts": 1,
+  "identity_check": "five candidate commits including side parents; author and committer fleet; no trailers",
+  "pr": null,
+  "product_custody": "READY",
+  "source_counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "source_counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_judgment_changes": [],
+  "ci_run_id": 42532001126,
+  "ci_url": "https://github.com/just-every/run-vector/actions/runs/42532001126",
+  "ci_status": "completed",
+  "ci_conclusion": "success",
+  "generated_view_exemption_used": false,
+  "blockers": []
+}

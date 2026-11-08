@@ -1,0 +1,14 @@
+{
+  "repository": "just-every/run-vector",
+  "clone_command": "git clone --filter=blob:none https://github.com/just-every/run-vector.git",
+  "full_history": true,
+  "candidate_expected": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "candidate_observed": "389f173eb6ff277885dbc1f6fbf81790571136c0",
+  "branch": "cloud/sd-vector-c-f199-fix1",
+  "main_at_initial_fetch": "442b61455234c57befcb642bf4afdaa2dc459922",
+  "is_shallow": false,
+  "candidate_typecheck_exit": 0,
+  "candidate_sdk_check_exit": 0,
+  "source_status_INIT-004": "missing (both supplied candidate and origin/main); no judgment change authorized",
+  "brief_qualification_INIT-004": "PARTIAL; Opus interface work remains owed"
+}
