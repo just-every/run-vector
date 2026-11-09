@@ -486,7 +486,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "bd7707d0bbad22a2026bcd9e89e2839831b9d0339e7e3b7775baafa3ca4b1a00",
+      "sha256": "d823097503bde3f21f3d8cf0630461942592071876800939047000e4d0a59f14",
       "executable": false
     },
     "ADOPTING.md": {
@@ -582,7 +582,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "ceb046d92913b18f98b82228f79dd416da39321f384a1a273b154f1968c780c5",
+      "sha256": "a47bd22f32a22237632ac39506b9dec18a8e2c896a6dbcf1fafb736458760078",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
