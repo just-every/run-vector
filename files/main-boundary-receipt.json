@@ -1,0 +1,96 @@
+{
+  "revision": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "mode": "native public-door boundary probe after the full journey stopped earlier",
+  "requests": [
+    {
+      "kind": "owner magic",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 303
+    },
+    {
+      "kind": "invitation",
+      "status": 429
+    }
+  ],
+  "passed": true,
+  "operatorBucketPeak": 140
+}

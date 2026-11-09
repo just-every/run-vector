@@ -1,0 +1,168 @@
+{
+  "revision": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "group": "current",
+  "ipSubject": "confirmation:ip:loopback",
+  "tokenSubject": "confirmation:email:<one token>",
+  "limits": {
+    "ip": 30,
+    "token": 5,
+    "fixedWindowSeconds": 900
+  },
+  "method": "All successful confirmations reconstructed from native consumed_at ledgers; refused POSTs from instrumented HTTP responses; per-token counters read from native oa_limits without exporting identities or credentials. This covers reader contexts outside the primary browser context.",
+  "snapshotMatched": true,
+  "nativeCurrentIpBucket": {
+    "window": 1993569,
+    "count": 9
+  },
+  "reconstructedCurrentIpCount": 9,
+  "events": [
+    {
+      "at": 1794212263230,
+      "status": 303,
+      "kind": "magic",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 1,
+      "tokenAlias": 1,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 1,
+      "ipRollingMinute": 1
+    },
+    {
+      "at": 1794212330975,
+      "status": 303,
+      "kind": "magic",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 2,
+      "tokenAlias": 2,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 2,
+      "ipRollingMinute": 1
+    },
+    {
+      "at": 1794212341762,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 3,
+      "tokenAlias": 3,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 3,
+      "ipRollingMinute": 2
+    },
+    {
+      "at": 1794212374498,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 4,
+      "tokenAlias": 4,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 4,
+      "ipRollingMinute": 3
+    },
+    {
+      "at": 1794212415480,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 5,
+      "tokenAlias": 5,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 5,
+      "ipRollingMinute": 2
+    },
+    {
+      "at": 1794212438502,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 6,
+      "tokenAlias": 6,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 6,
+      "ipRollingMinute": 2
+    },
+    {
+      "at": 1794212469643,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 7,
+      "tokenAlias": 7,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 7,
+      "ipRollingMinute": 3
+    },
+    {
+      "at": 1794212490398,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 8,
+      "tokenAlias": 8,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 8,
+      "ipRollingMinute": 3
+    },
+    {
+      "at": 1794212498506,
+      "status": 303,
+      "kind": "invite",
+      "nativeTokenBucket": {
+        "window": 1993569,
+        "count": 1
+      },
+      "evidence": "native consumed_at",
+      "request": 9,
+      "tokenAlias": 9,
+      "fixedWindow": 1993569,
+      "ipFixedWindowCount": 9,
+      "ipRollingMinute": 3
+    }
+  ],
+  "summary": {
+    "requests": 9,
+    "successful": 9,
+    "refused": 0,
+    "fixedWindows": [
+      {
+        "window": 1993569,
+        "requests": 9
+      }
+    ],
+    "peakRollingMinute": 3,
+    "peakTokenCount": 1
+  }
+}

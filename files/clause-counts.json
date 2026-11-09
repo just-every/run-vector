@@ -1,0 +1,17 @@
+{
+  "before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "TEAM-006": {
+    "before": "missing",
+    "after": "missing"
+  },
+  "note": "No product or contract edits. Counts represent Status table rows of the candidate, preserved unchanged."
+}

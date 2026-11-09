@@ -1,0 +1,6 @@
+{
+  "command": "cloud_run timeout 180 pnpm typecheck",
+  "exit": 0,
+  "raw_log_bytes": 104,
+  "safe_observations": []
+}

@@ -1,0 +1,23 @@
+{
+  "tag": "sd-vector-c-f205-fix5",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix5",
+  "head": "372dad07fbc6bd9b8245f9431e2f650a8a54f102",
+  "main": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "fullHistory": true,
+  "mainIsAncestor": true,
+  "newProductCommits": 0,
+  "productPushed": false,
+  "pr": null,
+  "exactShaVerify": null,
+  "historicalVerifyRun": 42575132750,
+  "historicalFailedJobs": [
+    129021332130,
+    129021332202
+  ],
+  "githubCallsUsed": 3,
+  "productWorktreeClean": true,
+  "clausesChanged": [],
+  "terminalState": "BLOCKED",
+  "reason": "Explicit harness-only stop condition; unchanged confirmation IP limiter reproduced identically on candidate and main."
+}

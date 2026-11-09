@@ -1,0 +1,367 @@
+[
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "line": 10,
+    "source": "import { admitRate } from './repository'"
+  },
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "line": 12,
+    "source": "import { AuthError, createAuthHandler, securityHeaders } from '../../../../vendor/base/operator-auth/index.mjs'"
+  },
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "line": 13,
+    "source": "import { baseAuth, productOperator } from './base.server'"
+  },
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "line": 25,
+    "source": "const auth = baseAuth(c.env)"
+  },
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "line": 40,
+    "source": "if (ip && !cli && !(await admitRate(c.env.DB, 'base-magic:' + ip, 5, 15 * 60_000)))"
+  },
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "line": 53,
+    "source": "const result = await createAuthHandler(auth)(request)"
+  },
+  {
+    "file": "src/core/features/auth/base.server.ts",
+    "line": 34,
+    "source": "export function baseAuth(env: WorkerBindings) {"
+  },
+  {
+    "file": "src/core/features/auth/base.server.ts",
+    "line": 51,
+    "source": "clientIp: request => local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '',"
+  },
+  {
+    "file": "src/core/features/auth/base.server.ts",
+    "line": 70,
+    "source": "ON CONFLICT DO NOTHING`).bind(createUlid(new Date()), at, at, authId),"
+  },
+  {
+    "file": "vendor/base/operator-auth/routes.mjs",
+    "line": 25,
+    "source": "export function createAuthHandler(auth) {"
+  },
+  {
+    "file": "vendor/base/operator-auth/routes.mjs",
+    "line": 113,
+    "source": "case '/auth/confirm': { const value = await auth.confirmLink(request, input); return seeOther(value.returnTo, value.cookie); }"
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "line": 23,
+    "source": "async function limit(request, email, scope) {"
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "line": 30,
+    "source": "const subjects = [`${scope}:ip:${ip}`];"
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "line": 32,
+    "source": "const keys = await Promise.all(subjects.map(subject => hash('rate', subject)));"
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "line": 33,
+    "source": "const counts = await store.limits(keys, clock(), config.limitWindowSeconds * 1000);"
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "line": 35,
+    "source": "if (counts[0] > config.ipLimit || (scope !== 'bootstrap' && counts[1] > config.emailLimit)) deny('rate_limited', 429);"
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "line": 102,
+    "source": "async confirmLink(request, { token }) {"
+  },
+  {
+    "file": "vendor/base/operator-auth/config.mjs",
+    "line": 19,
+    "source": "// shape and the independent transaction secret they need."
+  },
+  {
+    "file": "vendor/base/operator-auth/config.mjs",
+    "line": 33,
+    "source": "limitWindowSeconds: seconds(input.limitWindowSeconds, 900, 86400),"
+  },
+  {
+    "file": "vendor/base/operator-auth/config.mjs",
+    "line": 34,
+    "source": "ipLimit: seconds(input.ipLimit, 30, 10000), emailLimit: seconds(input.emailLimit, 5, 1000),"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 29,
+    "source": "async limits(keys, now, windowMs) {"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 30,
+    "source": "const window = Math.floor(now / windowMs);"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 32,
+    "source": "ON CONFLICT(key) DO UPDATE SET window=excluded.window,count=CASE WHEN oa_limits.window=excluded.window THEN oa_limits.count+1 ELSE 1 END RETURNING count`, [key, window]]));"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 37,
+    "source": "[`INSERT INTO oa_bootstrap(singleton,claim_id,claimed_at) SELECT 1,?,? WHERE NOT EXISTS(SELECT 1 FROM oa_operators) ON CONFLICT DO NOTHING`, [id, now]],"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 39,
+    "source": "SELECT ?,?,?,'owner','active',? WHERE EXISTS(SELECT 1 FROM oa_bootstrap WHERE claim_id=?) ON CONFLICT DO NOTHING`, [id, email, displayName, now, id]],"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 73,
+    "source": "SELECT ?,?,?,?,'invited',? WHERE ${fence.sql} ON CONFLICT(email) DO NOTHING`, [operatorId, email, displayName, role, now, ...fence.args]];"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 173,
+    "source": "ON CONFLICT DO NOTHING`, [issuer, subject, operatorId, expectedVersion, associated ? 1 : 0, issuer]],"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 187,
+    "source": "AND ${pin.sql} AND EXISTS(SELECT 1 FROM oa_auth_settings WHERE singleton=1 AND idp_sign_in=1 AND (? IS NULL OR generation=?)) ON CONFLICT DO NOTHING`,"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 219,
+    "source": "AND EXISTS(SELECT 1 FROM oa_tokens t JOIN oa_operators i ON i.id=t.issuer_id WHERE t.id=? AND t.operator_id=o.id AND t.kind='invite' AND t.consumed_at IS NULL AND t.revoked_at IS NULL AND t.expires_at>? AND t.operator_version=o.version AND t.issuer_id=? AND t.issuer_version=? AND i.version=t.issuer_version AND i.status='active') ON CONFLICT DO NOTHING`,"
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "line": 245,
+    "source": "ON CONFLICT(domain) DO UPDATE SET provider_id=excluded.provider_id,created_by=excluded.created_by,created_at=excluded.created_at`,"
+  },
+  {
+    "file": "src/core/app/api.ts",
+    "line": 79,
+    "source": "import { admitRate } from \"../features/auth/repository\";"
+  },
+  {
+    "file": "src/core/app/api.ts",
+    "line": 189,
+    "source": "!(await admitRate(context.env.DB, \"operator:\" + operator.id, 600, 60_000))"
+  },
+  {
+    "file": "src/core/features/auth/repository.ts",
+    "line": 1,
+    "source": "export async function admitRate("
+  },
+  {
+    "file": "src/core/features/auth/repository.ts",
+    "line": 12,
+    "source": "`INSERT INTO access_rate_limits(key,count,expires_at) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 RETURNING count`,"
+  },
+  {
+    "file": "tests/e2e/core-operator-journey.mjs",
+    "line": 25,
+    "source": "export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 22,
+    "source": "import { withInvitedOperator } from './core-operator-journey.mjs';"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 28,
+    "source": "import { keyboardJourney } from './core-keyboard-journey.mjs';"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 35,
+    "source": "import { confirmLink } from './outbox-session.mjs';"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 66,
+    "source": "// CI partitions the independent invited-operator journeys; the public command"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 205,
+    "source": "// claim state is independent of the owner's remaining workspace review."
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 258,
+    "source": "const signed = await confirmLink(link);"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 263,
+    "source": "assert.equal((await confirmLink(link)).status, 400);"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 719,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 722,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 726,
+    "source": "await withInvitedOperator(page, context, base, state, () => currentDisjointJourney(page, context, base, async (id, name, currentPage) => {"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 730,
+    "source": "await withInvitedOperator(page, context, base, state, () => currentRecentlyDoneJourney(page, context, base, async (id, name, currentPage) => {"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 734,
+    "source": "await withInvitedOperator(page, context, base, state, () => currentNowJourney(page, context, base, async (id, name, currentPage) => {"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 738,
+    "source": "await withInvitedOperator(page, context, base, state, () => currentNextJourney(page, context, base, async (id, name, currentPage) => {"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 747,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 748,
+    "source": "keyboardJourney(page, context, base, record, journey =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 749,
+    "source": "withInvitedOperator(page, context, base, state, journey, `synthetic-vector-${++keyboardFixture}`), { state, sql, evidence }), 'synthetic-vector-1910');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 751,
+    "source": "await withInvitedOperator(page, context, base, state, () => boardJourney(page, context, base, record), 'synthetic-vector-1920');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 754,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 758,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 760,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 763,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 765,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 767,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 769,
+    "source": "await withInvitedOperator(page, context, base, state, () =>"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 779,
+    "source": "await withInvitedOperator(followerPage, followerContext, base, state,"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 784,
+    "source": "// Ordered views and workload use independent invited operators; balance them"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 787,
+    "source": "await withInvitedOperator(page, context, base, state, () => manualOrderJourney(page, context, base, record), 'synthetic-vector-1930');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 788,
+    "source": "await withInvitedOperator(page, context, base, state, () => workloadJourney(page, context, base, record), 'synthetic-vector-1931');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 791,
+    "source": "await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 792,
+    "source": "await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 794,
+    "source": "// Balance the independent project, initiative and release proof with Current;"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 798,
+    "source": "await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 804,
+    "source": "await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 808,
+    "source": "await withInvitedOperator(page, context, base, state, () => cycleMembershipJourney(page, context, base, record), 'synthetic-vector-1934');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 809,
+    "source": "await withInvitedOperator(page, context, base, state, () => subissuesJourney(page, context, base, record), 'synthetic-vector-1935');"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 1206,
+    "source": "\"new issue description has a stable accessible name independent of its draft and Markdown hint\","
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 1688,
+    "source": "// The independent phase retains the same strict browser boundary even"
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "line": 1743,
+    "source": "console.info('[Vector runtime] Starting independent project installation');"
+  }
+]

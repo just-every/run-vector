@@ -1,0 +1,6 @@
+{
+  "command": "cloud_run timeout 900 pnpm test:worker --shard=2/6",
+  "exit": 241,
+  "raw_log_bytes": 404,
+  "safe_observations": []
+}

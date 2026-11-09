@@ -1,0 +1,68 @@
+[
+  {
+    "file": "src/core/features/auth/routes.ts",
+    "main": "e7b7a2e00119e5c701930564ab12c6ec24626ea8",
+    "candidate": "e7b7a2e00119e5c701930564ab12c6ec24626ea8",
+    "identical": true
+  },
+  {
+    "file": "src/core/features/auth/base.server.ts",
+    "main": "0835c14d852e78047331bd91c3592b4bbefdaad8",
+    "candidate": "0835c14d852e78047331bd91c3592b4bbefdaad8",
+    "identical": true
+  },
+  {
+    "file": "src/core/features/auth/repository.ts",
+    "main": "a82fcefa13544f804ae091c986443abd9df24e07",
+    "candidate": "a82fcefa13544f804ae091c986443abd9df24e07",
+    "identical": true
+  },
+  {
+    "file": "vendor/base/operator-auth/routes.mjs",
+    "main": "4d1b8f4707ea453f5f5ab24948c84b16d711b43a",
+    "candidate": "4d1b8f4707ea453f5f5ab24948c84b16d711b43a",
+    "identical": true
+  },
+  {
+    "file": "vendor/base/operator-auth/identity/email-link/index.mjs",
+    "main": "ea394337d109179a48eec05f527f848894c4bf4c",
+    "candidate": "ea394337d109179a48eec05f527f848894c4bf4c",
+    "identical": true
+  },
+  {
+    "file": "vendor/base/operator-auth/config.mjs",
+    "main": "0a2fa607d4c729be47bef71a83d97cac3be883fb",
+    "candidate": "0a2fa607d4c729be47bef71a83d97cac3be883fb",
+    "identical": true
+  },
+  {
+    "file": "vendor/base/operator-auth/accounts/store.mjs",
+    "main": "d74e47d191edfc15388a99e10d7aa297215a78b4",
+    "candidate": "d74e47d191edfc15388a99e10d7aa297215a78b4",
+    "identical": true
+  },
+  {
+    "file": "tests/e2e/core-runtime.mjs",
+    "main": "83fe2d2b641b5e50a01b2b8ab593741df03aa8bb",
+    "candidate": "83fe2d2b641b5e50a01b2b8ab593741df03aa8bb",
+    "identical": true
+  },
+  {
+    "file": "tests/e2e/core-operator-journey.mjs",
+    "main": "733b20b38b5c8982701bf6d1fa03851b19cfef53",
+    "candidate": "733b20b38b5c8982701bf6d1fa03851b19cfef53",
+    "identical": true
+  },
+  {
+    "file": "src/core/app/api.ts",
+    "main": "5bdb7f0f7edfe10f9ddd26d9508929306934b50c",
+    "candidate": "5bdb7f0f7edfe10f9ddd26d9508929306934b50c",
+    "identical": true
+  },
+  {
+    "file": "tests/worker/member-suspension.test.ts",
+    "main": "f8e1c2b89a1c83a3331babc21912f3fa48ff9f2f",
+    "candidate": "f8e1c2b89a1c83a3331babc21912f3fa48ff9f2f",
+    "identical": true
+  }
+]

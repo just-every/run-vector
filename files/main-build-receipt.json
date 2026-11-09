@@ -1,0 +1,6 @@
+{
+  "command": "cloud_run timeout 600 npx -y @runeditrun/rer build (main)",
+  "exit": 0,
+  "raw_log_bytes": 34527,
+  "safe_observations": []
+}

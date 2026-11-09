@@ -1,0 +1,23 @@
+{
+  "run_id": 42575132750,
+  "head": "372dad07fbc6bd9b8245f9431e2f650a8a54f102",
+  "calls": [
+    {
+      "command": "gh api repos/just-every/run-vector/actions/runs/42575132750/jobs --paginate",
+      "result": "three failed jobs returned; saved selected failure metadata"
+    },
+    {
+      "command": "gh run view 42575132750 --repo just-every/run-vector --job 129021332130 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0
+    },
+    {
+      "command": "gh run view 42575132750 --repo just-every/run-vector --job 129021332202 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0
+    }
+  ],
+  "notes": "No assertion log content returned. No archive retries or direct job-log redirects attempted. Original failing assertions are supplied in the assignment and are not treated as locally reproduced until observed."
+}

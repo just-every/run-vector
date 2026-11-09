@@ -1,0 +1,132 @@
+{
+  "candidate": {
+    "fullSequenceUntilEarlierFailure": {
+      "requests": 9,
+      "successful": 9,
+      "refused": 0,
+      "fixedWindows": [
+        {
+          "window": 1993568,
+          "requests": 5
+        },
+        {
+          "window": 1993569,
+          "requests": 4
+        }
+      ],
+      "peakRollingMinute": 4,
+      "peakTokenCount": 1
+    },
+    "fullNativeBucket": {
+      "window": 1993569,
+      "count": 4
+    },
+    "boundary": {
+      "requests": 36,
+      "successful": 35,
+      "refused": 1,
+      "fixedWindows": [
+        {
+          "window": 1993568,
+          "requests": 5
+        },
+        {
+          "window": 1993569,
+          "requests": 31
+        }
+      ],
+      "peakRollingMinute": 27,
+      "peakTokenCount": 1
+    },
+    "lastTwoBoundaryResponses": [
+      {
+        "status": 303,
+        "ip": {
+          "window": 1993569,
+          "count": 30
+        },
+        "tokenBucket": {
+          "window": 1993569,
+          "count": 1
+        },
+        "ipRollingMinute": 26,
+        "tokenRollingMinute": 1
+      },
+      {
+        "status": 429,
+        "ip": {
+          "window": 1993569,
+          "count": 31
+        },
+        "tokenBucket": {
+          "window": 1993569,
+          "count": 1
+        },
+        "ipRollingMinute": 27,
+        "tokenRollingMinute": 1
+      }
+    ],
+    "allNativeCountsReconciled": true
+  },
+  "main": {
+    "fullSequenceUntilEarlierFailure": {
+      "requests": 9,
+      "successful": 9,
+      "refused": 0,
+      "fixedWindows": [
+        {
+          "window": 1993569,
+          "requests": 9
+        }
+      ],
+      "peakRollingMinute": 3,
+      "peakTokenCount": 1
+    },
+    "fullNativeBucket": {
+      "window": 1993569,
+      "count": 9
+    },
+    "boundary": {
+      "requests": 31,
+      "successful": 30,
+      "refused": 1,
+      "fixedWindows": [
+        {
+          "window": 1993569,
+          "requests": 31
+        }
+      ],
+      "peakRollingMinute": 22,
+      "peakTokenCount": 1
+    },
+    "lastTwoBoundaryResponses": [
+      {
+        "status": 303,
+        "ip": {
+          "window": 1993569,
+          "count": 30
+        },
+        "tokenBucket": {
+          "window": 1993569,
+          "count": 1
+        },
+        "ipRollingMinute": 21,
+        "tokenRollingMinute": 1
+      },
+      {
+        "status": 429,
+        "ip": {
+          "window": 1993569,
+          "count": 31
+        },
+        "tokenBucket": {
+          "window": 1993569,
+          "count": 1
+        },
+        "ipRollingMinute": 22,
+        "tokenRollingMinute": 1
+      }
+    ],
+    "allNativeCountsReconciled": true
+  }
+}

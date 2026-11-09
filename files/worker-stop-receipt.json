@@ -1,0 +1,8 @@
+{
+  "command": "cloud_run timeout 900 pnpm test:worker --shard=2/6",
+  "stoppedAt": "2026-11-09T08:25:11.433730+00:00",
+  "elapsedSecondsAtInspection": 336,
+  "reason": "The brief explicitly requires stopping BLOCKED without product changes when the unchanged confirmation path is shown to fail solely from the shared harness client bucket. Candidate and main native public-door probes both demonstrated that boundary.",
+  "signal": "SIGTERM sent only to the owned timeout process group 5643",
+  "observedBeforeStop": "Vitest started; no individual results or 120000ms assertion were emitted. No timeout cause or main comparison is claimed."
+}
