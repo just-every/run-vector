@@ -1,3 +1,5 @@
+import {reconcileRuleDeliveries} from '../features/automation-rules/failures';
+import {evaluateRules} from '../features/automation-rules/evaluation';
 import {advanceSlas} from '../features/slas/service';
 import {processSubscriptionQueue} from '../features/subscriptions/process';
 import { runReportExports } from '../features/report-exports/scheduled';
@@ -34,10 +36,12 @@ export async function scheduled(
     runHousekeeping(env, now),
     settleInterruptedEmailIntake(env, now),
   ]);
+  await evaluateRules(env,now);
   await processSubscriptionQueue(env);
   // Route notifications after scheduled Inbox producers finish, including SQL automation.
   await drainNotificationMail(env, { scheduled: true, now });
   await drainNotificationDigests(env, { now });
   await dispatchWebhooks(env);
+  await reconcileRuleDeliveries(env,now);
   await runReportExports(env, now);
 }

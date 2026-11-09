@@ -1,3 +1,4 @@
+import {labelAddedStatements} from '../automation-rules/triggers';
 import { issueReferenceStatements } from "../issue-references/repository";
 import { titleEventStatement } from "../agent-door/title-event";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
@@ -393,6 +394,7 @@ export async function planIssueUpdate(
   const mutationIndex = writes.length - 1;
   if ("description" in values) writes.push(...issueReferenceStatements(binding, event, values.description as string));
   writes.push(...finalizeEvent(binding, event));
+  if (labelsChanged) writes.push(...labelAddedStatements(binding,event,nextLabels.filter(id => !oldLabels.includes(id))));
   return {
     where,
     guardValues,

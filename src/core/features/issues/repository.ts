@@ -1,3 +1,4 @@
+import {labelAddedStatements} from '../automation-rules/triggers';
 import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import { requireIssueAccess } from './access'
@@ -149,7 +150,7 @@ export async function planIssueRecord(binding: D1Database, request: CreateIssueR
   const writes = [...(request.allocation?.writes ?? []), creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, { ...request.input, fieldValues: fields.checked }, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
-    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...(request.commitStatements?.(binding,identifier) ?? [])]
+    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...labelAddedStatements(binding,event,request.input.labelIds), ...(request.commitStatements?.(binding,identifier) ?? [])]
   if (request.input.assigneeOperatorId) writes.unshift(binding.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL) THEN 1 ELSE json('assignee unavailable') END").bind(request.input.assigneeOperatorId,team.workspaceId))
   return { identifier, issueId, writes }
 }
