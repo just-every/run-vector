@@ -13,6 +13,12 @@
       "sha256": "c32119495dd683aba700ce6df9993038d620600ba60937240c55c0e367cf52f3"
     },
     {
+      "blob": "2c42549f09bb3c5b6348e92df27f26148d94a20f",
+      "bytes": 12445,
+      "path": "candidate-runs.json",
+      "sha256": "e9a0e643239ee316f496f6fe66eb4c797aef7133677bd085f32796ee2678aaae"
+    },
+    {
       "blob": "d1881b86cefd9936c829ec2b834bf9608bf9eb23",
       "bytes": 3141,
       "path": "check-plan.mjs",
@@ -37,6 +43,12 @@
       "sha256": "3cf2dece9d801d1355b94460f520fb98d2fb6cdeb6f6acde86deb3afed095e4f"
     },
     {
+      "blob": "866e9d0ceb04f4d03bdbfb6120692035af07a60b",
+      "bytes": 12,
+      "path": "ci-run-id.txt",
+      "sha256": "6cf940f5be42a17937e2afc46af19f3b2ec55a9843e62a31ca6c771a188edb12"
+    },
+    {
       "blob": "10f78a5cb99f09f83452cd8e3c124ec27c87102a",
       "bytes": 179,
       "path": "ci-status.json",
@@ -47,6 +59,12 @@
       "bytes": 8095,
       "path": "command-timings.json",
       "sha256": "aa5200908267d84b0105761b31bbf4f84a1042c21ef32483379eb5876a07bbdc"
+    },
+    {
+      "blob": "a06da27f4dd4a196eca5fbfe6280b5ac3541d1b0",
+      "bytes": 36514,
+      "path": "earlier-green-jobs.json",
+      "sha256": "38a73daad32beb5a24804f5854b94f11aae9af606dc2d643aa7daf4eff8b24b7"
     },
     {
       "blob": "1fb46087c567a6a724ef17ec4cff7d4398e79d86",
@@ -103,6 +121,18 @@
       "sha256": "46946890926870f73464743aba36fae8ba5dc70003d2cb25eb3c115ac42ab126"
     },
     {
+      "blob": "67e26629355edfa1e8f0837d6d0b49879a3fbe20",
+      "bytes": 40047,
+      "path": "prior-attempt-1-jobs.json",
+      "sha256": "2f5dd6f349cceb78e0bb2d11c2c0dac59c91e190644570c86469d407580c04af"
+    },
+    {
+      "blob": "72d832693729510c0e0fda603b035822f8e2dc93",
+      "bytes": 40077,
+      "path": "prior-attempt-2-jobs.json",
+      "sha256": "0987bda734012a94b5140b3b9d92a0f59b86496c5cd6a30e0ea081d85d6e9acf"
+    },
+    {
       "blob": "82bfea39f3936ef6877327b1887f4d217ffd09fc",
       "bytes": 926,
       "path": "product-push.txt",
@@ -113,6 +143,12 @@
       "bytes": 1421,
       "path": "scope-receipt.json",
       "sha256": "d7e0e5249757f4d8962da527b8720bfc9ba332cf3b62c3690645816f21d9d4c3"
+    },
+    {
+      "blob": "2251f3b7ecee3d15afd3cddd299f98160b93d25b",
+      "bytes": 659,
+      "path": "selected-files.json",
+      "sha256": "893eb09d296706f5308de8cb6f717fcee87c3cffe8a3442bb632d58f2c8508eb"
     },
     {
       "blob": "765cfcfa393a348e8e1ea349004461033da8e761",
