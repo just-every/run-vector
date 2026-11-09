@@ -9,13 +9,12 @@ import { personValues, relatedMatchers, type ErasureSubject } from './subject';
 /** Workers' D1 prepared statements carry their text and bindings as `statement` and `params`. */
 const asD1Sql = (prepared: D1PreparedStatement) => { const { statement, params } = prepared as unknown as { statement: string; params: unknown[] }; return { sql: statement, params: [...params] }; };
 
-/** A current member is never erased by name or email: OPS-004 removal comes first.
- * Removal already replaces their email and name on the operator and sign-in rows
- * (migration 0011's removal trigger) and revokes their sessions and tokens, so an
- * erased person's values remain only where imports copied them. */
+const activePeopleSql = `SELECT 1 FROM main.operators WHERE removed_at IS NULL AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)))
+    UNION ALL SELECT 1 FROM oa_operators WHERE status<>'inactive' AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(display_name)) IN (SELECT value FROM json_each(?))) LIMIT 1`;
+
+/** Active native members and invitations must be removed before personal-data erasure. */
 async function refuseActive(db: D1Database, values: string[]) {
-  const active = await db.prepare(`SELECT 1 FROM operators WHERE removed_at IS NULL AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)))
-    UNION ALL SELECT 1 FROM oa_operators WHERE status<>'inactive' AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(display_name)) IN (SELECT value FROM json_each(?))) LIMIT 1`)
+  const active = await db.prepare(activePeopleSql)
     .bind(...Array(4).fill(JSON.stringify(values))).first();
   if (active) throw new ImportError(409, 'operator_active', 'This email or name belongs to a current operator or invitation. Remove them in Settings first; removal transfers their work.');
   // Door outcomes, reviews and pending arguments can retain imported text.
@@ -48,7 +47,25 @@ export async function previewPersonErasure(db: D1Database, subject: ErasureSubje
 export async function erasePerson(db: D1Database, files: R2Bucket, actor: ImportActor, subject: ErasureSubject) {
   const values = personValues(subject);
   await refuseActive(db, values);
-  const product = await importedStatements(db, values, new Date().toISOString());
+  const at = new Date().toISOString();
+  const product = await importedStatements(db, values, at);
+  // Before suspension existed, native removal had already anonymized these
+  // identities. Preserve that existing erase outcome after reversible removal;
+  // this is not ROLE-012's separate member preview and confirmation flow.
+  const matchingRemoved = `SELECT id FROM main.operators WHERE workspace_id=? AND removed_at IS NOT NULL
+    AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(name)) IN (SELECT value FROM json_each(?)))`;
+  const matchingValues = [actor.workspace, JSON.stringify(values), JSON.stringify(values)];
+  product.statements.push(
+    // Native title events kept the member's name during suspension. Explicit
+    // erasure restores the existing event redaction before any agent admission.
+    {sql:`UPDATE agent_door_events SET event=json_set(event,'$.actor.person.name','Removed operator')
+      WHERE json_extract(event,'$.type')='issue.updated' AND json_extract(event,'$.actor.kind')='person'
+      AND json_extract(event,'$.actor.person.id') IN(${matchingRemoved})`,params:matchingValues},
+    {sql:`UPDATE oa_operators SET email=(SELECT operator_id||'@removed.invalid' FROM vector_auth_operators WHERE auth_id=oa_operators.id),display_name='Removed operator'
+      WHERE id IN(SELECT auth_id FROM vector_auth_operators WHERE operator_id IN(${matchingRemoved}))`,params:matchingValues},
+    {sql:`UPDATE operators SET name='Removed operator',email=id||'@removed.invalid',suspended_at=NULL,suspended_by=NULL,updated_at=?
+      WHERE id IN(${matchingRemoved})`,params:[at,...matchingValues]},
+  );
   const portability = await createVectorArchive({ db, files });
   const checkpoint = [...await portability.invalidateTransfersStatements(), ...await portability.redactionStatements()].map(asD1Sql);
   const context = importContext(db, actor, 'vector-erasure', 'native-v1');
@@ -56,7 +73,7 @@ export async function erasePerson(db: D1Database, files: R2Bucket, actor: Import
   await reindex(context);
   try {
     const { nativeResults: _, ...journal } = await retireD1ImportCustody({ target: { kind: 'person', id: 'erased:' + values.join('\u0000') }, values: subject.email ? [subject.email] : [], related: relatedMatchers(values) },
-      [{sql:"SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM agent_door_agents) THEN 1 ELSE json('IMPORT_ATOMIC_GUARD') END",params:[]},...product.statements, auditStatement({workspace:actor.workspace,actor:actor.id,action:'person.erased',subject:'erasure:'+crypto.randomUUID()})], context, checkpoint);
+      [{sql:`SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM agent_door_agents) AND NOT EXISTS(${activePeopleSql}) THEN 1 ELSE json('IMPORT_ATOMIC_GUARD') END`,params:Array(4).fill(JSON.stringify(values))},...product.statements, auditStatement({workspace:actor.workspace,actor:actor.id,action:'person.erased',subject:'erasure:'+crypto.randomUUID()})], context, checkpoint);
     await reindex(context);
     return { journal, imported: product.counts };
   } catch (error) {

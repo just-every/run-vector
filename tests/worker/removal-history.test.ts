@@ -4,7 +4,7 @@ import { beforeAll, expect, inject, it } from "vitest";
 import { fixture } from "./removal-fixture";
 import { createUlid } from "../../src/core/shared/ids";
 beforeAll(async () => applyD1Migrations(env.DB, inject("migrations")));
-it("[OPS-004 ISSUE-007] removal changes only known operator references and preserves arbitrary JSON keys, values and native reads", async () => {
+it("[OPS-004 ISSUE-007] suspension keeps names and native operator references, arbitrary JSON values and native reads", async () => {
   const f = await fixture();
   const customFields = {
     allocations: { [f.member]: 3 },
@@ -66,12 +66,7 @@ it("[OPS-004 ISSUE-007] removal changes only known operator references and prese
     const row = await env.DB.prepare("SELECT * FROM issue_activity WHERE id=?")
       .bind(original.id)
       .first();
-    const expected = JSON.parse(original.next_value_json as string);
-    expected.assigneeOperatorId = null;
-    expect(row).toEqual({
-      ...original,
-      next_value_json: JSON.stringify(expected),
-    });
+    expect(row).toEqual(original);
   }
   expect(
     (
@@ -89,7 +84,7 @@ it("[OPS-004 ISSUE-007] removal changes only known operator references and prese
   ).toBe(0);
 });
 
-it("[OPS-004] project transfer anonymizes only native lead references and retains payload data and timestamps", async () => {
+it("[OPS-004] suspension transfers projects while keeping actor names, lead history, payloads and timestamps", async () => {
   const f = await fixture(),
     project = createUlid(new Date()),
     activity = createUlid(new Date());
@@ -127,11 +122,7 @@ it("[OPS-004] project transfer anonymizes only native lead references and retain
     await env.DB.prepare("SELECT * FROM project_activity WHERE id=?")
       .bind(activity)
       .first(),
-  ).toEqual({
-    ...before,
-    actor_operator_id: null,
-    previous_value_json: JSON.stringify({ ...previous, leadOperatorId: null }),
-  });
+  ).toEqual(before);
   expect(
     (await env.DB.prepare("SELECT lead_operator_id FROM projects WHERE id=?")
       .bind(project)

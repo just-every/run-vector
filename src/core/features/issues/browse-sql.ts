@@ -4,7 +4,7 @@ import type { IssueListQuery } from "./list-schema";
 // Every optional record projection is constrained to the issue's workspace.
 export const browseJoins = `FROM issues i JOIN teams t ON t.id=i.team_id
  JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=t.id
- LEFT JOIN operators a ON a.id=i.assignee_operator_id AND a.workspace_id=t.workspace_id AND a.removed_at IS NULL
+ LEFT JOIN operators a ON a.id=i.assignee_operator_id AND a.workspace_id=t.workspace_id AND (a.removed_at IS NULL OR a.suspended_at IS NOT NULL)
  LEFT JOIN projects p ON p.id=i.project_id AND p.workspace_id=t.workspace_id
  LEFT JOIN cycles c ON c.id=i.cycle_id AND c.team_id=t.id
  LEFT JOIN project_milestones m ON m.id=i.milestone_id AND m.project_id=p.id

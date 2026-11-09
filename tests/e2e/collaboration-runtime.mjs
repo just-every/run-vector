@@ -38,7 +38,8 @@ await contract(
     try {
       browser = await chromium.launch({
         headless: true,
-        args: ["--use-mock-keychain", "--password-store=basic"],
+        executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
+        args: ["--use-mock-keychain", "--password-store=basic", ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? ["--no-sandbox"] : [])],
       });
       for (const viewport of [
         { width: 1440, height: 1000 },

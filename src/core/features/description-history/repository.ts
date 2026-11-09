@@ -6,7 +6,7 @@ import type { ChecklistInput, DescriptionRestoreInput } from "./schema";
 
 export async function readDescriptionHistory(db: D1Database, identifier: string, actor: string) {
   const issue = await requireIssueAccess(db, identifier, actor);
-  const revisions = (await db.prepare(`SELECT r.id,r.description,COALESCE(r.actor_name,o.name) actor,r.created_at createdAt,r.version
+  const revisions = (await db.prepare(`SELECT r.id,r.description,CASE WHEN o.suspended_at IS NOT NULL THEN o.name ELSE COALESCE(r.actor_name,o.name) END actor,r.created_at createdAt,r.version
     FROM issue_description_revisions r LEFT JOIN operators o ON o.id=r.actor_operator_id
     WHERE r.issue_id=? ORDER BY r.created_at,r.rowid`).bind(issue.id).all<{
       id: string; description: string; actor: string | null; createdAt: string; version: number | null;

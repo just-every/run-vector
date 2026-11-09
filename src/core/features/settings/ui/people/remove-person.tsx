@@ -13,9 +13,9 @@ export function RemovePerson({ person, own, lastOwner, ownerSetUp }: { person: P
   const shell = useSettingsShell();
   const navigate = useNavigate();
   const [asking, setAsking] = useState(false);
-  const label = own ? 'Leave workspace' : `Remove ${person.name}`;
-  if (lastOwner) return <p className="field-hint">The last Owner cannot be removed.</p>;
-  if (!ownerSetUp) return <p className="field-hint">Removing people needs the installation owner. Ask whoever set up Vector to finish owner setup first.</p>;
+  const label = own ? 'Leave workspace' : `Suspend ${person.name}`;
+  if (lastOwner) return <p className="field-hint">The last Owner cannot be suspended.</p>;
+  if (!ownerSetUp) return <p className="field-hint">Suspending people needs the installation owner. Ask whoever set up Vector to finish owner setup first.</p>;
   async function remove() {
     const result = await fetchJson(`/api/settings/operators/${person.id}`, removed, { method: 'DELETE' });
     if (result.signedOut) { window.location.assign('/signin'); return; }
@@ -24,8 +24,8 @@ export function RemovePerson({ person, own, lastOwner, ownerSetUp }: { person: P
   }
   return <div className="person-remove">
     {!asking && <button type="button" className="link-button danger" onClick={() => setAsking(true)}>{label}</button>}
-    {asking && <ConfirmLine question={own ? 'Leave this workspace?' : 'Remove this member?'} confirm="Confirm removal" danger
-      detail={`${own ? 'Your sessions will end.' : 'Their sessions will end.'} Open issues will be unassigned, and projects and shared views will transfer. Retained history will show an anonymous member.`}
+    {asking && <ConfirmLine question={own ? 'Leave this workspace?' : 'Suspend this member?'} confirm="Confirm suspension" danger
+      detail={`${own ? 'Your sessions will end.' : 'Their sessions will end.'} Open issues will be unassigned, and projects and shared views will transfer. Their name, history, team memberships and private views will be kept while access is suspended.`}
       onConfirm={remove} onCancel={() => setAsking(false)} />}
   </div>;
 }

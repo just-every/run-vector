@@ -14,6 +14,7 @@ export type AuditQuery = z.infer<typeof auditQuerySchema>;
 export const auditEntrySchema = z.object({
   id: z.string(), actorRef: z.string(), actorKind: z.enum(actorKinds),
   actorName: z.string().nullable(), action: z.string(), subjectRef: z.string(), at: z.string(),
+  method: z.enum(['settings', 'self', 'invitation']).nullable().optional(),
 });
 export type AuditEntry = z.infer<typeof auditEntrySchema>;
 export const auditSchema = z.object({ entries: z.array(auditEntrySchema), through: z.number().int().nonnegative() });

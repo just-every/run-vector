@@ -85,9 +85,9 @@ export function enrichIssueDetail(
   const actors = new Map(
     actorRows.map((row) => [row.id, row.actor_name]),
   );
-  const activity = detail.activity.map((row) => ({
+  const activity = detail.activity.map(({ preferOperatorName, ...row }) => ({
     ...row,
-    actor: actors.get(row.id) ?? row.actor,
+    actor: preferOperatorName ? row.actor : actors.get(row.id) ?? row.actor,
   }));
   return { ...detail, fields: fieldProjection(fieldResult.results), specification:(specificationResult.results[0] as SpecificationRow|undefined)??null, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
 }
@@ -178,6 +178,11 @@ export function buildIssueDetail(
       kind: item.kind,
       at: item.createdAt,
       actor: activityActor(snapshot, item.actorOperatorId, item.id),
+      // A suspended person's marked name is already in this snapshot. Agents
+      // keep their stored attribution independently of their sponsor's state.
+      preferOperatorName: item.agentId === null && snapshot.operators.some(
+        (operator) => operator.id === item.actorOperatorId && operator.suspendedAt !== null,
+      ),
       previousValue:
         item.previousValueJson === null
           ? null
@@ -247,7 +252,7 @@ export function buildIssueDetail(
       name: team.name,
       identifierPrefix: team.identifierPrefix,
     },
-    assignee: assignee && { id: assignee.id, name: assignee.name },
+    assignee: assignee && { id: assignee.id, name: assignee.name, suspended: assignee.suspendedAt !== null },
     project: project && {
       id: project.id,
       name: project.name,

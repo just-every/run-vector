@@ -24,7 +24,7 @@ it("[OPS-004 BASE-DATA-001] a failed cascade rolls back removal, revocation and 
     .bind(target)
     .all();
   await env.DB.exec(
-    "CREATE TRIGGER synthetic_audit_failure BEFORE INSERT ON audit_records WHEN NEW.action='operator.removed' BEGIN SELECT RAISE(ABORT,'synthetic storage failure'); END;",
+    "CREATE TRIGGER synthetic_audit_failure BEFORE INSERT ON audit_records WHEN NEW.action='operator.suspended' BEGIN SELECT RAISE(ABORT,'synthetic storage failure'); END;",
   );
   try {
     const failed = await f.call(`/settings/operators/${target}`, "DELETE");
@@ -36,7 +36,7 @@ it("[OPS-004 BASE-DATA-001] a failed cascade rolls back removal, revocation and 
         .first("removed_at"),
     ).toBeNull();
     expect(
-      await env.DB.prepare("SELECT count(*) AS n FROM operator_removals").first(
+      await env.DB.prepare("SELECT count(*) AS n FROM member_lifecycle_events").first(
         "n",
       ),
     ).toBe(0);

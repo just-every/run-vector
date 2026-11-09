@@ -83,6 +83,8 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "email.reply": { session: async (_who, actor, teamId) => { const intake=await seedIntakeForTeam(teamId,w.cookie); return async () => (await recordedReply(actor.cookie,intake.identifier,"The team is investigating.")).response; } },
     "members.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `invitee${unique()}@roles.test`, displayName: "Invitee", role: "member" }) },
     "leaders.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `leader${unique()}@roles.test`, displayName: "Leader", role: "admin" }) },
+    "members.reactivate": { session: async (_who, actor) => { const target = await w.fresh('member'); expect((await owner.call(`/settings/operators/${target.id}/suspend`,'POST',{assignments:'keep'})).status).toBe(200); return () => actor.call(`/settings/operators/${target.id}/reactivate`,'POST',{}); } },
+    "leaders.reactivate": { session: async (_who, actor) => { const target = await w.fresh('admin'); expect((await owner.call(`/settings/operators/${target.id}/suspend`,'POST',{assignments:'keep'})).status).toBe(200); return () => actor.call(`/settings/operators/${target.id}/reactivate`,'POST',{}); } },
     "workspace.leave": { session: async (who) => { const leaving = await w.fresh(who); return () => leaving.call(`/settings/operators/${leaving.id}`, "DELETE"); } },
     "workspace.settings": { session: async (_who, actor) => () => actor.call("/settings", "PATCH", { timezone: "UTC" }) },
     "teams.creation-setting": { session: async (_who, actor) => () => actor.call("/settings/teams/creation", "PUT", {membersMayCreate: false}) },

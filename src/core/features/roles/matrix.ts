@@ -34,6 +34,8 @@ export const matrix = {
   'releases.write': row('Create, edit or release a release (RELEASE-001)', 'yes', 'yes', 'teams', 'no'),
   'members.manage': row('Invite, or remove by suspension, Members and Guests (OPS-002, OPS-004, ROLE-011)', 'yes', 'yes', 'member-invites', 'no'),
   'leaders.manage': row('Invite, promote to, or remove by suspension Owners and Admins (OPS-002, ROLE-001, ROLE-011)', 'yes', 'no', 'no', 'no'),
+  'members.reactivate': row('Open suspended members and their activity; reactivate a suspended Member or Guest (ROLE-011)', 'yes', 'yes', 'no', 'no'),
+  'leaders.reactivate': row('Reactivate a suspended former Owner or Admin (ROLE-011)', 'yes', 'no', 'no', 'no'),
   'workspace.leave': row('Leave the workspace oneself, which suspends (OPS-004, ROLE-011)', 'yes', 'yes', 'yes', 'yes', 'yes'),
   'workspace.settings': row('Change workspace settings: timezone, the invite, label-creation and deletion settings, notification defaults (OPS-003, OPS-002, ISSUE-014, ISSUE-010, NOTIFY-007)', 'yes', 'yes', 'no', 'no'),
   'teams.creation-setting': row('Set who may create teams (TEAM-008)', 'yes', 'yes', 'no', 'no'),

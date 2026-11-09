@@ -1,3 +1,5 @@
+import { addMemberLifecycleRoutes } from '../member-lifecycle/routes';
+import { reactivateOperator } from '../member-lifecycle/reactivation';
 import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
 import { invitationDatabase } from "./invitation-database";
 import { settingsActor } from "./repository";
@@ -19,6 +21,7 @@ import { readAppearance, updateAppearance } from "./appearance";
 import { appearanceSchema } from "./appearance-schema";
 
 export function addSettingsRoutes(app: Hono<AppEnvironment>) {
+  addMemberLifecycleRoutes(app);
   app.get("/settings/appearance", async (c) => {
     try {
       return c.json(await readAppearance(c.env.DB, c.get("operatorId")));
@@ -90,6 +93,13 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       // Base issues its implementation owner link; the product role travels
       // with that link and is granted when it is accepted.
       const actor = await settingsActor(c.env.DB, c.get("operatorId"));
+      const suspended = await c.env.DB.prepare('SELECT id FROM operators WHERE workspace_id=? AND lower(email)=? AND suspended_at IS NOT NULL')
+        .bind(actor.workspace_id,invitee.email.trim().toLowerCase()).first<{id:string}>();
+      if (suspended) {
+        const restored = await reactivateOperator(c.env.DB,c.get('operatorId'),suspended.id,'invitation');
+        await baseAuth(c.env).requestMagicLink(c.req.raw,{email:invitee.email,returnTo:'/app'});
+        return c.json({...restored,status:'reactivated',delivery:localMailEnabled(c.env)?'local':'email'},202);
+      }
       if (['guest','viewer'].includes(role) && !['owner','admin'].includes(actor.role)) return c.json({error:'forbidden'},403);
       const teams = ['guest','viewer'].includes(role) ? await guestTeams(c.env.DB,actor.workspace_id,teamIds,role==='guest') : [];
       const result = await baseAuth({...c.env, DB: invitationDatabase(c.env.DB,c.get("operatorId"),invitee.email.trim().toLowerCase(),role,teams)}).invite(c.req.raw, {

@@ -1,3 +1,4 @@
+import { suspendedAgentCredential } from '../member-lifecycle/agent-credentials';
 import { createAgentDoor, type Trust } from '../../../../vendor/base/agent-door/index.ts';
 import { createBusinessSettings } from '../../../../vendor/base/business-settings/index.ts';
 import { nativePeople } from './people';
@@ -38,6 +39,8 @@ export async function agentResponse(env:WorkerBindings,request:Request):Promise<
   const path=new URL(request.url).pathname;
   if(!['/mcp','/agents','/agent.json','/llms.txt','/rer-business-logo','/rer-business.css'].includes(path) && !path.startsWith('/.well-known/') && !path.startsWith('/api/rer/') && !path.startsWith('/agents/'))return null;
   try {
+    if(path==='/mcp' && await suspendedAgentCredential(env,request))
+      return Response.json({code:'unauthenticated'},{status:401,headers:{'Cache-Control':'no-store'}});
     if(path==='/api/rer/business-settings' && !await env.DB.prepare(`SELECT 1 FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
       JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id WHERE o.removed_at IS NULL AND a.status='active'`).first())return Response.json({code:'native_owner_required'},{status:403});
     return await (await businessSettings(env)).handle(request) ?? await vectorAgentDoor(env).handle(request);}

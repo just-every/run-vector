@@ -97,7 +97,7 @@ export const issueListRowSchema = z.object({
   checklist: z.object({ completed: z.number(), total: z.number() }).optional(),
   status: z.object({ id: z.string(), name: z.string(), category: z.string() }),
   priority: z.enum(["urgent", "high", "medium", "low", "none"]),
-  assignee: named.nullable(),
+  assignee: named.extend({ suspended: z.boolean().optional() }).nullable(),
   team: named,
   project: named.nullable(),
   cycle: named.nullable(),
