@@ -1,0 +1,7 @@
+{
+  "command": "cloud_run timeout 900 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+  "exit": 1,
+  "completed": ["dependency install", "production build", "local migrations through 0139"],
+  "failure": "Temporary dev listener readiness deadline exceeded: expected internal port 30641; application listened on 42669, 40209, 41785.",
+  "scope": "Installer dev listener failure; tests-only lease does not change installer or product code. Direct emitted-Worker harness validation follows."
+}

@@ -1,0 +1,8 @@
+{
+  "command": "node tests/e2e/core-runtime.mjs",
+  "exit": 1,
+  "elapsedSeconds": 956.89,
+  "failure": "tests/e2e/core-boolean-filter-journey.mjs:106 -> rows():49 after saving a Boolean-expression view; observed [] instead of the two synthetic issue identifiers.",
+  "capture": "boolean-failure-0.png shows Loading filter choices\u2026 and Loading issues\u2026 after the helper had matched a ready list.",
+  "next": "Rerun the unchanged assertion in serial after native comparisons finish; do not edit the out-of-lease Boolean helper or product."
+}

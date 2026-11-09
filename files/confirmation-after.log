@@ -1,0 +1,94 @@
+(node:11338) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Invitation confirmation ledger] {"client":"loopback","limit":30,"peak":1,"buckets":[{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1}]}
+{"head":"372dad07fbc6bd9b8245f9431e2f650a8a54f102","exit":0,"confirmations":[{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303},{"count":1,"status":303}],"ledger":{"client":"loopback","limit":30,"peak":1,"buckets":[{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1},{"window":1993575,"count":1}]},"scope":"Fresh migrated fixture: owner plus 30 genuinely invited operators all confirm once with 303. Only the loopback confirmation IP bucket is reset between invited journeys; no retries or other bucket resets."}

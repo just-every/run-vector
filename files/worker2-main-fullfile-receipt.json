@@ -1,0 +1,6 @@
+{
+  "head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "command": "cloud_run timeout --signal=TERM --kill-after=30 1200 pnpm test:worker tests/worker/role-matrix.test.ts",
+  "exit": 241,
+  "result": "Cancelled the owned full-file command after the exact candidate case reproduced the hosted 120-second timeout; replacing this run with the same focused case on main. No main pass/fail inferred from cancellation."
+}

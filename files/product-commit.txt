@@ -1,0 +1,13 @@
+commit f9c085216b307ca884a4303b32095abc2496f5fc
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Mon Nov 9 09:57:04 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Mon Nov 9 09:57:04 2026 +0000
+
+    Reset local invitation confirmation IP budget between journeys
+
+ sources.lock.json                      |  8 ++++++--
+ tests/e2e/core-confirmation-budget.mjs | 33 +++++++++++++++++++++++++++++++++
+ tests/e2e/core-operator-journey.mjs    |  2 ++
+ tests/e2e/core-runtime.mjs             |  3 ++-
+ 4 files changed, 43 insertions(+), 3 deletions(-)

@@ -1,0 +1,11 @@
+{
+  "head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "command": "cloud_run timeout --signal=TERM --kill-after=30 600 pnpm test:worker tests/worker/role-matrix.test.ts --reporter=verbose -t 'current private and invited teams scope native'",
+  "exit": 1,
+  "assertion": "Test timed out in 120000ms",
+  "test": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+  "line": 527,
+  "vitestCaseMilliseconds": 123162,
+  "vitestDurationSeconds": 182.08,
+  "decision": "Same timeout on main: leave unchanged per brief; no timeout raised."
+}

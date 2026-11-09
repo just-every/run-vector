@@ -1,0 +1,61 @@
+{
+  "runId": 42597325035,
+  "head": "f9c085216b307ca884a4303b32095abc2496f5fc",
+  "calls": [
+    {
+      "at": "2026-11-09T10:35:20.235938+00:00",
+      "command": [
+        "gh",
+        "api",
+        "repos/just-every/run-vector/actions/runs/42597325035/jobs?per_page=100"
+      ],
+      "purpose": "completed-run diagnostics",
+      "exit": 0,
+      "responseFile": "ci-jobs.json",
+      "bytes": 36496
+    },
+    {
+      "at": "2026-11-09T10:40:20.245369+00:00",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42597325035",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "129093509390",
+        "--log-failed"
+      ],
+      "purpose": "completed-run diagnostics",
+      "exit": 0,
+      "responseFile": "ci-failed-job-1.log",
+      "bytes": 1798959
+    }
+  ],
+  "failedJobs": [
+    {
+      "id": 129093509390,
+      "name": "shards (worker-2, true, true, true)",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "f9c085216b307ca884a4303b32095abc2496f5fc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42597325035/job/129093509390"
+    },
+    {
+      "id": 129103815953,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "f9c085216b307ca884a4303b32095abc2496f5fc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42597325035/job/129103815953"
+    }
+  ],
+  "selectedJobId": 129093509390,
+  "archiveExit": 0,
+  "unreadFailedJobs": [
+    129103815953
+  ],
+  "archiveEmpty": false,
+  "budgetUsed": 10
+}

@@ -1,0 +1,6 @@
+{
+  "head": "372dad07fbc6bd9b8245f9431e2f650a8a54f102",
+  "command": "cloud_run timeout 1200 pnpm test:worker --shard=2/6",
+  "exit": 124,
+  "result": "20-minute outer command deadline reached without per-file results; does not establish the specific native 120-second assertion timeout. Focused verbose reproduction follows."
+}

@@ -1,0 +1,62 @@
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/sub-team-filter.test.ts tests/worker/base-auth.test.ts --reporter\=verbose
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+ ✓ tests/worker/base-auth.test.ts > [OPS-001 OPS-002 TEAM-002 ROLE-001] configured bootstrap atomically maps one Base operator as the installation Owner and remains idempotent 102ms
+ ✓ tests/worker/base-auth.test.ts > [BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once and unfinished owner review takes precedence 141ms
+ ✓ tests/worker/base-auth.test.ts > [OPS-001 OPS-002 ROLE-001 BASE-ACCESS-002] unauthorized invites make no records; a Member invites only Members, only while the workspace allows it, and removes nobody else 378ms
+ ✓ tests/worker/base-auth.test.ts > [BASE-ACCESS-001] remote configuration fails visibly and legacy local credentials cannot authenticate a remote deployment 9ms
+ ✓ tests/worker/base-auth.test.ts > [BASE-ACCESS-001] real Base SendGrid serialization and rejected/uncertain delivery revoke links without retry or local fallback 59ms
+ ✓ tests/worker/base-auth.test.ts > [CAL-001 OPS-004 BASE-ACCESS-002] removal revokes calendar capabilities, Base sessions, unused links and invitations issued by the removed actor 2133ms
+ ✓ tests/worker/base-auth.test.ts > [OPS-004 BASE-ACCESS-002] a Base session revoked after validation cannot commit an application mutation 152ms
+ ✓ tests/worker/base-auth.test.ts > [BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine Base secure session and signout revokes it 116ms
+ ✓ tests/worker/base-auth.test.ts > [OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner remains, who succeeds them, and the last Owner cannot leave 134ms
+ ✓ tests/worker/sub-teams.test.ts > [TEAM-006 TEAM-007 TEAM-008 ROLE-007 OPS-001] team hierarchy, membership, workflow and paged visible issues retain identity and current access 99376ms
+ ✓ tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door 2288ms
+ ✓ tests/worker/sub-teams.test.ts > [TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody 4198ms
+ ✓ tests/worker/sub-teams.test.ts > [TEAM-006 REPORT-003] browser-parsed full-list links retain explicit sub-team inclusion and exclusion 4321ms
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners
+PROBE planning: root=403; hierarchy=403; child Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners
+PROBE child permission door: Member -> 403; Owner -> 200
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners
+PROBE settings: root=403; hierarchy=403; child Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners
+PROBE child permission door: Member -> 403; Owner -> 200
+
+ ✓ tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners 6993ms
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT call same-value inherited reparent Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT call inherited reparent Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT call inherited permission switch Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT api same-value inherited reparent Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT api inherited reparent Member=403
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT api inherited permission switch Member=403
+
+ ✓ tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority 6249ms
+ ✓ tests/worker/sub-team-filter.test.ts > [TEAM-006] parent lists accept boolean, string, quoted and encoded sub-team filters and reject garbage 9674ms
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  09:33:13
+   Duration  223.37s (transform 20.40s, setup 0ms, import 76.51s, tests 138.38s, environment 0ms)
+

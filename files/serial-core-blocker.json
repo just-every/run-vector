@@ -1,0 +1,9 @@
+{
+  "exit": 1,
+  "elapsedSeconds": 515.6,
+  "command": "cloud_run timeout --signal=TERM --kill-after=30 3600 node tests/e2e/core-runtime.mjs",
+  "scope": "Serial runtime with no other validation process",
+  "failure": "core-boolean-filter-journey.mjs:106 -> rows():49; saved-view navigation produced [] while two synthetic issues were expected. Same failure as initial concurrent attempt.",
+  "invitationResult": "All invitation 303 assertions reached before the failure passed; complete sequence not achieved.",
+  "decision": "Do not edit the out-of-lease Boolean saved-view readiness helper, weaken assertions, or claim three full passing runs."
+}

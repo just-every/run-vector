@@ -1,0 +1,6 @@
+(node:7138) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+{"head":"372dad07fbc6bd9b8245f9431e2f650a8a54f102","before":[{"count":1,"status":303},{"count":2,"status":303},{"count":3,"status":303},{"count":4,"status":303},{"count":5,"status":303},{"count":6,"status":303},{"count":7,"status":303},{"count":8,"status":303},{"count":9,"status":303},{"count":10,"status":303},{"count":11,"status":303},{"count":12,"status":303},{"count":13,"status":303},{"count":14,"status":303},{"count":15,"status":303},{"count":16,"status":303},{"count":17,"status":303},{"count":18,"status":303},{"count":19,"status":303},{"count":20,"status":303},{"count":21,"status":303},{"count":22,"status":303},{"count":23,"status":303},{"count":24,"status":303},{"count":25,"status":303},{"count":26,"status":303},{"count":27,"status":303},{"count":28,"status":303},{"count":29,"status":303},{"count":30,"status":303},{"count":31,"status":429}],"after":{"count":1,"status":303},"scope":"Native emitted Worker, local-outbox loopback confirmation IP; explicit reset performed only by the test D1 seam."}

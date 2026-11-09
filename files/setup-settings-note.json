@@ -1,0 +1,11 @@
+{
+  "generatedFile": "checkout/.dev.vars",
+  "action": "Moved without reading into a private directory outside packet and checkout so Vitest matches clean CI configuration. No private setting values selected for evidence.",
+  "invalidatedRuns": [
+    "setup-settings-worker2-head-private-scope.log",
+    "setup-settings-team006-invitation.log"
+  ],
+  "cleanCandidateRun": "worker2-head-private-scope.log",
+  "cleanMainRun": "worker2-main-private-scope.log",
+  "firstWorker2Partition": "20-minute outer deadline, not counted as a native 120-second assertion reproduction."
+}

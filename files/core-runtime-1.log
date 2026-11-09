@@ -1,0 +1,125 @@
+(node:8665) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8665) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed RENDER-SSR
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-OPS-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Current freshness] {"identifier":"FLW-844","pollCompletedAt":1794217448626,"requestStartedAt":1794217448626,"decisionRespondedAt":1794217448902,"visibleAt":1794217450752,"fromDecisionResponseMs":1850,"fromRequestStartMs":2126,"alignmentMs":0,"documentUnchanged":true}
+[Vector runtime] Passed CURR-008
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector document read cutoff] {"method":"GET","pathname":"/api/views","document":28,"documentUrl":"http://127.0.0.1:34703/app/current/FLW-844","sequence":367,"startedAt":1794217456858,"settledSequence":364,"settledAt":1794217456762,"documentEndedAt":1794217458244}
+[Vector runtime] Passed CMD-001
+[Vector runtime] Passed VIEW-002-PALETTE
+[Vector runtime] Passed CMD-002
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ []
+- [
+-   'BHEJEECJ-1',
+-   'CHEJEECJ-1'
+- ]
+
+    at rows (file:///workspace/run-vector/tests/e2e/core-boolean-filter-journey.mjs:49:12)
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:453:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+    at async booleanFilterJourney (file:///workspace/run-vector/tests/e2e/core-boolean-filter-journey.mjs:106:5)
+    at async withInvitedOperator (file:///workspace/run-vector/tests/e2e/core-operator-journey.mjs:39:6)
+    at async keyboardJourney (file:///workspace/run-vector/tests/e2e/core-keyboard-journey.mjs:56:3)
+    at async withInvitedOperator (file:///workspace/run-vector/tests/e2e/core-operator-journey.mjs:39:6)
+    at async file:///workspace/run-vector/tests/e2e/core-runtime.mjs:748:3 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [],
+  expected: [ 'BHEJEECJ-1', 'CHEJEECJ-1' ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.20.0

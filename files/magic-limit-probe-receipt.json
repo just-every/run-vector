@@ -1,0 +1,6 @@
+{
+  "exit": 1,
+  "assertion": "429 instead of 202 requesting another magic link from the same local client",
+  "cause": "src/core/features/auth/routes.ts retains the independent base-magic:loopback admission cap of 5 per 15 minutes.",
+  "use": "Auxiliary burst is not used as passing confirmation evidence. Final confirmation-after probe uses genuine invitations and only one owner magic-link request in a fresh migrated fixture. No product or limiter changes."
+}

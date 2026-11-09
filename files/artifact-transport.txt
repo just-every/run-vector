@@ -1,0 +1,2 @@
+Prior worker-2 diagnostics: gh run view 42575132750 --repo just-every/run-vector --job 129021332202 --log-failed exited 0 with empty output (0 bytes).
+Fallback: gh api repos/just-every/run-vector/actions/artifacts/13655671301/zip failed: redirected artifact host productionresultssa13.blob.core.windows.net returned Forbidden. Signed URL query omitted. No further blob download retries.

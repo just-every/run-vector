@@ -1,0 +1,36 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-harness-1",
+  "head": "f9c085216b307ca884a4303b32095abc2496f5fc",
+  "push": "success, first attempt through cloud-push.py",
+  "identity": "Run Edit Run fleet <fleet@runeditrun.com>",
+  "candidateCommitsAuditedIncludingSideParents": 11,
+  "openAICodexCoauthors": 0,
+  "ready": false,
+  "blocker": "Complete core-runtime sequence failed twice at out-of-lease Boolean saved-view readiness assertion; three consecutive full passes not established.",
+  "pr": null,
+  "fullHistoryClone": true,
+  "initialMainRetained": true,
+  "memberSuspensionMatchesInitialMain": true,
+  "migration0139UnchangedFromLanding": true,
+  "roundChangedFiles": [
+    "sources.lock.json",
+    "tests/e2e/core-confirmation-budget.mjs",
+    "tests/e2e/core-operator-journey.mjs",
+    "tests/e2e/core-runtime.mjs"
+  ],
+  "verify": {
+    "runId": 42597325035,
+    "head": "f9c085216b307ca884a4303b32095abc2496f5fc",
+    "status": "completed",
+    "conclusion": "failure",
+    "worker2Job": 129093509390,
+    "administrationCancelledJob": 129093509198,
+    "coreRuntimeJob": 129093509217,
+    "coreRuntimePlanningJob": 129093509237
+  },
+  "blockers": [
+    "Three consecutive complete local core-runtime passes not established: Boolean saved-view rows readiness assertion outside lease.",
+    "Exact-SHA Verify failed: worker-2 repeats the 120-second role-matrix timeout also reproduced on main; administration was cancelled."
+  ]
+}

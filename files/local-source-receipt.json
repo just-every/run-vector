@@ -1,0 +1,15 @@
+{
+  "baseHead": "372dad07fbc6bd9b8245f9431e2f650a8a54f102",
+  "mainHead": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "branch": "cloud/sd-vector-c-f205-harness-1",
+  "files": {
+    "tests/e2e/core-confirmation-budget.mjs": "2925fcd233760130e865ade39e839c0db16e6004b6e357e3def297064f2484cf",
+    "tests/e2e/core-operator-journey.mjs": "a867b2936db8e49da2d7e6c9b8fe1eba933f27fdd43b478902ad676754896605",
+    "tests/e2e/core-runtime.mjs": "57891ac3e37aaae78db5c7ac67b7ed054cf256b3926589dd5df30773fb2c816f",
+    "sources.lock.json": "e1a4b1c86133efc513dede31fae5b03e738fc17d735e72bcd65471ed874347fe"
+  },
+  "settingsIsolation": "Generated private .dev.vars excluded from Vitest checkout after initial setup; its values are not evidence.",
+  "committedHead": "f9c085216b307ca884a4303b32095abc2496f5fc",
+  "committedBytesMatchTestedFiles": true,
+  "checkoutClean": true
+}

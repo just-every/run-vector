@@ -1,0 +1,16 @@
+[
+  {
+    "name": "worker2-head-private-scope",
+    "command": [
+      "pnpm",
+      "test:worker",
+      "tests/worker/role-matrix.test.ts",
+      "--reporter=verbose",
+      "-t",
+      "current private and invited teams scope native"
+    ],
+    "exit": 1,
+    "elapsedSeconds": 243.38,
+    "startedAt": "2026-11-09T09:21:45.348331+00:00"
+  }
+]

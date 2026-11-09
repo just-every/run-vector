@@ -1,0 +1,24 @@
+{
+  "build": {
+    "command": "cloud_run timeout 600 npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "typecheck": {
+    "command": "cloud_run timeout 300 pnpm typecheck",
+    "exit": 0
+  },
+  "lock": {
+    "command": "pnpm sources:lock",
+    "exit": 0
+  },
+  "check": {
+    "command": "pnpm sources:check",
+    "exit": 0
+  },
+  "regeneratedContractViews": false,
+  "contractChanges": [],
+  "acceptedDoneBefore": 136,
+  "acceptedDoneAfter": 136,
+  "totalClausesBefore": 272,
+  "totalClausesAfter": 272
+}

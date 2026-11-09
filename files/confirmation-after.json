@@ -1,0 +1,263 @@
+{
+  "head": "372dad07fbc6bd9b8245f9431e2f650a8a54f102",
+  "exit": 0,
+  "confirmations": [
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    },
+    {
+      "count": 1,
+      "status": 303
+    }
+  ],
+  "ledger": {
+    "client": "loopback",
+    "limit": 30,
+    "peak": 1,
+    "buckets": [
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      },
+      {
+        "window": 1993575,
+        "count": 1
+      }
+    ]
+  },
+  "scope": "Fresh migrated fixture: owner plus 30 genuinely invited operators all confirm once with 303. Only the loopback confirmation IP bucket is reset between invited journeys; no retries or other bucket resets.",
+  "command": "cloud_run timeout 600 node /tmp/vector-confirmation-after.mjs <packet>/confirmation-after.json"
+}
