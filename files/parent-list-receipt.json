@@ -1,0 +1,42 @@
+{
+  "rows": [
+    {
+      "width": 1440,
+      "parentOnlyBefore": true,
+      "http": [
+        {
+          "path": "/app/issues",
+          "status": 200
+        },
+        {
+          "path": "/app/issues",
+          "status": 200
+        }
+      ],
+      "enabledSearch": "?team=01M6ZGJ61MM0TXHAT2JCGDVT1P&includeSubTeams=%22true%22",
+      "childVisibleWithToggle": true,
+      "reloadRetainsChild": true,
+      "childAbsentAfterDisable": true,
+      "pageErrors": []
+    },
+    {
+      "width": 390,
+      "parentOnlyBefore": true,
+      "http": [
+        {
+          "path": "/app/issues",
+          "status": 200
+        },
+        {
+          "path": "/app/issues",
+          "status": 200
+        }
+      ],
+      "enabledSearch": "?team=01M6ZGMVX6HZRA8Y7WH9N51BF4&includeSubTeams=%22true%22",
+      "childVisibleWithToggle": true,
+      "reloadRetainsChild": true,
+      "childAbsentAfterDisable": true,
+      "pageErrors": []
+    }
+  ]
+}

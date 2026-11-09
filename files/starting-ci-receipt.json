@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-vector",
+  "head": "845d247813161432dec41959a2faa72090397bb1",
+  "run": 42562058136,
+  "attempt": 1,
+  "status": "completed",
+  "conclusion": "failure",
+  "url": "https://github.com/just-every/run-vector/actions/runs/42562058136",
+  "failed_jobs": [
+    {"id": 128980668346, "name": "shards (collaboration, true, true, true)"},
+    {"id": 128987124978, "name": "verify"}
+  ],
+  "log_commands": [
+    {"command": "gh run view 42562058136 --repo just-every/run-vector --job 128980668346 --log-failed", "exit": 0, "stdout_bytes": 0, "stderr_bytes": 0},
+    {"command": "gh run view 42562058136 --repo just-every/run-vector --job 128987124978 --log-failed", "exit": 0, "stdout_bytes": 0, "stderr_bytes": 0}
+  ],
+  "github_calls_used": 5,
+  "note": "No failed assertion was returned by either prescribed log command; no blob retry was attempted."
+}

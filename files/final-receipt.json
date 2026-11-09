@@ -1,0 +1,104 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix4-pc1",
+  "head": "dfc91418aed7c38860042448e2f442cd78633dde",
+  "tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+  "product_pushed": true,
+  "status": "BLOCKED",
+  "ready": false,
+  "pr_url": null,
+  "ci_run": 42576657302,
+  "ci_url": "https://github.com/just-every/run-vector/actions/runs/42576657302",
+  "ci_conclusion": "failure",
+  "blocker": {
+    "kind": "required_check_failure_outside_lease",
+    "run": 42576657302,
+    "job": 129026111179,
+    "actual": 429,
+    "expected": 303,
+    "assertion": "invitation confirmation succeeds within the native proof budget",
+    "locations": [
+      "tests/e2e/core-operator-journey.mjs:34",
+      "tests/e2e/core-runtime.mjs:754"
+    ],
+    "policy_source": "vendor/base/operator-auth/identity/email-link/index.mjs:23-35",
+    "precise_rate_bucket": "Not captured by the failing assertion; only HTTP status 429 is established.",
+    "scope": "Auth confirmation budgets and unrelated core-journey fixture restructuring are outside the TEAM-006 parent-list/migration lease."
+  },
+  "jobs": [
+    {
+      "id": 129025780842,
+      "name": "plan",
+      "conclusion": "success"
+    },
+    {
+      "id": 129025849590,
+      "name": "build",
+      "conclusion": "success"
+    },
+    {
+      "id": 129026111142,
+      "name": "shards (hosted-artifact, true, true, false)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129026111148,
+      "name": "shards (worker-2, true, true, true)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129026111171,
+      "name": "shards (imports, true, true, true)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129026111179,
+      "name": "shards (core-runtime, true, true, true)",
+      "conclusion": "failure"
+    },
+    {
+      "id": 129026111188,
+      "name": "shards (portability, true, true, true)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129026111191,
+      "name": "shards (administration, true, true, true)",
+      "conclusion": "cancelled"
+    },
+    {
+      "id": 129026111217,
+      "name": "shards (collaboration, true, true, true)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129026111315,
+      "name": "shards (core-runtime-planning, true, true, true)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129034582951,
+      "name": "verify",
+      "conclusion": "failure"
+    }
+  ],
+  "before_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "after_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_judgment_changes": {},
+  "TEAM_006_source_status": "missing (unchanged)",
+  "parent_browser_proofs": [
+    1440,
+    390
+  ],
+  "source_preserved": "Both published parents retained; no amend, rebase, force push, main push, deployment or landing."
+}

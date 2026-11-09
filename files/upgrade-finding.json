@@ -1,0 +1,16 @@
+{
+  "finding": "0139 follows the member-suspension upgrade boundary",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/member-suspension-upgrade.test.ts",
+  "reproduction": "Nine-file merged Worker run: 24 passed, 1 failed. The exact added-object census expected 2 objects and received 4.",
+  "expected": [
+    "index member_lifecycle_member",
+    "table member_lifecycle_events"
+  ],
+  "received": [
+    "index member_lifecycle_member",
+    "index teams_parent_idx",
+    "index workflow_inherited_idx",
+    "table member_lifecycle_events"
+  ],
+  "correction": "Retain the complete added/removed/changed object census, include both known 0139 indexes and altered tables, and add explicit exact hierarchy/default checks. Every existing historical-row, legacy-removal, credential, archive and foreign-key assertion remains."
+}

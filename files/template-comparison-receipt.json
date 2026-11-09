@@ -1,0 +1,13 @@
+{
+  "journey": "nativeProjectTemplatesJourney(browser)",
+  "browser": "/usr/bin/chromium, headless, --no-sandbox",
+  "main_head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "candidate_head": "dfc91418aed7c38860042448e2f442cd78633dde",
+  "main_exit": 0,
+  "main_pass_marker": true,
+  "candidate_exit": 1,
+  "candidate_failure": "locator.press Timeout 20000ms while pressing z into the 100000-character Milestone description field",
+  "source_location": "tests/e2e/project-templates-journey.mjs:96:46",
+  "limits_or_assertions_modified": false,
+  "interpretation": "The smaller isolated main journey passed; candidate isolated journey timed out. No project-template source was changed under this lease. Exact-SHA Verify remains authoritative for publication readiness."
+}

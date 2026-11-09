@@ -1,0 +1,49 @@
+{
+  "repository": "just-every/run-vector",
+  "head": "dfc91418aed7c38860042448e2f442cd78633dde",
+  "prior_diagnostic_calls": 6,
+  "calls": [
+    {
+      "time_utc": "2026-11-09T07:17:51.412703+00:00",
+      "endpoint": "repos/just-every/run-vector/actions/runs?head_sha=dfc91418aed7c38860042448e2f442cd78633dde&per_page=100",
+      "exit": 0
+    },
+    {
+      "time_utc": "2026-11-09T07:22:51.422122+00:00",
+      "endpoint": "repos/just-every/run-vector/actions/runs/42576657302",
+      "exit": 0
+    },
+    {
+      "time_utc": "2026-11-09T07:27:51.243179+00:00",
+      "endpoint": "repos/just-every/run-vector/actions/runs/42576657302",
+      "exit": 0
+    }
+  ],
+  "status": "completed",
+  "delay_before_discovery_seconds": 900,
+  "run_id": 42576657302,
+  "discovery": {
+    "id": 42576657302,
+    "name": "Verify",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "head_sha": "dfc91418aed7c38860042448e2f442cd78633dde",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42576657302"
+  },
+  "observation": {
+    "id": 42576657302,
+    "status": "completed",
+    "conclusion": "failure",
+    "head_sha": "dfc91418aed7c38860042448e2f442cd78633dde",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42576657302"
+  },
+  "conclusion": "failure",
+  "total_github_calls_used": 9,
+  "prior_repository_diagnostic_calls": 5,
+  "setup_auth_status_calls": 1,
+  "repository_read_calls_used": 10,
+  "budget_note": "Watcher total included mandatory launcher auth-status setup; repository reads before this job listing were eight.",
+  "assertion_log_command": "gh run view 42576657302 --repo just-every/run-vector --job 129026111179 --log-failed",
+  "assertion_log_stdout_bytes": 1823629
+}

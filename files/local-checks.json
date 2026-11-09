@@ -1,0 +1,226 @@
+[
+  {
+    "name": "saved-worker",
+    "exit": 0,
+    "command": "timeout 300 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-team-filter.test.ts tests/worker/sub-teams.test.ts (7 tests passed)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "saved-build",
+    "exit": 0,
+    "command": "timeout 600 npx -y @runeditrun/rer build",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "saved-check",
+    "exit": 0,
+    "command": "timeout 180 npx -y @runeditrun/rer check",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "saved-ledger",
+    "exit": 0,
+    "command": "validateMigrations across migrations/core (138 ordered files)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "saved-collaboration",
+    "exit": 124,
+    "command": "timeout 600 node --import /tmp/vector-chromium.mjs --experimental-strip-types tests/e2e/collaboration-runtime.mjs (25 desktop checks passed; bound expired during next fixture startup)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "contract-views",
+    "exit": 0,
+    "command": "node scripts/contract-docs.mjs write TEAM-006 && node scripts/contract-docs.mjs check TEAM-006",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "sdk",
+    "exit": 0,
+    "command": "node sdk/generate.mjs && node sdk/build.mjs",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "candidate-ledger",
+    "exit": 0,
+    "command": "node /tmp/vector-ledger.mjs (validateMigrations across migrations/core)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "candidate-build",
+    "exit": 0,
+    "command": "timeout 600 npx -y @runeditrun/rer build",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "candidate-deployment",
+    "exit": 0,
+    "command": "timeout 180 node --test scripts/deployment/tests/migration-head.test.mjs",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "candidate-spec",
+    "exit": 0,
+    "command": "node scripts/sync-integration.mjs --write && node scripts/sync-integration.mjs --check",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1"
+  },
+  {
+    "name": "candidate-lock",
+    "exit": 0,
+    "command": "pnpm sources:lock && pnpm sources:check",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-upgrades",
+    "exit": 0,
+    "command": "timeout 300 pnpm exec vitest run --config vitest.config.ts tests/worker/source-ingest.test.ts (triage and Slack populated upgrade journeys)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-check",
+    "exit": 1,
+    "command": "timeout 180 npx -y @runeditrun/rer check",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "99e30acd18ff69300a45e8a5f61e8cbd17475a91",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-lock-final",
+    "exit": 0,
+    "command": "pnpm sources:lock && pnpm sources:check (after correcting complete evidence paths)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "90144b97b56468ec5f8651dd7a55ce8685bc144e",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-parent-browser",
+    "exit": 0,
+    "command": "timeout 420 node /tmp/vector-parent-list.mjs (native parent-list toggle on/off and reload at 1440/390)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-check-final",
+    "exit": 0,
+    "command": "timeout 180 npx -y @runeditrun/rer check (complete CONTRACT evidence paths)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-installer",
+    "exit": 0,
+    "command": "timeout 180 pnpm test:installer",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-worker",
+    "exit": 124,
+    "command": "timeout 600 pnpm exec vitest run --config vitest.config.ts tests/worker/{sub-team-filter,sub-teams,role-matrix,base-refresh-upgrade,dependencies,cycle-schedule,cycle-membership,project-fields-upgrade,member-suspension-upgrade,member-suspension}.test.ts",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-worker-rest",
+    "exit": 1,
+    "command": "timeout 600 pnpm exec vitest run --config vitest.config.ts (nine touched Worker files excluding separately diagnosed role-matrix)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-suspension-upgrade-fixed",
+    "exit": 0,
+    "command": "timeout 180 pnpm exec vitest run --config vitest.config.ts tests/worker/member-suspension-upgrade.test.ts",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-typecheck-final",
+    "exit": 0,
+    "command": "pnpm typecheck",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "b7a0117b2912547f723a0a686b7719d49fb6e041",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-lock-after-upgrade",
+    "exit": 0,
+    "command": "pnpm sources:lock && pnpm sources:check (member-suspension upgrade census/default assertions)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "ee036782426bc8565e68b385753345b30ca1bea8",
+    "worktree_modified": true
+  },
+  {
+    "name": "main-role-comparison",
+    "exit": 1,
+    "command": "timeout 700 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts (detached origin/main comparison)",
+    "source_head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+    "index_tree": "a4524685c94f6424d24e2ce813d4a66498c63bb6",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-role-detail",
+    "exit": 1,
+    "command": "timeout 700 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-collaboration",
+    "exit": 1,
+    "command": "timeout 1500 node --import /tmp/vector-chromium.mjs --experimental-strip-types tests/e2e/collaboration-runtime.mjs",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-team-permissions-isolated",
+    "exit": 0,
+    "command": "timeout 180 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t \"a team\\x27s two permissions\" (unchanged 30-second test limit)",
+    "source_head": "845d247813161432dec41959a2faa72090397bb1",
+    "index_tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-collaboration-serial",
+    "exit": 1,
+    "command": "timeout 1500 node --import /tmp/vector-chromium.mjs --experimental-strip-types tests/e2e/collaboration-runtime.mjs (no concurrent Worker test runs)",
+    "source_head": "dfc91418aed7c38860042448e2f442cd78633dde",
+    "index_tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+    "worktree_modified": false
+  },
+  {
+    "name": "main-build-comparison",
+    "exit": 0,
+    "command": "timeout 600 npx -y @runeditrun/rer build (detached main)",
+    "source_head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+    "index_tree": "a4524685c94f6424d24e2ce813d4a66498c63bb6",
+    "worktree_modified": true
+  },
+  {
+    "name": "main-template-comparison",
+    "exit": 0,
+    "command": "timeout 420 node --experimental-strip-types /tmp/vector-main-template.mjs (native main project-template journey, system Chromium)",
+    "source_head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+    "index_tree": "a4524685c94f6424d24e2ce813d4a66498c63bb6",
+    "worktree_modified": true
+  },
+  {
+    "name": "candidate-template-comparison",
+    "exit": 1,
+    "command": "timeout 420 node --experimental-strip-types /tmp/vector-candidate-template.mjs (identical isolated native project-template journey)",
+    "source_head": "dfc91418aed7c38860042448e2f442cd78633dde",
+    "index_tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+    "worktree_modified": false
+  }
+]

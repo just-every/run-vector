@@ -1,0 +1,32 @@
+{
+  "main": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "starting_head": "845d247813161432dec41959a2faa72090397bb1",
+  "full_history": true,
+  "index_tree": "fe7beec0bc84ddbba876308a9fa148bfb172cfb7",
+  "before_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "after_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "total_clauses": 272,
+  "judgment_changes": {},
+  "TEAM_006_before": "missing",
+  "TEAM_006_after": "missing",
+  "main_migrations_unchanged": true,
+  "migration_count": 139,
+  "candidate_migration": "migrations/core/0139_sub_teams.sql",
+  "candidate_migration_sha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
+  "generated_views_equal_main": true,
+  "product_head": "dfc91418aed7c38860042448e2f442cd78633dde",
+  "protected_paths_unchanged_from_saved_head": [
+    "src/core/features/sub-teams/hierarchy.ts",
+    "src/core/features/sub-teams/workflow.ts",
+    "src/core/features/team-membership/permissions.ts",
+    "tests/worker/sub-team-authority-journey.ts"
+  ]
+}
