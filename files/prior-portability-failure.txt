@@ -1,0 +1,51 @@
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6116061Z stderr | tests/worker/leadership-digest-upgrade.test.ts > populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6117671Z Error: D1_ERROR: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6118361Z     at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6118943Z     at cloudflare-internal:d1-api:440:19
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6119593Z     ... 7 lines matching cause stack trace ...
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6120293Z     at dispatch (/home/runner/work/run-vector/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6121200Z   [cause]: Error: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6121683Z       at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6122098Z       at cloudflare-internal:d1-api:440:19
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6122569Z       at settingsActor (/home/runner/work/run-vector/run-vector/src/core/features/settings/repository.ts:19:15)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6123152Z       at Object.handler (/home/runner/work/run-vector/run-vector/src/core/app/api.ts:274:22)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6123916Z       at dispatch (/home/runner/work/run-vector/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6124796Z       at handler (/home/runner/work/run-vector/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6161831Z stderr | tests/worker/leadership-digest-upgrade.test.ts > populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6163165Z Error: D1_ERROR: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6164110Z     at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6164854Z     at cloudflare-internal:d1-api:440:19
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6165595Z     ... 7 lines matching cause stack trace ...
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6166483Z     at dispatch (/home/runner/work/run-vector/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6167096Z   [cause]: Error: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6167586Z       at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6167978Z       at cloudflare-internal:d1-api:440:19
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6168481Z       at requireOperator (/home/runner/work/run-vector/run-vector/src/core/features/auth/service.ts:14:18)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6169041Z       at Object.handler (/home/runner/work/run-vector/run-vector/src/core/app/api.ts:229:23)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6169991Z       at dispatch (/home/runner/work/run-vector/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:39.6171084Z       at handler (/home/runner/work/run-vector/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7697671Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7697929Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7700898Z  FAIL  tests/worker/leadership-digest-upgrade.test.ts > populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7705145Z AssertionError: expected 400 to be 201 // Object.is equality
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7705567Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7705774Z - Expected
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7706127Z + Received
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7706287Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7706441Z - 201
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7706748Z + 400
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7706885Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7707379Z  ❯ tests/worker/leadership-digest-upgrade.test.ts:15:29
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7727172Z      13|     const {operatorId}=await session.json() as {operatorId:string};
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7728382Z      14|     const response=await request('/api/initiatives','POST',{name:'synt…
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7729270Z      15|     expect(response.status).toBe(201);const root=await response.json()…
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7730130Z        |                             ^
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7730838Z      16|     expect((await request('/api/subscriptions','POST',{subjectType:'in…
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7731431Z      17|   });
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7732238Z  ❯ provePopulatedUpgrade tests/worker/populated-upgrade.ts:46:12
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7733207Z  ❯ tests/worker/leadership-digest-upgrade.test.ts:7:3
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7733628Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7733961Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7734220Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7734256Z 
+shards (portability, true, true, true)	Verify the independent shard	2026-11-09T01:40:53.7734789Z  Test Files  1 failed | 19 passed (20)

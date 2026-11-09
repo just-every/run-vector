@@ -1,0 +1,25 @@
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7278244Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7278771Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7281280Z  FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7285328Z Error: Test timed out in 120000ms.
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7286062Z If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7286768Z  ❯ tests/worker/role-matrix.test.ts:527:1
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7439106Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7439188Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7439650Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7443562Z  Test Files  1 failed | 19 passed (20)
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7449182Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7465147Z       Tests  1 failed | 32 passed (33)
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7465875Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7466153Z    Start at  01:36:48
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7467374Z    Duration  902.08s (transform 4.15s, setup 0ms, import 57.20s, tests 836.13s, environment 3ms)
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7467914Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7467924Z 
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.7472480Z ##[error]Error: Test timed out in 120000ms.
+shards (worker-2, true, true, true)	Verify the independent shard	If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+shards (worker-2, true, true, true)	Verify the independent shard	 ❯ tests/worker/role-matrix.test.ts:527:1
+shards (worker-2, true, true, true)	Verify the independent shard	
+shards (worker-2, true, true, true)	Verify the independent shard	
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.8644128Z  ELIFECYCLE  Command failed with exit code 1.
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.8960718Z  ELIFECYCLE  Command failed with exit code 1.
+shards (worker-2, true, true, true)	Verify the independent shard	2026-11-09T01:51:50.9136868Z ##[error]Process completed with exit code 1.

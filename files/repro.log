@@ -1,0 +1,77 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+Using secrets defined in .dev.vars
+stderr | tests/worker/leadership-digest-upgrade.test.ts > populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends
+Error: D1_ERROR: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:440:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:440:19
+      at settingsActor (/workspace/run-vector/src/core/features/settings/repository.ts:19:15)
+      at Object.handler (/workspace/run-vector/src/core/app/api.ts:276:22)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/leadership-digest-upgrade.test.ts > populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends
+Error: D1_ERROR: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:440:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: no such column: r.suspended_at at offset 880: SQLITE_ERROR
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:440:19
+      at requireOperator (/workspace/run-vector/src/core/features/auth/service.ts:14:18)
+      at Object.handler (/workspace/run-vector/src/core/app/api.ts:230:23)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at /workspace/run-vector/src/core/app/server.ts:107:5
+      at dispatch (/workspace/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+ ❯ tests/worker/leadership-digest-upgrade.test.ts (1 test | 1 failed) 866ms
+   × populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends 865ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/leadership-digest-upgrade.test.ts > populated leadership digest upgrade retains initiatives, subscriptions and existing data without inventing consent or historical sends
+AssertionError: expected 400 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 400
+
+ ❯ tests/worker/leadership-digest-upgrade.test.ts:15:29
+     13|     const {operatorId}=await session.json() as {operatorId:string};
+     14|     const response=await request('/api/initiatives','POST',{name:'synt…
+     15|     expect(response.status).toBe(201);const root=await response.json()…
+       |                             ^
+     16|     expect((await request('/api/subscriptions','POST',{subjectType:'in…
+     17|   });
+ ❯ provePopulatedUpgrade tests/worker/populated-upgrade.ts:46:12
+ ❯ tests/worker/leadership-digest-upgrade.test.ts:7:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  02:38:57
+   Duration  14.74s (transform 6.30s, setup 0ms, import 13.01s, tests 866ms, environment 0ms)
+

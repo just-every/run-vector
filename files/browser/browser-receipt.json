@@ -1,0 +1,15 @@
+{
+  "head": "db865aaeaf9a5e327f8128664325d30d408310ed",
+  "checks": [
+    {
+      "id": "ROLE-011",
+      "name": "native suspension retains rendered names and hidden personal state; reactivation requires fresh sign-in",
+      "passed": true
+    }
+  ],
+  "viewports": [
+    1440,
+    390
+  ],
+  "failure": null
+}

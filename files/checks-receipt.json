@@ -1,0 +1,276 @@
+{
+  "tag": "sd-vector-c-f207-fix3",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f207-fix3",
+  "head": "db865aaeaf9a5e327f8128664325d30d408310ed",
+  "base_candidate": "e6c2d21a2dbf998f91bf478566a094876d7e9313",
+  "merged_main": "bf872df8566011be5e46c6b5f777fb46d11b0f27",
+  "checks": [
+    {
+      "name": "repro",
+      "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/leadership-digest-upgrade.test.ts",
+      "exit": 1,
+      "log": "repro.log",
+      "result": "1 failed; no such column r.suspended_at; initiative POST 400 instead of 201"
+    },
+    {
+      "name": "probe",
+      "command": "timeout 120 pnpm exec vitest run --config vitest.config.ts tests/worker/leadership-digest-upgrade.test.ts",
+      "exit": 0,
+      "log": "probe-upgrade.log",
+      "result": "1 passed"
+    },
+    {
+      "name": "regressions",
+      "command": "timeout 600 pnpm exec vitest run --config vitest.config.ts tests/worker/leadership-digest-upgrade.test.ts tests/worker/member-suspension-upgrade.test.ts tests/worker/member-suspension.test.ts tests/worker/personal-time.test.ts tests/worker/imported-person-erasure.test.ts",
+      "exit": 0,
+      "log": "probe.log",
+      "result": "5 files; 6 passed"
+    },
+    {
+      "name": "role-regression",
+      "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'current private and invited teams'",
+      "exit": 0,
+      "log": "role-regression.log",
+      "result": "1 targeted case passed; 5 other cases not selected; full file remains registered in Verify"
+    },
+    {
+      "name": "typecheck",
+      "command": "timeout 240 pnpm typecheck",
+      "exit": 0,
+      "log": "typecheck.log",
+      "result": "passed"
+    },
+    {
+      "name": "build",
+      "command": "timeout 600 npx -y @runeditrun/rer build",
+      "exit": 0,
+      "log": "build.log",
+      "result": "passed"
+    },
+    {
+      "name": "rer-check",
+      "command": "timeout 240 npx -y @runeditrun/rer check",
+      "exit": 0,
+      "log": "rer-check.log",
+      "result": "passed"
+    },
+    {
+      "name": "views",
+      "command": "node scripts/contract-docs.mjs write ROLE-011 && node scripts/contract-docs.mjs check ROLE-011",
+      "exit": 0,
+      "log": "views.log",
+      "result": "passed; generated views subsequently restored from origin/main"
+    },
+    {
+      "name": "views-restored",
+      "command": "node scripts/contract-docs.mjs check ROLE-011",
+      "exit": 1,
+      "log": "restored-views-check.log",
+      "result": "expected ACCEPTANCE.md generated-view difference; lander owns regenerated views"
+    },
+    {
+      "name": "ledger",
+      "command": "timeout 120 node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "log": "ledger.log",
+      "result": "1 passed; full migration application, unchanged repeat ledger and guards"
+    },
+    {
+      "name": "spec",
+      "command": "pnpm integration:sync && pnpm integration:check",
+      "exit": 0,
+      "log": "spec.log",
+      "result": "passed; already-correct 0138 deployment spec reproduced with no new diff"
+    },
+    {
+      "name": "lock",
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "log": "lock.log",
+      "result": "regenerated last after staging intended changes"
+    },
+    {
+      "name": "lock-check",
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "log": "lock-check.log",
+      "result": "passed"
+    },
+    {
+      "name": "base-copy-check",
+      "command": "timeout 180 pnpm sources:verify-base",
+      "exit": 0,
+      "log": "base-copy-check.log",
+      "result": "offline Base copy/adaptation integrity passed"
+    },
+    {
+      "name": "optional-native-verify",
+      "command": "timeout 600 npx -y @runeditrun/rer verify",
+      "exit": 241,
+      "log": "native-verify.log",
+      "result": "Optional extra stopped by SIGTERM during bundled Chromium installation, before browser launch; this rer version does not expose the requested /usr/bin/chromium launch override. Native job recorded exit 143. No product assertion failed. Required brief checks and explicit system-Chromium proof passed; exact-SHA Verify remains authoritative."
+    },
+    {
+      "name": "probe-exact-command",
+      "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/leadership-digest-upgrade.test.ts",
+      "exit": 0,
+      "log": "probe-exact-command.log",
+      "result": "Exact original reproduction command now passes: 1 test; 22.34 seconds total."
+    }
+  ],
+  "identity_audited_candidate_commits": 13,
+  "status_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "status_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_status_changes": [],
+  "ROLE-011": "partial",
+  "product_push": "success",
+  "product_ci": {
+    "id": 42552730255,
+    "conclusion": "success",
+    "head_sha": "db865aaeaf9a5e327f8128664325d30d408310ed",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42552730255",
+    "status": "completed"
+  },
+  "prior_ci": {
+    "id": 42546312604,
+    "head_sha": "e6c2d21a2dbf998f91bf478566a094876d7e9313",
+    "jobs_read_once": [
+      128932300933,
+      128932301111
+    ]
+  },
+  "github_budget_invocations_used": 10,
+  "pr": null,
+  "browser": {
+    "exit": 0,
+    "receipt": "browser/browser-receipt.json",
+    "log": "browser.log",
+    "viewports": [
+      1440,
+      390
+    ],
+    "screens": [
+      "browser/roles/suspended-history-1440.png",
+      "browser/roles/suspended-history-390.png",
+      "browser/roles/reactivated-history-1440.png",
+      "browser/roles/reactivated-history-390.png"
+    ],
+    "result": "Existing native journey passed; overflow and serious/critical axe checks passed; all four captures inspected."
+  },
+  "full_history_clone": true,
+  "worktree_clean": true,
+  "ci_observations": [
+    "ci-discovery.jsonl",
+    "ci-poll-1.json",
+    "ci-poll-2.json",
+    "ci-poll-3.json",
+    "ci-jobs.json",
+    "ci-final.json"
+  ],
+  "ci_jobs": {
+    "jobs": [
+      {
+        "completed_at": "2026-11-09T02:46:18Z",
+        "conclusion": "success",
+        "id": 128951660318,
+        "name": "plan",
+        "started_at": "2026-11-09T02:46:10Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T02:47:22Z",
+        "conclusion": "success",
+        "id": 128951705469,
+        "name": "build",
+        "started_at": "2026-11-09T02:46:20Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:10:08Z",
+        "conclusion": "success",
+        "id": 128952002666,
+        "name": "shards (portability, true, true, true)",
+        "started_at": "2026-11-09T02:47:24Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:07:20Z",
+        "conclusion": "success",
+        "id": 128952002672,
+        "name": "shards (core-runtime, true, true, true)",
+        "started_at": "2026-11-09T02:47:25Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:10:48Z",
+        "conclusion": "success",
+        "id": 128952002680,
+        "name": "shards (hosted-artifact, true, true, false)",
+        "started_at": "2026-11-09T02:47:24Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:09:46Z",
+        "conclusion": "success",
+        "id": 128952002687,
+        "name": "shards (collaboration, true, true, true)",
+        "started_at": "2026-11-09T02:47:24Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:10:33Z",
+        "conclusion": "success",
+        "id": 128952002737,
+        "name": "shards (administration, true, true, true)",
+        "started_at": "2026-11-09T02:47:24Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:05:51Z",
+        "conclusion": "success",
+        "id": 128952002751,
+        "name": "shards (core-runtime-planning, true, true, true)",
+        "started_at": "2026-11-09T02:47:24Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:11:24Z",
+        "conclusion": "success",
+        "id": 128952002765,
+        "name": "shards (imports, true, true, true)",
+        "started_at": "2026-11-09T02:47:24Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:07:17Z",
+        "conclusion": "success",
+        "id": 128952002923,
+        "name": "shards (worker-2, true, true, true)",
+        "started_at": "2026-11-09T02:47:25Z",
+        "status": "completed"
+      },
+      {
+        "completed_at": "2026-11-09T03:11:28Z",
+        "conclusion": "success",
+        "id": 128958606010,
+        "name": "verify",
+        "started_at": "2026-11-09T03:11:26Z",
+        "status": "completed"
+      }
+    ],
+    "total_count": 11
+  },
+  "product_custody": "READY",
+  "blockers": []
+}
