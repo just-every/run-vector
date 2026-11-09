@@ -108,10 +108,13 @@ export const verificationShards = {
   portability: combineGroups(['worker-3', 'portability']),
   'core-runtime': verificationGroups['core-runtime'],
   'core-runtime-planning': verificationGroups['core-runtime-planning'],
-  administration: combineGroups(['administration', 'ownership']),
+  administration: verificationGroups.administration,
   collaboration: combineGroups(['collaboration', 'runtime']),
   'worker-2': combineGroups(['worker-2', 'development']),
-  'worker-heavy': verificationGroups['worker-heavy'],
+  // Administration alone took ~16.5 minutes; its ownership journeys added
+  // ~8 minutes and reached the 25-minute cap during base-auth. Keep that
+  // sequence together on the former 5m33s worker row, sharing the CI build.
+  'worker-heavy': combineGroups(['worker-heavy', 'ownership']),
   'hosted-artifact': combineGroups(['hosted-artifact', 'archive-upgrade'], { retainBuilds: true }),
 };
 
