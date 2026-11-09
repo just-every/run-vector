@@ -2,6 +2,12 @@ import {env} from 'cloudflare:workers';
 import {applyD1Migrations} from 'cloudflare:test';
 import {expect,inject} from 'vitest';
 import {insertHistoricalSample} from './historical-sample-fixture';
+// The merged sub-team migration follows the Slack boundary. Preserve every
+// prior value and assert the exact defaults on all newly added columns.
+const addedAfterBoundary: Record<string, Record<string, unknown>> = {
+ teams: {parent_team_id:null,workflow_inherited:0,permissions_inherited:0,hierarchy_version:1},
+ workflow_statuses: {inherited_from:null},
+};
 /** Upgrade a populated prior schema without manufacturing mappings or sends. */
 export async function slackThreadUpgrade(){
  const db=env.ARCHIVE_TARGET_DB,migrations=inject('migrations'),boundary=migrations.findIndex(m=>m.name==='0134_slack_threads.sql');
@@ -15,7 +21,7 @@ export async function slackThreadUpgrade(){
  const before=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
  await applyD1Migrations(db,migrations.slice(boundary));
  const after=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
- for(let n=0;n<tables.length;n++)expect(after[n].results,tables[n].name).toEqual(before[n].results);
+ for(let n=0;n<tables.length;n++)expect(after[n].results,tables[n].name).toEqual(before[n].results.map(row=>({...addedAfterBoundary[tables[n].name],...row})));
  for(const table of ['vector_slack_threads','vector_slack_thread_messages','vector_slack_thread_events'])expect(await db.prepare('SELECT count(*) n FROM '+table).first<number>('n')).toBe(0);
  expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 }

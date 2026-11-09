@@ -204,10 +204,12 @@ export async function changeHierarchy(
     ? parent!.planning_permission
     : (input.planningPermission ?? old.planning_permission);
   // Reparenting or switching inheritance can set permission values without
-  // naming them explicitly. Every such write keeps ROLE-009 authority.
+  // naming them explicitly, or delegate future changes to another parent.
+  // Every such write keeps ROLE-009 authority.
   const changesPermissions =
     input.settingsPermission !== undefined || input.planningPermission !== undefined ||
     next.permissions_inherited !== old.permissions_inherited ||
+    (next.permissions_inherited === 1 && next.parent_team_id !== old.parent_team_id) ||
     next.settings_permission !== old.settings_permission ||
     next.planning_permission !== old.planning_permission;
   const permissionsAllowed = changesPermissions

@@ -103,6 +103,13 @@ it("[TEAM-006 ROLE-009] child permission door refuses ordinary Members for every
     settings: "all_members", planning: "team_owners",
   })).status).toBe(200);
   const tables = ["teams", "workflow_statuses", "audit_records", "administration_audit_details"];
+  const inheritedBefore = await snapshot(tables);
+  expect((await current(w, child.id)).permissionsInherited).toBe(true);
+  expect((await w.member.call(`/settings/teams/${child.id}/permissions`, "PUT", {
+    settings: "all_members", planning: "team_owners",
+  })).status).toBe(403);
+  expect(await snapshot(tables)).toEqual(inheritedBefore);
+  expect((await current(w, child.id)).permissionsInherited).toBe(true);
   for (const key of ["planning", "settings"] as const) {
     await resetLimits();
     const initial = { settings: "all_members", planning: "team_owners" } as const;
@@ -119,7 +126,7 @@ it("[TEAM-006 ROLE-009] child permission door refuses ordinary Members for every
     expect(hierarchy.status).toBe(403);
     expect(member.status).toBe(403);
     expect(await snapshot(tables)).toEqual(before);
-    // A denied no-op must not disable inheritance or create an audit either.
+    // A denied no-op must not change custom settings or create an audit either.
     expect((await w.member.call(`/settings/teams/${child.id}/permissions`, "PUT", initial)).status).toBe(403);
     expect(await snapshot(tables)).toEqual(before);
     for (const who of [w.lead, w.admin, w.people.owner]) {
@@ -143,7 +150,7 @@ it("[TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
   const child = await team(w, "synthetic-vector-6258", "PERMINH", w.team.id);
   const destination = await team(w, "synthetic-vector-6259", "PERMDEST");
   for (const id of [child.id, destination.id]) {
-    expect((await w.call(`/settings/teams/${id}/members/${w.member.id}`, "PUT", { role: "member" })).status).toBe(200);
+    expect((await w.call(`/settings/teams/${id}/members/${w.member.id}`, "PUT", { role: id === destination.id ? "owner" : "member" })).status).toBe(200);
   }
   expect((await w.call(`/settings/teams/${w.team.id}/permissions`, "PUT", {
     settings: "all_members", planning: "team_owners",
@@ -154,6 +161,20 @@ it("[TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
   const tables = ["teams", "workflow_statuses", "audit_records", "administration_audit_details"];
   for (const surface of ["call", "api"] as const) {
     await resetLimits();
+    expect((await w.call(`/settings/teams/${destination.id}/permissions`, "PUT", {
+      settings: "all_members", planning: "team_owners",
+    })).status).toBe(200);
+    const sameValues = await snapshot(tables);
+    const delegated = await change(w, child.id, { parentTeamId: destination.id }, w.member, surface);
+    console.log(`AUDIT ${surface} same-value inherited reparent Member=${delegated.status}`);
+    expect(delegated.status).toBe(403);
+    expect(await snapshot(tables)).toEqual(sameValues);
+    expect((await change(w, child.id, { parentTeamId: destination.id }, w.people.owner, surface)).status).toBe(200);
+    expect((await current(w, child.id)).planningPermission).toBe("team_owners");
+    expect((await change(w, child.id, { parentTeamId: w.team.id })).status).toBe(200);
+    expect((await w.call(`/settings/teams/${destination.id}/permissions`, "PUT", {
+      settings: "all_members", planning: "all_members",
+    })).status).toBe(200);
     const before = await snapshot(tables);
     const reparent = await change(w, child.id, { parentTeamId: destination.id }, w.member, surface);
     console.log(`AUDIT ${surface} inherited reparent Member=${reparent.status}`);

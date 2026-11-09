@@ -2038,7 +2038,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "658e8fa8f091d1166b304aa2a02693e0d6352ccf2797258b9da0071dc042e375",
+      "sha256": "f8e517f917c9d300dd66527a290aae8e95a69fde27c6bbfc57c46d493fe2b97d",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -7694,7 +7694,7 @@
       "executable": false
     },
     "src/core/features/sub-teams/hierarchy.ts": {
-      "sha256": "20cdefa7577dc43b9adcb92991e89c130244fdf5923501d7fccc7cccafc27c2e",
+      "sha256": "e807a35224df4a8dd68ed2f02bdec00d36fa0a232e31ac3165411a2a2d02b0d0",
       "executable": false
     },
     "src/core/features/sub-teams/workflow.ts": {
@@ -10054,7 +10054,7 @@
       "executable": false
     },
     "tests/worker/slack-thread-upgrade.ts": {
-      "sha256": "9287e082be25093a4b83e1d4e4955d36bc4762ac562be581f268d502f2d8b498",
+      "sha256": "7eba73c2a7695becd981eb8221c658551139acf707c9efb70cefe4301737bee5",
       "executable": false
     },
     "tests/worker/slack-unfurl-scenario.ts": {
@@ -10086,7 +10086,7 @@
       "executable": false
     },
     "tests/worker/sub-teams.test.ts": {
-      "sha256": "dab72bea8a8e92bf2e1b106a347f008f6281c6f95bf121ad066bc5de48e40c4b",
+      "sha256": "ce2314ea5a7e31495250a9c123eadc5b6f9af2071ebae9c1b54d039ce012de0d",
       "executable": false
     },
     "tests/worker/subissues-access.test.ts": {
