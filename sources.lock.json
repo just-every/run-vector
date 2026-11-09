@@ -9874,7 +9874,7 @@
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
-      "sha256": "387a883e4023a79655e56258cde786edfbd005e711e4a9e96299c66a4412ff31",
+      "sha256": "bad5b89065feed7f6565b5cf16c3406f6e1a1b9b11f6e85aa72744c0264c15fc",
       "executable": false
     },
     "tests/worker/project-fields.test.ts": {
