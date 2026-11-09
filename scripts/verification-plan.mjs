@@ -16,6 +16,17 @@ export const ciCommands = [
 // The hosted-artifact shard retains its fresh build/verification boundaries.
 // Keep these public-door flows until they can be rebalanced within their budget;
 // combining the current long shards would exceed the normal job cap.
+// Exclude dedicated files from every partition before Vitest shards the suite,
+// so repartitioning cannot duplicate them in another runner.
+const heavyWorkerFiles = [
+  'tests/worker/role-matrix.test.ts',
+  'tests/worker/data-http-audit-recovery.test.ts',
+];
+const workerPartition = index => [
+  'test:worker', `--shard=${index}/6`,
+  ...heavyWorkerFiles.map(file => `--exclude=${file}`),
+];
+
 const verificationGroups = {
   // test:data is its two existing entry points, split without omitting either.
   imports: {
@@ -64,11 +75,14 @@ const verificationGroups = {
     // Own the former ownership tail; retain each fresh build boundary.
     commands: ['test:public-site', 'verify', 'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
   },
-  // Keep Vitest's complete six-file-partition wall, balanced across three
-  // runners. Each invocation still gets its original isolated Vitest process.
-  'worker-1': { commands: [['test:worker', '--shard=4/6'], ['test:worker', '--shard=5/6']] },
-  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6']] },
-  'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
+  // Keep the complete six-partition wall plus the two dedicated heavy files.
+  // Each invocation retains its isolated Vitest process and normal timeouts.
+  'worker-1': { commands: [workerPartition(4), workerPartition(5)] },
+  'worker-2': { commands: [workerPartition(2), workerPartition(3)] },
+  'worker-3': { commands: [workerPartition(1), workerPartition(6)] },
+  // Hosted worker-2 took 24m08s; removing role-matrix alone leaves it above
+  // the ~12-minute target. Keep audit recovery here too, without development.
+  'worker-heavy': { commands: [['test:worker', ...heavyWorkerFiles]] },
   // Authentic historical restores run independently of the worker partitions.
   'archive-upgrade': { native: true, commands: ['test:archive-upgrade'] },
 };
@@ -94,9 +108,13 @@ export const verificationShards = {
   portability: combineGroups(['worker-3', 'portability']),
   'core-runtime': verificationGroups['core-runtime'],
   'core-runtime-planning': verificationGroups['core-runtime-planning'],
-  administration: combineGroups(['administration', 'ownership']),
+  administration: verificationGroups.administration,
   collaboration: combineGroups(['collaboration', 'runtime']),
   'worker-2': combineGroups(['worker-2', 'development']),
+  // Administration alone took ~16.5 minutes; its ownership journeys added
+  // ~8 minutes and reached the 25-minute cap during base-auth. Keep that
+  // sequence together on the former 5m33s worker row, sharing the CI build.
+  'worker-heavy': combineGroups(['worker-heavy', 'ownership']),
   'hosted-artifact': combineGroups(['hosted-artifact', 'archive-upgrade'], { retainBuilds: true }),
 };
 
