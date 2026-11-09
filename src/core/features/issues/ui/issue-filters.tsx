@@ -127,6 +127,16 @@ export function IssueFilters({
           "Unassigned",
         )}
         {choice("team", "Team", teams)}
+        {query.team !== "all" && (
+          <label>
+            <input
+              type="checkbox"
+              checked={query.includeSubTeams === "true"}
+              onChange={(event) => onChange({ includeSubTeams: event.target.checked ? "true" : "false" })}
+            />
+            Include sub-teams
+          </label>
+        )}
         {choice(
           "project",
           "Project",

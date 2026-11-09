@@ -33,10 +33,15 @@ export const issueListQuerySchema = z
       .default("all"),
     assignee: z.union([z.enum(["all", "unassigned"]), id]).default("all"),
     team: target,
-    // URLSearchParams supplies strings, while the browser router decodes
-    // boolean-looking search values before applying this same schema.
+    // The router JSON-quotes boolean-looking strings. Accept that wire form
+    // as well as URLSearchParams strings and router-decoded booleans.
     includeSubTeams: z.preprocess(
-      value => typeof value === "boolean" ? String(value) : value,
+      value => {
+        if (typeof value === "boolean") return String(value);
+        if (value === '"true"' || value === "%22true%22") return "true";
+        if (value === '"false"' || value === "%22false%22") return "false";
+        return value;
+      },
       z.enum(["false", "true"]).default("false"),
     ),
     project: nullableTarget,

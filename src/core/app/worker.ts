@@ -18,6 +18,7 @@ import start from "@tanstack/react-start/server-entry";
 import { createServerApp, type WorkerBindings } from "./server";
 import { isViteDevelopmentAsset } from "./vite-development-path";
 import { staticAssetResponse } from '../../base/static-assets';
+import { issueListQuerySchema } from '../features/issues/list-schema';
 import { renderAsOperator } from './document-operator.server';
 import { encodePrivateDocument } from './document-encoding.server';
 const app = createServerApp();
@@ -93,6 +94,12 @@ export async function handleRequest(
     }
   }
   if(admitted){const denial=await initiativePageDenial(env,url.pathname,admitted.id) ?? await releasePageDenial(env,url.pathname,admitted.id);if(denial)return denial;}
+  // Refuse malformed parent-list filters before SSR tries to load resources.
+  if (admitted && /^\/app\/(?:issues|board)(?:\/backlog)?\/?$/.test(url.pathname) &&
+      url.searchParams.has('includeSubTeams') &&
+      !issueListQuerySchema.shape.includeSubTeams.safeParse(url.searchParams.get('includeSubTeams')).success) {
+    return Response.json({ error: 'invalid_request', message: 'Invalid sub-team filter.' }, { status: 400 });
+  }
   // A person who may not browse the audit log still gets the page: it renders the plain denial, with the same status.
   let pageDenialStatus: number | null = null;
   if (url.pathname.replace(/\/$/, '') === '/app/settings/audit' && admitted) {

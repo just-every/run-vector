@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "42911bf63c81b2256020657b0f908ed48983e37b100b77754baffe551c3fa14d",
+      "sha256": "2c22892693408f0a4ac8e4b75e9092041af38b779020c3c5b74b35bd6f2f0eea",
       "executable": false
     },
     "DEMO.md": {
@@ -4202,7 +4202,7 @@
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "741f7007429cbba78c334691ba7d9226860fcf7bd097220fdbcb2f997106175f",
+      "sha256": "d4c16829005fb4985c9bdd50aa463953d4860478c8cb82a16064c98cfccc4082",
       "executable": false
     },
     "src/core/editor/config.server.ts": {
@@ -6118,7 +6118,7 @@
       "executable": false
     },
     "src/core/features/issues/list-schema.ts": {
-      "sha256": "e9a874c8514f9a8cbed032b9f49ca7f0fd52d1424361cfba68babcdb3071025a",
+      "sha256": "f9c9522b93d6eb1662606377a5f1bb3b4a51477fd40866152a22642246d3084e",
       "executable": false
     },
     "src/core/features/issues/list.ts": {
@@ -6246,7 +6246,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-filters.tsx": {
-      "sha256": "f1a59b1725f6bea24218fe741a2f6242cfe01613bee2da1d345baef210ae1879",
+      "sha256": "3b624307800cb15a2b354fc9b8d6f9254f32f262489b22afb786265d1139d2eb",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-actions.ts": {
@@ -10167,6 +10167,10 @@
     },
     "tests/worker/sub-team-authority-journey.ts": {
       "sha256": "bc0945a1834f585492d39f91ea25f1c667bb0cb5f10ed4f8c614ee5b3a296406",
+      "executable": false
+    },
+    "tests/worker/sub-team-filter.test.ts": {
+      "sha256": "e561039a8951f02e0c263e41f3f9845bfcb4387cd700f16018c9518be3183ad6",
       "executable": false
     },
     "tests/worker/sub-team-fixture.ts": {
