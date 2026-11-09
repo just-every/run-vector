@@ -405,9 +405,15 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
 });
 
 
-it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only", {timeout:120_000}, async () => {
+it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads", {timeout:120_000}, async () => {
   await guestVisibilityJourney(await roleWorkspace());
+});
+
+it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads", {timeout:120_000}, async () => {
   await viewerVisibilityJourney(await roleWorkspace());
+});
+
+it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes", {timeout:120_000}, async () => {
   // Agent admission closes the retained-artifact erasure fence. Keep this
   // journey after the Viewer's existing erasure-census setup in the shared D1.
   await privateVisibilityJourney(await roleWorkspace());

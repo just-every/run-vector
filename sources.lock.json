@@ -10118,7 +10118,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "f05b4e56f5ca545b2deaff5d9a13c1a840612bcc6a2be3de9ce6999c7a37a0b4",
+      "sha256": "43cf48be1d085d54767fae0730e0c68b220ebb3b2cba18a302a2be8796b5b233",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
@@ -10134,7 +10134,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "373cd1e5fa836756c279af2073ef659ed6946d26579763ee8074b9eb55686ac3",
+      "sha256": "616b062e09e66252c5844a073fbf8ae56ea242b8314e28e1261c6237357b28dd",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {

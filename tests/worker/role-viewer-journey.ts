@@ -51,7 +51,12 @@ export async function viewerVisibilityJourney(w:Workspace){
  const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits','integration_token_usage') ORDER BY name").all<{name:string}>()).results.map(row=>row.name);
  const stored=async()=>{
   const results=await env.DB.batch(tables.map(name=>env.DB.prepare('SELECT * FROM \"'+name+'\"')));
-  return Object.fromEntries(tables.map((name,index)=>[name,results[index].results.map(row=>JSON.stringify(row)).sort()]));
+  // D1 gives each row in a result the same columns. Encode their names once,
+  // retaining every value and duplicate row for the same complete comparison.
+  return Object.fromEntries(tables.map((name,index)=>{
+   const rows=results[index].results;
+   return [name,{columns:Object.keys(rows[0]??{}),rows:rows.map(row=>JSON.stringify(Object.values(row))).sort()}];
+  }));
  };
  for(const [surface,registry,send] of [['native',doors,member.call],['bearer',apiDoors,member.api]] as const){
   const mutations=viewerMutations(registry);let attempts=0;
