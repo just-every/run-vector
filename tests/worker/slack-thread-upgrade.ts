@@ -15,7 +15,7 @@ export async function slackThreadUpgrade(){
  const before=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
  await applyD1Migrations(db,migrations.slice(boundary));
  const after=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
- // 0135 adds hierarchy columns after this fixture's 0134 boundary. Compare
+ // 0136 adds hierarchy columns after this fixture's 0134 boundary. Compare
  // every old value and each new default; keep the complete latest-head upgrade.
  const added:Record<string,Record<string,unknown>>={
   teams:{parent_team_id:null,workflow_inherited:0,permissions_inherited:0,hierarchy_version:1},

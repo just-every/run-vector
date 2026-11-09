@@ -113,6 +113,14 @@ const issueTemplateDoors: Door[] = [
 
 export const doors: Door[] = [
   {method:'PUT',path:'/settings/teams/:id/hierarchy',row:'teams.hierarchy',teams:team('id')},
+  ...(['GET','POST'] as const).map((method): Door => ({method,path:'/settings/automation-rules',row:'automation.workspace'})),
+  {method:'POST',path:'/settings/automation-rules/dry-run',row:'automation.workspace'},
+  {method:'PATCH',path:'/settings/automation-rules/:ruleId',row:'automation.workspace'},
+  {method:'GET',path:'/settings/automation-rules/:ruleId/runs',row:'automation.workspace'},
+  ...(['GET','POST'] as const).map((method): Door => ({method,path:'/settings/teams/:id/automation-rules',row:'automation.team',teams:team('id')})),
+  {method:'POST',path:'/settings/teams/:id/automation-rules/dry-run',row:'automation.team',teams:team('id')},
+  {method:'PATCH',path:'/settings/teams/:id/automation-rules/:ruleId',row:'automation.team',teams:team('id')},
+  {method:'GET',path:'/settings/teams/:id/automation-rules/:ruleId/runs',row:'automation.team',teams:team('id')},
   {method:'GET',path:'/settings/teams/:id/sla',row:'teams.settings',teams:team('id')},
   {method:'PUT',path:'/settings/teams/:id/sla',row:'teams.settings',teams:team('id')},
   {method:'GET',path:'/issues/:identifier/sla',row:'work.read',teams:issue},

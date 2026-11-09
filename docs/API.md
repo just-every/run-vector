@@ -717,8 +717,8 @@ preserving their category. Configured Git automation targets follow the same
 replacement status, and their versions advance so stale editors cannot overwrite
 the remap.
 
-Apply `migrations/core/0135_sub_teams.sql` after unchanged
-`0134_slack_threads.sql`. Existing teams remain roots with independent workflows
+Apply `migrations/core/0136_sub_teams.sql` after unchanged
+`0135_automation_rules.sql`. Existing teams remain roots with independent workflows
 and permissions; existing statuses retain their identities. Keep this additive
 schema on compatible-source rollback.
 

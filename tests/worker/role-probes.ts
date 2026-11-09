@@ -1,3 +1,4 @@
+import {automationRuleProbe} from './automation-rule-roles';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
 import {createServerApp} from '../../src/core/app/server';
@@ -67,6 +68,8 @@ export function probes(w: Workspace): Record<RowId, Probe> {
   };
 
   const result:Record<RowId,Probe> = {
+    'automation.workspace': {session:async(_who,actor)=>automationRuleProbe(w,actor,null)},
+    'automation.team': {permission:'settings',session:async(_who,actor,team)=>automationRuleProbe(w,actor,team)},
     "documents.write": {outside:true,session:async(_who,actor,team)=>{const target=await issue(team);return()=>actor.call('/documents','POST',{parentKind:'issue',parentId:target.id,title:'synthetic-vector-document-probe-'+unique(),body:'synthetic-vector-document-body'});}},
     "work.read": {outside:true,session:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.call('/issues/'+made.identifier+'/references');},api:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.api('/issues/'+made.identifier);}},
     "viewers.manage": {session:async(_who,actor)=>()=>actor.call('/settings/operators/invite','POST',{email:`synthetic-vector-${1100+unique()}@vector.test`,displayName:'synthetic-vector-1100',role:'viewer'})},
@@ -243,7 +246,12 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "audit.read": { session: async (_who, actor) => () => actor.call("/settings/audit") },
     "data.export": { session: async (_who, actor) => async () => {
       const created = await actor.call("/portability/exports", "POST", {});
-      if (created.ok) await owner.call(`/portability/exports/${((await created.clone().json()) as { id: string }).id}/abort`, "POST", {});
+      if (created.ok) {
+        // Archive jobs belong to their creating actor, including an Admin.
+        // An Owner cannot release another actor's snapshot through this door.
+        const aborted = await actor.call(`/portability/exports/${((await created.clone().json()) as { id: string }).id}/abort`, "POST", {});
+        expect(aborted.status, await aborted.clone().text()).toBe(200);
+      }
       return created; } },
     "data.import": { session: async (_who, actor) => () => actor.call("/data/import/runs") },
     "data.restore": { session: async (_who, actor) => () => actor.call("/data/restore") },

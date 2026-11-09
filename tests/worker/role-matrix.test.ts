@@ -20,7 +20,33 @@ const audits = (action: string) =>
     .bind(action).all().then((rows) => rows.results);
 
 it('[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused', {timeout:120_000}, async () => {
-  await exerciseAudit(await roleWorkspace());
+  const w = await roleWorkspace(), call = w.people.owner.call;
+  const exports = new Set<string>();
+  // Release only this proof's export after its real completion receipt. Later
+  // erasure invalidates its job, so waiting until the end cannot abort it.
+  w.people.owner.call = async (path, method, body) => {
+    const response = await call(path, method, body);
+    if (path === '/portability/exports' && method === 'POST' && response.status === 201)
+      exports.add((await response.clone().json() as { id: string }).id);
+    for (const id of exports) {
+      if (path === `/portability/exports/${id}/advance` && response.ok &&
+          (await response.clone().json() as { phase: string }).phase === 'complete') {
+        const aborted = await call(`/portability/exports/${id}/abort`, 'POST', {});
+        expect(aborted.status, await aborted.clone().text()).toBe(200);
+        exports.delete(id);
+      }
+    }
+    return response;
+  };
+  try {
+    await exerciseAudit(w);
+  } finally {
+    w.people.owner.call = call;
+    for (const id of exports) {
+      const response = await call(`/portability/exports/${id}/abort`, 'POST', {});
+      expect(response.status, await response.clone().text()).toBe(200);
+    }
+  }
 });
 
 
@@ -117,7 +143,8 @@ const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : st
 const watched = ["custom_field_definitions","custom_field_options","issue_templates","documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "issue_reactions", "issue_aliases", "issue_alias_prefixes", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
-  "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_initiative_destination_approvals", "vector_initiative_scoped_bindings", "vector_initiative_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
+  "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_initiative_destination_approvals", "vector_initiative_scoped_bindings", "vector_initiative_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants",
+  "automation_rules", "automation_rule_runs", "automation_rule_usage", "automation_rule_restore_holds"];
 
 // Driven from the registry, this case grows with every row; its time limit is not a product assertion.
 it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", { timeout: 120_000 }, async () => {
