@@ -38,6 +38,7 @@ type NavigationItem = {
     | '/app'
     | '/app/my-work'
     | '/app/projects'
+    | '/app/roadmap'
     | '/app/releases'
     | '/app/initiatives'
     | '/app/issues'
@@ -53,6 +54,7 @@ const navigation: NavigationItem[] = [
   { to: '/app/my-work', label: 'My work', icon: '◒' },
   { to: '/app/projects', label: 'Projects', icon: '◇' },
   { to: '/app/initiatives', label: 'Initiatives', icon: '◎' },
+  { to: '/app/roadmap', label: 'Roadmap', icon: '▰' },
   { to: '/app/releases', label: 'Releases', icon: '◉' },
   { to: '/app/issues', label: 'Issues', icon: '▤' },
   { to: '/app/board', label: 'Board', icon: '▥' },

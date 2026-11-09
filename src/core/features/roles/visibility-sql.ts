@@ -27,8 +27,12 @@ export function visibilityCtes(actor: string) {
     `__vector_reader AS (SELECT id,workspace_id,role FROM main.operators WHERE id=${literal} AND removed_at IS NULL)`,
     `teams AS (SELECT t.* FROM main.teams t JOIN __vector_reader reader ON reader.workspace_id=t.workspace_id WHERE ${visibleTeam('reader', 't.id')})`,
     `__vector_access AS (SELECT reader.role='guest' OR EXISTS(SELECT 1 FROM main.teams hidden WHERE hidden.workspace_id=reader.workspace_id AND hidden.id NOT IN(SELECT id FROM teams)) AS restricted FROM __vector_reader reader)`,
+    // SQLite resolves the first matching projected column. Real lifecycle
+    // columns take precedence; before 0138 the trailing NULLs preserve the
+    // pre-suspension reads without referencing columns that do not exist yet.
     `operators AS (SELECT r.id,r.workspace_id,r.name||CASE WHEN r.suspended_at IS NOT NULL THEN ' (Suspended)' WHEN r.role='guest' THEN ' (Guest)' ELSE '' END name,r.email,r.removed_at,r.created_at,r.updated_at,r.role,r.suspended_at,r.suspended_by
-      FROM main.operators r JOIN __vector_reader reader ON reader.workspace_id=r.workspace_id)`,
+      FROM (SELECT legacy.*,NULL AS suspended_at,NULL AS suspended_by FROM main.operators legacy) r
+      JOIN __vector_reader reader ON reader.workspace_id=r.workspace_id)`,
     scoped('issues', team()),
     scoped('projects', `r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (EXISTS(SELECT 1 FROM issues i WHERE i.project_id=r.id) OR (NOT (${guest}) AND NOT EXISTS(SELECT 1 FROM main.issues i WHERE i.project_id=r.id)))`),
     `__vector_hidden_refs AS (SELECT id AS ref FROM main.issues WHERE id NOT IN(SELECT id FROM issues) UNION SELECT identifier FROM main.issues WHERE id NOT IN(SELECT id FROM issues) UNION SELECT id FROM main.teams WHERE id NOT IN(SELECT id FROM teams) UNION SELECT id FROM main.projects WHERE id NOT IN(SELECT id FROM projects))`,

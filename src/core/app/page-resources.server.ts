@@ -104,7 +104,8 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     const teams = (options as { teams: Array<{ id: string }> } | null)?.teams
     const selected = path.match(/\/([A-Z]{2,10}-[1-9][0-9]*)$/)?.[1]
     await Promise.all([read(issueListApiUrl(surface === 'board' && shown.team === 'all' && teams?.length === 1 ? { ...shown, team: teams[0]!.id } : shown)), selected ? detail(selected) : Promise.resolve()])
-  } else if (path === '/app/projects') {
+  } else if (path === '/app/roadmap') await read('/api/roadmap')
+  else if (path === '/app/projects') {
     const preference = await read('/api/preferences/projects') as { filters: { includeArchived?: boolean } } | null
     await Promise.all([read('/api/projects' + (preference?.filters.includeArchived ? '?includeArchived=true' : '')), read('/api/metadata')])
   } else if (path === '/app/projects/new') await read('/api/metadata')
