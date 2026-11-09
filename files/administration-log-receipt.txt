@@ -1,0 +1,5 @@
+Command: gh run view 42648235349 --repo just-every/run-vector --job 129285466554 --log-failed
+Exit: 0
+Stdout bytes: 0
+
+(No matching assertion/timeout diagnostic in command stdout.)

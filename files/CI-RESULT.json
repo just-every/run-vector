@@ -1,0 +1,51 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-ci-shape-1",
+  "head": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+  "workflow": "Verify",
+  "run_id": 42648235349,
+  "conclusion": "cancelled",
+  "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42648235349",
+  "run_attempt": 2,
+  "status": "completed",
+  "hosted_worker_measurements": {
+    "worker_2_before_seconds": 1448,
+    "worker_2_after_seconds": 929,
+    "worker_heavy_after_seconds": 333,
+    "worker_2_reduction_seconds": 519,
+    "worker_2_reduction_percent": 35.84,
+    "workflow_run": 42648235349,
+    "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa"
+  },
+  "coverage": {
+    "before_files": 119,
+    "after_files": 119,
+    "duplicates": 0,
+    "missing": 0,
+    "before_rows": 8,
+    "after_rows": 9
+  },
+  "clause_changes": [],
+  "ready": false,
+  "blocker": "Required exact-SHA Verify attempt 2 completed/cancelled after the administration retry reached its existing job budget; no green required aggregate. The worker rows passed. An administration/ownership split or test/product change is outside this worker-row lease.",
+  "administration_diagnostic": {
+    "job": 129285466554,
+    "run_attempt": 2,
+    "archive_command_exit": 0,
+    "archive_command_stdout_bytes": 0,
+    "cached_archive_available": true,
+    "cancelled_log_timestamp": "2026-11-09T16:43:38.6079869Z",
+    "job_started_at": "2026-11-09T16:18:28Z",
+    "diagnostic": "The operation was canceled.",
+    "note": "Cancellation occurs approximately 25m10s after job start, consistent with the unchanged 25-minute job cap. No failing assertion was emitted in the retained diagnostic lines. Administration/ownership commands and their tests are outside this worker-row lease and were unchanged.",
+    "test_admin": {
+      "tests": 80,
+      "passed": 80,
+      "failed": 0,
+      "milliseconds": 987804.091033
+    },
+    "last_command": "test:base-auth"
+  },
+  "github_calls_used": 10
+}

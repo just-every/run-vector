@@ -1,0 +1,11 @@
+# sd-vector-ci-shape-1 plan
+
+1. Refresh the fleet launcher, install bundle-only Git authentication, use fleet identity and publication hooks, and create a full-history clone from fresh origin/main.
+2. Read the shared verification plan, runner, workflow and aggregate guard; establish all six Vitest partition file lists before any change. Obtain available hosted file/job timings within the ten-call GitHub budget. Preserve unavailable measurements as unavailable.
+3. Give role-matrix.test.ts an independent verification row. Exclude it from the original six-partition invocations without omitting or duplicating any remaining file. Move data-http-audit-recovery.test.ts only if measured residual worker-2 work remains over about 12 minutes. Keep every assertion, timeout, test and product file unchanged.
+4. Compare actual before/after Vitest lists for the full configured worker suite, including installer tests: identical union and exactly one occurrence per file. Check matrix flags, serial-command coverage, group/build behavior, workflow/aggregate compatibility and any existing plan tests. Run typecheck and focused worker execution as appropriate.
+5. Stage changes, regenerate sources.lock.json last with pnpm sources:lock, then run pnpm sources:check. Inspect identities and all messages across origin/main..HEAD. Commit only leased product files and the source lock using fleet author/committer environment and active hooks.
+6. Push the named branch through cloud-push.py, discover and poll exact-SHA Verify through REST within the call budget (at least 300 seconds between observations of a run), inspect new row/job timing and report the actual conclusion. No default-branch push, no landing claim, no PR unless repository rules require one.
+7. Save complete non-secret reports and actual receipts in this packet, publish only to evidence/sd-vector-ci-shape-1, emit the required POST and terminal custody lines. Remove the clone/dependencies after successful preservation; preserve a verified external bundle if any push remains rejected.
+
+Scope: scripts/verification-plan.mjs; workflow consumer only if required; package.json only if needed for file selection; sources.lock.json. CONTRACT.md and all tests/timeouts are read-only. No UI changes. Clause statuses and counts stay unchanged.

@@ -1,0 +1,63 @@
+diff --git a/scripts/verification-plan.mjs b/scripts/verification-plan.mjs
+index 24feb5c9..aca7ca3b 100644
+--- a/scripts/verification-plan.mjs
++++ b/scripts/verification-plan.mjs
+@@ -16,6 +16,17 @@ export const ciCommands = [
+ // The hosted-artifact shard retains its fresh build/verification boundaries.
+ // Keep these public-door flows until they can be rebalanced within their budget;
+ // combining the current long shards would exceed the normal job cap.
++// Exclude dedicated files from every partition before Vitest shards the suite,
++// so repartitioning cannot duplicate them in another runner.
++const heavyWorkerFiles = [
++  'tests/worker/role-matrix.test.ts',
++  'tests/worker/data-http-audit-recovery.test.ts',
++];
++const workerPartition = index => [
++  'test:worker', `--shard=${index}/6`,
++  ...heavyWorkerFiles.map(file => `--exclude=${file}`),
++];
++
+ const verificationGroups = {
+   // test:data is its two existing entry points, split without omitting either.
+   imports: {
+@@ -64,11 +75,14 @@ const verificationGroups = {
+     // Own the former ownership tail; retain each fresh build boundary.
+     commands: ['test:public-site', 'verify', 'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
+   },
+-  // Keep Vitest's complete six-file-partition wall, balanced across three
+-  // runners. Each invocation still gets its original isolated Vitest process.
+-  'worker-1': { commands: [['test:worker', '--shard=4/6'], ['test:worker', '--shard=5/6']] },
+-  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6']] },
+-  'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
++  // Keep the complete six-partition wall plus the two dedicated heavy files.
++  // Each invocation retains its isolated Vitest process and normal timeouts.
++  'worker-1': { commands: [workerPartition(4), workerPartition(5)] },
++  'worker-2': { commands: [workerPartition(2), workerPartition(3)] },
++  'worker-3': { commands: [workerPartition(1), workerPartition(6)] },
++  // Hosted worker-2 took 24m08s; removing role-matrix alone leaves it above
++  // the ~12-minute target. Keep audit recovery here too, without development.
++  'worker-heavy': { commands: [['test:worker', ...heavyWorkerFiles]] },
+   // Authentic historical restores run independently of the worker partitions.
+   'archive-upgrade': { native: true, commands: ['test:archive-upgrade'] },
+ };
+@@ -97,6 +111,7 @@ export const verificationShards = {
+   administration: combineGroups(['administration', 'ownership']),
+   collaboration: combineGroups(['collaboration', 'runtime']),
+   'worker-2': combineGroups(['worker-2', 'development']),
++  'worker-heavy': verificationGroups['worker-heavy'],
+   'hosted-artifact': combineGroups(['hosted-artifact', 'archive-upgrade'], { retainBuilds: true }),
+ };
+ 
+diff --git a/sources.lock.json b/sources.lock.json
+index a4cb098d..d94b9018 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -3590,7 +3590,7 @@
+       "executable": false
+     },
+     "scripts/verification-plan.mjs": {
+-      "sha256": "a4341321d5ff860405dcd9b62a3557bf6f51e865ec71e627c891d9c8946037c4",
++      "sha256": "8cc8394f6ca310bfdbb95033ac085e6742b66cec5aa41d12c143622cb3403338",
+       "executable": false
+     },
+     "scripts/verify.mjs": {

@@ -1,0 +1,356 @@
+{
+  "tag": "sd-vector-ci-shape-1",
+  "repository": "just-every/run-vector",
+  "base": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "github_calls": [
+    {
+      "call": 1,
+      "command": "gh run view 42638728947 --repo just-every/run-vector --job 129234385701 --log-failed",
+      "result": "Unavailable: run still in progress; no retries of the failed-job archive."
+    },
+    {
+      "call": 2,
+      "command": "gh run view 42621810959 --repo just-every/run-vector --job 129176165524 --log",
+      "result": "Exit 0, zero log bytes; no per-file measurement available."
+    },
+    {
+      "call": 3,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42621810959/jobs?per_page=100",
+      "result": "Success; worker-2 2026-11-09T13:02:29Z to 13:26:37Z, 1448 seconds / 24m08s."
+    },
+    {
+      "call": 4,
+      "command": "gh api repos/just-every/run-vector/actions/jobs/129176165524/logs",
+      "result": "Blocked redirect: Get https://productionresultssa10.blob.core.windows.net/actions-results/c5ddac39-9fc9-8c34-b38b-94ed67aa23c0/workflow-job-run-4faac718-ef3f-5c10-be0e-6b92e0618afa/logs/job/job-logs.txt?<query omitted> Forbidden. No more blob-download attempts."
+    },
+    {
+      "call": 5,
+      "command": "gh api repos/just-every/run-vector/actions/runs?head_sha=55d6f915ff823e06f674376500e3e4deb6d2d8fa&per_page=100",
+      "result": "Saved in ci-discovery.json",
+      "observed_at_epoch": 1794239283.0603185
+    },
+    {
+      "call": 6,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42648235349/jobs?per_page=100",
+      "exit": 0,
+      "result_file": "ci-jobs-intermediate.json",
+      "observed_at_epoch": 1794239883.1020615
+    },
+    {
+      "call": 7,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42648235349 --jq '{status,conclusion,head_sha,html_url}'",
+      "exit": 0,
+      "result_file": "ci-final.json",
+      "observed_at_epoch": 1794241048.5214598
+    },
+    {
+      "call": 8,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42648235349/jobs?per_page=100",
+      "exit": 0,
+      "result_file": "ci-jobs-final.json",
+      "observed_at_epoch": 1794241351.9781923
+    },
+    {
+      "call": 9,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42648235349 --jq {status,conclusion,head_sha,html_url,run_attempt}",
+      "exit": 0,
+      "result_file": "ci-status-final.json",
+      "observed_at_epoch": 1794242642.597192
+    },
+    {
+      "call": 10,
+      "command": "gh run view 42648235349 --repo just-every/run-vector --job 129285466554 --log-failed",
+      "exit": 0,
+      "stdout_bytes": 0,
+      "result_file": "administration-log-receipt.txt",
+      "observed_at_epoch": 1794242949.8701644
+    }
+  ],
+  "local_checks": [
+    {
+      "command": "node --check scripts/verification-plan.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node /tmp/vector-plan-check.mjs",
+      "exit": 0,
+      "result": "119 files exactly once; dynamic matrix and required-job guard compatible"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "pnpm check",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "git diff --cached --check",
+      "exit": 0
+    }
+  ],
+  "clause_counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_changes": [],
+  "scope_readonly_sha256": {
+    "CONTRACT.md": "0e7afa4c51fa4a6ad415f0f817170f94e9011b0df36e5ee4c8c61c1a5d144f87",
+    "ACCEPTANCE.md": "d823097503bde3f21f3d8cf0630461942592071876800939047000e4d0a59f14",
+    "docs/CLAIMS.md": "a47bd22f32a22237632ac39506b9dec18a8e2c896a6dbcf1fafb736458760078",
+    "tests/worker/role-matrix.test.ts": "6a8396de9b6b2ad4c0e477c4a5062331aca99252dbb2f64f2cdfbddbb8ecc574",
+    "tests/worker/data-http-audit-recovery.test.ts": "08b1a6f33f0b88787ed84ac734bd4c4aa89f99a2d11e3bbeb1ae9ef7286b89e1",
+    "vitest.config.ts": "20b9d07141765b221ba12d82311ba4a4393c31a6f385dee58e13fc4668bf964e",
+    ".github/workflows/verify.yml": "af31d374d1bf42687a9b8b5f8296ba69bae941ce7d3a74c9c904d2a92611bbc0",
+    "package.json": "117d3eb8eca5741a61377872219037986b03d174438bbf7ce4910feb87c4cc07"
+  },
+  "product_head": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+  "product_branch": "cloud/sd-vector-ci-shape-1",
+  "identity_scan": {
+    "range": "origin/main..HEAD",
+    "commits": 1,
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "trailers": [],
+    "passed": true
+  },
+  "product_push": {
+    "passed": true,
+    "attempts": 1,
+    "remote": "origin",
+    "ref": "refs/heads/cloud/sd-vector-ci-shape-1"
+  },
+  "baseline_measurement": {
+    "command": "timeout 720 pnpm test:worker --shard=2/6 --reporter=json --outputFile=<packet>/baseline-worker-2-of-6.json",
+    "exit": 124,
+    "result": "12-minute command bound reached; Vitest JSON report not written. This unchanged baseline partition is incomplete, not a passing test result."
+  },
+  "ci_run": {
+    "id": 42648235349,
+    "url": "https://github.com/just-every/run-vector/actions/runs/42648235349",
+    "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+    "workflow": "Verify"
+  },
+  "intermediate_worker_heavy": {
+    "job": 129268000389,
+    "status": "completed",
+    "conclusion": "success",
+    "seconds": 333,
+    "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa"
+  },
+  "full_history_clone": true,
+  "historical_file_measurements": {
+    "run_id": 42621810959,
+    "job_id": 129176165524,
+    "source": "Previously downloaded gh CLI cached archive; selected non-secret timing lines in historical-timings.txt",
+    "role-matrix_seconds": 265.318,
+    "data-http-audit-recovery_seconds": 170.408,
+    "partition_2_seconds": 925.55,
+    "partition_3_seconds": 303.67
+  },
+  "local_worker_heavy": {
+    "command": "timeout 1200 pnpm test:worker tests/worker/role-matrix.test.ts tests/worker/data-http-audit-recovery.test.ts --reporter=json --outputFile=<packet>/local-worker-heavy.json",
+    "result": "Did not produce final JSON; previous execution interrupted at the command bound. No local passing result claimed."
+  },
+  "resumed_validation": {
+    "product_ref_verified_by_ls_remote": true,
+    "product_worktree_clean": true,
+    "readonly_files_unchanged": true,
+    "plan_check_exit": 0,
+    "sources_check_exit": 0,
+    "changed_files": [
+      "scripts/verification-plan.mjs",
+      "sources.lock.json"
+    ],
+    "cli_exclusion_check_exit": 0
+  },
+  "latest_jobs_observation": {
+    "file": "ci-jobs-final.json",
+    "note": "Latest jobs now show an externally initiated rerun in progress; prior run status was cancelled. No rerun requested by this resumed executor.",
+    "jobs": [
+      {
+        "id": 129285465940,
+        "name": "plan",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:47:46Z",
+        "completed_at": "2026-11-09T15:47:55Z",
+        "seconds": 9.0
+      },
+      {
+        "id": 129285466554,
+        "name": "shards (administration, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_attempt": 2,
+        "started_at": "2026-11-09T16:18:28Z",
+        "completed_at": null,
+        "seconds": null
+      },
+      {
+        "id": 129285466837,
+        "name": "build",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:47:57Z",
+        "completed_at": "2026-11-09T15:49:04Z",
+        "seconds": 67.0
+      },
+      {
+        "id": 129285467498,
+        "name": "shards (collaboration, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:07Z",
+        "completed_at": "2026-11-09T16:11:44Z",
+        "seconds": 1357.0
+      },
+      {
+        "id": 129285467500,
+        "name": "shards (worker-2, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:09Z",
+        "completed_at": "2026-11-09T16:04:38Z",
+        "seconds": 929.0
+      },
+      {
+        "id": 129285467503,
+        "name": "shards (core-runtime, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:06Z",
+        "completed_at": "2026-11-09T16:07:12Z",
+        "seconds": 1086.0
+      },
+      {
+        "id": 129285467748,
+        "name": "shards (portability, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:06Z",
+        "completed_at": "2026-11-09T16:04:08Z",
+        "seconds": 902.0
+      },
+      {
+        "id": 129285467957,
+        "name": "shards (imports, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:06Z",
+        "completed_at": "2026-11-09T16:04:16Z",
+        "seconds": 910.0
+      },
+      {
+        "id": 129285468109,
+        "name": "shards (core-runtime-planning, true, true, true)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:06Z",
+        "completed_at": "2026-11-09T16:05:34Z",
+        "seconds": 988.0
+      },
+      {
+        "id": 129285468183,
+        "name": "shards (hosted-artifact, true, true, false)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:07Z",
+        "completed_at": "2026-11-09T16:13:11Z",
+        "seconds": 1444.0
+      },
+      {
+        "id": 129285469260,
+        "name": "shards (worker-heavy, false, false, false)",
+        "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 2,
+        "started_at": "2026-11-09T15:49:06Z",
+        "completed_at": "2026-11-09T15:54:39Z",
+        "seconds": 333.0
+      }
+    ]
+  },
+  "hosted_shape_result": {
+    "worker_2_before_seconds": 1448,
+    "worker_2_after_seconds": 929,
+    "worker_heavy_after_seconds": 333,
+    "worker_2_reduction_seconds": 519,
+    "worker_2_reduction_percent": 35.84,
+    "workflow_run": 42648235349,
+    "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa"
+  },
+  "remote_main_rechecked_unchanged": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "ci_watch_plan": "Reserve the remaining GitHub budget: read exact-SHA run status after the retried administration row's 25-minute bound (started 16:18:28Z; observe at 16:44Z). One call remains for a failed-job archive if necessary. No further product changes or pushes are planned.",
+  "ci_final": {
+    "conclusion": "cancelled",
+    "head_sha": "55d6f915ff823e06f674376500e3e4deb6d2d8fa",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42648235349",
+    "run_attempt": 2,
+    "status": "completed",
+    "run_id": 42648235349
+  },
+  "clause_counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "readonly_files_unchanged": true,
+  "product_worktree_clean": true,
+  "terminal_custody": "BLOCKED on required Verify cancellation; product branch is pushed; no READY or landing claim",
+  "github_call_budget": {
+    "used": 10,
+    "limit": 10
+  },
+  "administration_diagnostic": {
+    "job": 129285466554,
+    "run_attempt": 2,
+    "archive_command_exit": 0,
+    "archive_command_stdout_bytes": 0,
+    "cached_archive_available": true,
+    "cancelled_log_timestamp": "2026-11-09T16:43:38.6079869Z",
+    "job_started_at": "2026-11-09T16:18:28Z",
+    "diagnostic": "The operation was canceled.",
+    "note": "Cancellation occurs approximately 25m10s after job start, consistent with the unchanged 25-minute job cap. No failing assertion was emitted in the retained diagnostic lines. Administration/ownership commands and their tests are outside this worker-row lease and were unchanged.",
+    "test_admin": {
+      "tests": 80,
+      "passed": 80,
+      "failed": 0,
+      "milliseconds": 987804.091033
+    },
+    "last_command": "test:base-auth"
+  },
+  "blocker": "Required exact-SHA Verify attempt 2 completed/cancelled after the administration retry reached its existing job budget; no green required aggregate. The worker rows passed. An administration/ownership split or test/product change is outside this worker-row lease.",
+  "remaining_scope_location": "scripts/verification-plan.mjs verificationShards.administration = combineGroups([administration, ownership]); this unchanged non-worker composition is outside the lease."
+}

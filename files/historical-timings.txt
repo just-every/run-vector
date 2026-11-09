@@ -1,0 +1,4 @@
+2026-11-09T13:07:44.2829850Z  ✓ tests/worker/role-matrix.test.ts (7 tests) 265318ms
+2026-11-09T13:13:50.0651217Z  ✓ tests/worker/data-http-audit-recovery.test.ts (1 test) 170408ms
+2026-11-09T13:18:34.3792849Z    Duration  925.55s (transform 5.70s, setup 0ms, import 94.63s, tests 819.79s, environment 1ms)
+2026-11-09T13:23:40.6206932Z    Duration  303.67s (transform 5.89s, setup 0ms, import 95.14s, tests 197.55s, environment 5ms)

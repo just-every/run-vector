@@ -1,0 +1,18 @@
+Source: gh CLI cached archive downloaded by the single permitted failed-job log invocation; no additional GitHub call.
+Entry: 1_shards (administration, true, true, true).txt
+
+2026-11-09T16:19:08.5722913Z > vector@0.4.1 verify:ci /home/runner/work/run-vector/run-vector
+2026-11-09T16:19:08.8711105Z > vector@0.4.1 sources:check /home/runner/work/run-vector/run-vector
+2026-11-09T16:19:09.7296882Z > vector@0.4.1 test:admin /home/runner/work/run-vector/run-vector
+2026-11-09T16:19:09.7297490Z > node --experimental-strip-types tests/e2e/admin-runtime.mjs
+2026-11-09T16:35:38.4637571Z # tests 80
+2026-11-09T16:35:38.4638293Z # pass 80
+2026-11-09T16:35:38.4638591Z # fail 0
+2026-11-09T16:35:38.4639899Z # duration_ms 987804.091033
+2026-11-09T16:41:16.4680596Z > vector@0.4.1 test:wave-b /home/runner/work/run-vector/run-vector
+2026-11-09T16:41:16.4681381Z > node tests/e2e/wave-b-runtime.mjs
+2026-11-09T16:42:40.8450749Z > vector@0.4.1 test:base-auth /home/runner/work/run-vector/run-vector
+2026-11-09T16:42:40.8451393Z > node tests/e2e/base-auth-runtime.mjs
+2026-11-09T16:43:38.6079869Z ##[error]The operation was canceled.
+
+Last log timestamp: 2026-11-09T16:43:40.6396925Z

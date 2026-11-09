@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "beforeFiles": 119,
+  "afterFiles": 119,
+  "duplicates": 0,
+  "omitted": 0,
+  "added": 0,
+  "beforeRows": 8,
+  "afterRows": 9,
+  "dedicatedFiles": [
+    "tests/worker/data-http-audit-recovery.test.ts",
+    "tests/worker/role-matrix.test.ts"
+  ],
+  "beforePerPartition": {
+    "1/6": 20,
+    "2/6": 20,
+    "3/6": 20,
+    "4/6": 20,
+    "5/6": 20,
+    "6/6": 19
+  },
+  "afterPerPartition": {
+    "1/6": 20,
+    "2/6": 20,
+    "3/6": 20,
+    "4/6": 19,
+    "5/6": 19,
+    "6/6": 19,
+    "worker-heavy": 2
+  },
+  "assertions": [
+    "actual Vitest configured sequencer file union unchanged",
+    "exactly-once full worker/installer file coverage",
+    "exact actual dedicated filter selection",
+    "all six partition invocations exclude dedicated files",
+    "serial command wall unchanged",
+    "all existing non-worker commands and flags unchanged",
+    "new matrix flags false/false/false",
+    "unchanged dynamic workflow, 25-minute job cap and aggregate verify guard"
+  ],
+  "matrix": [
+    {
+      "shard": "imports",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "portability",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "core-runtime",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "core-runtime-planning",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "administration",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "collaboration",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "worker-2",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "worker-heavy",
+      "browser": false,
+      "native": false,
+      "prebuilt": false
+    },
+    {
+      "shard": "hosted-artifact",
+      "browser": true,
+      "native": true,
+      "prebuilt": false
+    }
+  ]
+}
