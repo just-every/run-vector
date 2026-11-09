@@ -195,12 +195,6 @@ export async function changeHierarchy(
       (v): v is string => !!v,
     ),
   ]);
-  // Permission values keep ROLE-009's team-owner authority even when every
-  // member may edit ordinary team settings through the hierarchy door.
-  const permissionsAllowed =
-    input.settingsPermission !== undefined || input.planningPermission !== undefined
-      ? [await hierarchyAuthority(ctx, [id], "teams.permissions")]
-      : [];
   const graphFence = hierarchyFence(ctx, teams);
   validHierarchy(teams.map((t) => (t.id === id ? next : t)));
   next.settings_permission = next.permissions_inherited
@@ -209,6 +203,16 @@ export async function changeHierarchy(
   next.planning_permission = next.permissions_inherited
     ? parent!.planning_permission
     : (input.planningPermission ?? old.planning_permission);
+  // Reparenting or switching inheritance can set permission values without
+  // naming them explicitly. Every such write keeps ROLE-009 authority.
+  const changesPermissions =
+    input.settingsPermission !== undefined || input.planningPermission !== undefined ||
+    next.permissions_inherited !== old.permissions_inherited ||
+    next.settings_permission !== old.settings_permission ||
+    next.planning_permission !== old.planning_permission;
+  const permissionsAllowed = changesPermissions
+    ? [await hierarchyAuthority(ctx, [id], "teams.permissions")]
+    : [];
   const nextTeams = teams.map((t) => (t.id === id ? next : { ...t }));
   const workflows = next.workflow_inherited
     ? await inheritedWorkflowWrites(ctx, id, parent!.id, nextTeams)

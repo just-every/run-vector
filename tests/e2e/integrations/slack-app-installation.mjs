@@ -1,3 +1,4 @@
+import {exerciseSlackThreads} from './slack-threads.mjs';
 import {exerciseSlackAppArchive} from './slack-app-archive.mjs';
 import {createHmac} from 'node:crypto';
 import assert from 'node:assert/strict';
@@ -60,12 +61,13 @@ export async function exerciseSlackAppInstallation({page,runtime,cookie,team,wid
   await binding.getByLabel('Channel display name',{exact:true}).fill('synthetic-vector-33010');
   await binding.getByLabel('Slack channel ID').fill(fixture.intakeChannel);
   await receive('/channels',()=>binding.getByRole('button',{name:'Save channel binding',exact:true}).click(),201);
-  const title='synthetic-vector-33011-'+width+'-'+(++eventNumber),payload={type:'event_callback',team_id:fixture.teamId,event_id:'synthetic-vector-33012-'+width+'-'+eventNumber,event:{type:'app_mention',user:fixture.memberId,channel:fixture.intakeChannel,text:'<@'+fixture.botId+'> '+title}};
+  const title='synthetic-vector-33011-'+width+'-'+(++eventNumber),payload={type:'event_callback',team_id:fixture.teamId,event_id:'synthetic-vector-33012-'+width+'-'+eventNumber,event:{type:'app_mention',ts:String(1730000000+width+eventNumber)+'.000001',user:fixture.memberId,channel:fixture.intakeChannel,text:'<@'+fixture.botId+'> '+title}};
   const body=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000));
   const headers={'Content-Type':'application/json','x-slack-request-timestamp':timestamp,'x-slack-signature':'v0='+createHmac('sha256',fixture.signingSecret).update('v0:'+timestamp+':'+body).digest('hex')};
   const created=await runtime.req('/api/integrations/slack/events',{method:'POST',headers,body});assert.equal(created.status,200);const issue=await created.json();
   assert.equal((await runtime.req('/api/integrations/slack/events',{method:'POST',headers,body})).status,409);
   await page.goto(runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:title,exact:true}).waitFor();
+  if(eventNumber===1&&width===1440)await exerciseSlackThreads({page,runtime,cookie,width,evidence,fixture,issue,payload});
   const recorded=runtime.sql("SELECT a.actor_operator_id FROM issue_activity a JOIN issues i ON i.id=a.issue_id WHERE i.identifier='"+issue.identifier+"' AND a.kind='issue.created'");assert.deepEqual(recorded.map(row=>row.actor_operator_id),[owner.id]);
   await page.goto(runtime.base+'/app/settings/connections');await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor();
   const removing=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations/slack/app/members/'+owner.id&&r.request().method()==='DELETE');
