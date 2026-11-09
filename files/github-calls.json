@@ -1,0 +1,56 @@
+{
+  "budget": 10,
+  "used": 10,
+  "calls": [
+    {
+      "number": 1,
+      "command": "gh run list --repo just-every/run-vector --branch cloud/sd-vector-c-f207 --limit 10 --json databaseId,headSha,name,conclusion,status,url",
+      "result": "completed failure Verify 42513319748, exact head 806b1715d89a5383b5722b1b6c37a615b0665763"
+    },
+    {
+      "number": 2,
+      "command": "gh run view 42513319748 --repo just-every/run-vector --json jobs",
+      "result": "imports, worker-2, portability and hosted-artifact shards failed; aggregate verify failed"
+    },
+    {
+      "number": 3,
+      "command": "gh run view 42513319748 --repo just-every/run-vector --job 128831161235 --log-failed",
+      "result": "exit 0, zero output bytes"
+    },
+    {
+      "number": 4,
+      "command": "gh run view 42513319748 --repo just-every/run-vector --job 128831161230 --log-failed",
+      "result": "exit 0, zero output bytes"
+    },
+    {
+      "number": 5,
+      "command": "gh run view 42513319748 --repo just-every/run-vector --job 128831161241 --log-failed",
+      "result": "exit 0, zero output bytes"
+    },
+    {
+      "number": 6,
+      "command": "gh run view 42513319748 --repo just-every/run-vector --job 128831161257 --log-failed",
+      "result": "exit 0, zero output bytes"
+    },
+    {
+      "number": 7,
+      "command": "gh run view 42513319748 --repo just-every/run-vector --log-failed",
+      "result": "exit 0, zero output bytes; no assertion names or transport error supplied"
+    },
+    {
+      "number": 8,
+      "command": "gh api repos/just-every/run-vector/actions/runs?head_sha=845d247813161432dec41959a2faa72090397bb1&per_page=100",
+      "result": "Verify 42562058136 queued on exact candidate SHA"
+    },
+    {
+      "number": 9,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42562058136 --jq {status,conclusion,head_sha,html_url}",
+      "receipt": "ci-poll-1.json"
+    },
+    {
+      "number": 10,
+      "command": "gh api repos/just-every/run-vector/actions/runs/42562058136 --jq {status,conclusion,head_sha,html_url}",
+      "receipt": "ci-final.json"
+    }
+  ]
+}

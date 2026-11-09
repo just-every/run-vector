@@ -1,0 +1,11 @@
+# Targeted TEAM-006 round
+
+1. Configure fleet identity, launcher authentication, commit hooks and cloud toolchain. Clone full history, verify fix3 head 213e0580f8238114beb1016eb788de0d130849ab, and merge fresh origin/main without rebasing published work. Preserve newer contract judgments and all unrelated clauses.
+2. Read f207 exact-SHA Verify and reproduce reported failures locally. Add a server regression that uses the actual TanStack query serializer and exercises booleans, plain strings, quoted strings, encoded quoted strings, false equivalents and invalid values over native and bearer HTTP.
+3. Reproduce the parent-list failure in Chromium at 1440 and 390. Fix only its parsing/serialization/filter control and candidate-caused regressions; retain child permission safeguards and defer saved-template reparenting.
+4. Re-run the same regression commands and typecheck. Prove parent plus visible child issues when enabled, parent only when disabled, browser navigation and reload at both widths. Keep actual non-secret captures and receipts in this packet.
+5. Check migration numbering against fresh main; preserve main migrations. Regenerate SDK and integration deployment spec. Run migration-ledger proof and touched contract write/check, restore generated views from origin/main, stage and generate source lock last, then check it.
+6. Inspect every candidate identity/message/trailer including side parents. Commit with fleet identity and hooks, preserve each substantial commit by guarded push to cloud/sd-vector-c-f205-fix4 only. Poll exact-SHA Verify through REST within the ten-call GitHub budget; report outcomes truthfully and apply only the documented generated-view exemption.
+7. Publish explicitly selected non-secret report, receipts and captures to the separate evidence/sd-vector-c-f205-fix4 ref. Stop owned runtimes, preserve any unpushed work outside the checkout, and remove the disposable checkout after custody is established. Return provenance, counts, clause status, CI IDs and sd inbox line.
+
+No status promotion is authorized. The shipped brief calls TEAM-006 PARTIAL; both current main and the required fix3 source currently record missing. Preserve the actual source judgment and report that discrepancy rather than raise it.

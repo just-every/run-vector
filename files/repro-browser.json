@@ -1,0 +1,15 @@
+{
+  "mode": "repro",
+  "records": [
+    {
+      "width": 1440,
+      "status": 500,
+      "quoted": true
+    },
+    {
+      "width": 390,
+      "status": 500,
+      "quoted": true
+    }
+  ]
+}

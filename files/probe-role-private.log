@@ -1,0 +1,17 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /workspace/run-vector
+> vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'current private'
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /workspace/run-vector
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  04:27:31
+   Duration  62.27s (transform 7.98s, setup 0ms, import 17.28s, tests 43.80s, environment 1ms)
+

@@ -1,0 +1,201 @@
+{
+  "tag": "sd-vector-c-f205-fix4",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix4",
+  "head": "845d247813161432dec41959a2faa72090397bb1",
+  "base": "213e0580f8238114beb1016eb788de0d130849ab",
+  "main": "bf872df8566011be5e46c6b5f777fb46d11b0f27",
+  "fullHistory": true,
+  "productPush": {
+    "status": "pushed",
+    "attempts": 1,
+    "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f205-fix4"
+  },
+  "tests": {
+    "filterRepro": {
+      "exit": 1,
+      "failed": 1
+    },
+    "filterProbe": {
+      "exit": 0,
+      "passed": 7,
+      "files": 2
+    },
+    "upgradeDependenciesReports": {
+      "exit": 0,
+      "passed": 13,
+      "files": 3
+    },
+    "isolatedRoleOwner": {
+      "exit": 0,
+      "selectedPassed": 1
+    },
+    "isolatedRolePrivate": {
+      "exit": 0,
+      "selectedPassed": 1
+    },
+    "broadShard2": {
+      "exit": 124,
+      "reportedFailures": 2,
+      "complete": false
+    },
+    "initialUnsharded": {
+      "exit": 143,
+      "complete": false
+    },
+    "redundantBroadProbe": {
+      "exit": 143,
+      "complete": false
+    }
+  },
+  "browser": {
+    "before": {
+      "mode": "repro",
+      "records": [
+        {
+          "width": 1440,
+          "status": 500,
+          "quoted": true
+        },
+        {
+          "width": 390,
+          "status": 500,
+          "quoted": true
+        }
+      ]
+    },
+    "after": {
+      "mode": "fixed",
+      "records": [
+        {
+          "width": 1440,
+          "enabledStatus": 200,
+          "reloadedStatus": 200,
+          "disabledParentOnly": true,
+          "childVisibleWhenEnabled": true,
+          "invalidStatus": 400
+        },
+        {
+          "width": 390,
+          "enabledStatus": 200,
+          "reloadedStatus": 200,
+          "disabledParentOnly": true,
+          "childVisibleWhenEnabled": true,
+          "invalidStatus": 400
+        }
+      ]
+    }
+  },
+  "mechanical": {
+    "typecheck": 0,
+    "rerBuild": 0,
+    "migrationLedger": 0,
+    "sdkGenerate": 0,
+    "integrationSync": 0,
+    "integrationCheck": 0,
+    "contractGenerate": 0,
+    "contractCheckGeneratedViews": 0,
+    "sourceLock": 0,
+    "sourceCheck": 0,
+    "exactHeadSourceCheck": 0,
+    "committedInheritedViewCheck": 1,
+    "newGeneratedViewsCommitted": false,
+    "migrationRenumberNeeded": false
+  },
+  "counts": {
+    "before": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64
+    },
+    "after": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64
+    },
+    "TEAM-006": {
+      "before": "missing",
+      "after": "missing"
+    },
+    "statusChanges": 0
+  },
+  "ci": {
+    "runId": 42562058136,
+    "head": "845d247813161432dec41959a2faa72090397bb1",
+    "url": "https://github.com/just-every/run-vector/actions/runs/42562058136",
+    "initialStatus": "queued",
+    "finalReceipt": "CI-STATUS.md",
+    "observations": [
+      {
+        "receipt": "ci-discovery.json",
+        "status": "queued"
+      },
+      {
+        "receipt": "ci-poll-1.json",
+        "conclusion": null,
+        "head_sha": "845d247813161432dec41959a2faa72090397bb1",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42562058136",
+        "status": "in_progress"
+      },
+      {
+        "receipt": "ci-final.json",
+        "conclusion": null,
+        "head_sha": "845d247813161432dec41959a2faa72090397bb1",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42562058136",
+        "status": "in_progress"
+      }
+    ],
+    "finalObservation": {
+      "conclusion": null,
+      "head_sha": "845d247813161432dec41959a2faa72090397bb1",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42562058136",
+      "status": "in_progress"
+    },
+    "githubCallsUsed": 10
+  },
+  "referenceScope": {
+    "referencedHead": "806b1715d89a5383b5722b1b6c37a615b0665763",
+    "candidateHead": "845d247813161432dec41959a2faa72090397bb1",
+    "referencedHeadIsAncestor": false,
+    "includeSubTeamsFilesAtReferencedHead": [],
+    "grepExit": 1,
+    "referencedSubject": "Prove suspension retains personal history while clearing revoked Inbox pages"
+  },
+  "f207SevenAssertionsIdentified": false,
+  "f207SevenAssertionsFixed": false,
+  "deferred": [
+    "Saved-template status references after reparenting",
+    "Separate f207 suspension candidate failures"
+  ],
+  "landingClaim": false,
+  "publicationScanAvailable": false,
+  "productPR": null,
+  "productTree": {
+    "head": "845d247813161432dec41959a2faa72090397bb1",
+    "commitFiles": [
+      "CONTRACT.md",
+      "sources.lock.json",
+      "src/core/app/worker.ts",
+      "src/core/features/issues/list-schema.ts",
+      "src/core/features/issues/ui/issue-filters.tsx",
+      "tests/worker/sub-team-filter.test.ts"
+    ],
+    "worktreeOnly": [
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ],
+    "indexClean": true,
+    "mainAncestor": true,
+    "newGeneratedViewCommit": false
+  },
+  "terminalCustody": "PUSHED",
+  "readyClaim": false,
+  "cleanup": {
+    "ownedBrowserContexts": "closed",
+    "ownedDevServerPid": 3147,
+    "ownedDevServerStop": "rer dev --stop confirmed 4 descendants stopped",
+    "runningProductTools": "none after bounded runs",
+    "disposableCloneRemoval": "after evidence transport, before final message",
+    "packetOutsideClone": true
+  }
+}
