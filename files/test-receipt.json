@@ -1,0 +1,133 @@
+[
+  {
+    "finding": "original seven",
+    "source": "prior published evidence/sd-vector-c-f207-fix1",
+    "run": 42513319748,
+    "head": "806b1715d89a5383b5722b1b6c37a615b0665763",
+    "result": "7 failed, 6 passed",
+    "receipt": "prior-original-failures.txt"
+  },
+  {
+    "finding": "erasure/person-time/upgrade merge integration",
+    "command": "pnpm test:worker tests/worker/personal-time.test.ts tests/worker/release-notes.test.ts tests/worker/outbound-broken-destination.test.ts",
+    "phase": "repro",
+    "result": "3 failed, 8 passed; erasure 409, personal-time retained row, additive upgrade columns mismatch",
+    "exit": 1,
+    "receipt": "repro-worker.log",
+    "command_note": "Logical entrypoint recovered from the saved receipt; inherited outer timeout is not attested."
+  },
+  {
+    "finding": "native outbound author erasure",
+    "command": "pnpm test:worker tests/worker/outbound-webhooks.test.ts",
+    "phase": "repro",
+    "result": "erasure returned 409 instead of 200",
+    "exit": 1,
+    "receipt": "repro-outbound.log",
+    "command_note": "Logical entrypoint recovered from the saved receipt; inherited outer timeout is not attested."
+  },
+  {
+    "finding": "erasure/personal-time/slack populated upgrade",
+    "command": "pnpm test:worker tests/worker/personal-time.test.ts tests/worker/release-notes.test.ts tests/worker/outbound-broken-destination.test.ts",
+    "phase": "probe",
+    "result": "11 passed",
+    "exit": 0,
+    "receipt": "probe-worker-final.log",
+    "command_note": "Logical entrypoint recovered from the saved receipt; inherited outer timeout is not attested."
+  },
+  {
+    "finding": "imported person and native outbound erasure",
+    "command": "pnpm test:worker tests/worker/outbound-webhooks.test.ts tests/worker/imported-person-erasure.test.ts",
+    "phase": "probe",
+    "result": "3 passed",
+    "exit": 0,
+    "receipt": "probe-erasure.log",
+    "command_note": "Logical entrypoint recovered from the saved receipt; inherited outer timeout is not attested."
+  },
+  {
+    "finding": "member lifecycle and renumbered upgrade",
+    "command": "cloud_run timeout 600 pnpm test:worker tests/worker/member-suspension.test.ts tests/worker/member-suspension-upgrade.test.ts",
+    "phase": "probe",
+    "result": "2 passed",
+    "exit": 0,
+    "receipt": "probe-lifecycle-upgrade.log"
+  },
+  {
+    "finding": "original seven",
+    "command": "cloud_run timeout 480 pnpm exec vitest run --config vitest.config.ts tests/worker/issue-session-projection.test.ts tests/worker/source-ingest.test.ts tests/worker/project-dependencies.test.ts tests/worker/follower-events.test.ts tests/worker/project-report.test.ts",
+    "phase": "probe",
+    "result": "13 passed",
+    "exit": 0,
+    "receipt": "probe-original-seven.log"
+  },
+  {
+    "finding": "Boolean saved views",
+    "command": "node /tmp/vector-boolean-probe.mjs",
+    "phase": "head and main comparison",
+    "result": "Both BOOLEAN_PROBE_PASS; exact saved ids and counts retained",
+    "exit": 0,
+    "receipts": [
+      "repro-boolean-head.log",
+      "probe-boolean-main.log"
+    ],
+    "command_note": "Logical entrypoint recovered from the saved receipt; inherited outer timeout is not attested."
+  },
+  {
+    "finding": "typecheck",
+    "command": "cloud_run timeout 300 pnpm typecheck",
+    "phase": "probe",
+    "result": "pass",
+    "exit": 0,
+    "receipt": "probe-typecheck.log"
+  },
+  {
+    "finding": "administration candidate rerun",
+    "command": "timeout 900 pnpm test:admin",
+    "phase": "repro",
+    "exit": 124,
+    "result": "63 passing checks before external 900-second timeout; browser closure interrupted PROJ-009, historical integrations/channels ERR_ABORTED not reached",
+    "receipt": "repro-admin-head.log"
+  },
+  {
+    "finding": "Current browser phase",
+    "command": "timeout 900 node tests/e2e/core-runtime.mjs current",
+    "result": "Current phase completed 59 checks, passed=true; independent project phase still running",
+    "receipt": "current-phase-checks.json"
+  },
+  {
+    "finding": "full Current entrypoint including independent projects",
+    "command": "timeout 900 node tests/e2e/core-runtime.mjs current",
+    "exit": 124,
+    "result": "Current phase passed 59 checks; external 900-second bound interrupted the later independent projects phase",
+    "receipt": "probe-core-head.log"
+  },
+  {
+    "finding": "administration main comparison",
+    "command": "cloud_run timeout 1800 pnpm test:admin",
+    "main_head": "442b61455234c57befcb642bf4afdaa2dc459922",
+    "result": "79 tests passed, 0 failed/skipped/cancelled; historical ERR_ABORTED not reproduced",
+    "tap": {
+      "tests": 79,
+      "pass": 79,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "outer_exit": "not captured after environment reattachment; TAP summary retained",
+    "receipt": "probe-admin-main.log"
+  },
+  {
+    "finding": "complete administration candidate rerun",
+    "head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+    "command": "cloud_run timeout 1800 pnpm test:admin",
+    "exit": 0,
+    "tap": {
+      "tests": 80,
+      "pass": 80,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "result": "80 passed; 79 clause journeys and 102 functional checkpoints; historical ERR_ABORTED not reproduced",
+    "receipt": "probe-admin-head-final.log"
+  }
+]

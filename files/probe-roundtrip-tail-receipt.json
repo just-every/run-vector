@@ -1,0 +1,5 @@
+{
+  "head": "070baa9ac630996a95fd79d668a3f1af724681cf",
+  "command": "node --import /tmp/vector-chromium.mjs --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/data-roundtrip.mjs",
+  "exit": 0
+}

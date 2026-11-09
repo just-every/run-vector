@@ -1,0 +1,30 @@
+{
+  "suspension_reactivation": [
+    {
+      "path": "screens/suspended-history-1440.png",
+      "image_width": 1088,
+      "image_height": 2278,
+      "product_head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326"
+    },
+    {
+      "path": "screens/suspended-history-390.png",
+      "image_width": 390,
+      "image_height": 1981,
+      "product_head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326"
+    },
+    {
+      "path": "screens/reactivated-history-1440.png",
+      "image_width": 1088,
+      "image_height": 2278,
+      "product_head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326"
+    },
+    {
+      "path": "screens/reactivated-history-390.png",
+      "image_width": 390,
+      "image_height": 1981,
+      "product_head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326"
+    }
+  ],
+  "viewport_assertions": "Existing roleScreens helper checks 1440 and 390, accessibility and overflow.",
+  "boolean_proof": "repro-boolean-head.log and probe-boolean-main.log; exact saved-view rows asserted by the unchanged journey."
+}

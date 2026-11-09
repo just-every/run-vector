@@ -1,0 +1,62 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector
+> vitest run --config vitest.config.ts tests/worker/agent-events.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector
+
+Using secrets defined in .dev.vars
+stderr | tests/worker/agent-events.test.ts > native title events commit atomically and replay through mounted MCP with current authority
+Error: D1_ERROR: synthetic-vector-3723: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39) {
+  [cause]: Error: synthetic-vector-3723: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at removeOperator (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/settings/removal.ts:112:14)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/settings/routes.ts:230:22)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+}
+
+ ❯ tests/worker/agent-events.test.ts (1 test | 1 failed) 1472ms
+   × native title events commit atomically and replay through mounted MCP with current authority 1471ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/agent-events.test.ts > native title events commit atomically and replay through mounted MCP with current authority
+AssertionError: {"imported":{"comments":0,"reports":0,"reportRows":0,"outbox":0},"confirmation":"erase lead-a1"}: expected 200 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 200
+
+ ❯ json tests/worker/agent-events.test.ts:8:58
+      6|
+      7| async function json(response: Response, status = 200): Promise<any> {
+      8|   expect(response.status, await response.clone().text()).toBe(status);
+       |                                                          ^
+      9|   return response.json();
+     10| }
+ ❯ tests/worker/agent-events.test.ts:42:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:18:08
+   Duration  11.90s (transform 4.97s, setup 0ms, import 9.75s, tests 1.47s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

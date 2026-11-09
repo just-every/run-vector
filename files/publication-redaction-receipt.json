@@ -1,0 +1,33 @@
+{
+  "generated_private_entry_urls_redacted": true,
+  "url_queries_and_fragments_removed": true,
+  "injected_value_and_token_pattern_masking": true,
+  "changes": [
+    {
+      "path": "ci-portability-failed-sanitized.log",
+      "private_entry_lines": 1,
+      "url_queries_fragments": 10
+    },
+    {
+      "path": "repro-roundtrip-tail.log",
+      "private_entry_lines": 1,
+      "url_queries_fragments": 10
+    },
+    {
+      "path": "ci-receipt.json",
+      "private_entry_lines": 0,
+      "url_queries_fragments": 6
+    },
+    {
+      "path": "ci-portability-failed.log",
+      "private_entry_lines": 1,
+      "url_queries_fragments": 10
+    },
+    {
+      "path": "probe-roundtrip-tail.log",
+      "private_entry_lines": 2,
+      "url_queries_fragments": 11
+    }
+  ],
+  "not_a_fleet_publication_scan": true
+}

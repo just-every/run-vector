@@ -1,0 +1,513 @@
+
+> vector@0.4.1 test:admin /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/main-comparison
+> node --experimental-strip-types tests/e2e/admin-runtime.mjs
+
+(node:14715) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+# Subtest: [OPS-003] empty workspace administration through real mobile browser
+    # Subtest: [PROJ-007] 390: empty portfolio invites a first project with creation closed
+    ok 1 - [PROJ-007] 390: empty portfolio invites a first project with creation closed
+      ---
+      duration_ms: 31.559383
+      type: 'test'
+      ...
+    # Subtest: [OPS-003] 390: responsive signed operator settings access
+    ok 2 - [OPS-003] 390: responsive signed operator settings access
+      ---
+      duration_ms: 18.92955
+      type: 'test'
+      ...
+    # Subtest: [OPS-003] 390: workspace time saves as it changes and survives restart without changing the reminder
+    ok 3 - [OPS-003] 390: workspace time saves as it changes and survives restart without changing the reminder
+      ---
+      duration_ms: 6064.682674
+      type: 'test'
+      ...
+    # Subtest: [TRIAGE-001] 390: weekly rotation, native and signed intake, handover and once-only Inbox through mounted doors
+    ok 4 - [TRIAGE-001] 390: weekly rotation, native and signed intake, handover and once-only Inbox through mounted doors
+      ---
+      duration_ms: 12972.947513
+      type: 'test'
+      ...
+    # Subtest: [TEAM-001] 390: create team with uppercase prefix and seven categories
+    ok 5 - [TEAM-001] 390: create team with uppercase prefix and seven categories
+      ---
+      duration_ms: 113.45568
+      type: 'test'
+      ...
+    # Subtest: [TEAM-002] 390: rename team; add rename and reorder workflow status
+    ok 6 - [TEAM-002] 390: rename team; add rename and reorder workflow status
+      ---
+      duration_ms: 7349.533237
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: create rename recolour readable workspace label
+    ok 7 - [ISSUE-014] 390: create rename recolour readable workspace label
+      ---
+      duration_ms: 3128.955786
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: create project with lead Markdown optional target and Planned lifecycle
+    ok 8 - [PROJ-001] 390: create project with lead Markdown optional target and Planned lifecycle
+      ---
+      duration_ms: 263.382923
+      type: 'test'
+      ...
+    # Subtest: [PROJ-002] 390: operator explicitly changes project lifecycle
+    ok 9 - [PROJ-002] 390: operator explicitly changes project lifecycle
+      ---
+      duration_ms: 207.5471
+      type: 'test'
+      ...
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 private team-template reads and Viewer creation/edit/application refusals passed at 1440/390
+    # Subtest: [PROJ-012] 390: save project structure, launch native issue teams and retain projects after template deletion
+    ok 10 - [PROJ-012] 390: save project structure, launch native issue teams and retain projects after template deletion
+      ---
+      duration_ms: 167931.201299
+      type: 'test'
+      ...
+    # Subtest: [PROJ-002] 390: project lead transfers to a genuinely invited Member
+    ok 11 - [PROJ-002] 390: project lead transfers to a genuinely invited Member
+      ---
+      duration_ms: 3869.290424
+      type: 'test'
+      ...
+    # Subtest: [ROLE-001] 390: an invitation names its role, Member by default
+    ok 12 - [ROLE-001] 390: an invitation names its role, Member by default
+      ---
+      duration_ms: 1008.436254
+      type: 'test'
+      ...
+    # Subtest: [ROLE-001] 390: an Owner promotes a Member at 1440 and demotes them at 390; the Admin's promotions are refused 403; the demoted member's next settings request returns 403
+    ok 13 - [ROLE-001] 390: an Owner promotes a Member at 1440 and demotes them at 390; the Admin's promotions are refused 403; the demoted member's next settings request returns 403
+      ---
+      duration_ms: 7025.178809
+      type: 'test'
+      ...
+    # Subtest: [ROLE-001] 390: the last Owner's demotion is refused and changes nothing
+    ok 14 - [ROLE-001] 390: the last Owner's demotion is refused and changes nothing
+      ---
+      duration_ms: 2422.220538
+      type: 'test'
+      ...
+    # Subtest: [ROLE-001] 390: a Member reads the member directory without managing anyone and opens only their own Settings pages
+    ok 15 - [ROLE-001] 390: a Member reads the member directory without managing anyone and opens only their own Settings pages
+      ---
+      duration_ms: 25681.249865
+      type: 'test'
+      ...
+    # Subtest: [ROLE-003] 390: an Owner invites a Guest to named teams from desktop and mobile Settings
+    ok 16 - [ROLE-003] 390: an Owner invites a Guest to named teams from desktop and mobile Settings
+      ---
+      duration_ms: 1219.881789
+      type: 'test'
+      ...
+    # Subtest: [ROLE-003] 390: the invited Guest sees only invited work, a scoped project and cycle, and their Guest label at 1440 and 390
+    ok 17 - [ROLE-003] 390: the invited Guest sees only invited work, a scoped project and cycle, and their Guest label at 1440 and 390
+      ---
+      duration_ms: 28259.414785
+      type: 'test'
+      ...
+    # Subtest: [ROLE-003] 390: an Owner changes an accepted Guest to Member and back through the named-team role form; its open session follows immediately
+    ok 18 - [ROLE-003] 390: an Owner changes an accepted Guest to Member and back through the named-team role form; its open session follows immediately
+      ---
+      duration_ms: 3911.020452
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002] 390: Owner makes a team private at 1440; non-member identifier, search, Current, exports and private join are refused
+    ok 19 - [ROLE-002] 390: Owner makes a team private at 1440; non-member identifier, search, Current, exports and private join are refused
+      ---
+      duration_ms: 7109.667653
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002] 390: non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at 1440
+    ok 20 - [ROLE-002] 390: non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at 1440
+      ---
+      duration_ms: 3231.872981
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002 ROLE-007] 390: team owner adds the Member at 1440; issue, Current, search and counted export become visible
+    ok 21 - [ROLE-002 ROLE-007] 390: team owner adds the Member at 1440; issue, Current, search and counted export become visible
+      ---
+      duration_ms: 4949.479489
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002 WORK-004] 390: after team access is withdrawn Created, Subscribed and Activity omit the issue at 1440
+    ok 22 - [ROLE-002 WORK-004] 390: after team access is withdrawn Created, Subscribed and Activity omit the issue at 1440
+      ---
+      duration_ms: 12344.162316
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002 TEAM-007] 390: an exposed private request at 1440 grants no content or membership until its owner approves
+    ok 23 - [ROLE-002 TEAM-007] 390: an exposed private request at 1440 grants no content or membership until its owner approves
+      ---
+      duration_ms: 4784.033609
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002] 390: Owner makes a team private at 390; non-member identifier, search, Current, exports and private join are refused
+    ok 24 - [ROLE-002] 390: Owner makes a team private at 390; non-member identifier, search, Current, exports and private join are refused
+      ---
+      duration_ms: 9449.302587
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002] 390: non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at 390
+    ok 25 - [ROLE-002] 390: non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at 390
+      ---
+      duration_ms: 4387.696714
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002 ROLE-007] 390: team owner adds the Member at 390; issue, Current, search and counted export become visible
+    ok 26 - [ROLE-002 ROLE-007] 390: team owner adds the Member at 390; issue, Current, search and counted export become visible
+      ---
+      duration_ms: 2824.567053
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002 WORK-004] 390: after team access is withdrawn Created, Subscribed and Activity omit the issue at 390
+    ok 27 - [ROLE-002 WORK-004] 390: after team access is withdrawn Created, Subscribed and Activity omit the issue at 390
+      ---
+      duration_ms: 13733.61513
+      type: 'test'
+      ...
+    # Subtest: [ROLE-002 TEAM-007] 390: an exposed private request at 390 grants no content or membership until its owner approves
+    ok 28 - [ROLE-002 TEAM-007] 390: an exposed private request at 390 grants no content or membership until its owner approves
+      ---
+      duration_ms: 9518.671829
+      type: 'test'
+      ...
+    # Subtest: [ROLE-001 OPS-001] 390: private 404 and public/membership read cells through the same Admin/Member session at 1440
+    ok 29 - [ROLE-001 OPS-001] 390: private 404 and public/membership read cells through the same Admin/Member session at 1440
+      ---
+      duration_ms: 6669.665776
+      type: 'test'
+      ...
+    # Subtest: [ROLE-001 OPS-001] 390: private 404 and public/membership read cells through the same Admin/Member session at 390
+    ok 30 - [ROLE-001 OPS-001] 390: private 404 and public/membership read cells through the same Admin/Member session at 390
+      ---
+      duration_ms: 6966.023533
+      type: 'test'
+      ...
+    # Subtest: [ROLE-013] 390: Owner invites a Viewer through named-team Settings; accepted sign-in reads public work without write controls at 1440 and 390
+    ok 31 - [ROLE-013] 390: Owner invites a Viewer through named-team Settings; accepted sign-in reads public work without write controls at 1440 and 390
+      ---
+      duration_ms: 60766.3574
+      type: 'test'
+      ...
+    # Subtest: [ROLE-013 OPS-001] 390: Viewer Inbox, counted exports, attachment bytes and private lookup follow current privacy and membership; admitted Viewers remain read-only
+    ok 32 - [ROLE-013 OPS-001] 390: Viewer Inbox, counted exports, attachment bytes and private lookup follow current privacy and membership; admitted Viewers remain read-only
+      ---
+      duration_ms: 46689.525642
+      type: 'test'
+      ...
+    # Subtest: [ROLE-013] 390: the same open Member session loses mutation authority on the next request after an Admin changes it to Viewer
+    ok 33 - [ROLE-013] 390: the same open Member session loses mutation authority on the next request after an Admin changes it to Viewer
+      ---
+      duration_ms: 3348.752127
+      type: 'test'
+      ...
+    # Subtest: [ROLE-013] 390: Viewer signs in and signs out through native account controls at 1440 and 390 and loses admission
+    ok 34 - [ROLE-013] 390: Viewer signs in and signs out through native account controls at 1440 and 390 and loses admission
+      ---
+      duration_ms: 8965.317581
+      type: 'test'
+      ...
+    # Subtest: [ROLE-013] 390: Viewer leaves their own account at 1440
+    ok 35 - [ROLE-013] 390: Viewer leaves their own account at 1440
+      ---
+      duration_ms: 4639.721626
+      type: 'test'
+      ...
+    # Subtest: [ROLE-013] 390: Viewer leaves their own account at 390
+    ok 36 - [ROLE-013] 390: Viewer leaves their own account at 390
+      ---
+      duration_ms: 4843.176502
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: Member inline creation at 1440 follows the workspace permission without workspace management
+    ok 37 - [ISSUE-014] 390: Member inline creation at 1440 follows the workspace permission without workspace management
+      ---
+      duration_ms: 12019.971568
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: Member inline creation at 390 follows the workspace permission without workspace management
+    ok 38 - [ISSUE-014] 390: Member inline creation at 390 follows the workspace permission without workspace management
+      ---
+      duration_ms: 16136.732844
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007] 390: a Member joins a public team from the list at 1440 and finds its settings, members and permissions read-only
+    ok 39 - [ROLE-007] 390: a Member joins a public team from the list at 1440 and finds its settings, members and permissions read-only
+      ---
+      duration_ms: 3330.911914
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007] 390: the Member leaves the team from the list at 1440
+    ok 40 - [ROLE-007] 390: the Member leaves the team from the list at 1440
+      ---
+      duration_ms: 96.962834
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007] 390: a Member joins a public team from the list at 390 and finds its settings, members and permissions read-only
+    ok 41 - [ROLE-007] 390: a Member joins a public team from the list at 390 and finds its settings, members and permissions read-only
+      ---
+      duration_ms: 2561.73894
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007] 390: the Member leaves the team from the list at 390
+    ok 42 - [ROLE-007] 390: the Member leaves the team from the list at 390
+      ---
+      duration_ms: 121.774523
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007] 390: the last team owner cannot leave until another is named
+    ok 43 - [ROLE-007] 390: the last team owner cannot leave until another is named
+      ---
+      duration_ms: 134.869104
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007 ROLE-009] 390: a team owner adds a member, names a team owner and sets the two permissions, each audited once
+    ok 44 - [ROLE-007 ROLE-009] 390: a team owner adds a member, names a team owner and sets the two permissions, each audited once
+      ---
+      duration_ms: 5921.713673
+      type: 'test'
+      ...
+    # Subtest: [ROLE-007] 390: once another team owner is named, the former last owner leaves
+    ok 45 - [ROLE-007] 390: once another team owner is named, the former last owner leaves
+      ---
+      duration_ms: 130.375265
+      type: 'test'
+      ...
+TEAM-008 1440: Owner/Admin private creation, Member privacy refusal and Viewer refusal under both workspace permissions PASS
+    # Subtest: [TEAM-008] 390: workspace policy controls a Member's public team creation at 1440
+    ok 46 - [TEAM-008] 390: workspace policy controls a Member's public team creation at 1440
+      ---
+      duration_ms: 18897.146492
+      type: 'test'
+      ...
+TEAM-008 390: Owner/Admin private creation, Member privacy refusal and Viewer refusal under both workspace permissions PASS
+    # Subtest: [TEAM-008] 390: workspace policy controls a Member's public team creation at 390
+    ok 47 - [TEAM-008] 390: workspace policy controls a Member's public team creation at 390
+      ---
+      duration_ms: 19375.016922
+      type: 'test'
+      ...
+    # Subtest: [TEAM-007] 390: a Member requests an invite-only public team and a Member team owner approves once at 1440
+    ok 48 - [TEAM-007] 390: a Member requests an invite-only public team and a Member team owner approves once at 1440
+      ---
+      duration_ms: 12985.008927
+      type: 'test'
+      ...
+TEAM-007 1440: private request grants no content/membership, hidden request 404, team-owner approval, Owner-only Viewer grant and Viewer join/request refusal PASS
+    # Subtest: [TEAM-007] 390: private and Viewer membership cells at 1440
+    ok 49 - [TEAM-007] 390: private and Viewer membership cells at 1440
+      ---
+      duration_ms: 6743.351334
+      type: 'test'
+      ...
+    # Subtest: [TEAM-007] 390: a Member requests an invite-only public team and a Member team owner approves once at 390
+    ok 50 - [TEAM-007] 390: a Member requests an invite-only public team and a Member team owner approves once at 390
+      ---
+      duration_ms: 15881.888629
+      type: 'test'
+      ...
+TEAM-007 390: private request grants no content/membership, hidden request 404, team-owner approval, Owner-only Viewer grant and Viewer join/request refusal PASS
+    # Subtest: [TEAM-007] 390: private and Viewer membership cells at 390
+    ok 51 - [TEAM-007] 390: private and Viewer membership cells at 390
+      ---
+      duration_ms: 7021.950103
+      type: 'test'
+      ...
+    # Subtest: [ROLE-005] 390: a Member is refused the audit document and both data doors
+    ok 52 - [ROLE-005] 390: a Member is refused the audit document and both data doors
+      ---
+      duration_ms: 492.3887
+      type: 'test'
+      ...
+    # Subtest: [TEAM-005] 390: team Settings disables cycles across editor and Current without discarding commitments; re-enable and current permissions
+    ok 53 - [TEAM-005] 390: team Settings disables cycles across editor and Current without discarding commitments; re-enable and current permissions
+      ---
+      duration_ms: 45720.89083
+      type: 'test'
+      ...
+    # Subtest: [CYCLE-001] 390: manual nonoverlap cycles use workspace timezone and reject invalid end
+    ok 54 - [CYCLE-001] 390: manual nonoverlap cycles use workspace timezone and reject invalid end
+      ---
+      duration_ms: 410.804706
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: label applied to an authored issue
+    ok 55 - [ISSUE-014] 390: label applied to an authored issue
+      ---
+      duration_ms: 313.61928
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: separate labelled section applies label without adding an inline property picker
+    ok 56 - [ISSUE-014] 390: separate labelled section applies label without adding an inline property picker
+      ---
+      duration_ms: 336.23389
+      type: 'test'
+      ...
+    # Subtest: [CYCLE-002] 390: inline cycle picker commits moves and uncommits with immutable receipts
+    ok 57 - [CYCLE-002] 390: inline cycle picker commits moves and uncommits with immutable receipts
+      ---
+      duration_ms: 3565.512152
+      type: 'test'
+      ...
+    # Subtest: [CYCLE-002] 390: cycle list commits moves and uncommits existing issue
+    ok 58 - [CYCLE-002] 390: cycle list commits moves and uncommits existing issue
+      ---
+      duration_ms: 6022.512689
+      type: 'test'
+      ...
+    # Subtest: [FIELD-001] 390: team Severity field defined in Settings, set from the issue and renamed without moving its stored value
+    ok 59 - [FIELD-001] 390: team Severity field defined in Settings, set from the issue and renamed without moving its stored value
+      ---
+      duration_ms: 14517.880191
+      type: 'test'
+      ...
+    # Subtest: [TEAM-001] 390: issued identifiers freeze the team prefix in administration
+    ok 60 - [TEAM-001] 390: issued identifiers freeze the team prefix in administration
+      ---
+      duration_ms: 17.147522
+      type: 'test'
+      ...
+    # Subtest: [TEAM-004] 390: used status remaps to same-category destination and protects last category status
+    ok 61 - [TEAM-004] 390: used status remaps to same-category destination and protects last category status
+      ---
+      duration_ms: 3660.398575
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-007] 390: label delete cascades issue selections with immutable before/after history
+    ok 62 - [ISSUE-007] 390: label delete cascades issue selections with immutable before/after history
+      ---
+      duration_ms: 291.002251
+      type: 'test'
+      ...
+    # Subtest: [PROJ-009] 390: archive excludes default portfolio retains members include archived and unarchive restore
+    ok 63 - [PROJ-009] 390: archive excludes default portfolio retains members include archived and unarchive restore
+      ---
+      duration_ms: 10539.859855
+      type: 'test'
+      ...
+    # Subtest: [TEAM-003] 390: archive excludes authoring rejects intake with 409 and preserves issue then restore
+    ok 64 - [TEAM-003] 390: archive excludes authoring rejects intake with 409 and preserves issue then restore
+      ---
+      duration_ms: 16811.087078
+      type: 'test'
+      ...
+    # Subtest: [ROLE-005] 390: Owners browse and filter retained audit entries and download exactly the visible filtered set
+    ok 65 - [ROLE-005] 390: Owners browse and filter retained audit entries and download exactly the visible filtered set
+      ---
+      duration_ms: 15008.659201
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: project planning dates, priority and two workspace labels each record activity
+    ok 66 - [PROJ-001] 390: project planning dates, priority and two workspace labels each record activity
+      ---
+      duration_ms: 617.271143
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: a project's color and icon save, appear on list and page and are one activity entry each
+    ok 67 - [PROJ-001] 390: a project's color and icon save, appear on list and page and are one activity entry each
+      ---
+      duration_ms: 599.432521
+      type: 'test'
+      ...
+    # Subtest: [PROJ-007] 390: every portfolio filter and combined filters keep rows and health/lifecycle counts aligned
+    ok 68 - [PROJ-007] 390: every portfolio filter and combined filters keep rows and health/lifecycle counts aligned
+      ---
+      duration_ms: 1779.458293
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: project appearance can be cleared and set from the project page
+    ok 69 - [PROJ-001] 390: project appearance can be cleared and set from the project page
+      ---
+      duration_ms: 813.489199
+      type: 'test'
+      ...
+    # Subtest: [PROJ-011] 390: ordered milestones, progress, workspace-date slip and project-move clearing
+    ok 70 - [PROJ-011] 390: ordered milestones, progress, workspace-date slip and project-move clearing
+      ---
+      duration_ms: 22086.161772
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: project planning dates, priority and two workspace labels each record activity
+    ok 71 - [PROJ-001] 390: project planning dates, priority and two workspace labels each record activity
+      ---
+      duration_ms: 558.843818
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: a project's color and icon save, appear on list and page and are one activity entry each
+    ok 72 - [PROJ-001] 390: a project's color and icon save, appear on list and page and are one activity entry each
+      ---
+      duration_ms: 667.132279
+      type: 'test'
+      ...
+    # Subtest: [PROJ-007] 390: every portfolio filter and combined filters keep rows and health/lifecycle counts aligned
+    ok 73 - [PROJ-007] 390: every portfolio filter and combined filters keep rows and health/lifecycle counts aligned
+      ---
+      duration_ms: 1831.019267
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: project appearance can be cleared and set from the project page
+    ok 74 - [PROJ-001] 390: project appearance can be cleared and set from the project page
+      ---
+      duration_ms: 870.813489
+      type: 'test'
+      ...
+    # Subtest: [PROJ-011] 390: ordered milestones, progress, workspace-date slip and project-move clearing
+    ok 75 - [PROJ-011] 390: ordered milestones, progress, workspace-date slip and project-move clearing
+      ---
+      duration_ms: 21723.289067
+      type: 'test'
+      ...
+    # Subtest: [BASE-ACCESS-002] 390: document departure fences private polls and explicit reload starts a newly authenticated document
+    ok 76 - [BASE-ACCESS-002] 390: document departure fences private polls and explicit reload starts a newly authenticated document
+      ---
+      duration_ms: 14284.061983
+      type: 'test'
+      ...
+PROBE ISSUE-016 browser: create template, apply over typed fields, submit -> exact parent and two children; stale application refused unchanged; deletion retains graph
+PROBE ISSUE-016 scoped: POST native template selection -> exact prefills and two distinct children linked to the returned parent
+    # Subtest: [ISSUE-016] 390: native and scoped issue templates
+    ok 77 - [ISSUE-016] 390: native and scoped issue templates
+      ---
+      duration_ms: 12832.83237
+      type: 'test'
+      ...
+    # Subtest: [BASE-ACCESS-002] 390: sign-out drains private reads before revocation and resumes after a bounded failure
+    ok 78 - [BASE-ACCESS-002] 390: sign-out drains private reads before revocation and resumes after a bounded failure
+      ---
+      duration_ms: 24689.827609
+      type: 'test'
+      ...
+Administration browser: 78 clause journeys, 102 functional checkpoints passed.
+    1..78
+ok 1 - [OPS-003] empty workspace administration through real mobile browser
+  ---
+  duration_ms: 1045637.067587
+  type: 'test'
+  ...
+1..1
+# tests 79
+# suites 0
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1045640.776263

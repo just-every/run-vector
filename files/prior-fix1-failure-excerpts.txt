@@ -1,0 +1,196 @@
+
+## 1_shards (core-runtime, true, true, true).txt
+2026-11-08T20:46:10.3061490Z     ^
+2026-11-08T20:46:10.3061757Z 
+2026-11-08T20:46:10.3069098Z AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+2026-11-08T20:46:10.3069922Z + actual - expected
+2026-11-08T20:46:10.3070229Z 
+2026-11-08T20:46:10.3070470Z + []
+2026-11-08T20:46:10.3071251Z - [
+2026-11-08T20:46:10.3071671Z -   'BAHFGJGC-1',
+2026-11-08T20:46:10.3072071Z -   'CAHFGJGC-1'
+2026-11-08T20:46:10.3072450Z - ]
+2026-11-08T20:46:10.3072709Z 
+2026-11-08T20:46:10.3073362Z     at rows (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-boolean-filter-journey.mjs:49:12)
+2026-11-08T20:46:10.3074720Z     at async booleanFilterJourney (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-boolean-filter-journey.mjs:106:5)
+2026-11-08T20:46:10.3076065Z     at async withInvitedOperator (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+2026-11-08T20:46:10.3077329Z     at async keyboardJourney (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-keyboard-journey.mjs:56:3)
+2026-11-08T20:46:10.3078576Z     at async withInvitedOperator (file:///home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+2026-11-08T20:46:10.3079682Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:747:3 {
+2026-11-08T20:46:10.3080391Z   generatedMessage: true,
+2026-11-08T20:46:10.3080966Z   code: 'ERR_ASSERTION',
+2026-11-08T20:46:10.3081389Z   actual: [],
+2026-11-08T20:46:10.3081846Z   expected: [ 'BAHFGJGC-1', 'CAHFGJGC-1' ],
+2026-11-08T20:46:10.3082387Z   operator: 'deepStrictEqual',
+2026-11-08T20:46:10.3082831Z   diff: 'simple'
+2026-11-08T20:46:10.3083237Z }
+2026-11-08T20:46:10.3083495Z 
+2026-11-08T20:46:10.3083773Z Node.js v22.20.0
+2026-11-08T20:46:10.3506256Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T20:46:10.3734529Z ##[error]Process completed with exit code 1.
+2026-11-08T20:46:10.3797070Z ##[group]Run actions/upload-artifact@v4
+2026-11-08T20:46:10.3797326Z with:
+2026-11-08T20:46:10.3797528Z   name: vector-verification-core-runtime
+2026-11-08T20:46:10.3797776Z   include-hidden-files: true
+2026-11-08T20:46:10.3799664Z   path: evidence/installer/proof.json
+evidence/installer/*.png
+evidence/access/proof.json
+evidence/mutation-refresh/proof.json
+.artifacts/verification/ui-runtime-failure.png
+.artifacts/verification/ui-runtime-failure-safe.json
+.artifacts/verification/issue-controls/manifest.json
+.artifacts/verification/check-results.json
+.artifacts/verification/shard-*.json
+.artifacts/verification/dev-runtime-results.json
+
+## 2_shards (imports, true, true, true).txt
+2026-11-08T20:54:31.0212074Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+2026-11-08T20:54:31.0212436Z 
+2026-11-08T20:54:31.0213385Z  FAIL  tests/worker/personal-time.test.ts > [NOTIFY-010 NOTIFY-005 NOTIFY-007 OPS-003] personal clocks inherit workspace time, isolate settings and fence exactly-once scheduled reminders
+2026-11-08T20:54:31.0217579Z AssertionError: expected 1 to be +0 // Object.is equality
+2026-11-08T20:54:31.0217964Z 
+2026-11-08T20:54:31.0218140Z - Expected
+2026-11-08T20:54:31.0218488Z + Received
+2026-11-08T20:54:31.0218648Z 
+2026-11-08T20:54:31.0218789Z - 0
+2026-11-08T20:54:31.0219088Z + 1
+2026-11-08T20:54:31.0219193Z 
+2026-11-08T20:54:31.0219737Z  ❯ tests/worker/personal-time.test.ts:227:7
+2026-11-08T20:54:31.0278782Z     225|         .bind(pacific)
+2026-11-08T20:54:31.0279433Z     226|         .first("n"),
+2026-11-08T20:54:31.0280066Z     227|     ).toBe(0);
+2026-11-08T20:54:31.0280560Z        |       ^
+2026-11-08T20:54:31.0280956Z     228|   },
+2026-11-08T20:54:31.0281344Z     229| );
+2026-11-08T20:54:31.0281545Z 
+2026-11-08T20:54:31.0281856Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+2026-11-08T20:54:31.0282130Z 
+2026-11-08T20:54:31.0282375Z 
+2026-11-08T20:54:31.0286584Z  Test Files  1 failed | 18 passed (19)
+2026-11-08T20:54:31.0308283Z       Tests  1 failed | 35 passed (36)
+2026-11-08T20:54:31.0309330Z    Start at  20:49:13
+2026-11-08T20:54:31.0310199Z    Duration  317.17s (transform 3.66s, setup 0ms, import 61.30s, tests 247.81s, environment 1ms)
+2026-11-08T20:54:31.0310700Z 
+2026-11-08T20:54:31.0310708Z 
+2026-11-08T20:54:31.0336087Z ##[error]AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/worker/personal-time.test.ts:227:7
+
+
+2026-11-08T20:54:31.1140157Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T20:54:31.1446819Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T20:54:31.1591701Z ##[error]Process completed with exit code 1.
+
+## 4_shards (portability, true, true, true).txt
+2026-11-08T20:54:13.9545391Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+2026-11-08T20:54:13.9545958Z 
+2026-11-08T20:54:13.9548148Z  FAIL  tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+2026-11-08T20:54:13.9555263Z AssertionError: expected 409 to be 200 // Object.is equality
+2026-11-08T20:54:13.9555929Z 
+2026-11-08T20:54:13.9556238Z - Expected
+2026-11-08T20:54:13.9556779Z + Received
+2026-11-08T20:54:13.9557032Z 
+2026-11-08T20:54:13.9557261Z - 200
+2026-11-08T20:54:13.9557723Z + 409
+2026-11-08T20:54:13.9557931Z 
+2026-11-08T20:54:13.9558902Z  ❯ outboundCommentJourney tests/worker/outbound-comment-journey.ts:153:116
+2026-11-08T20:54:13.9627564Z     151|   expect((await f.call('/settings/operators/' + memberId, 'DELETE')).s…
+2026-11-08T20:54:13.9628751Z     152|   const subject = { names: ['synthetic-vector-9011'] };
+2026-11-08T20:54:13.9629982Z     153|   expect((await f.call('/data/erasure', 'POST', { subject, confirmatio…
+2026-11-08T20:54:13.9631314Z        |                                                                                                                    ^
+2026-11-08T20:54:13.9632380Z     154|   const retained = (await queued()).filter(e => JSON.parse(e.body).com…
+2026-11-08T20:54:13.9633718Z     155|   expect(retained).toHaveLength(1);
+2026-11-08T20:54:13.9635371Z  ❯ tests/worker/outbound-webhooks.test.ts:33:2
+2026-11-08T20:54:13.9635952Z 
+2026-11-08T20:54:13.9636461Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+2026-11-08T20:54:13.9636863Z 
+2026-11-08T20:54:13.9638920Z  FAIL  tests/worker/release-notes.test.ts > native release notes retain six exact completed sources and human revisions while current ownership and source visibility fence every draft operation
+2026-11-08T20:54:13.9642811Z AssertionError: {"error":"operator_active","message":"This email or name belongs to a current or suspended member, or an invitation. Member erasure requires the separate explicit member erasure action."}: expected 409 to be 200 // Object.is equality
+2026-11-08T20:54:13.9644536Z 
+2026-11-08T20:54:13.9644820Z - Expected
+2026-11-08T20:54:13.9645607Z + Received
+2026-11-08T20:54:13.9645844Z 
+2026-11-08T20:54:13.9646056Z - 200
+2026-11-08T20:54:13.9646516Z + 409
+2026-11-08T20:54:13.9646737Z 
+2026-11-08T20:54:13.9647418Z  ❯ json tests/worker/release-notes.test.ts:11:57
+2026-11-08T20:54:13.9716808Z       9|  const w=await roleWorkspace(),owner=w.people.owner;
+2026-11-08T20:54:13.9717892Z 
+2026-11-08T20:54:13.9737309Z      10|  const json=async(response:Response,status=200)=>{
+2026-11-08T20:54:13.9739191Z  Test Files  2 failed | 17 passed (19)
+2026-11-08T20:54:13.9756795Z      11|   expect(response.status,await response.clone().text()).toBe(status);
+2026-11-08T20:54:13.9757889Z       Tests  2 failed | 24 passed (26)
+2026-11-08T20:54:13.9766081Z        |                                                         ^
+2026-11-08T20:54:13.9766743Z    Start at  20:49:59
+2026-11-08T20:54:13.9786572Z    Duration  254.07s (transform 4.66s, setup 0ms, import 80.18s, tests 164.20s, environment 1ms)
+2026-11-08T20:54:13.9787496Z 
+2026-11-08T20:54:13.9787639Z 
+2026-11-08T20:54:13.9788703Z      12|   return response.json() as Promise<any>;
+2026-11-08T20:54:13.9789664Z      13|  };
+2026-11-08T20:54:13.9790607Z  ❯ tests/worker/release-notes.test.ts:184:16
+2026-11-08T20:54:13.9798110Z ##[error]AssertionError: expected 409 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 409
+
+ ❯ outboundCommentJourney tests/worker/outbound-comment-journey.ts:153:116
+ ❯ tests/worker/outbound-webhooks.test.ts:33:2
+
+
+2026-11-08T20:54:13.9799645Z 
+2026-11-08T20:54:13.9799988Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+2026-11-08T20:54:13.9800216Z 
+2026-11-08T20:54:13.9800225Z 
+
+## 5_shards (administration, true, true, true).txt
+2026-11-08T21:00:09.0349692Z       ...
+2026-11-08T21:00:09.1997531Z     1..79
+2026-11-08T21:00:09.2001084Z not ok 1 - [OPS-003] empty workspace administration through real mobile browser
+2026-11-08T21:00:09.2001614Z   ---
+2026-11-08T21:00:09.2001860Z   duration_ms: 1005982.763029
+2026-11-08T21:00:09.2002196Z   type: 'test'
+2026-11-08T21:00:09.2002626Z   location: '/home/runner/work/run-vector/run-vector/tests/contract.ts:4:10'
+2026-11-08T21:00:09.2003095Z   failureType: 'testCodeFailure'
+2026-11-08T21:00:09.2003612Z   error: |-
+2026-11-08T21:00:09.2003883Z     browser failed requests
+2026-11-08T21:00:09.2004195Z     + actual - expected
+2026-11-08T21:00:09.2004514Z     
+2026-11-08T21:00:09.2004746Z     + [
+2026-11-08T21:00:09.2005049Z     +   {
+2026-11-08T21:00:09.2005331Z     +     failure: {
+2026-11-08T21:00:09.2005745Z     +       errorText: 'net::ERR_ABORTED'
+2026-11-08T21:00:09.2006133Z     +     },
+2026-11-08T21:00:09.2008614Z     +     url: 'http://127.0.0.1:15944/api/settings/integrations/channels'
+2026-11-08T21:00:09.2009119Z     +   }
+2026-11-08T21:00:09.2009354Z     + ]
+2026-11-08T21:00:09.2009605Z     - []
+2026-11-08T21:00:09.2009828Z     
+2026-11-08T21:00:09.2010061Z   code: 'ERR_ASSERTION'
+2026-11-08T21:00:09.2010365Z   name: 'AssertionError'
+2026-11-08T21:00:09.2010644Z   expected:
+2026-11-08T21:00:09.2010882Z   actual:
+2026-11-08T21:00:09.2011102Z     0:
+2026-11-08T21:00:09.2011513Z       url: 'http://127.0.0.1:15944/api/settings/integrations/channels'
+2026-11-08T21:00:09.2011941Z       failure:
+2026-11-08T21:00:09.2012239Z         errorText: 'net::ERR_ABORTED'
+2026-11-08T21:00:09.2012591Z   operator: 'deepStrictEqual'
+2026-11-08T21:00:09.2012890Z   stack: |-
+2026-11-08T21:00:09.2013683Z     TestContext.<anonymous> (file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:250:16)
+2026-11-08T21:00:09.2014453Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-08T21:00:09.2015084Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-08T21:00:09.2016178Z     async file:///home/runner/work/run-vector/run-vector/tests/e2e/admin-runtime.mjs:56:1
+2026-11-08T21:00:09.2016706Z   ...
+2026-11-08T21:00:09.2016924Z 1..1
+2026-11-08T21:00:09.2017150Z # tests 80
+2026-11-08T21:00:09.2017452Z # suites 0
+2026-11-08T21:00:09.2017708Z # pass 79
+2026-11-08T21:00:09.2017938Z # fail 1

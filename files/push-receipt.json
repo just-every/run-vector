@@ -1,0 +1,10 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f207-fix2",
+  "head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+  "tested_index_tree": "8a8bd7df8f1c3c3c5a3db110898004e9698d619b",
+  "commit_tree_matches": true,
+  "exit": 0,
+  "guard": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/sd-vector-c-f207-fix2",
+  "receipt": "push.log"
+}

@@ -1,0 +1,4 @@
+{
+  "command": "pnpm test:worker tests/worker/agent-events.test.ts",
+  "exit": 1
+}

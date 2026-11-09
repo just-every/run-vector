@@ -1,0 +1,291 @@
+(node:7216) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7216) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed RENDER-SSR
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-OPS-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-001
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-005
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-003
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Vector runtime] Passed CURR-004
+[Current freshness] {"identifier":"FLW-844","pollCompletedAt":1794176060432,"requestStartedAt":1794176060432,"decisionRespondedAt":1794176060546,"visibleAt":1794176062855,"fromDecisionResponseMs":2309,"fromRequestStartMs":2423,"alignmentMs":0,"documentUnchanged":true}
+[Vector runtime] Passed CURR-008
+[Vector runtime] Passed CMD-001
+[Vector runtime] Passed VIEW-002-PALETTE
+[Vector runtime] Passed CMD-002
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed SEARCH-004
+PROBE SEARCH-004 bar-menu: typed and menu expression -> identical 2 public issues, private issue omitted, exact totals
+PROBE SEARCH-004 saved-reload: save and reopen -> expression unchanged, 2 issues; private membership 3 then withdrawal 2, Guest 1, Viewer writes 403 unchanged
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed VIEW-008
+PROBE VIEW-008 milestone: filtered native list and saved view -> 54 exact identifiers across two pages; duplicate-name milestone counts 51 and 1, unassigned 2; saved reload retains mode
+PROBE VIEW-008 parent: filtered native list and saved view -> distinct equal-title parents, counts 51 and 1, unassigned 2; private admission 55 then withdrawal 54 without parent identity; Guest scoped and Viewer writes 403 unchanged
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed VIEW-009
+PROBE VIEW-009 shared-cross-team: saved view and second Member palette -> two public teams, 3 filtered issues, counts and query retained after reload
+PROBE VIEW-009 visibility: same saved view and Member session -> 3 public, 4 with private membership, 3 after withdrawal; Guest shared view 404 and scoped query 2; Viewer mutations 403 with unchanged views
+[Vector runtime] Passed CMD-003
+[Vector runtime] Passed CMD-004
+[Vector runtime] Passed VIEW-004
+[Vector runtime] Passed CMD-003-STREAMS
+[Vector runtime] Passed CMD-004-SELECTED
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-020
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed ISSUE-020
+[Vector runtime] Passed ISSUE-003
+[Vector runtime] Passed VIEW-005
+[Vector runtime] Passed CURR-007
+[Vector runtime] Passed CURR-009
+[Vector runtime] Passed WORK-003
+[Vector runtime] Passed CURR-007
+[Vector runtime] Passed CURR-009
+[Vector runtime] Passed WORK-003
+[Vector runtime] Passed RENDER-AUDIT
+[Vector runtime] Passed PROJ-004
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed ISSUE-008 ISSUE-009
+[Vector runtime] Passed ISSUE-006
+[Vector runtime] Passed ISSUE-001
+[Vector runtime] Passed INTAKE-001
+[Vector runtime] Passed INTAKE-005
+[Vector runtime] Passed INTAKE-006
+[Vector runtime] Passed RENDER-BROWSER
+[Vector runtime] Passed BASE-ACCESS-001
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Operator request ledger] {"fixedWindowSeconds":60,"limit":600,"peak":391,"total":3223,"operators":28,"buckets":[{"operator":1,"window":29902933,"requests":26},{"operator":1,"window":29902934,"requests":23},{"operator":1,"window":29902940,"requests":6},{"operator":1,"window":29902941,"requests":20},{"operator":1,"window":29902942,"requests":47},{"operator":1,"window":29902943,"requests":118},{"operator":1,"window":29902944,"requests":99},{"operator":2,"window":29902933,"requests":113},{"operator":3,"window":29902933,"requests":95},{"operator":4,"window":29902933,"requests":47},{"operator":4,"window":29902934,"requests":2},{"operator":5,"window":29902934,"requests":83},{"operator":6,"window":29902934,"requests":70},{"operator":6,"window":29902935,"requests":2},{"operator":6,"window":29902937,"requests":2},{"operator":6,"window":29902938,"requests":6},{"operator":6,"window":29902939,"requests":6},{"operator":7,"window":29902934,"requests":37},{"operator":7,"window":29902935,"requests":48},{"operator":8,"window":29902934,"requests":21},{"operator":8,"window":29902935,"requests":28},{"operator":9,"window":29902935,"requests":5},{"operator":10,"window":29902935,"requests":19},{"operator":11,"window":29902935,"requests":144},{"operator":11,"window":29902936,"requests":75},{"operator":11,"window":29902937,"requests":6},{"operator":12,"window":29902935,"requests":28},{"operator":12,"window":29902936,"requests":54},{"operator":13,"window":29902936,"requests":19},{"operator":14,"window":29902936,"requests":53},{"operator":14,"window":29902937,"requests":1},{"operator":15,"window":29902937,"requests":78},{"operator":15,"window":29902938,"requests":14},{"operator":16,"window":29902937,"requests":29},{"operator":17,"window":29902937,"requests":70},{"operator":18,"window":29902937,"requests":12},{"operator":19,"window":29902938,"requests":24},{"operator":20,"window":29902938,"requests":58},{"operator":21,"window":29902938,"requests":88},{"operator":22,"window":29902938,"requests":139},{"operator":22,"window":29902939,"requests":40},{"operator":23,"window":29902939,"requests":179},{"operator":24,"window":29902939,"requests":41},{"operator":24,"window":29902940,"requests":67},{"operator":25,"window":29902940,"requests":72},{"operator":26,"window":29902940,"requests":230},{"operator":27,"window":29902941,"requests":388},{"operator":28,"window":29902941,"requests":391}]}
+{
+  "passed": true,
+  "checks": 59,
+  "evidence": "/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/.artifacts/verification"
+}
+[Vector runtime] Starting independent project installation
+(node:15789) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15789) Warning: Accessing non-existent property 'replaceRouteChunk' of module exports inside circular dependency
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed HOME-001
+[Vector runtime] Passed RENDER-404
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed RENDER-SSR
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-ACCESS-002
+[Vector runtime] Passed CORE-PERSISTENCE
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed BASE-OPS-005
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed VIEW-006
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed REPORT-004
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014
+[Vector runtime] Passed PROJ-014

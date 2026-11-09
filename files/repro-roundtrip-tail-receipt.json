@@ -1,0 +1,4 @@
+{
+  "command": "node --import /tmp/vector-chromium.mjs --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/data-roundtrip.mjs",
+  "exit": 1
+}

@@ -1,0 +1,34 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:admin /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/main-comparison
+> node --experimental-strip-types tests/e2e/admin-runtime.mjs
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+✖ [OPS-003] empty workspace administration through real mobile browser (59621.123048ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 59627.680073
+
+✖ failing tests:
+
+test at tests/contract.ts:4:10
+✖ [OPS-003] empty workspace administration through real mobile browser (59621.123048ms)
+  Error: listen EADDRINUSE: address already in use 127.0.0.1:15944
+      at Server.setupListenHandle [as _listen2] (node:net:2167:16)
+      at listenInCluster (node:net:2224:12)
+      at node:net:2448:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EADDRINUSE',
+    errno: -98,
+    syscall: 'listen',
+    address: '127.0.0.1',
+    port: 15944
+  }
+ ELIFECYCLE  Command failed with exit code 1.

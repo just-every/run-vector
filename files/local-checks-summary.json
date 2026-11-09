@@ -1,0 +1,81 @@
+{
+  "head": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+  "targeted_worker_tests": 29,
+  "worker_groups": {
+    "original_regressions": 13,
+    "personal_time_release_slack": 11,
+    "imported_person_outbound_erasure": 3,
+    "member_lifecycle_upgrade": 2
+  },
+  "administration_head": {
+    "exit": 0,
+    "tap": {
+      "tests": 80,
+      "pass": 80,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "clause_journeys": 79,
+    "functional_checkpoints": 102
+  },
+  "administration_main": {
+    "main_head": "442b61455234c57befcb642bf4afdaa2dc459922",
+    "command": "cloud_run timeout 1800 pnpm test:admin",
+    "receipt": "probe-admin-main.log",
+    "tap": {
+      "tests": 79,
+      "pass": 79,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "passed": true,
+    "outer_exit": "not captured after environment reattachment; TAP summary retained"
+  },
+  "current_phase": {
+    "passed": true,
+    "checks": 59,
+    "full_entrypoint_exit": 124,
+    "note": "External 900-second limit occurred in later independent projects phase."
+  },
+  "setup_build_typecheck_spec": {
+    "setup": 0,
+    "build": 0,
+    "typecheck": 0,
+    "spec": 0
+  },
+  "native": {
+    "exit": 0,
+    "declaration_contract_checks": 1139,
+    "hydration_pages": 16,
+    "hydration_loads": 129,
+    "agent_conformance_points": 1483
+  },
+  "terminal_head": "aca2bf27220ae4cfbdf2c53b3903b9dd9bb09090",
+  "latest_main": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "latest_worker_tests": {
+    "files": 15,
+    "passed": 33,
+    "failed": 0,
+    "receipt": "probe-latest-main-workers.log"
+  },
+  "native_latest": {
+    "exit": 0,
+    "declaration_contract_checks": 1139,
+    "hydration_pages": 16,
+    "hydration_loads": 129,
+    "agent_passed": 1483,
+    "agent_total": 1483
+  },
+  "roundtrip": {
+    "head": "070baa9ac630996a95fd79d668a3f1af724681cf",
+    "exit": 0,
+    "proof": "probe-roundtrip-native-proof.json"
+  },
+  "migration": "0136_member_suspension.sql",
+  "routes": {
+    "routes": 384,
+    "forms": 27
+  }
+}

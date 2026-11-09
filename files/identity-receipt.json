@@ -1,0 +1,19 @@
+{
+  "candidate_count": 11,
+  "commits": [
+    "aca2bf27220ae4cfbdf2c53b3903b9dd9bb09090",
+    "070baa9ac630996a95fd79d668a3f1af724681cf",
+    "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+    "5b5292f80ce0b391e972787c338489c04e40af3d",
+    "58cceb1b4cd7ea8aeb8f55ef28cfd26fc27d19d9",
+    "806b1715d89a5383b5722b1b6c37a615b0665763",
+    "83991ac0b0cf798cfdd1b096429d7d48c6611061",
+    "27f22ac580830573fea04efda791f9cf5ae23203",
+    "f951f8ccff59622b4754dd0750415b8ed423e949",
+    "0b557f5922bb659d615e66eb3ebebd3a09173315",
+    "0f4df95bf52e5fa72ec820d8f4a129a60f7e4161"
+  ],
+  "all_authors_committers_fleet": true,
+  "all_trailers_allowed": true,
+  "codex_openai_coauthors_absent": true
+}

@@ -1,0 +1,118 @@
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector
+> vitest run --config vitest.config.ts tests/worker/outbound-webhooks.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: fixture native event durability failure: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: fixture native event durability failure: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at createIssueRecord (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/issues/repository.ts:59:9)
+      at createIssue (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/issues/mutations.ts:6:19)
+      at /home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/issues/routes.ts:24:14
+      at respondToMutation (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/issues/routes.ts:100:20)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: synthetic-vector-9006: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: synthetic-vector-9006: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at addComment (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/repository.ts:120:3)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/routes.ts:95:18)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/routes.ts:67:5)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at changeComment (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/repository.ts:217:16)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/routes.ts:138:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/routes.ts:77:7)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+stderr | tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+Error: D1_ERROR: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+    at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:188:19)
+    at cloudflare-internal:d1-api:137:19
+    ... 7 lines matching cause stack trace ...
+    at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17) {
+  [cause]: Error: synthetic-vector-9017: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_TRIGGER)
+      at D1DatabaseSessionAlwaysPrimary._sendOrThrow (cloudflare-internal:d1-api:189:24)
+      at cloudflare-internal:d1-api:137:19
+      at Proxy.batch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/auth/mutation-database.ts:93:9)
+      at changeComment (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/repository.ts:217:16)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/routes.ts:138:17)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/hono-base.js:121:39)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+      at Object.handler (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/src/core/features/discussion/routes.ts:77:7)
+      at dispatch (/home/agent/rer-consolidation/work/sd-vector-c-f207-fix2/run-vector/node_modules/.pnpm/hono@4.13.7/node_modules/hono/dist/compose.js:22:17)
+}
+
+ ❯ tests/worker/outbound-webhooks.test.ts (2 tests | 1 failed) 2344ms
+   × [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds 2237ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/outbound-webhooks.test.ts > [WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds
+AssertionError: expected 409 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 409
+
+ ❯ outboundCommentJourney tests/worker/outbound-comment-journey.ts:153:116
+    151|   expect((await f.call('/settings/operators/' + memberId, 'DELETE')).s…
+    152|   const subject = { names: ['synthetic-vector-9011'] };
+    153|   expect((await f.call('/data/erasure', 'POST', { subject, confirmatio…
+       |                                                                                                                    ^
+    154|   const retained = (await queued()).filter(e => JSON.parse(e.body).com…
+    155|   expect(retained).toHaveLength(1);
+ ❯ tests/worker/outbound-webhooks.test.ts:33:2
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  22:07:13
+   Duration  10.43s (transform 3.85s, setup 0ms, import 7.55s, tests 2.34s, environment 1ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

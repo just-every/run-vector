@@ -1,0 +1,1569 @@
+{
+  "total_count": 11,
+  "jobs": [
+    {
+      "id": 128883958455,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhUitw",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128883958455",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128883958455",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:31:43Z",
+      "started_at": "2026-11-08T22:31:45Z",
+      "completed_at": "2026-11-08T22:31:51Z",
+      "name": "plan",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:31:46Z",
+          "completed_at": "2026-11-08T22:31:46Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:31:46Z",
+          "completed_at": "2026-11-08T22:31:49Z"
+        },
+        {
+          "name": "Reuse only a green push of this workflow",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:31:49Z",
+          "completed_at": "2026-11-08T22:31:49Z"
+        },
+        {
+          "name": "Read the shared verification plan",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:31:49Z",
+          "completed_at": "2026-11-08T22:31:49Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:31:49Z",
+          "completed_at": "2026-11-08T22:31:50Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:31:50Z",
+          "completed_at": "2026-11-08T22:31:50Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128883958455",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290724,
+      "runner_name": "GitHub Actions 1000290724",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128883990975,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhWhvw",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128883990975",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128883990975",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:31:51Z",
+      "started_at": "2026-11-08T22:31:53Z",
+      "completed_at": "2026-11-08T22:32:54Z",
+      "name": "build",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:31:54Z",
+          "completed_at": "2026-11-08T22:31:56Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:31:56Z",
+          "completed_at": "2026-11-08T22:31:59Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:31:59Z",
+          "completed_at": "2026-11-08T22:32:01Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:32:01Z",
+          "completed_at": "2026-11-08T22:32:07Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:32:07Z",
+          "completed_at": "2026-11-08T22:32:13Z"
+        },
+        {
+          "name": "Build the shared production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:32:13Z",
+          "completed_at": "2026-11-08T22:32:46Z"
+        },
+        {
+          "name": "Package production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:32:46Z",
+          "completed_at": "2026-11-08T22:32:47Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:32:47Z",
+          "completed_at": "2026-11-08T22:32:48Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14,
+          "started_at": "2026-11-08T22:32:48Z",
+          "completed_at": "2026-11-08T22:32:52Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15,
+          "started_at": "2026-11-08T22:32:52Z",
+          "completed_at": "2026-11-08T22:32:52Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16,
+          "started_at": "2026-11-08T22:32:52Z",
+          "completed_at": "2026-11-08T22:32:52Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17,
+          "started_at": "2026-11-08T22:32:52Z",
+          "completed_at": "2026-11-08T22:32:52Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128883990975",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290725,
+      "runner_name": "GitHub Actions 1000290725",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258394,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2Wg",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258394",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258394",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:56Z",
+      "completed_at": "2026-11-08T22:42:46Z",
+      "name": "shards (core-runtime, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:57Z",
+          "completed_at": "2026-11-08T22:32:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:33:01Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:01Z",
+          "completed_at": "2026-11-08T22:33:02Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:02Z",
+          "completed_at": "2026-11-08T22:33:09Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:09Z",
+          "completed_at": "2026-11-08T22:33:09Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:09Z",
+          "completed_at": "2026-11-08T22:33:19Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:19Z",
+          "completed_at": "2026-11-08T22:33:20Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:20Z",
+          "completed_at": "2026-11-08T22:33:29Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:29Z",
+          "completed_at": "2026-11-08T22:33:29Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:29Z",
+          "completed_at": "2026-11-08T22:33:29Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:29Z",
+          "completed_at": "2026-11-08T22:42:43Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:42:43Z",
+          "completed_at": "2026-11-08T22:42:44Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21,
+          "started_at": "2026-11-08T22:42:44Z",
+          "completed_at": "2026-11-08T22:42:44Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 22,
+          "started_at": "2026-11-08T22:42:44Z",
+          "completed_at": "2026-11-08T22:42:44Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:42:44Z",
+          "completed_at": "2026-11-08T22:42:44Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:42:44Z",
+          "completed_at": "2026-11-08T22:42:44Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:42:44Z",
+          "completed_at": "2026-11-08T22:42:44Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258394",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290729,
+      "runner_name": "GitHub Actions 1000290729",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258402,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2Yg",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258402",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258402",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:57Z",
+      "completed_at": "2026-11-08T22:55:27Z",
+      "name": "shards (collaboration, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:32:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:59Z",
+          "completed_at": "2026-11-08T22:33:02Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:02Z",
+          "completed_at": "2026-11-08T22:33:04Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:04Z",
+          "completed_at": "2026-11-08T22:33:14Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:14Z",
+          "completed_at": "2026-11-08T22:33:14Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:14Z",
+          "completed_at": "2026-11-08T22:33:24Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:24Z",
+          "completed_at": "2026-11-08T22:33:24Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:24Z",
+          "completed_at": "2026-11-08T22:33:34Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:34Z",
+          "completed_at": "2026-11-08T22:33:36Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:36Z",
+          "completed_at": "2026-11-08T22:33:36Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:36Z",
+          "completed_at": "2026-11-08T22:55:19Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:55:19Z",
+          "completed_at": "2026-11-08T22:55:20Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-08T22:55:20Z",
+          "completed_at": "2026-11-08T22:55:23Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-08T22:55:23Z",
+          "completed_at": "2026-11-08T22:55:23Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:55:23Z",
+          "completed_at": "2026-11-08T22:55:23Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:55:23Z",
+          "completed_at": "2026-11-08T22:55:23Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:55:23Z",
+          "completed_at": "2026-11-08T22:55:24Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258402",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290730,
+      "runner_name": "GitHub Actions 1000290730",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258409,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2aQ",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258409",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258409",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:56Z",
+      "completed_at": "2026-11-08T22:44:09Z",
+      "name": "shards (portability, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:57Z",
+          "completed_at": "2026-11-08T22:32:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:33:01Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:01Z",
+          "completed_at": "2026-11-08T22:33:02Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:02Z",
+          "completed_at": "2026-11-08T22:33:08Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:08Z",
+          "completed_at": "2026-11-08T22:33:08Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:08Z",
+          "completed_at": "2026-11-08T22:33:15Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:15Z",
+          "completed_at": "2026-11-08T22:33:15Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:15Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:33:23Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:23Z",
+          "completed_at": "2026-11-08T22:33:23Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:23Z",
+          "completed_at": "2026-11-08T22:44:05Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:44:05Z",
+          "completed_at": "2026-11-08T22:44:06Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21,
+          "started_at": "2026-11-08T22:44:06Z",
+          "completed_at": "2026-11-08T22:44:06Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 22,
+          "started_at": "2026-11-08T22:44:06Z",
+          "completed_at": "2026-11-08T22:44:06Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:44:06Z",
+          "completed_at": "2026-11-08T22:44:06Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:44:06Z",
+          "completed_at": "2026-11-08T22:44:06Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:44:06Z",
+          "completed_at": "2026-11-08T22:44:06Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258409",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290732,
+      "runner_name": "GitHub Actions 1000290732",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258419,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2cw",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258419",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258419",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:56Z",
+      "completed_at": "2026-11-08T22:55:46Z",
+      "name": "shards (imports, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:57Z",
+          "completed_at": "2026-11-08T22:32:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:33:01Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:01Z",
+          "completed_at": "2026-11-08T22:33:03Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:03Z",
+          "completed_at": "2026-11-08T22:33:11Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:11Z",
+          "completed_at": "2026-11-08T22:33:11Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:11Z",
+          "completed_at": "2026-11-08T22:33:21Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:21Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:33:32Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:32Z",
+          "completed_at": "2026-11-08T22:33:33Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:33Z",
+          "completed_at": "2026-11-08T22:33:33Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:33Z",
+          "completed_at": "2026-11-08T22:55:40Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:55:40Z",
+          "completed_at": "2026-11-08T22:55:40Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-08T22:55:40Z",
+          "completed_at": "2026-11-08T22:55:43Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-08T22:55:43Z",
+          "completed_at": "2026-11-08T22:55:43Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:55:43Z",
+          "completed_at": "2026-11-08T22:55:43Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:55:43Z",
+          "completed_at": "2026-11-08T22:55:43Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:55:43Z",
+          "completed_at": "2026-11-08T22:55:43Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258419",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290734,
+      "runner_name": "GitHub Actions 1000290734",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258434,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2gg",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258434",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258434",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:56Z",
+      "completed_at": "2026-11-08T22:48:06Z",
+      "name": "shards (hosted-artifact, true, true, false)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:56Z",
+          "completed_at": "2026-11-08T22:32:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:33:00Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:00Z",
+          "completed_at": "2026-11-08T22:33:01Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:01Z",
+          "completed_at": "2026-11-08T22:33:08Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:08Z",
+          "completed_at": "2026-11-08T22:33:08Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:08Z",
+          "completed_at": "2026-11-08T22:33:15Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:15Z",
+          "completed_at": "2026-11-08T22:33:15Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:15Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:48:00Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:48:00Z",
+          "completed_at": "2026-11-08T22:48:01Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-08T22:48:01Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258434",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290735,
+      "runner_name": "GitHub Actions 1000290735",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258439,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2hw",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258439",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258439",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:56Z",
+      "completed_at": "2026-11-08T22:51:14Z",
+      "name": "shards (core-runtime-planning, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:57Z",
+          "completed_at": "2026-11-08T22:32:59Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:59Z",
+          "completed_at": "2026-11-08T22:33:01Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:01Z",
+          "completed_at": "2026-11-08T22:33:02Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:02Z",
+          "completed_at": "2026-11-08T22:33:11Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:11Z",
+          "completed_at": "2026-11-08T22:33:11Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:11Z",
+          "completed_at": "2026-11-08T22:33:21Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:21Z",
+          "completed_at": "2026-11-08T22:33:21Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:21Z",
+          "completed_at": "2026-11-08T22:33:31Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:31Z",
+          "completed_at": "2026-11-08T22:33:32Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:32Z",
+          "completed_at": "2026-11-08T22:33:32Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:32Z",
+          "completed_at": "2026-11-08T22:51:08Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:51:08Z",
+          "completed_at": "2026-11-08T22:51:09Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-08T22:51:09Z",
+          "completed_at": "2026-11-08T22:51:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-08T22:51:12Z",
+          "completed_at": "2026-11-08T22:51:12Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:51:12Z",
+          "completed_at": "2026-11-08T22:51:12Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:51:12Z",
+          "completed_at": "2026-11-08T22:51:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:51:12Z",
+          "completed_at": "2026-11-08T22:51:12Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258439",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290731,
+      "runner_name": "GitHub Actions 1000290731",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258462,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2ng",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258462",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258462",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:56Z",
+      "completed_at": "2026-11-08T22:54:40Z",
+      "name": "shards (administration, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:56Z",
+          "completed_at": "2026-11-08T22:32:58Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:33:00Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:00Z",
+          "completed_at": "2026-11-08T22:33:01Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:01Z",
+          "completed_at": "2026-11-08T22:33:07Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:07Z",
+          "completed_at": "2026-11-08T22:33:07Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:07Z",
+          "completed_at": "2026-11-08T22:33:14Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:14Z",
+          "completed_at": "2026-11-08T22:33:14Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:14Z",
+          "completed_at": "2026-11-08T22:33:21Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:21Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:33:22Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:22Z",
+          "completed_at": "2026-11-08T22:54:36Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:54:36Z",
+          "completed_at": "2026-11-08T22:54:37Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-08T22:54:37Z",
+          "completed_at": "2026-11-08T22:54:38Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22,
+          "started_at": "2026-11-08T22:54:38Z",
+          "completed_at": "2026-11-08T22:54:38Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:54:38Z",
+          "completed_at": "2026-11-08T22:54:38Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:54:38Z",
+          "completed_at": "2026-11-08T22:54:39Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:54:39Z",
+          "completed_at": "2026-11-08T22:54:39Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258462",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290733,
+      "runner_name": "GitHub Actions 1000290733",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128884258467,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAhm2ow",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128884258467",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128884258467",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-08T22:32:54Z",
+      "started_at": "2026-11-08T22:32:57Z",
+      "completed_at": "2026-11-08T22:48:08Z",
+      "name": "shards (worker-2, true, true, true)",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:32:58Z",
+          "completed_at": "2026-11-08T22:33:00Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-08T22:33:00Z",
+          "completed_at": "2026-11-08T22:33:04Z"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:33:04Z",
+          "completed_at": "2026-11-08T22:33:05Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-08T22:33:05Z",
+          "completed_at": "2026-11-08T22:33:14Z"
+        },
+        {
+          "name": "Reserve disk for native runtime journeys",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-08T22:33:14Z",
+          "completed_at": "2026-11-08T22:33:14Z"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-08T22:33:14Z",
+          "completed_at": "2026-11-08T22:33:23Z"
+        },
+        {
+          "name": "Cache Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-08T22:33:23Z",
+          "completed_at": "2026-11-08T22:33:23Z"
+        },
+        {
+          "name": "Install Chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-08T22:33:23Z",
+          "completed_at": "2026-11-08T22:33:32Z"
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-08T22:33:32Z",
+          "completed_at": "2026-11-08T22:33:33Z"
+        },
+        {
+          "name": "Restore this run's production output",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-08T22:33:33Z",
+          "completed_at": "2026-11-08T22:33:33Z"
+        },
+        {
+          "name": "Verify the independent shard",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 11,
+          "started_at": "2026-11-08T22:33:33Z",
+          "completed_at": "2026-11-08T22:48:03Z"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-08T22:48:03Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Post Cache Chromium",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 21,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 22,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:04Z"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23,
+          "started_at": "2026-11-08T22:48:04Z",
+          "completed_at": "2026-11-08T22:48:05Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24,
+          "started_at": "2026-11-08T22:48:05Z",
+          "completed_at": "2026-11-08T22:48:05Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-08T22:48:05Z",
+          "completed_at": "2026-11-08T22:48:05Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128884258467",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290736,
+      "runner_name": "GitHub Actions 1000290736",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 128890014130,
+      "run_id": 42530676501,
+      "workflow_name": "Verify",
+      "head_branch": "cloud/sd-vector-c-f207-fix2",
+      "run_url": "https://api.github.com/repos/just-every/run-vector/actions/runs/42530676501",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOU_o1tM8AAAAeAnGJsg",
+      "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326",
+      "url": "https://api.github.com/repos/just-every/run-vector/actions/jobs/128890014130",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501/job/128890014130",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-08T22:55:46Z",
+      "started_at": "2026-11-08T22:55:48Z",
+      "completed_at": "2026-11-08T22:55:52Z",
+      "name": "verify",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-08T22:55:49Z",
+          "completed_at": "2026-11-08T22:55:49Z"
+        },
+        {
+          "name": "Require the complete verification wall",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 2,
+          "started_at": "2026-11-08T22:55:49Z",
+          "completed_at": "2026-11-08T22:55:49Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-08T22:55:49Z",
+          "completed_at": "2026-11-08T22:55:49Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/just-every/run-vector/check-runs/128890014130",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000290997,
+      "runner_name": "GitHub Actions 1000290997",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

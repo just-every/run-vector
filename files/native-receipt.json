@@ -1,0 +1,4 @@
+{
+  "command": "cloud_run timeout 600 npx -y @runeditrun/rer verify",
+  "exit": 0
+}

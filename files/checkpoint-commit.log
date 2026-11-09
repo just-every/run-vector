@@ -1,0 +1,2 @@
+[cloud/sd-vector-c-f207-fix2 070baa9a] Restore removal receipts and explicit native event erasure [skip ci]
+ 6 files changed, 41 insertions(+), 15 deletions(-)

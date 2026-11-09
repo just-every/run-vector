@@ -1,0 +1,4 @@
+One exact-SHA watcher; immediate discovery, then 900/600-second intervals; startup reserves five calls.
+VERIFY run=42530676501 status=in_progress conclusion=None
+VERIFY run=42530676501 status=in_progress conclusion=None
+VERIFY_FINAL {"id": 42530676501, "head_sha": "e0acd71c5e7ce8ce10a6f57bf947b9d1ce20b326", "status": "completed", "conclusion": "failure", "html_url": "https://github.com/just-every/run-vector/actions/runs/42530676501"}

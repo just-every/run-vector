@@ -1,0 +1,22 @@
+{
+  "latest_main": {
+    "counts": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64
+    },
+    "total": 272,
+    "ROLE-011": "partial",
+    "ROLE-012": "partial"
+  },
+  "terminal": {
+    "counts": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64
+    },
+    "total": 272,
+    "ROLE-011": "partial",
+    "ROLE-012": "partial"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "passed": false,
+  "independentInstallations": true,
+  "commands": [
+    "pnpm run export -- --target local",
+    "pnpm run import -- --target local",
+    "pnpm run export -- --target local"
+  ],
+  "categories": [],
+  "rows": 0,
+  "objects": 0,
+  "equality": false,
+  "heldAfterCron": false,
+  "privateViews": false
+}

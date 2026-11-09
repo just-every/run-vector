@@ -1,0 +1,37 @@
+[
+  {
+    "command": "node scripts/contract-docs.mjs write ROLE-011",
+    "exit": 0,
+    "receipt": "final-views-write.log"
+  },
+  {
+    "command": "node scripts/contract-docs.mjs check ROLE-011",
+    "exit": 0,
+    "receipt": "final-views-check.log"
+  },
+  {
+    "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0,
+    "receipt": "final-ledger.log"
+  },
+  {
+    "command": "node scripts/sync-integration.mjs --check",
+    "exit": 0,
+    "receipt": "final-spec-check.log"
+  },
+  {
+    "command": "node sdk/generate.mjs --check",
+    "exit": 0,
+    "receipt": "final-sdk-check.log"
+  },
+  {
+    "command": "pnpm sources:lock",
+    "exit": 0,
+    "receipt": "final-lock-write.log"
+  },
+  {
+    "command": "pnpm sources:check",
+    "exit": 0,
+    "receipt": "final-lock-check.log"
+  }
+]

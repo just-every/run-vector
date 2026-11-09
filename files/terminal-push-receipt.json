@@ -1,0 +1,16 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f207-fix2",
+  "head": "aca2bf27220ae4cfbdf2c53b3903b9dd9bb09090",
+  "tree": "e2ba3c75e9f8c24ce6cabf4041f87dfd1e0e7813",
+  "tested_index_tree_matches": true,
+  "parents": [
+    "070baa9ac630996a95fd79d668a3f1af724681cf",
+    "ea77c904c8e553bca43f152710a5d04e4e9e2587"
+  ],
+  "main": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "exit": 0,
+  "receipt": "terminal-push.log",
+  "skip_ci": false,
+  "exact_sha_verify": "unobserved; GitHub observation budget exhausted"
+}

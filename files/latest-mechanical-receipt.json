@@ -1,0 +1,37 @@
+[
+  {
+    "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0,
+    "receipt": "latest-ledger.log"
+  },
+  {
+    "command": "node sdk/generate.mjs",
+    "exit": 0,
+    "receipt": "latest-sdk-generate.log"
+  },
+  {
+    "command": "node sdk/generate.mjs --check",
+    "exit": 0,
+    "receipt": "latest-sdk-check.log"
+  },
+  {
+    "command": "node --input-type=module -e import {assertRoleDoorCoverage} from './tests/e2e/role-door-coverage.mjs'; console.log(JSON.stringify(await assertRoleDoorCoverage()));",
+    "exit": 0,
+    "receipt": "latest-mounted-routes.log"
+  },
+  {
+    "command": "node scripts/sync-integration.mjs --check",
+    "exit": 0,
+    "receipt": "latest-spec-check.log"
+  },
+  {
+    "command": "pnpm sources:lock",
+    "exit": 0,
+    "receipt": "latest-lock-write.log"
+  },
+  {
+    "command": "pnpm sources:check",
+    "exit": 0,
+    "receipt": "latest-lock-check.log"
+  }
+]

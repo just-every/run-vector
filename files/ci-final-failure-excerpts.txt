@@ -1,0 +1,89 @@
+
+## 1_shards (worker-2, true, true, true).txt
+2026-11-08T22:48:03.4453470Z  ✓ tests/worker/project-fields-upgrade.test.ts (1 test) 13256ms
+2026-11-08T22:48:03.4454547Z    ✓ [PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrades preserve records and export the extended planning inventory  13255ms
+2026-11-08T22:48:03.4475724Z 
+2026-11-08T22:48:03.4476598Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+2026-11-08T22:48:03.4477127Z 
+2026-11-08T22:48:03.4479412Z  FAIL  tests/worker/agent-events.test.ts > native title events commit atomically and replay through mounted MCP with current authority
+2026-11-08T22:48:03.4485713Z AssertionError: {"imported":{"comments":0,"reports":0,"reportRows":0,"outbox":0},"confirmation":"erase lead-a1"}: expected 200 to be 409 // Object.is equality
+2026-11-08T22:48:03.4486498Z 
+2026-11-08T22:48:03.4486898Z - Expected
+2026-11-08T22:48:03.4487263Z + Received
+2026-11-08T22:48:03.4487444Z 
+2026-11-08T22:48:03.4487587Z - 409
+2026-11-08T22:48:03.4487895Z + 200
+2026-11-08T22:48:03.4488051Z 
+2026-11-08T22:48:03.4488534Z  ❯ json tests/worker/agent-events.test.ts:8:58
+2026-11-08T22:48:03.4538881Z       6|
+2026-11-08T22:48:03.4540641Z       7| async function json(response: Response, status = 200): Promise<any> {
+2026-11-08T22:48:03.4542568Z       8|   expect(response.status, await response.clone().text()).toBe(status);
+2026-11-08T22:48:03.4543776Z        |                                                          ^
+2026-11-08T22:48:03.4544118Z 
+2026-11-08T22:48:03.4544835Z       9|   return response.json();
+2026-11-08T22:48:03.4545638Z      10| }
+2026-11-08T22:48:03.4546617Z  ❯ tests/worker/agent-events.test.ts:42:19
+2026-11-08T22:48:03.4547439Z 
+2026-11-08T22:48:03.4547836Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+2026-11-08T22:48:03.4548114Z 
+2026-11-08T22:48:03.4548747Z  Test Files  1 failed | 18 passed (19)
+2026-11-08T22:48:03.4549747Z       Tests  1 failed | 39 passed (40)
+2026-11-08T22:48:03.4550402Z    Start at  22:45:13
+2026-11-08T22:48:03.4551326Z    Duration  169.71s (transform 4.59s, setup 0ms, import 67.37s, tests 93.80s, environment 1ms)
+2026-11-08T22:48:03.4577616Z 
+2026-11-08T22:48:03.4577704Z 
+2026-11-08T22:48:03.4584069Z ##[error]AssertionError: {"imported":{"comments":0,"reports":0,"reportRows":0,"outbox":0},"confirmation":"erase lead-a1"}: expected 200 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 200
+
+ ❯ json tests/worker/agent-events.test.ts:8:58
+ ❯ tests/worker/agent-events.test.ts:42:19
+
+
+2026-11-08T22:48:03.5673010Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T22:48:03.6104234Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T22:48:03.6274469Z ##[error]Process completed with exit code 1.
+
+## 3_shards (portability, true, true, true).txt
+2026-11-08T22:44:04.6981747Z Exported the local copy to exports/second.jsonl (541 KB): 211 tables, 300 rows
+2026-11-08T22:44:05.5148278Z node:internal/modules/run_main:123
+2026-11-08T22:44:05.5148618Z     triggerUncaughtException(
+2026-11-08T22:44:05.5149179Z     ^
+2026-11-08T22:44:05.5149272Z 
+2026-11-08T22:44:05.5149536Z AssertionError [ERR_ASSERTION]: Complete archive category: operator_removals
+2026-11-08T22:44:05.5150200Z     at verifyRoundtripCategories (file:///home/runner/work/run-vector/run-vector/tests/e2e/data-roundtrip-fixture.mjs:44:29)
+2026-11-08T22:44:05.5150830Z     at file:///home/runner/work/run-vector/run-vector/tests/e2e/data-roundtrip.mjs:35:23 {
+2026-11-08T22:44:05.5151189Z   generatedMessage: false,
+2026-11-08T22:44:05.5151460Z   code: 'ERR_ASSERTION',
+2026-11-08T22:44:05.5151664Z   actual: false,
+2026-11-08T22:44:05.5151868Z   expected: true,
+2026-11-08T22:44:05.5152059Z   operator: '==',
+2026-11-08T22:44:05.5152241Z   diff: 'simple'
+2026-11-08T22:44:05.5152444Z }
+2026-11-08T22:44:05.5152536Z 
+2026-11-08T22:44:05.5152626Z Node.js v22.20.0
+2026-11-08T22:44:05.5481776Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T22:44:05.5636862Z ##[error]Process completed with exit code 1.
+
+## 8_shards (core-runtime, true, true, true).txt
+2026-11-08T22:42:01.9110557Z [Vector runtime] Passed CURR-007
+2026-11-08T22:42:43.3552179Z node:internal/modules/run_main:123
+2026-11-08T22:42:43.3560282Z     triggerUncaughtException(
+2026-11-08T22:42:43.3561174Z     ^
+2026-11-08T22:42:43.3561531Z 
+2026-11-08T22:42:43.3562051Z page.waitForFunction: Timeout 30000ms exceeded.
+2026-11-08T22:42:43.3563232Z     at reset (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:47:16)
+2026-11-08T22:42:43.3564300Z     at async streamControlsJourney (/home/runner/work/run-vector/run-vector/tests/e2e/core-stream-controls-journey.mjs:92:5)
+2026-11-08T22:42:43.3565238Z     at async withInvitedOperator (/home/runner/work/run-vector/run-vector/tests/e2e/core-operator-journey.mjs:37:6)
+2026-11-08T22:42:43.3566034Z     at async file:///home/runner/work/run-vector/run-vector/tests/e2e/core-runtime.mjs:754:5 {
+2026-11-08T22:42:43.3566484Z   log: [],
+2026-11-08T22:42:43.3566730Z   name: 'TimeoutError'
+2026-11-08T22:42:43.3566964Z }
+2026-11-08T22:42:43.3567076Z 
+2026-11-08T22:42:43.3567190Z Node.js v22.20.0
+2026-11-08T22:42:43.3972463Z  ELIFECYCLE  Command failed with exit code 1.
+2026-11-08T22:42:43.4405925Z ##[error]Process completed with exit code 1.

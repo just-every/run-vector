@@ -1,0 +1,6 @@
+{
+  "command": "cloud_run timeout 600 npx -y @runeditrun/rer verify",
+  "exit": 0,
+  "main": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "tested_index_tree": "e2ba3c75e9f8c24ce6cabf4041f87dfd1e0e7813"
+}

@@ -1,0 +1,9 @@
+(node:4631) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PASS SEARCH-004 Typed and menu Boolean filters yield the same exact rows and totals, reject unsupported terms visibly, preserve keyboard input and reopen a saved expression unchanged. Current private-team withdrawal, invited Guest scope and Viewer read-only admission remain enforced. Changed screens captured at 1440 and 390 with accessibility and overflow checks.
+PROBE SEARCH-004 bar-menu: typed and menu expression -> identical 2 public issues, private issue omitted, exact totals
+PROBE SEARCH-004 saved-reload: save and reopen -> expression unchanged, 2 issues; private membership 3 then withdrawal 2, Guest 1, Viewer writes 403 unchanged
+BOOLEAN_PROBE_PASS
