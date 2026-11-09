@@ -1,3 +1,4 @@
+import { LeadershipDigestControls } from './leadership-digest';
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { fetchJson, useApiResource } from "../../../app/api-client";
@@ -72,6 +73,7 @@ export function NotificationChannels({ settings }: { settings: NotificationSetti
           <ChannelMatrix rows={data.defaults} defaults disabled={pending || Boolean(resource.error)} onChange={choice => void save(choice, true)} />
         </div>}
       </div>}
+      <LeadershipDigestControls slackReason={slackReason}/>
       <h3>Digest delivery updates</h3>
       {data.digestDeliveries.length === 0 ? <p>No failed or uncertain digest deliveries.</p> : <ul>
         {data.digestDeliveries.map(delivery => <li key={delivery.id}><div>

@@ -1,3 +1,4 @@
+import { leadershipPreferences, saveLeadershipPreferences } from '../leadership-digests/preferences';
 import { channelDefaults, channelPreferences, saveChannelDefaults, saveChannelPreferences } from "./channel-preferences";
 import { channelDefaultsInputSchema, channelPreferencesInputSchema } from "./channel-schema";
 import { visibleDirectoryPerson } from '../roles/visibility-sql';
@@ -181,6 +182,8 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
       return subscription(c.env.DB, c.get("operatorId"), key);
     }),
   );
+  app.get('/settings/notifications/leadership-digest', protect(c => leadershipPreferences(c.env.DB,c.get('operatorId'))));
+  app.put('/settings/notifications/leadership-digest', protect(async c => saveLeadershipPreferences(c.env.DB,c.get('operatorId'),await readRequestJson(c.req.raw))));
   app.get("/settings/notifications/channels", protect(c => channelPreferences(c.env.DB, c.get("operatorId"))));
   app.put("/settings/notifications/channels", protect(async c => saveChannelPreferences(
     c.env.DB, c.get("operatorId"), channelPreferencesInputSchema.parse(await readRequestJson(c.req.raw)))));

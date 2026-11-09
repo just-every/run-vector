@@ -43,3 +43,14 @@ export function digestSlotCutoff(slot: string, clock: DigestClock, cadence: 'hou
     throw error;
   }
 }
+
+/** A local Monday date identifies a week even across a time-zone offset change.
+ * Any working-day tick may send that week's one digest; quiet days never send. */
+export function leadershipWeekSlot(now: Date, clock: DigestClock) {
+  return digestCalendar(now,clock,'daily') ? leadershipWeekIdentity(now,clock) : null;
+}
+export function leadershipWeekIdentity(now: Date, clock: DigestClock) {
+  const monday = new Date(reminderCalendar(now,clock.timezone).date+'T12:00:00Z');
+  monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));
+  return monday.toISOString().slice(0,10);
+}

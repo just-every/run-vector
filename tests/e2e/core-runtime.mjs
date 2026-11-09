@@ -793,6 +793,7 @@ try {
   }
   // Balance the independent project, initiative and release proof with Current;
   // Planning keeps the complete agent-role matrix without increasing its timeout.
+  // Current runs this journey in the fresh projects child below, exactly once.
   if (['all', 'projects'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
