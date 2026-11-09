@@ -31,6 +31,12 @@
       "sha256": "45968df8a0d25727bfa2d3285def9990d9232a5d1558a7ceded6e54e8cab0240"
     },
     {
+      "blob": "83a6a71ca6a08c941b4316201622b7bd397a84f0",
+      "bytes": 608,
+      "path": "evidence-publication-receipt.json",
+      "sha256": "6446f14dc1c9051972ba4b068215c4a40738ef4ff5cfeb4b870996cb39c896fc"
+    },
+    {
       "blob": "9069768378fca1d8ad28fd52872032cc18bd2597",
       "bytes": 14608,
       "path": "final-ci-jobs.json",

@@ -1,0 +1,9 @@
+{
+  "remote_heads_verified": {
+    "refs/heads/cloud/sd-vector-c-f205-fix4-pc1": "dfc91418aed7c38860042448e2f442cd78633dde",
+    "refs/heads/evidence/sd-vector-c-f205-fix4-pc1": "d4ae9b5a03d6a42a51e75b24d958d0a773e424b0"
+  },
+  "packet_files_published": 22,
+  "first_publication_line": "EVIDENCE repo=just-every/run-vector ref=refs/heads/evidence/sd-vector-c-f205-fix4-pc1 head=d4ae9b5a03d6a42a51e75b24d958d0a773e424b0",
+  "note": "Records the verified first report publication. A subsequent ordinary fast-forward publishes this receipt with the packet; its terminal EVIDENCE line is reported separately."
+}
