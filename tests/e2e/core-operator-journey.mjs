@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readDevelopmentLink} from './outbox-session.mjs';
 import {beforePrivateNavigation,navigate,settleReads} from './collaboration-navigation.mjs';
 import {invitePerson} from './settings-pane-support.mjs';
+import {resetInvitationConfirmationBudget} from './core-confirmation-budget.mjs';
 
 // A long journey can outlive the inviter's app-local email proof. Renew it
 // through the same public confirmation door before the next privileged action.
@@ -23,6 +24,7 @@ export async function confirmInviter(page,context,base,state) {
 /** Independent jobs use genuine invited operators and their own rate budgets.
  * They predate roles and act as their inviter could, so each is invited as an Owner. */
 export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){
+ resetInvitationConfirmationBudget(state);
  await confirmInviter(page,context,base,state);
  const original=await context.cookies(),email=`stream-planning-${Date.now()}@vector.test`;
  await navigate(page,base+'/app/settings/people');

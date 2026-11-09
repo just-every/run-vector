@@ -7,6 +7,7 @@ import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
 import { requestLedger } from './core-request-ledger.mjs';
+import { invitationConfirmationLedger } from './core-confirmation-budget.mjs';
 import { intakePolicyJourney } from './core-intake-policy-journey.mjs';
 import { projectMembershipJourney } from './core-project-membership-journey.mjs';
 import { currentDisjointJourney } from './core-current-disjoint-journey.mjs';
@@ -1695,7 +1696,7 @@ try {
   }
   await writeFile(
     evidence + "/runtime-results.json",
-    JSON.stringify({ passed: true, results, documents, requestLedger: requestLedger(sql) }, null, 2),
+    JSON.stringify({ passed: true, results, documents, requestLedger: requestLedger(sql), invitationConfirmations: invitationConfirmationLedger(state) }, null, 2),
   );
   console.log(
     JSON.stringify({ passed: true, checks: results.length, evidence }, null, 2),
