@@ -196,6 +196,8 @@ export const doors: Door[] = [
   { method: 'PATCH', path: '/settings', row: 'workspace.settings' },
   { method: 'GET', path: '/settings/notifications/channel-defaults', row: 'workspace.settings' },
   { method: 'PUT', path: '/settings/notifications/channel-defaults', row: 'workspace.settings' },
+  { method: 'GET', path: '/settings/notifications/leadership-digest', row: null, page: 'account' },
+  { method: 'PUT', path: '/settings/notifications/leadership-digest', row: null, page: 'account' },
   { method: 'GET', path: '/settings/notifications/channels', row: null, page: 'account' },
   { method: 'PUT', path: '/settings/notifications/channels', row: null, page: 'account' },
   { method: 'GET', path: '/settings', row: null, page: 'directory' },

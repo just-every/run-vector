@@ -39,3 +39,8 @@ export function refusalMessage(origin:string,identifier:string,reason:string){
 export function privateDirectBody(origin:string,identifier:string){
  return JSON.stringify({text:'Private work changed. Sign in to Vector to view it.',blocks:[{type:'section',text:plain('Private work changed. Sign in to Vector to view it.')},{type:'actions',elements:[{type:'button',action_id:'vector_open',text:plain('Open Vector',75),url:issueLink(origin,identifier)}]}],unfurl_links:false,unfurl_media:false});
 }
+
+/** Digest links and metadata stay plain text; markup and automatic unfurls are disabled. */
+export function leadershipDirectBody(channel:string,text:string) {
+ return JSON.stringify({channel,text:escapeSlack(text),mrkdwn:false,unfurl_links:false,unfurl_media:false});
+}

@@ -1,6 +1,7 @@
 import {vi,expect} from 'vitest';
 export function channelEdge(installationTeam?:string){
  let teamName='Fixture workspace';
+ let beforeCall:((method:string,body:any)=>Promise<void>)|undefined;
  let app:{appId:string;clientId:string;clientSecret:string;signingSecret:string}|undefined;
  let token=['synthetic','slack',crypto.randomUUID()].join('-'),revoked=false;const webhook='https://discord.com/api/webhooks/123/'+crypto.randomUUID();
  const calls:{method:string;body:any;redirect:RequestRedirect|undefined;workspace?:string}[]=[];
@@ -11,6 +12,7 @@ export function channelEdge(installationTeam?:string){
   expect(init?.redirect).toBe('manual');
   const method=url.host==='slack.com'?url.pathname.slice(5):'discord';
   calls.push({method,body,redirect:init?.redirect,workspace:installationTeam});
+  await beforeCall?.(method,body);
   if(app&&method==='apps.manifest.create')return Response.json({ok:true,app_id:app.appId,credentials:{client_id:app.clientId,client_secret:app.clientSecret,signing_secret:app.signingSecret}});
   if(app&&method==='oauth.v2.access')return Response.json({ok:true,app_id:app.appId,token_type:'bot',scope:'chat:write,channels:manage,channels:read,im:write,users:read.email',access_token:token});
   if(method==='auth.test')return Response.json(revoked?{ok:false,error:'token_revoked'}:{ok:true,team:teamName,bot_id:'BOT',...(installationTeam?{team_id:installationTeam}:{})});
@@ -31,5 +33,5 @@ export function channelEdge(installationTeam?:string){
   if(method==='discord'){if(postMode==='uncertain')throw Error('Lost provider acknowledgement');expect(url.origin+url.pathname).toBe(webhook);expect(url.searchParams.get('wait')).toBe('true');return postMode==='redirect'?new Response(null,{status:302,headers:{Location:'https://forbidden.example.test'}}):Response.json({id:'fixture-message',content:body.content});}
   throw Error('Unexpected network edge '+url.hostname+url.pathname);
  });
- return {workspace:(value:string,name='Fixture workspace')=>{installationTeam=value;teamName=name;},app:(profile:{appId:string;clientId:string;clientSecret:string;signingSecret:string})=>{app=profile;},users:(email:string,id:string,name:string)=>{users.set(email,{id,team_id:'TFIXTURE',name:name.toLowerCase(),real_name:name+' Fixture',profile:{display_name:name,real_name:name+' Fixture'}});},lookupError:(value:string|null)=>{lookupError=value;},get token(){return token;},renew(){token=['synthetic','slack',crypto.randomUUID()].join('-');revoked=false;},webhook,calls,safety:(value:Record<string,unknown>={})=>{safety=value;},restore:()=>network.mockRestore(),createError:(value:string|null)=>{createError=value;},postMode:(value:string)=>{postMode=value;}};
+ return {beforeCall:(run?: (method:string,body:any)=>Promise<void>)=>{beforeCall=run;},workspace:(value:string,name='Fixture workspace')=>{installationTeam=value;teamName=name;},app:(profile:{appId:string;clientId:string;clientSecret:string;signingSecret:string})=>{app=profile;},users:(email:string,id:string,name:string)=>{users.set(email,{id,team_id:'TFIXTURE',name:name.toLowerCase(),real_name:name+' Fixture',profile:{display_name:name,real_name:name+' Fixture'}});},lookupError:(value:string|null)=>{lookupError=value;},get token(){return token;},renew(){token=['synthetic','slack',crypto.randomUUID()].join('-');revoked=false;},webhook,calls,safety:(value:Record<string,unknown>={})=>{safety=value;},restore:()=>network.mockRestore(),createError:(value:string|null)=>{createError=value;},postMode:(value:string)=>{postMode=value;}};
 }
