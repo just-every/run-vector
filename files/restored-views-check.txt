@@ -1,0 +1,11 @@
+file:///home/agent/rer-consolidation/work/sd-vector-c-f207-rb1/run-vector/scripts/contract-docs.mjs:51
+ else if(read(file)!==text)throw Error(file+' differs from CONTRACT.md; run the documented generator.');
+                                 ^
+
+Error: ACCEPTANCE.md differs from CONTRACT.md; run the documented generator.
+    at file:///home/agent/rer-consolidation/work/sd-vector-c-f207-rb1/run-vector/scripts/contract-docs.mjs:51:34
+    at ModuleJob.run (node:internal/modules/esm/module_job:345:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.20.0

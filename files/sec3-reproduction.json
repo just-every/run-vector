@@ -1,0 +1,14 @@
+{
+  "rule": "SEC-3",
+  "before": [
+    {
+      "line": 73
+    },
+    {
+      "line": 131
+    }
+  ],
+  "after": [],
+  "bindingValuesIdentical": true,
+  "assertionsUnchanged": true
+}

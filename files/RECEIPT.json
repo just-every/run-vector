@@ -1,0 +1,221 @@
+{
+  "schema": 1,
+  "repository": "just-every/run-vector",
+  "tag": "sd-vector-c-f207-rb1",
+  "branch": "cloud/sd-vector-c-f207-rb1",
+  "head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "base": "bf872df8566011be5e46c6b5f777fb46d11b0f27",
+  "mechanical": {
+    "ledger": {
+      "command": "timeout 180 node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "passed": 1
+    },
+    "spec": {
+      "generate": "pnpm integration:sync",
+      "generate_exit": 0,
+      "command": "pnpm integration:check",
+      "exit": 0
+    },
+    "sdk": {
+      "generate": "node sdk/generate.mjs",
+      "generate_exit": 0,
+      "command": "node sdk/generate.mjs --check",
+      "exit": 0,
+      "operations": 56,
+      "generated_diff": false
+    },
+    "lock": {
+      "generate": "pnpm sources:lock",
+      "generate_exit": 0,
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    "views": {
+      "generate": "node scripts/contract-docs.mjs write ROLE-011",
+      "generate_exit": 0,
+      "command": "node scripts/contract-docs.mjs check ROLE-011",
+      "exit": 0,
+      "views_restored_to_main": true,
+      "restored_check_exit": 1
+    }
+  },
+  "local_probes": {
+    "lifecycle": {
+      "exit": 0,
+      "files": 3,
+      "tests": 3,
+      "duration_seconds": 43.69,
+      "node": "22.20.0"
+    },
+    "browser": {
+      "exit": 0,
+      "widths": [
+        1440,
+        390
+      ],
+      "captures": 4,
+      "serious_or_critical_axe_findings": 0,
+      "horizontal_overflow": false
+    },
+    "typecheck": {
+      "exit": 0,
+      "node": "22.20.0"
+    },
+    "build": {
+      "exit": 0
+    },
+    "selected_worker_batch": {
+      "files": 14,
+      "passed_files": 13,
+      "failed_files": 1,
+      "tests": 30,
+      "passed_tests": 28,
+      "failed_tests": 2,
+      "exit": 1,
+      "duration_seconds": 871.09,
+      "node": "22.20.0",
+      "failures": [
+        {
+          "test": "role-matrix.test.ts:409",
+          "reason": "Test timed out in 30000ms"
+        },
+        {
+          "test": "role-matrix.test.ts:527",
+          "reason": "Test timed out in 120000ms"
+        }
+      ],
+      "isolated_retry": "running"
+    },
+    "isolated_role_suite": {
+      "files": 1,
+      "tests": 6,
+      "passed_tests": 5,
+      "failed_tests": 1,
+      "exit": 1,
+      "duration_seconds": 303.66,
+      "failure": {
+        "test": "role-matrix.test.ts:527",
+        "reason": "Test timed out in 120000ms"
+      },
+      "fresh_database_case_retry": {
+        "exit": 0,
+        "test": "current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+        "test_seconds": 34.19,
+        "total_seconds": 47.46,
+        "original_timeout_seconds": 120,
+        "selector_omitted_other_cases": 5,
+        "other_cases_passed_in_full_retry": 5,
+        "full_file_timeout_unresolved": true
+      }
+    }
+  },
+  "publication": {
+    "initial_status": "INCOMPLETE",
+    "initial_exit": 2,
+    "history": {
+      "commits": 1014,
+      "trees": 988,
+      "blobs": 10158,
+      "newlyPublicCommits": [
+        "0b10199c8e0e680447e15291dd8d5b622d5d18c1"
+      ]
+    },
+    "committed_SEC3_findings": 0,
+    "initial_working_tree_only_findings": 30,
+    "committed_findings": [
+      {
+        "rule": "scan.github-incomplete",
+        "path": "CONTRACT.md"
+      },
+      {
+        "rule": "scan.github-incomplete",
+        "path": "sources.lock.json"
+      },
+      {
+        "rule": "scan.github-incomplete",
+        "path": "tests/worker/data-http.test.ts"
+      }
+    ],
+    "github_calls_used": 10,
+    "github_budget": 10,
+    "clean_worktree_scan": {
+      "status": "INCOMPLETE",
+      "exit": 2,
+      "newly_public_commits": [
+        "0b10199c8e0e680447e15291dd8d5b622d5d18c1"
+      ],
+      "commits": 1014,
+      "trees": 988,
+      "blobs": 10158,
+      "SEC3_findings": 0,
+      "credential_findings": 0,
+      "remaining_findings": [
+        {
+          "rule": "scan.github-incomplete",
+          "path": "CONTRACT.md"
+        },
+        {
+          "rule": "scan.github-incomplete",
+          "path": "sources.lock.json"
+        },
+        {
+          "rule": "scan.github-incomplete",
+          "path": "tests/worker/data-http.test.ts"
+        }
+      ],
+      "guarantees": {
+        "historyScanned": false,
+        "visualRecognition": false,
+        "environmentChecked": false
+      },
+      "seconds": 431.512739
+    }
+  },
+  "ci": {
+    "status": "unobserved",
+    "run_ids": [],
+    "head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+    "reason": "Ten-call GitHub budget exhausted by native publication metadata lookups; no READY claim",
+    "workflow_entrypoint": "Verify on push to cloud/**, .github/workflows/verify.yml"
+  },
+  "status_changes": [],
+  "candidate_tree_differences": [
+    "sources.lock.json",
+    "tests/worker/member-suspension.test.ts"
+  ],
+  "product_push": {
+    "status": "PUSHED",
+    "exit": 0,
+    "attempts": 1,
+    "remote_head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+    "remote_ref": "refs/heads/cloud/sd-vector-c-f207-rb1",
+    "main_after_push": "bf872df8566011be5e46c6b5f777fb46d11b0f27",
+    "main_advanced": false
+  },
+  "terminal_custody": "PUSHED",
+  "ready_claimed": false,
+  "clause_counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "remaining_qualification": [
+    "Full role-matrix file Viewer census exceeds its original 120-second timeout; unchanged fresh-database case passes in 34.19 seconds.",
+    "Native scanner GitHub-reference metadata remains incomplete within exhausted ten-call budget.",
+    "Exact-SHA Verify run IDs/results unobserved within exhausted budget."
+  ],
+  "evidence_transport": {
+    "ref": "refs/heads/evidence/sd-vector-c-f207-rb1",
+    "explicit_files_only": true,
+    "published_after_this_receipt": true
+  },
+  "post_transfer_cleanup": "Remove both worktrees including product node_modules after evidence hashes and remote product SHA are verified; retain packet."
+}

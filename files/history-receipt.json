@@ -1,0 +1,12 @@
+{
+  "head": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "new_commits": 1,
+  "new_parents": [
+    "0b10199c8e0e680447e15291dd8d5b622d5d18c1 bf872df8566011be5e46c6b5f777fb46d11b0f27"
+  ],
+  "old_candidate_commits": 13,
+  "old_candidate_commits_reachable": 0,
+  "old_concatenation_history_matches": 0,
+  "filter": "blob:none",
+  "shallow": false
+}

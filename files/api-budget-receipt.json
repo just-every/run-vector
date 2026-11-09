@@ -1,0 +1,10 @@
+{
+  "budget": 10,
+  "calls": 10,
+  "exhausted": true,
+  "exploratory_read_calls": 1,
+  "native_scanner_repository_metadata_calls": 9,
+  "ci_rest_calls": 0,
+  "ci_run_ids": [],
+  "further_api_calls_made": false
+}

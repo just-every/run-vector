@@ -1,0 +1,19 @@
+{
+  "clauses_before": 272,
+  "clauses_after": 272,
+  "statuses_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "statuses_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "status_changes": [],
+  "assertions_preserved": true,
+  "namespace_bindings_changed": 2,
+  "views_identical_to_main": true,
+  "historical_fixture_identical_to_main": true
+}

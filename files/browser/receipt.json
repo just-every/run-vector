@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "widths": [
+    1440,
+    390
+  ],
+  "checks": [
+    {
+      "id": "ROLE-011",
+      "name": "native suspension retains rendered names and hidden personal state; reactivation requires fresh sign-in",
+      "passed": true
+    }
+  ]
+}
