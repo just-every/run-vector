@@ -1,0 +1,45 @@
+[
+  {
+    "event": "return-request",
+    "path": "/_serverFn/6e3b7a7cdb9ba3db105d588a0b547591ae2d56554259819375d7e373b2e5817d"
+  },
+  {
+    "event": "url-returned",
+    "detail": 1
+  },
+  {
+    "event": "old-readiness-passed",
+    "detail": 1
+  },
+  {
+    "event": "reset-request",
+    "held": false,
+    "detail": 1
+  },
+  {
+    "event": "return-receipt-held"
+  },
+  {
+    "event": "return-receipt-released"
+  },
+  {
+    "event": "reset-receipt-released",
+    "detail": 0
+  },
+  {
+    "event": "reset-response-observed",
+    "values": [
+      "01M6YXCYHPBP1MN604F6RE2ZWY",
+      "01M6YXCYN0CP4QHE4849ZYVTV5",
+      "01M6YXCX2SN7V2EJMZZZM46N6C",
+      "medium",
+      "issue",
+      "started-work"
+    ]
+  },
+  {
+    "event": "failure",
+    "name": "TimeoutError",
+    "message": "page.waitForFunction: Timeout 30000ms exceeded."
+  }
+]

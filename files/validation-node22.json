@@ -1,0 +1,202 @@
+[
+  {
+    "event": "environment",
+    "node": "v22.20.0",
+    "head": "dde3ea2e9ba87f139281fb7e87aad7335e73853d"
+  },
+  {
+    "event": "clause-passed",
+    "clause": "CURR-007",
+    "detail": "HTTP Current as-of fixture independently proves priority, overdue/future/absent due dates, most recent update, and identifier ties using a native bulk team move with a common timestamp."
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "return-receipt-held",
+    "iteration": 1
+  },
+  {
+    "event": "return-receipt-released",
+    "iteration": 1
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "clause-passed",
+    "clause": "CURR-009",
+    "detail": "At 1440px and 390px, Current filters team/project/priority/Intake-vs-Issue/assignee/attention reason (primary or context), combines all six, restores stored controls on reload, resets durably, retains Recently done by default and wraps every control with 44px touch targets."
+  },
+  {
+    "event": "clause-passed",
+    "clause": "WORK-003",
+    "detail": "My work shows exactly one context row for each of two qualifying fixture teams, with API-backed start/end dates and timezone, 2/5 points (40%) and 1/2 issues (50%); an unrelated active team is absent at desktop and mobile widths. Old three-field My work controls normalize and reset correctly."
+  },
+  {
+    "event": "return-receipt-held",
+    "iteration": 2
+  },
+  {
+    "event": "return-receipt-released",
+    "iteration": 2
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "delayed-reset-passed",
+    "iteration": 1
+  },
+  {
+    "event": "return-receipt-held",
+    "iteration": 3
+  },
+  {
+    "event": "return-receipt-released",
+    "iteration": 3
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "delayed-reset-passed",
+    "iteration": 2
+  },
+  {
+    "event": "return-receipt-held",
+    "iteration": 4
+  },
+  {
+    "event": "return-receipt-released",
+    "iteration": 4
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "delayed-reset-passed",
+    "iteration": 3
+  },
+  {
+    "event": "return-receipt-held",
+    "iteration": 5
+  },
+  {
+    "event": "return-receipt-released",
+    "iteration": 5
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "delayed-reset-passed",
+    "iteration": 4
+  },
+  {
+    "event": "return-receipt-held",
+    "iteration": 6
+  },
+  {
+    "event": "return-receipt-released",
+    "iteration": 6
+  },
+  {
+    "event": "reset-request",
+    "duringReturn": false,
+    "detail": 0
+  },
+  {
+    "event": "delayed-reset-passed",
+    "iteration": 5
+  },
+  {
+    "event": "request-ledger",
+    "fixedWindowSeconds": 60,
+    "limit": 600,
+    "peak": 361,
+    "total": 638,
+    "operators": 1,
+    "buckets": [
+      {
+        "operator": 1,
+        "window": 29903106,
+        "requests": 361
+      },
+      {
+        "operator": 1,
+        "window": 29903107,
+        "requests": 277
+      }
+    ]
+  },
+  {
+    "event": "passed",
+    "fullJourneys": 1,
+    "delayedReturns": 6,
+    "resetInDetail": 0,
+    "failures": []
+  }
+]

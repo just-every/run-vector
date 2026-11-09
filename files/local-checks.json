@@ -1,0 +1,48 @@
+{
+  "product_head": "dde3ea2e9ba87f139281fb7e87aad7335e73853d",
+  "checks": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "stdout_sha256": "6837b522a87f9251b5bee131cc8d8c0780a5cc9a6c4a6443e2ba68327aafe2df"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "stdout_sha256": "771f5415a1c39888fa9a0a87954cf5489600396096579d52c2cff8ecb66c9852"
+    },
+    {
+      "command": "pnpm typecheck (Node 22.20.0)",
+      "exit": 0,
+      "stdout_sha256": "6ad442e32185facfd7923a8504b23de25ea437c6f9426de027d1e98b6154e972",
+      "output": "\n> vector@0.4.1 typecheck <checkout>\n> tsc -b\n\n"
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "stdout_sha256": "e9449c90d70fc1c9c5ef1525f62fb44ec19771aa368578fb762af1b1f950630a"
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "stdout_sha256": "3716f92988b402c02b53b544ede94f0c58c03d60c1f46382f9cf09d2c68b4d5c"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write CURR-009",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check CURR-009 (immediately after generation)",
+      "exit": 0
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "note": "Generated views restored whole from origin/main after their positive generation/check; source lock generated last."
+}

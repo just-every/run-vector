@@ -1,0 +1,17 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/fv-vector-stream-1",
+  "head": "dde3ea2e9ba87f139281fb7e87aad7335e73853d",
+  "command": "python3 $HOME/rer-consolidation/.tools/cloud-push.py origin cloud/fv-vector-stream-1",
+  "attempts": 1,
+  "exit": 0,
+  "status": "PUSH_OK",
+  "candidate_identity_scan": {
+    "command": "git log origin/main..HEAD --format=\"%an <%ae>%n%cn <%ce>%n%(trailers:only,unfold)\"",
+    "commits": 1,
+    "author": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "committer": "Run Edit Run fleet <fleet@runeditrun.com>",
+    "trailers": []
+  },
+  "working_tree": "clean"
+}
