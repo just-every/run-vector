@@ -1,0 +1,20 @@
+{
+  "tag": "sd-vector-security-team-perms-1",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-security-team-perms-1",
+  "head": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "origin_main": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "is_shallow": false,
+  "remote_main_advertised": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "hierarchy_commit": "569212d1",
+  "hierarchy_is_ancestor_of_main": false,
+  "read_only_context_ref": "origin/cloud/sd-vector-c-f205-fix2-pc1",
+  "read_only_context_head": "60b465d927881a05b01253df7743e3ac8c0456e9",
+  "hierarchy_files_on_main": [],
+  "product_commits": 0,
+  "product_pushes": 0,
+  "github_api_calls": 0,
+  "pr": null,
+  "ci_runs": [],
+  "clause_status_changes": []
+}

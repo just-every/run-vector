@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-security-team-perms-1",
+  "repository": "just-every/run-vector",
+  "status": "BLOCKED",
+  "blocker": "TEAM-006 sub-team implementation absent from required origin/main",
+  "product_head": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "branch": "cloud/sd-vector-security-team-perms-1",
+  "product_worktree_clean": true,
+  "product_commits": 0,
+  "product_pushes": 0,
+  "pr": null,
+  "ci_runs": [],
+  "github_api_calls": 0,
+  "setup_exit": 0,
+  "probe": {
+    "root_member": 403,
+    "root_owner": 200,
+    "native_child_creation_owner": 400,
+    "bearer_child_creation_owner": 400,
+    "native_hierarchy_owner": 404,
+    "parent_team_id_column": false,
+    "child_permission_member": null,
+    "child_permission_owner": null
+  },
+  "tests": {
+    "full": {
+      "exit": 0,
+      "node": "24.19.0",
+      "passed": 7,
+      "failed": 0,
+      "source_skips_added": 0
+    },
+    "pinned_touched": {
+      "exit": 0,
+      "node": "22.20.0",
+      "passed": 3,
+      "failed": 0,
+      "unselected": 4,
+      "filter": "fleet diagnostic|TEAM-007 TEAM-008|TEAM-005 ROLE-009"
+    },
+    "initial_typecheck_exit": 0,
+    "pinned_typecheck_exit": 0
+  },
+  "mechanical": [
+    {
+      "command": "node scripts/contract-docs.mjs write",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check",
+      "exit": 0
+    },
+    {
+      "command": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+      "exit": 0
+    },
+    {
+      "command": "git add -u",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "git status --short",
+      "output": "?? tests/worker/fleet-team-permissions-probe.test.ts\n"
+    }
+  ],
+  "final_checks": [
+    {
+      "command": "pnpm sources:check",
+      "exit": 0
+    },
+    {
+      "command": "git diff --exit-code origin/main",
+      "exit": 0
+    },
+    {
+      "command": "git diff --cached --exit-code",
+      "exit": 0
+    }
+  ],
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_changes": [],
+  "cleanup": "temporary probe source retained in packet; clone and node_modules will be removed after report publication"
+}

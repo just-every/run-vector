@@ -1,0 +1,94 @@
+{
+  "files": [
+    {
+      "blob": "03e595557692fc6c25b7f6f5d50ce089308ccdd5",
+      "bytes": 545,
+      "path": "MECHANICAL.json",
+      "sha256": "234a4bedb7de7e7707386b43ca06867a3d70a76407d9fcf2ec84f19f44e66ba9"
+    },
+    {
+      "blob": "53f083a0b5dc679039af4fca658ca2cbd6eb2aae",
+      "bytes": 4602,
+      "path": "PINNED-TEST-RESULTS.json",
+      "sha256": "24122cd36528c907156a6b64fd6d31cbc50f93d61e9c627e5c9c72140896310c"
+    },
+    {
+      "blob": "6e458f82b8b610e28bd126244b46d2dd47ace0cc",
+      "bytes": 3327,
+      "path": "PINNED-TESTS.log",
+      "sha256": "96c2aeea95729fc155effdbe956459088da74c00d240130aead484c20b667b7a"
+    },
+    {
+      "blob": "fbf2639eecb4f9f3f43699687742c9b6fd662b9a",
+      "bytes": 114,
+      "path": "PINNED-TYPECHECK.log",
+      "sha256": "3864f9717d56952e73585568a40252524f959d36bd8a03c4cb459ebcd2b81d94"
+    },
+    {
+      "blob": "ef1da970425fc6552c50d50afb3ef341d416ef88",
+      "bytes": 433,
+      "path": "PROBE.log",
+      "sha256": "2c5bf18780023fb58805e2e7e55f8c638404d393246d667d7562994c6b8e56fb"
+    },
+    {
+      "blob": "44447939a7413795ee548864f10a74d57668b7bb",
+      "bytes": 3472,
+      "path": "PROBE.test.ts",
+      "sha256": "f6402055908ef7ce76443422ba6337e3f7f049e55a9bc65db6d294b3754cd5de"
+    },
+    {
+      "blob": "cfc728bd5e874c65044e0237d24961033c790361",
+      "bytes": 735,
+      "path": "PROVENANCE.json",
+      "sha256": "89994b2fa484cb719656b0a2322b27dc49498adcf84267f959141df3d9f1d0a2"
+    },
+    {
+      "blob": "42f86f573a05c26d9e05bc677e6614bc8906ebce",
+      "bytes": 2400,
+      "path": "RECEIPT.json",
+      "sha256": "b85c6fee1fc5d5b1338b7085a388e045291c68d4dc1127cc314c11fabb90c367"
+    },
+    {
+      "blob": "35058f83f793ee96ca02d3eeae9c163db67a3bd7",
+      "bytes": 10225,
+      "path": "REPORT.md",
+      "sha256": "fd54fbde05f3efc6d146d53a657597d91756a083054d1bfa721f338b64ad1f8d"
+    },
+    {
+      "blob": "b490e8b2dc7549b0c780fe9a0eb9ee33b48a3940",
+      "bytes": 4666,
+      "path": "TEST-RESULTS.json",
+      "sha256": "7890914ab18dda1dea49abb6fcabc0c655d39892edfc758eb3b66f1b75db75d6"
+    },
+    {
+      "blob": "fe1bf4bf0be7ff11a4d1c7f64226eaef0d3ec305",
+      "bytes": 3342,
+      "path": "TESTS.log",
+      "sha256": "0e4f6303ea9a76adc905a076b7cf43e994aaf50dfd807893d8a62a445a7c78cb"
+    },
+    {
+      "blob": "ca8438d2a98380eea068365afed0745a420a095b",
+      "bytes": 220,
+      "path": "TYPECHECK.log",
+      "sha256": "1bdc5bd370ef21b36beb48e06839825e65aa727979450d375f79886ac3048d6e"
+    },
+    {
+      "blob": "289b76e36cf941f635e18adbd1e1630d220cf46d",
+      "bytes": 327,
+      "path": "VIEWS-CHECK.log",
+      "sha256": "ff028abb476b2a64203fea3425b7521a89fdee147188aa9a203074f72bb87fcc"
+    },
+    {
+      "blob": "01e35ede974427eef7dac01f3b1f4a9370ed7418",
+      "bytes": 329,
+      "path": "VIEWS-WRITE.log",
+      "sha256": "a319271b9bc8380dc050f515d9f633ec030e0fd5198da45d05b9af7abef24280"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-security-team-perms-1",
+  "product_head": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "ref": "refs/heads/evidence/sd-vector-security-team-perms-1",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-security-team-perms-1"
+}
