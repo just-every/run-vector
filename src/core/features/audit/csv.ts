@@ -7,7 +7,7 @@ function cell(value: string | null) {
   return '"' + safe.replaceAll('"', '""') + '"';
 }
 export function auditCsv(entries: AuditEntry[]) {
-  return [['id', 'actor_reference', 'actor_kind', 'actor_name', 'time', 'action', 'subject_reference'],
-    ...entries.map(e => [e.id, e.actorRef, e.actorKind, e.actorName, e.at, e.action, e.subjectRef])]
+  return [['id', 'actor_reference', 'actor_kind', 'actor_name', 'time', 'action', 'subject_reference', 'method'],
+    ...entries.map(e => [e.id, e.actorRef, e.actorKind, e.actorName, e.at, e.action, e.subjectRef, e.method ?? null])]
     .map(row => row.map(cell).join(',')).join('\r\n') + '\r\n';
 }

@@ -25,6 +25,8 @@ export const operators = sqliteTable('operators', {
   name: text('name').notNull(),
   email: text('email').notNull(),
   removedAt: text('removed_at'),
+  suspendedAt: text('suspended_at'),
+  suspendedBy: text('suspended_by'),
   role: text('role', { enum: ['owner', 'admin', 'member', 'guest', 'viewer'] }).notNull().default('owner'),
   ...timestamps,
 }, (table) => [uniqueIndex('operators_email_idx').on(table.email)])

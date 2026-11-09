@@ -109,6 +109,10 @@
     {
       "buyerSteps": "Apply after all earlier migrations through unchanged 0124_team_cycles_enabled.sql. Adds portable native issue template definitions; applying a template creates independent issues. Retain additive schema and created issues on compatible-source rollback.",
       "id": "0125_issue_templates.sql"
+    },
+    {
+      "id": "0139_sub_teams.sql",
+      "buyerSteps": "Apply after all earlier migrations through unchanged 0138_member_suspension.sql without rewriting applied SQL. Adds portable team hierarchy, inheritance choices and materialized workflow identities; existing teams remain independent. Retain the additive schema and domain history on compatible-source rollback."
     }
   ],
   "breaking": false,

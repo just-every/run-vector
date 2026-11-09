@@ -811,7 +811,9 @@
     "removed_at",
     "created_at",
     "updated_at",
-    "role"
+    "role",
+    "suspended_at",
+    "suspended_by"
   ],
   "project_activity": [
     "id",
@@ -2435,5 +2437,16 @@
   ],
   "automation_rule_restore_holds": [
     "rule_id"
+  ],
+  "member_lifecycle_events": [
+    "id",
+    "operator_id",
+    "workspace_id",
+    "actor_operator_id",
+    "successor_operator_id",
+    "action",
+    "method",
+    "assignments",
+    "created_at"
   ]
 }

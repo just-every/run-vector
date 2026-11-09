@@ -64,7 +64,7 @@ it("[OPS-004 BASE-DATA-003] a body-delayed upload is denied after removal before
   expect(await retainedData()).toEqual(before);
   expect((await env.FILES.list()).objects).toEqual(objects.objects);
 }, 20000);
-it("[OPS-004 BASE-DATA-003] removal cannot finish across an authorized R2 upload; after settlement it anonymizes retained content", async () => {
+it("[OPS-004 BASE-DATA-003] removal cannot finish across an authorized R2 upload; after settlement it keeps the author on retained content", async () => {
   const f = await fixture(),
     effect = holdEffect("put");
   const pending = app.request(
@@ -103,7 +103,7 @@ it("[OPS-004 BASE-DATA-003] removal cannot finish across an authorized R2 upload
     )
       .bind(f.member)
       .first())!.n,
-  ).toBe(0);
+  ).toBeGreaterThan(0);
 }, 20000);
 it("[OPS-004 BASE-DATA-003] removal cannot finish across a committed R2 deletion; cleanup and history settle exactly once", async () => {
   const f = await fixture();
@@ -142,9 +142,9 @@ it("[OPS-004 BASE-DATA-003] removal cannot finish across a committed R2 deletion
   expect((await f.remove()).status).toBe(200);
   expect(
     (await env.DB.prepare(
-      "SELECT count(*) AS n FROM issue_activity WHERE kind='file.deleted' AND json_extract(next_value_json,'$.id')=? AND actor_operator_id IS NULL",
+      "SELECT count(*) AS n FROM issue_activity WHERE kind='file.deleted' AND json_extract(next_value_json,'$.id')=? AND actor_operator_id=?",
     )
-      .bind(id)
+      .bind(id, f.member)
       .first())!.n,
   ).toBe(1);
   expect(
@@ -211,7 +211,7 @@ it("[OPS-004 BASE-DATA-003] an upload accepted after removal preflight prevents 
   const { beforeCommit } = await import("./removal-interleaving");
   let upload: Promise<Response> | undefined, before: unknown;
   const db = beforeCommit(
-    (sql) => sql.includes("INSERT INTO operator_removals"),
+    (sql) => sql.includes("INSERT INTO member_lifecycle_events"),
     async () => {
       upload = app.request(
         origin + "/api/issues/" + f.issue.identifier + "/files",
@@ -245,7 +245,7 @@ it("[OPS-004 BASE-DATA-003] an upload accepted after removal preflight prevents 
     ).toBe(200);
     expect(
       await env.DB.prepare(
-        "SELECT id FROM operator_removals WHERE operator_id=?",
+        "SELECT id FROM member_lifecycle_events WHERE operator_id=?",
       )
         .bind(f.member)
         .first(),

@@ -41,7 +41,7 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
   return [
     db
       .prepare(
-        `SELECT c.id,c.parent_comment_id AS parentId,c.body,${commentVersionSql} AS version,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE((SELECT a.actor_name FROM issue_activity a WHERE a.issue_id=c.issue_id AND a.kind='comment.created' AND json_extract(a.next_value_json,'$.id')=c.id ORDER BY a.created_at DESC,a.id DESC LIMIT 1),c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
+        `SELECT c.id,c.parent_comment_id AS parentId,c.body,${commentVersionSql} AS version,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,CASE WHEN o.suspended_at IS NOT NULL AND c.imported_author_name IS NULL THEN o.name ELSE COALESCE((SELECT a.actor_name FROM issue_activity a WHERE a.issue_id=c.issue_id AND a.kind='comment.created' AND json_extract(a.next_value_json,'$.id')=c.id ORDER BY a.created_at DESC,a.id DESC LIMIT 1),c.imported_author_name,o.name) END AS actor,c.imported_author_name IS NOT NULL AS imported,
  c.resolved_at AS resolvedAt,r.name AS resolvedBy,c.description_anchor AS anchor,
  (c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit,
  (c.deleted_at IS NULL AND ((c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL) OR ${moderatorSql})) AS canDelete

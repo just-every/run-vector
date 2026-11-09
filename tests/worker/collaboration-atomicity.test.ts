@@ -74,7 +74,7 @@ contractWith(
 contractWith(
   it,
   "OPS-004 BASE-DATA-003 ISSUE-010 NOTIFY-006",
-  "actor erasure anonymizes retained inbox and mail while issue erasure cascades collaboration records",
+  "suspension keeps named inbox and mail history while issue erasure cascades collaboration records",
   async () => {
     const f = await collaborationFixture();
     const response = await f.any(f.bobCookie, "/issues", "POST", {
@@ -84,18 +84,18 @@ contractWith(
     });
     expect(response.status).toBe(201);
     const issue = (await response.json()) as { id: string; identifier: string };
+    const bobName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.bob).first<string>('name');
     await removeOperator(env.DB, f.owner, f.bob);
     const n = await env.DB.prepare(
       "SELECT actor_id,actor_name FROM notifications WHERE issue_id=?",
     )
       .bind(issue.id)
       .first();
-    expect(n).toEqual({ actor_id: null, actor_name: "Removed operator" });
+    expect(n).toEqual({ actor_id: f.bob, actor_name: bobName });
     const mail = await env.DB.prepare(
       "SELECT text FROM (SELECT json_extract(message,'$.deliveryId') AS delivery_id,json_extract(message,'$.to[0]') AS recipient,json_extract(message,'$.subject') AS subject,json_extract(message,'$.text') AS text,created_at FROM rer_mail_development_outbox WHERE json_extract(message,'$.text') LIKE '%'||char(10)||'Sign in to view this issue.')",
     ).first<{ text: string }>();
-    expect(mail!.text).toContain("By: Removed operator");
-    expect(mail!.text).not.toContain("By: bob");
+    expect(mail!.text).toContain("By: "+bobName);
     const audit = (
       await env.DB.prepare("SELECT * FROM notification_mail_audit").all()
     ).results;

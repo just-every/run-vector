@@ -9,7 +9,7 @@ export async function auditAuthority(db: D1Database, actor: string) {
 }
 
 /** Both the view and CSV run this exact query. No limit silently drops rows.
- * Names are resolved from active people only; subjects always use opaque IDs. */
+ * Names are resolved from retained people; subjects always use opaque IDs. */
 export async function readAudit(db: D1Database, actor: string, query: AuditQuery) {
   const workspace = await auditAuthority(db, actor);
   const through = query.through ?? await db.prepare('SELECT COALESCE(max(rowid),0) AS n FROM audit_records WHERE workspace_id=?').bind(workspace).first<number>('n') ?? 0;
@@ -22,10 +22,12 @@ export async function readAudit(db: D1Database, actor: string, query: AuditQuery
     [query.to && new Date(query.to).toISOString(), 'a.created_at<=?'],
   ]) if (value) { where.push(clause!); values.push(value); }
   const rows = await db.prepare(`SELECT a.id,a.actor_reference AS actorRef,a.actor_kind AS actorKind,
-    COALESCE(agentActivity.actor_name,CASE WHEN o.removed_at IS NULL THEN o.name END) AS actorName,a.action,a.subject_id AS subjectRef,a.created_at AS at
+    COALESCE(agentActivity.actor_name,CASE WHEN o.removed_at IS NULL OR o.suspended_at IS NOT NULL THEN o.name END) AS actorName,a.action,a.subject_id AS subjectRef,a.created_at AS at,
+    lifecycle.method AS method
     FROM audit_records a LEFT JOIN vector_auth_operators m ON a.actor_reference='auth:'||m.auth_id
     LEFT JOIN issue_activity agentActivity ON a.id='agent:'||agentActivity.id
     LEFT JOIN operators o ON o.id=COALESCE(a.actor_operator_id,m.operator_id) AND o.workspace_id=a.workspace_id
+    LEFT JOIN member_lifecycle_events lifecycle ON lifecycle.id=a.id AND lifecycle.workspace_id=a.workspace_id
     WHERE ${where.join(' AND ')} ORDER BY a.created_at DESC,a.id DESC`).bind(...values).all();
   // Recheck current role before releasing any bytes after an asynchronous read.
   if (await auditAuthority(db, actor) !== workspace)

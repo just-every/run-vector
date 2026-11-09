@@ -693,6 +693,11 @@ receiving clauses.
 
 ### Sub-team configuration
 
+Apply `migrations/core/0139_sub_teams.sql` after unchanged
+`0138_member_suspension.sql`. Existing teams remain independent with their own
+workflow and permissions. Retain the additive hierarchy columns and workflow
+identities on compatible-source rollback.
+
 Create a sub-team with an optional `parentTeamId` on `POST /api/v1/teams`.
 The new team retains its own prefix and membership. It starts with inherited
 workflow and permission values. Creation requires the existing team-creation

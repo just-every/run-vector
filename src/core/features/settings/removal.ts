@@ -1,39 +1,45 @@
-import { notificationRemovalStatements } from '../notifications/removal';
-import { anonymizeTitleEvents } from '../agent-door/title-event';
-import { anonymizeActivityStatements } from "./removal-history";
 import { pendingOperatorFiles } from "./removal-files";
 import { assertRemovalAllowed, removalId, SettingsError } from "./repository";
 
-/** Eligibility, revocation, transfer, anonymisation and activity share one D1 transaction. */
+/** Eligibility, revocation, transfer, suspension and activity share one D1 transaction. */
 export async function removeOperator(
   db: D1Database,
   actor: string,
   target: string,
   now = new Date(),
+  assignments: "keep" | "unassign" = "unassign",
 ) {
   const access = await assertRemovalAllowed(db, actor, target);
   const id = removalId(),
     at = now.toISOString();
-  const receipt = "EXISTS(SELECT 1 FROM operator_removals WHERE id=?)";
+  const receipt = "EXISTS(SELECT 1 FROM member_lifecycle_events WHERE id=?)";
   const successor =
-    "(SELECT successor_operator_id FROM operator_removals WHERE id=?)";
-  const retainedActor = actor === target ? null : actor;
+    "(SELECT successor_operator_id FROM member_lifecycle_events WHERE id=?)";
+  const retainedActor = actor;
   const statements: D1PreparedStatement[] = [
     db
       .prepare(
-        `INSERT INTO operator_removals(id,operator_id,workspace_id,actor_operator_id,successor_operator_id,created_at)
+        `INSERT INTO member_lifecycle_events(id,operator_id,workspace_id,actor_operator_id,successor_operator_id,action,method,assignments,created_at)
       SELECT ?,target.id,target.workspace_id,?,
         CASE WHEN target.id<>actor.id THEN actor.id ELSE
-          (SELECT id FROM operators WHERE workspace_id=target.workspace_id AND id<>target.id AND removed_at IS NULL AND role='owner' ORDER BY created_at,id LIMIT 1) END,?
+          (SELECT id FROM operators WHERE workspace_id=target.workspace_id AND id<>target.id AND removed_at IS NULL AND role='owner' ORDER BY created_at,id LIMIT 1) END,?,?,?,?
       FROM operators target JOIN operators actor ON actor.workspace_id=target.workspace_id
       JOIN workspace_installation w ON w.workspace_id=target.workspace_id
       WHERE target.id=? AND actor.id=? AND target.removed_at IS NULL AND actor.removed_at IS NULL
+        AND (actor.id=target.id OR actor.role='owner' OR actor.role='admin' AND target.role IN('member','guest','viewer'))
         AND NOT ${pendingOperatorFiles}
         AND w.setup_operator_id IS NOT NULL AND (w.setup_operator_id<>target.id OR actor.id=target.id)
         AND EXISTS(SELECT 1 FROM operators WHERE workspace_id=target.workspace_id AND id<>target.id AND removed_at IS NULL)
-      ON CONFLICT(operator_id) DO NOTHING`,
+`,
       )
-      .bind(id, retainedActor, at, target, actor),
+      .bind(id, retainedActor, actor === target ? "left" : "suspended", actor === target ? "self" : "settings", assignments, at, target, actor),
+    // Existing archive consumers and token-revocation audit producers read this
+    // current offboarding receipt. The lifecycle ledger retains every cycle.
+    db.prepare(`INSERT INTO operator_removals(id,operator_id,workspace_id,actor_operator_id,successor_operator_id,created_at)
+      SELECT id,operator_id,workspace_id,actor_operator_id,successor_operator_id,created_at
+      FROM member_lifecycle_events WHERE id=?
+      ON CONFLICT(operator_id) DO UPDATE SET id=excluded.id,workspace_id=excluded.workspace_id,
+        actor_operator_id=excluded.actor_operator_id,successor_operator_id=excluded.successor_operator_id,created_at=excluded.created_at`).bind(id),
     db
       .prepare(
         `UPDATE operator_sessions SET revoked_at=?,updated_at=? WHERE operator_id=? AND ${receipt}`,
@@ -50,34 +56,29 @@ export async function removeOperator(
     db
       .prepare(
         `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
-      SELECT substr(?,1,10)||upper(hex(randomblob(8))),i.id,?,'issue.operator_removed',json_object('assigneeOperatorId',NULL),json_object('assigneeOperatorId',NULL),?,?
+      SELECT substr(?,1,10)||upper(hex(randomblob(8))),i.id,?,'issue.operator_removed',json_object('assigneeOperatorId',?),json_object('assigneeOperatorId',NULL),?,?
       FROM issues i JOIN workflow_statuses s ON s.id=i.status_id
-      WHERE i.assignee_operator_id=? AND s.category NOT IN ('completed','canceled','duplicate') AND ${receipt}`,
+      WHERE i.assignee_operator_id=? AND s.category NOT IN ('completed','canceled','duplicate') AND ?='unassign' AND ${receipt}`,
       )
-      .bind(id, retainedActor, at, at, target, id),
+      .bind(id, retainedActor, target, at, at, target, assignments, id),
     db
       .prepare(
         `UPDATE issues SET assignee_operator_id=NULL,version=version+1,updated_at=?
-      WHERE assignee_operator_id=? AND status_id IN(SELECT id FROM workflow_statuses WHERE category NOT IN ('completed','canceled','duplicate')) AND ${receipt}`,
+      WHERE assignee_operator_id=? AND status_id IN(SELECT id FROM workflow_statuses WHERE category NOT IN ('completed','canceled','duplicate')) AND ?='unassign' AND ${receipt}`,
       )
-      .bind(at, target, id),
+      .bind(at, target, assignments, id),
     db
       .prepare(
         `INSERT INTO project_activity(id,project_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
-      SELECT substr(?,1,10)||upper(hex(randomblob(8))),id,?,'project.lead_transferred',json_object('leadOperatorId',NULL),json_object('leadOperatorId',${successor}),?,?
+      SELECT substr(?,1,10)||upper(hex(randomblob(8))),id,?,'project.lead_transferred',json_object('leadOperatorId',?),json_object('leadOperatorId',${successor}),?,?
       FROM projects WHERE lead_operator_id=? AND ${receipt}`,
       )
-      .bind(id, retainedActor, id, at, at, target, id),
+      .bind(id, retainedActor, target, id, at, at, target, id),
     db
       .prepare(
         `UPDATE projects SET lead_operator_id=${successor},updated_at=? WHERE lead_operator_id=? AND ${receipt}`,
       )
       .bind(id, at, target, id),
-    db
-      .prepare(
-        `DELETE FROM saved_views WHERE owner_operator_id=? AND is_shared=0 AND ${receipt}`,
-      )
-      .bind(target, id),
     // Resolve collisions against both owners, including earlier rows transferred in this batch.
     db
       .prepare(
@@ -92,46 +93,26 @@ export async function removeOperator(
       WHERE owner_operator_id=? AND is_shared=1 AND ${receipt}`,
       )
       .bind(target, id, target, id, id, at, target, id),
-    db
-      .prepare(
-        `DELETE FROM list_preferences WHERE operator_id=? AND ${receipt}`,
-      )
-      .bind(target, id),
-    db.prepare(`DELETE FROM team_join_requests WHERE requester_id=? AND ${receipt}`).bind(target,id),
-    db.prepare(`UPDATE team_join_requests SET decided_by=NULL WHERE decided_by=? AND ${receipt}`).bind(target,id),
-    // ROLE-007: a team left without an owner is managed by Admins until one is named.
-    db
-      .prepare(`DELETE FROM team_members WHERE operator_id=? AND ${receipt}`)
-      .bind(target, id),
-    db
-      .prepare(`DELETE FROM team_departures WHERE operator_id=? AND ${receipt}`)
-      .bind(target, id),
-    db
-      .prepare(
-        `UPDATE audit_records SET actor_operator_id=NULL WHERE actor_operator_id=? AND ${receipt}`,
-      )
-      .bind(target, id),
-    db
-      .prepare(
-        `UPDATE operator_removals SET actor_operator_id=NULL WHERE actor_operator_id=? AND ${receipt}`,
-      )
-      .bind(target, id),
   ];
-  statements.push(anonymizeTitleEvents(db, target, id), ...anonymizeActivityStatements(db, target, id), ...notificationRemovalStatements(db,target,id));
+  statements.push(db.prepare(`DELETE FROM team_join_requests WHERE requester_id=? AND ${receipt}`).bind(target,id));
+  // Clear recipient custody and active subscriptions while retaining personal
+  // settings, saved views, attribution and terminal delivery receipts.
+  // Active-recipient predicates also fence future admission.
+  for (const table of ["issue_reminders", "notifications", "document_notifications", "project_notifications", "notification_candidates", "notification_deliveries"]) {
+    statements.push(db.prepare(`DELETE FROM ${table} WHERE recipient_id=? AND ${receipt}`).bind(target, id));
+  }
+  for (const table of ["document_followers", "subject_subscriptions", "operator_personal_time"]) {
+    statements.push(db.prepare(`DELETE FROM ${table} WHERE operator_id=? AND ${receipt}`).bind(target, id));
+  }
   statements.push(
-    // Non-null legacy comment/decision/file foreign keys retain an anonymous tombstone.
-    db
-      .prepare(
-        `UPDATE operators SET name='Removed operator',email=id||'@removed.invalid',removed_at=?,updated_at=?
-      WHERE id=? AND ${receipt}`,
-      )
-      .bind(at, at, target, id),
-    db
-      .prepare(
-        `INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)
-      SELECT ?,?,'operator.removed','Removed operator',?,?,?,?,'person',? WHERE ${receipt}`,
-      )
-      .bind(id, retainedActor, target, at, at, access.workspace_id, `person:${actor}`, id),
+    db.prepare(`UPDATE operators SET removed_at=?,suspended_at=?,suspended_by=?,updated_at=? WHERE id=? AND ${receipt}`)
+      .bind(at, at, actor, at, target, id),
+    db.prepare(`INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)
+      SELECT ?,?,?,?,?,?,?,?,'person',? WHERE ${receipt}`)
+      .bind(id, actor, actor === target ? "operator.left" : "operator.suspended", target, target, at, at, access.workspace_id, `person:${actor}`, id),
+    db.prepare(`INSERT INTO administration_audit_details(audit_id,previous_value_json,next_value_json)
+      SELECT ?,json_object('state','active'),json_object('state','suspended','method',?,'assignments',?) WHERE ${receipt}`)
+      .bind(id, actor === target ? "self" : "settings", assignments, id),
   );
   let result: D1Result[];
   try {
@@ -152,6 +133,7 @@ export async function removeOperator(
   }
   return {
     removed: true,
+    state: "suspended" as const,
     signedOut: actor === target,
     workspaceId: access.workspace_id,
   };
