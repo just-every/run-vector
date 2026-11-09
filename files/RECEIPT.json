@@ -1,0 +1,478 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix3",
+  "candidate_required": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+  "candidate_actual": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+  "fresh_main_merged": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "shallow": "false",
+  "clone_filter": "blob:none",
+  "candidate_commits": [
+    "3503a75381109b411d3cac78293b1bbd28d3c82a Run Edit Run fleet <fleet@runeditrun.com> | Run Edit Run fleet <fleet@runeditrun.com>",
+    "",
+    "cf2bb091b0e6168b3a3924f31d1ef812e5be3b31 Run Edit Run fleet <fleet@runeditrun.com> | Run Edit Run fleet <fleet@runeditrun.com>",
+    "",
+    "69464a9b035333e4b9bcbdbd6d2ceed672c3a378 Run Edit Run fleet <fleet@runeditrun.com> | Run Edit Run fleet <fleet@runeditrun.com>",
+    "",
+    "569212d1b2eb44a7ebb45eec4ee5b0a25d025572 Run Edit Run fleet <fleet@runeditrun.com> | Run Edit Run fleet <fleet@runeditrun.com>"
+  ],
+  "contract_changes_since_candidate": "",
+  "contract_counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "contract_counts_after": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clauses_promoted": [],
+  "repro": {
+    "runtime": "actual createServerApp Worker + migrated local D1 + native sessions",
+    "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts -t 'child permission door'",
+    "exit": 1,
+    "child_member_status": 200,
+    "root_member_status": 403,
+    "hierarchy_member_status": 403,
+    "expected_regression_failure": true
+  },
+  "audit_repro": {
+    "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts -t 'inheritance cannot bypass'",
+    "exit": 1,
+    "inherited_reparent_member_status": 200,
+    "expected_regression_failure": true
+  },
+  "typecheck": {
+    "command": "timeout 300 pnpm typecheck",
+    "exit": 0
+  },
+  "mechanical": {
+    "views_write": {
+      "command": "node scripts/contract-docs.mjs write TEAM-006",
+      "exit": 0
+    },
+    "views_check": {
+      "command": "node scripts/contract-docs.mjs check TEAM-006",
+      "exit": 0
+    },
+    "views_restored": "git checkout origin/main -- ACCEPTANCE.md docs/CLAIMS.md",
+    "lock": {
+      "command": "pnpm sources:lock",
+      "exit": 0
+    },
+    "lock_check": {
+      "command": "pnpm sources:check",
+      "exit": 0
+    }
+  },
+  "product_head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+  "local_tests": {
+    "command": "timeout 420 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/role-matrix.test.ts",
+    "exit": 0,
+    "files_passed": 2,
+    "tests_passed": 11,
+    "duration_seconds": 237.48
+  },
+  "probe": {
+    "Member": 403,
+    "Owner": 200,
+    "permission_keys": [
+      "settings",
+      "planning"
+    ],
+    "native_and_api_inheritance_member": 403,
+    "native_and_api_inheritance_owner": 200
+  },
+  "product_push": {
+    "branch": "cloud/sd-vector-c-f205-fix3",
+    "success": true,
+    "attempt": 1
+  },
+  "pr_url": null,
+  "initial_verify": {
+    "run_id": 42542996717,
+    "head": "d5b49dd4127152146f2e4bf4b668a2da430e4ed5",
+    "status": "completed",
+    "url": "https://github.com/just-every/run-vector/actions/runs/42542996717",
+    "conclusion": "failure"
+  },
+  "delegation_repro": {
+    "head": "d5b49dd4127152146f2e4bf4b668a2da430e4ed5",
+    "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts -t 'inheritance cannot bypass'",
+    "exit": 1,
+    "member_status": 200,
+    "expected_regression_failure": true
+  },
+  "final_local_tests": {
+    "command": "timeout 420 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/role-matrix.test.ts",
+    "test_exit": 0,
+    "files_passed": 2,
+    "tests_passed": 11,
+    "duration_seconds": 234.79,
+    "terminal_session_exit": 1,
+    "terminal_note": "The shell explicitly reported tests exit=0 and Vitest reported 11 passed; tool session final exit was 1. No assertion or test process failure appeared."
+  },
+  "final_typecheck": {
+    "command": "timeout 300 pnpm typecheck",
+    "exit": 0
+  },
+  "final_build": {
+    "command": "timeout 600 npx -y @runeditrun/rer build",
+    "runner": "cloud_run",
+    "build_exit": 0,
+    "terminal_session_exit": 1,
+    "note": "CLI reports build complete exit 0 and shell captured build exit=0; enclosing tool session reports 1, as with the final test session."
+  },
+  "mechanical_final": {
+    "views_write": 0,
+    "views_check": 0,
+    "views_restored_from": "origin/main",
+    "sources_lock": 0,
+    "sources_check": 0
+  },
+  "initial_verify_jobs_observed": {
+    "jobs": [
+      {
+        "conclusion": "success",
+        "failed_steps": [],
+        "id": 128921855525,
+        "name": "plan",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "failed_steps": [],
+        "id": 128921901097,
+        "name": "build",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "failed_steps": [],
+        "id": 128922112552,
+        "name": "shards (core-runtime, true, true, true)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "failure",
+        "failed_steps": [
+          {
+            "conclusion": "failure",
+            "name": "Verify the independent shard"
+          }
+        ],
+        "id": 128922112557,
+        "name": "shards (hosted-artifact, true, true, false)",
+        "status": "completed"
+      },
+      {
+        "conclusion": null,
+        "failed_steps": [],
+        "id": 128922112558,
+        "name": "shards (portability, true, true, true)",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "failure",
+        "failed_steps": [
+          {
+            "conclusion": "failure",
+            "name": "Verify the independent shard"
+          }
+        ],
+        "id": 128922112570,
+        "name": "shards (administration, true, true, true)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "failure",
+        "failed_steps": [
+          {
+            "conclusion": "failure",
+            "name": "Verify the independent shard"
+          }
+        ],
+        "id": 128922112578,
+        "name": "shards (imports, true, true, true)",
+        "status": "completed"
+      },
+      {
+        "conclusion": null,
+        "failed_steps": [],
+        "id": 128922112623,
+        "name": "shards (collaboration, true, true, true)",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "success",
+        "failed_steps": [],
+        "id": 128922112651,
+        "name": "shards (core-runtime-planning, true, true, true)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "failed_steps": [],
+        "id": 128922112700,
+        "name": "shards (worker-2, true, true, true)",
+        "status": "completed"
+      }
+    ],
+    "total_count": 10
+  },
+  "github_calls_used": 10,
+  "strengthened_noop_tests": {
+    "command": "timeout 240 pnpm exec vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts",
+    "exit": 0,
+    "tests_passed": 6,
+    "duration_seconds": 34.17
+  },
+  "strengthened_noop_typecheck": {
+    "command": "timeout 300 pnpm typecheck",
+    "exit": 0
+  },
+  "local_integration_before": {
+    "command": "pnpm integration:check",
+    "exit": 1,
+    "failure": "Stale integration management/integration/deployment-spec.json"
+  },
+  "ci_spec_regeneration_authorization": {
+    "run": 42542996717,
+    "job": 128922112557,
+    "file": "management/integration/deployment-spec.json",
+    "log_file": "CI-failed-hosted-artifact-128922112557.log",
+    "archive_exit": 0
+  },
+  "final_generators": {
+    "deployment_spec": {
+      "command": "pnpm integration:sync",
+      "exit": 0,
+      "verify_run": 42542996717,
+      "verify_job": 128922112557
+    },
+    "deployment_check": {
+      "command": "pnpm integration:check",
+      "exit": 0
+    },
+    "sdk_regenerated": false,
+    "contract_write": 0,
+    "contract_check": 0,
+    "views_restored_from": "origin/main",
+    "source_lock": 0,
+    "source_check": 0
+  },
+  "ci_admin_failure": {
+    "job": 128922112570,
+    "archive_exit": 0,
+    "width": 390,
+    "step": "TEAM-005 cycle settings journey",
+    "error": "apiRequestContext.fetch: socket hang up",
+    "request": "PUT /api/settings/teams/:id/permissions",
+    "source": "tests/e2e/team-cycles-journey.mjs:104",
+    "assertion_mismatch_observed": false
+  },
+  "ci_import_failure": {
+    "job": 128922112578,
+    "archive_exit": 0,
+    "test": "Signed Slack Events create one issue as the linked member and refuse invalid intake",
+    "source": "tests/worker/slack-thread-upgrade.ts:18",
+    "difference": "New sub-team default columns missing from expected pre-upgrade rows",
+    "fix": "Add exact declared team and workflow-status migration defaults to expected rows; retain full deep equality for every existing row, empty new Slack table assertions and foreign-key check."
+  },
+  "upgrade_fixture_tests": {
+    "command": "timeout 360 pnpm exec vitest run --config vitest.config.ts tests/worker/outbound-broken-destination.test.ts",
+    "exit": 0,
+    "tests_passed": 8,
+    "duration_seconds": 41.66
+  },
+  "upgrade_fixture_typecheck": {
+    "command": "timeout 300 pnpm typecheck",
+    "exit": 0
+  },
+  "ci_archive_reads": [
+    {
+      "run": 42542996717,
+      "job": 128922112557,
+      "shard": "hosted-artifact",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42542996717",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128922112557",
+        "--log-failed"
+      ],
+      "exit": 0,
+      "file": "CI-failed-hosted-artifact-128922112557.log",
+      "HTTP": null
+    },
+    {
+      "run": 42542996717,
+      "job": 128922112570,
+      "shard": "administration",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42542996717",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128922112570",
+        "--log-failed"
+      ],
+      "exit": 0,
+      "file": "CI-failed-administration-128922112570.log",
+      "HTTP": null
+    },
+    {
+      "run": 42542996717,
+      "job": 128922112578,
+      "shard": "imports",
+      "command": [
+        "gh",
+        "run",
+        "view",
+        "42542996717",
+        "--repo",
+        "just-every/run-vector",
+        "--job",
+        "128922112578",
+        "--log-failed"
+      ],
+      "exit": 0,
+      "file": "CI-failed-imports-128922112578.log",
+      "HTTP": null
+    }
+  ],
+  "product_push_final": {
+    "head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+    "branch": "cloud/sd-vector-c-f205-fix3",
+    "success": true,
+    "attempt": 1,
+    "log": "PUSH-final.log"
+  },
+  "administration_reproduction": {
+    "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 pnpm test:admin",
+    "width": 390,
+    "exit": 0,
+    "log_file": "ADMIN-local.log",
+    "tests_passed": 79,
+    "clause_journeys": 78,
+    "functional_checkpoints": 102,
+    "duration_seconds": 1032.43,
+    "ci_socket_failure_reproduced": false
+  },
+  "final_mechanical_after_upgrade": {
+    "contract_write": 0,
+    "contract_check": 0,
+    "views_restored_from": "origin/main",
+    "integration_check": 0,
+    "sources_lock": 0,
+    "sources_check": 0
+  },
+  "product_tree_clean": true,
+  "setup": {
+    "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+    "first_exit": 2,
+    "reason": "unresolved merge source",
+    "resolved_rerun_exit": 0
+  },
+  "cleanup": {
+    "clone": "scheduled after evidence transfer",
+    "node_modules": "scheduled after evidence transfer",
+    "packet_retained": "/home/agent/rer-consolidation/work/sd-vector-c-f205-fix3/packet"
+  },
+  "live_http_probe": {
+    "product_head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+    "runtime": "built production Worker over real loopback HTTP and local D1",
+    "width": 390,
+    "passed": true,
+    "statuses": [
+      {
+        "door": "child inherited no-op Member",
+        "status": 403
+      },
+      {
+        "door": "root planning Member",
+        "status": 403
+      },
+      {
+        "door": "hierarchy planning Member",
+        "status": 403
+      },
+      {
+        "door": "child planning Member",
+        "status": 403
+      },
+      {
+        "door": "child planning Owner",
+        "status": 200
+      },
+      {
+        "door": "root settings Member",
+        "status": 403
+      },
+      {
+        "door": "hierarchy settings Member",
+        "status": 403
+      },
+      {
+        "door": "child settings Member",
+        "status": 403
+      },
+      {
+        "door": "child settings Owner",
+        "status": 200
+      },
+      {
+        "door": "child privacy Member",
+        "status": 403
+      },
+      {
+        "door": "child privacy Owner",
+        "status": 200
+      }
+    ]
+  },
+  "final_head_build": {
+    "head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+    "command": "cloud_run timeout 600 npx -y @runeditrun/rer build",
+    "exit": 0
+  },
+  "final_head_integration_check": {
+    "command": "pnpm integration:check",
+    "exit": 0
+  },
+  "final_verify": {
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=36530f6ec447f66fe76ca2c7cef9adecbab53d1f&per_page=100",
+      "--jq",
+      "{total_count,workflow_runs:[.workflow_runs[]|{id,name,status,conclusion,head_sha,html_url,event,head_branch}]}"
+    ],
+    "exit": 0,
+    "head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+    "outcome": "BLOCKED",
+    "runs": [
+      {
+        "conclusion": "failure",
+        "event": "push",
+        "head_branch": "cloud/sd-vector-c-f205-fix3",
+        "head_sha": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42548348381",
+        "id": 42548348381,
+        "name": "Verify",
+        "status": "completed"
+      }
+    ]
+  },
+  "outcome": "BLOCKED",
+  "blocker": "Exact-SHA Verify 42548348381 completed/failure on 36530f6ec447f66fe76ca2c7cef9adecbab53d1f. Ten-call workflow/diagnostic budget exhausted; final failed-job causes were not retrieved and no generated-view-only exemption is assumed."
+}

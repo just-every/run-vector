@@ -1,0 +1,24 @@
+36530f6ec447f66fe76ca2c7cef9adecbab53d1f
+Protect inherited permission delegation and refresh merged metadata
+
+Require child-team owner authority when inherited permissions change their source parent, including identical current values. Prove inherited no-op refusals preserve state, retain exact hierarchy defaults in the Slack upgrade fixture, and regenerate the deployment spec and source lock named by Verify. Preserve every clause judgment and all existing assertions.
+
+d5b49dd4127152146f2e4bf4b668a2da430e4ed5
+Enforce owner authority for child-team permission writes
+
+Merge current main while preserving the TEAM-006 candidate and every clause judgment. Use the root permission decision and transactional authority fence for child setters, including unchanged-value submissions. Fence effective permission changes through inherited hierarchy operations as well, with public-door regressions for Members, team owners, Admins and Owners.
+
+3503a75381109b411d3cac78293b1bbd28d3c82a
+Fix sub-team browser filters and regenerate the published SDK
+
+cf2bb091b0e6168b3a3924f31d1ef812e5be3b31
+Fix sub-team permission authority and preserve inherited Git targets
+
+Keep permission values behind the ROLE-009 team-owner decision and transactional authority fence. Remap configured Git rules before removing inherited statuses, advancing their versions so stale editors cannot overwrite the target. Prove both regressions through real doors, retain exact migration defaults in upgrade fixtures, and regenerate deployment metadata and the source lock.
+
+69464a9b035333e4b9bcbdbd6d2ceed672c3a378
+Conceal hidden parent identities in sub-team metadata
+
+569212d1b2eb44a7ebb45eec4ee5b0a25d025572
+Add guarded sub-team hierarchy and inherited workflows [skip ci]
+

@@ -1,0 +1,6 @@
+{
+  "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium cloud_run timeout 1200 pnpm test:admin",
+  "width": 390,
+  "exit": 0,
+  "log_file": "ADMIN-local.log"
+}

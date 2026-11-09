@@ -1,0 +1,115 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:admin /home/agent/rer-consolidation/work/sd-vector-c-f205-fix3/run-vector
+> node --experimental-strip-types tests/e2e/admin-runtime.mjs
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+▶ [OPS-003] empty workspace administration through real mobile browser
+  ✔ [PROJ-007] 390: empty portfolio invites a first project with creation closed (22.813996ms)
+  ✔ [OPS-003] 390: responsive signed operator settings access (19.199521ms)
+  ✔ [OPS-003] 390: workspace time saves as it changes and survives restart without changing the reminder (5702.292772ms)
+  ✔ [TRIAGE-001] 390: weekly rotation, native and signed intake, handover and once-only Inbox through mounted doors (12846.862364ms)
+  ✔ [TEAM-001] 390: create team with uppercase prefix and seven categories (83.345671ms)
+  ✔ [TEAM-002] 390: rename team; add rename and reorder workflow status (7255.765548ms)
+  ✔ [ISSUE-014] 390: create rename recolour readable workspace label (3144.832847ms)
+  ✔ [PROJ-001] 390: create project with lead Markdown optional target and Planned lifecycle (93.950875ms)
+  ✔ [PROJ-002] 390: operator explicitly changes project lifecycle (208.750237ms)
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 private team-template reads and Viewer creation/edit/application refusals passed at 1440/390
+  ✔ [PROJ-012] 390: save project structure, launch native issue teams and retain projects after template deletion (156239.329576ms)
+  ✔ [PROJ-002] 390: project lead transfers to a genuinely invited Member (3884.043685ms)
+  ✔ [ROLE-001] 390: an invitation names its role, Member by default (978.039648ms)
+  ✔ [ROLE-001] 390: an Owner promotes a Member at 1440 and demotes them at 390; the Admin's promotions are refused 403; the demoted member's next settings request returns 403 (6844.981662ms)
+  ✔ [ROLE-001] 390: the last Owner's demotion is refused and changes nothing (2576.974554ms)
+  ✔ [ROLE-001] 390: a Member reads the member directory without managing anyone and opens only their own Settings pages (25881.91797ms)
+  ✔ [ROLE-003] 390: an Owner invites a Guest to named teams from desktop and mobile Settings (1031.881843ms)
+  ✔ [ROLE-003] 390: the invited Guest sees only invited work, a scoped project and cycle, and their Guest label at 1440 and 390 (28083.767666ms)
+  ✔ [ROLE-003] 390: an Owner changes an accepted Guest to Member and back through the named-team role form; its open session follows immediately (1542.592495ms)
+  ✔ [ROLE-002] 390: Owner makes a team private at 1440; non-member identifier, search, Current, exports and private join are refused (7130.534198ms)
+  ✔ [ROLE-002] 390: non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at 1440 (3091.883336ms)
+  ✔ [ROLE-002 ROLE-007] 390: team owner adds the Member at 1440; issue, Current, search and counted export become visible (5124.215538ms)
+  ✔ [ROLE-002 WORK-004] 390: after team access is withdrawn Created, Subscribed and Activity omit the issue at 1440 (12524.419223ms)
+  ✔ [ROLE-002 TEAM-007] 390: an exposed private request at 1440 grants no content or membership until its owner approves (4889.128762ms)
+  ✔ [ROLE-002] 390: Owner makes a team private at 390; non-member identifier, search, Current, exports and private join are refused (9480.098348ms)
+  ✔ [ROLE-002] 390: non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at 390 (4217.258996ms)
+  ✔ [ROLE-002 ROLE-007] 390: team owner adds the Member at 390; issue, Current, search and counted export become visible (2838.897592ms)
+  ✔ [ROLE-002 WORK-004] 390: after team access is withdrawn Created, Subscribed and Activity omit the issue at 390 (13493.101926ms)
+  ✔ [ROLE-002 TEAM-007] 390: an exposed private request at 390 grants no content or membership until its owner approves (9814.815347ms)
+  ✔ [ROLE-001 OPS-001] 390: private 404 and public/membership read cells through the same Admin/Member session at 1440 (6597.470584ms)
+  ✔ [ROLE-001 OPS-001] 390: private 404 and public/membership read cells through the same Admin/Member session at 390 (6616.430666ms)
+  ✔ [ROLE-013] 390: Owner invites a Viewer through named-team Settings; accepted sign-in reads public work without write controls at 1440 and 390 (61336.696814ms)
+  ✔ [ROLE-013 OPS-001] 390: Viewer Inbox, counted exports, attachment bytes and private lookup follow current privacy and membership; admitted Viewers remain read-only (46824.274915ms)
+  ✔ [ROLE-013] 390: the same open Member session loses mutation authority on the next request after an Admin changes it to Viewer (2953.685525ms)
+  ✔ [ROLE-013] 390: Viewer signs in and signs out through native account controls at 1440 and 390 and loses admission (8865.50567ms)
+  ✔ [ROLE-013] 390: Viewer leaves their own account at 1440 (4811.995137ms)
+  ✔ [ROLE-013] 390: Viewer leaves their own account at 390 (4771.455319ms)
+  ✔ [ISSUE-014] 390: Member inline creation at 1440 follows the workspace permission without workspace management (11590.184443ms)
+  ✔ [ISSUE-014] 390: Member inline creation at 390 follows the workspace permission without workspace management (12507.888497ms)
+  ✔ [ROLE-007] 390: a Member joins a public team from the list at 1440 and finds its settings, members and permissions read-only (3303.601812ms)
+  ✔ [ROLE-007] 390: the Member leaves the team from the list at 1440 (97.199413ms)
+  ✔ [ROLE-007] 390: a Member joins a public team from the list at 390 and finds its settings, members and permissions read-only (2603.701141ms)
+  ✔ [ROLE-007] 390: the Member leaves the team from the list at 390 (139.541802ms)
+  ✔ [ROLE-007] 390: the last team owner cannot leave until another is named (119.696818ms)
+  ✔ [ROLE-007 ROLE-009] 390: a team owner adds a member, names a team owner and sets the two permissions, each audited once (6058.580149ms)
+  ✔ [ROLE-007] 390: once another team owner is named, the former last owner leaves (107.100963ms)
+TEAM-008 1440: Owner/Admin private creation, Member privacy refusal and Viewer refusal under both workspace permissions PASS
+  ✔ [TEAM-008] 390: workspace policy controls a Member's public team creation at 1440 (21618.613913ms)
+TEAM-008 390: Owner/Admin private creation, Member privacy refusal and Viewer refusal under both workspace permissions PASS
+  ✔ [TEAM-008] 390: workspace policy controls a Member's public team creation at 390 (19624.857881ms)
+  ✔ [TEAM-007] 390: a Member requests an invite-only public team and a Member team owner approves once at 1440 (12929.317491ms)
+TEAM-007 1440: private request grants no content/membership, hidden request 404, team-owner approval, Owner-only Viewer grant and Viewer join/request refusal PASS
+  ✔ [TEAM-007] 390: private and Viewer membership cells at 1440 (6270.785532ms)
+  ✔ [TEAM-007] 390: a Member requests an invite-only public team and a Member team owner approves once at 390 (19219.689028ms)
+TEAM-007 390: private request grants no content/membership, hidden request 404, team-owner approval, Owner-only Viewer grant and Viewer join/request refusal PASS
+  ✔ [TEAM-007] 390: private and Viewer membership cells at 390 (6509.198084ms)
+  ✔ [ROLE-005] 390: a Member is refused the audit document and both data doors (382.7569ms)
+  ✔ [TEAM-005] 390: team Settings disables cycles across editor and Current without discarding commitments; re-enable and current permissions (48016.675538ms)
+  ✔ [CYCLE-001] 390: manual nonoverlap cycles use workspace timezone and reject invalid end (354.28963ms)
+  ✔ [ISSUE-014] 390: label applied to an authored issue (286.954867ms)
+  ✔ [ISSUE-014] 390: separate labelled section applies label without adding an inline property picker (342.232959ms)
+  ✔ [CYCLE-002] 390: inline cycle picker commits moves and uncommits with immutable receipts (3753.067361ms)
+  ✔ [CYCLE-002] 390: cycle list commits moves and uncommits existing issue (5872.633248ms)
+  ✔ [FIELD-001] 390: team Severity field defined in Settings, set from the issue and renamed without moving its stored value (14411.933329ms)
+  ✔ [TEAM-001] 390: issued identifiers freeze the team prefix in administration (16.425478ms)
+  ✔ [TEAM-004] 390: used status remaps to same-category destination and protects last category status (3634.741905ms)
+  ✔ [ISSUE-007] 390: label delete cascades issue selections with immutable before/after history (244.661692ms)
+  ✔ [PROJ-009] 390: archive excludes default portfolio retains members include archived and unarchive restore (10460.250626ms)
+  ✔ [TEAM-003] 390: archive excludes authoring rejects intake with 409 and preserves issue then restore (16685.304117ms)
+  ✔ [ROLE-005] 390: Owners browse and filter retained audit entries and download exactly the visible filtered set (14836.889414ms)
+  ✔ [PROJ-001] 390: project planning dates, priority and two workspace labels each record activity (562.409768ms)
+  ✔ [PROJ-001] 390: a project's color and icon save, appear on list and page and are one activity entry each (647.629773ms)
+  ✔ [PROJ-007] 390: every portfolio filter and combined filters keep rows and health/lifecycle counts aligned (1762.441032ms)
+  ✔ [PROJ-001] 390: project appearance can be cleared and set from the project page (850.678141ms)
+  ✔ [PROJ-011] 390: ordered milestones, progress, workspace-date slip and project-move clearing (22107.007026ms)
+  ✔ [PROJ-001] 390: project planning dates, priority and two workspace labels each record activity (447.911939ms)
+  ✔ [PROJ-001] 390: a project's color and icon save, appear on list and page and are one activity entry each (781.711351ms)
+  ✔ [PROJ-007] 390: every portfolio filter and combined filters keep rows and health/lifecycle counts aligned (1762.627585ms)
+  ✔ [PROJ-001] 390: project appearance can be cleared and set from the project page (1007.483962ms)
+  ✔ [PROJ-011] 390: ordered milestones, progress, workspace-date slip and project-move clearing (22182.219023ms)
+  ✔ [BASE-ACCESS-002] 390: document departure fences private polls and explicit reload starts a newly authenticated document (14367.825162ms)
+PROBE ISSUE-016 browser: create template, apply over typed fields, submit -> exact parent and two children; stale application refused unchanged; deletion retains graph
+PROBE ISSUE-016 scoped: POST native template selection -> exact prefills and two distinct children linked to the returned parent
+  ✔ [ISSUE-016] 390: native and scoped issue templates (15301.974082ms)
+  ✔ [BASE-ACCESS-002] 390: sign-out drains private reads before revocation and resumes after a bounded failure (24385.498357ms)
+Administration browser: 78 clause journeys, 102 functional checkpoints passed.
+✔ [OPS-003] empty workspace administration through real mobile browser (1032426.157484ms)
+ℹ tests 79
+ℹ suites 0
+ℹ pass 79
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1032430.395593

@@ -1,0 +1,52 @@
+{
+  "product_head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+  "runtime": "built production Worker over real loopback HTTP and local D1",
+  "width": 390,
+  "passed": true,
+  "statuses": [
+    {
+      "door": "child inherited no-op Member",
+      "status": 403
+    },
+    {
+      "door": "root planning Member",
+      "status": 403
+    },
+    {
+      "door": "hierarchy planning Member",
+      "status": 403
+    },
+    {
+      "door": "child planning Member",
+      "status": 403
+    },
+    {
+      "door": "child planning Owner",
+      "status": 200
+    },
+    {
+      "door": "root settings Member",
+      "status": 403
+    },
+    {
+      "door": "hierarchy settings Member",
+      "status": 403
+    },
+    {
+      "door": "child settings Member",
+      "status": 403
+    },
+    {
+      "door": "child settings Owner",
+      "status": 200
+    },
+    {
+      "door": "child privacy Member",
+      "status": 403
+    },
+    {
+      "door": "child privacy Owner",
+      "status": 200
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix3/run-vector
+
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners
+PROBE planning: root=403; hierarchy=403; child Member=200
+
+ ❯ tests/worker/sub-teams.test.ts (5 tests | 1 failed | 4 skipped) 1451ms
+   × [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners 1447ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] child permission door refuses ordinary Members for every permission key and admits owners
+AssertionError: expected 200 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 200
+
+ ❯ tests/worker/sub-teams.test.ts:120:27
+    118|     expect(root.status).toBe(403);
+    119|     expect(hierarchy.status).toBe(403);
+    120|     expect(member.status).toBe(403);
+       |                           ^
+    121|     expect(await snapshot(tables)).toEqual(before);
+    122|     // A denied no-op must not disable inheritance or create an audit …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 skipped (5)
+   Start at  00:50:58
+   Duration  13.62s (transform 5.33s, setup 0ms, import 11.55s, tests 1.45s, environment 0ms)
+

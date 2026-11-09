@@ -1,0 +1,1 @@
+{"total_count":1,"workflow_runs":[{"conclusion":"failure","event":"push","head_branch":"cloud/sd-vector-c-f205-fix3","head_sha":"36530f6ec447f66fe76ca2c7cef9adecbab53d1f","html_url":"https://github.com/just-every/run-vector/actions/runs/42548348381","id":42548348381,"name":"Verify","status":"completed"}]}

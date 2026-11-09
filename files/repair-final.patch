@@ -1,0 +1,158 @@
+diff --git a/management/integration/deployment-spec.json b/management/integration/deployment-spec.json
+index 0f509430..e7a414bb 100644
+--- a/management/integration/deployment-spec.json
++++ b/management/integration/deployment-spec.json
+@@ -815,6 +815,12 @@
+       "sha256": "1e9c42f103cbd8102467614be714aff94ca3e127a4f653cfdb6ab53129640462",
+       "sql": "-- Thread identity is domain history. Restores retain it inert, never reconnect it.\nCREATE TABLE vector_slack_threads (\n id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL, slack_team_id TEXT NOT NULL,\n channel_id TEXT NOT NULL, thread_ts TEXT NOT NULL, installation_at TEXT NOT NULL,\n destination_id TEXT NOT NULL, issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n root_comment_id TEXT NOT NULL UNIQUE REFERENCES issue_comments(id) ON DELETE CASCADE,\n operator_id TEXT NOT NULL, linked_at TEXT NOT NULL, permalink TEXT NOT NULL,\n held INTEGER NOT NULL DEFAULT 0 CHECK(held IN(0,1)), created_at TEXT NOT NULL,\n UNIQUE(workspace_id,slack_team_id,channel_id,thread_ts)\n);\nCREATE TABLE vector_slack_thread_messages (\n thread_id TEXT NOT NULL REFERENCES vector_slack_threads(id) ON DELETE CASCADE,\n message_ts TEXT NOT NULL, comment_id TEXT NOT NULL REFERENCES issue_comments(id) ON DELETE CASCADE,\n PRIMARY KEY(thread_id,message_ts), UNIQUE(comment_id)\n);\nCREATE TABLE vector_slack_thread_events (\n id TEXT PRIMARY KEY, thread_id TEXT NOT NULL REFERENCES vector_slack_threads(id) ON DELETE CASCADE,\n kind TEXT NOT NULL CHECK(kind IN('reply','resolved','status')), source_id TEXT NOT NULL,\n actor_id TEXT, status_name TEXT, enqueued_at TEXT, held INTEGER NOT NULL DEFAULT 0 CHECK(held IN(0,1)), created_at TEXT NOT NULL\n);\nCREATE INDEX vector_slack_thread_pending ON vector_slack_thread_events(enqueued_at,held,created_at);\nCREATE TRIGGER vector_slack_thread_reply AFTER INSERT ON issue_comments\nWHEN NEW.parent_comment_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)\nBEGIN\n INSERT INTO vector_slack_thread_events(id,thread_id,kind,source_id,actor_id,created_at)\n SELECT NEW.id||':slack-thread',m.id,'reply',NEW.id,NEW.actor_operator_id,NEW.created_at\n FROM vector_slack_threads m WHERE m.root_comment_id=NEW.parent_comment_id AND m.issue_id=NEW.issue_id AND m.held=0;\nEND;\nCREATE TRIGGER vector_slack_thread_resolved AFTER INSERT ON issue_activity\nWHEN NEW.kind='thread.resolved' AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)\nBEGIN\n INSERT INTO vector_slack_thread_events(id,thread_id,kind,source_id,actor_id,created_at)\n SELECT NEW.id||':'||m.id,m.id,'resolved',NEW.id,NEW.actor_operator_id,NEW.created_at\n FROM vector_slack_threads m WHERE m.issue_id=NEW.issue_id AND m.root_comment_id=json_extract(NEW.next_value_json,'$.id') AND m.held=0;\nEND;\nCREATE TRIGGER vector_slack_thread_status AFTER INSERT ON issue_activity\nWHEN NEW.kind<>'issue.imported' AND NEW.kind<>'issue.created'\n AND json_extract(NEW.next_value_json,'$.statusId') IS NOT NULL\n AND json_extract(NEW.next_value_json,'$.statusId') IS NOT json_extract(NEW.previous_value_json,'$.statusId')\n AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)\nBEGIN\n INSERT INTO vector_slack_thread_events(id,thread_id,kind,source_id,actor_id,status_name,created_at)\n SELECT NEW.id||':'||m.id,m.id,'status',NEW.id,NEW.actor_operator_id,s.name,NEW.created_at\n FROM vector_slack_threads m JOIN workflow_statuses s ON s.id=json_extract(NEW.next_value_json,'$.statusId')\n WHERE m.issue_id=NEW.issue_id AND m.held=0;\nEND;\nCREATE TRIGGER vector_slack_threads_restored AFTER UPDATE OF phase ON rer_portability_jobs\nWHEN NEW.kind='import' AND NEW.phase='complete' AND OLD.phase<>'complete'\nBEGIN\n UPDATE vector_slack_threads SET held=1;\n UPDATE vector_slack_thread_events SET held=1;\nEND;\n"
+     },
++    {
++      "binding": "DB",
++      "name": "0134_sub_teams.sql",
++      "sha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
++      "sql": "-- Forward-only hierarchy. Existing teams remain independent roots.\nALTER TABLE teams ADD COLUMN parent_team_id TEXT;\nALTER TABLE teams ADD COLUMN workflow_inherited INTEGER NOT NULL DEFAULT 0 CHECK(workflow_inherited IN (0,1));\nALTER TABLE teams ADD COLUMN permissions_inherited INTEGER NOT NULL DEFAULT 0 CHECK(permissions_inherited IN (0,1));\nALTER TABLE teams ADD COLUMN hierarchy_version INTEGER NOT NULL DEFAULT 1;\nALTER TABLE workflow_statuses ADD COLUMN inherited_from TEXT;\nCREATE INDEX teams_parent_idx ON teams(parent_team_id);\nCREATE UNIQUE INDEX workflow_inherited_idx ON workflow_statuses(team_id,inherited_from) WHERE inherited_from IS NOT NULL;\n"
++    },
+     {
+       "binding": "DB",
+       "name": "0135_automation_rules.sql",
+diff --git a/sources.lock.json b/sources.lock.json
+index f2375546..185edf8c 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -2038,7 +2038,7 @@
+       "executable": false
+     },
+     "management/integration/deployment-spec.json": {
+-      "sha256": "658e8fa8f091d1166b304aa2a02693e0d6352ccf2797258b9da0071dc042e375",
++      "sha256": "f8e517f917c9d300dd66527a290aae8e95a69fde27c6bbfc57c46d493fe2b97d",
+       "executable": false
+     },
+     "migrations/core/0001_data_spine.sql": {
+@@ -7694,7 +7694,7 @@
+       "executable": false
+     },
+     "src/core/features/sub-teams/hierarchy.ts": {
+-      "sha256": "20cdefa7577dc43b9adcb92991e89c130244fdf5923501d7fccc7cccafc27c2e",
++      "sha256": "e807a35224df4a8dd68ed2f02bdec00d36fa0a232e31ac3165411a2a2d02b0d0",
+       "executable": false
+     },
+     "src/core/features/sub-teams/workflow.ts": {
+@@ -10054,7 +10054,7 @@
+       "executable": false
+     },
+     "tests/worker/slack-thread-upgrade.ts": {
+-      "sha256": "9287e082be25093a4b83e1d4e4955d36bc4762ac562be581f268d502f2d8b498",
++      "sha256": "7eba73c2a7695becd981eb8221c658551139acf707c9efb70cefe4301737bee5",
+       "executable": false
+     },
+     "tests/worker/slack-unfurl-scenario.ts": {
+@@ -10086,7 +10086,7 @@
+       "executable": false
+     },
+     "tests/worker/sub-teams.test.ts": {
+-      "sha256": "dab72bea8a8e92bf2e1b106a347f008f6281c6f95bf121ad066bc5de48e40c4b",
++      "sha256": "ce2314ea5a7e31495250a9c123eadc5b6f9af2071ebae9c1b54d039ce012de0d",
+       "executable": false
+     },
+     "tests/worker/subissues-access.test.ts": {
+diff --git a/src/core/features/sub-teams/hierarchy.ts b/src/core/features/sub-teams/hierarchy.ts
+index 6d48a935..efa8e341 100644
+--- a/src/core/features/sub-teams/hierarchy.ts
++++ b/src/core/features/sub-teams/hierarchy.ts
+@@ -204,10 +204,12 @@ export async function changeHierarchy(
+     ? parent!.planning_permission
+     : (input.planningPermission ?? old.planning_permission);
+   // Reparenting or switching inheritance can set permission values without
+-  // naming them explicitly. Every such write keeps ROLE-009 authority.
++  // naming them explicitly, or delegate future changes to another parent.
++  // Every such write keeps ROLE-009 authority.
+   const changesPermissions =
+     input.settingsPermission !== undefined || input.planningPermission !== undefined ||
+     next.permissions_inherited !== old.permissions_inherited ||
++    (next.permissions_inherited === 1 && next.parent_team_id !== old.parent_team_id) ||
+     next.settings_permission !== old.settings_permission ||
+     next.planning_permission !== old.planning_permission;
+   const permissionsAllowed = changesPermissions
+diff --git a/tests/worker/slack-thread-upgrade.ts b/tests/worker/slack-thread-upgrade.ts
+index 5576b26b..596ab431 100644
+--- a/tests/worker/slack-thread-upgrade.ts
++++ b/tests/worker/slack-thread-upgrade.ts
+@@ -2,6 +2,12 @@ import {env} from 'cloudflare:workers';
+ import {applyD1Migrations} from 'cloudflare:test';
+ import {expect,inject} from 'vitest';
+ import {insertHistoricalSample} from './historical-sample-fixture';
++// The merged sub-team migration follows the Slack boundary. Preserve every
++// prior value and assert the exact defaults on all newly added columns.
++const addedAfterBoundary: Record<string, Record<string, unknown>> = {
++ teams: {parent_team_id:null,workflow_inherited:0,permissions_inherited:0,hierarchy_version:1},
++ workflow_statuses: {inherited_from:null},
++};
+ /** Upgrade a populated prior schema without manufacturing mappings or sends. */
+ export async function slackThreadUpgrade(){
+  const db=env.ARCHIVE_TARGET_DB,migrations=inject('migrations'),boundary=migrations.findIndex(m=>m.name==='0134_slack_threads.sql');
+@@ -15,7 +21,7 @@ export async function slackThreadUpgrade(){
+  const before=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
+  await applyD1Migrations(db,migrations.slice(boundary));
+  const after=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'+t.name+'"')));
+- for(let n=0;n<tables.length;n++)expect(after[n].results,tables[n].name).toEqual(before[n].results);
++ for(let n=0;n<tables.length;n++)expect(after[n].results,tables[n].name).toEqual(before[n].results.map(row=>({...addedAfterBoundary[tables[n].name],...row})));
+  for(const table of ['vector_slack_threads','vector_slack_thread_messages','vector_slack_thread_events'])expect(await db.prepare('SELECT count(*) n FROM '+table).first<number>('n')).toBe(0);
+  expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+ }
+diff --git a/tests/worker/sub-teams.test.ts b/tests/worker/sub-teams.test.ts
+index eb7f2e19..8906771e 100644
+--- a/tests/worker/sub-teams.test.ts
++++ b/tests/worker/sub-teams.test.ts
+@@ -103,6 +103,13 @@ it("[TEAM-006 ROLE-009] child permission door refuses ordinary Members for every
+     settings: "all_members", planning: "team_owners",
+   })).status).toBe(200);
+   const tables = ["teams", "workflow_statuses", "audit_records", "administration_audit_details"];
++  const inheritedBefore = await snapshot(tables);
++  expect((await current(w, child.id)).permissionsInherited).toBe(true);
++  expect((await w.member.call(`/settings/teams/${child.id}/permissions`, "PUT", {
++    settings: "all_members", planning: "team_owners",
++  })).status).toBe(403);
++  expect(await snapshot(tables)).toEqual(inheritedBefore);
++  expect((await current(w, child.id)).permissionsInherited).toBe(true);
+   for (const key of ["planning", "settings"] as const) {
+     await resetLimits();
+     const initial = { settings: "all_members", planning: "team_owners" } as const;
+@@ -119,7 +126,7 @@ it("[TEAM-006 ROLE-009] child permission door refuses ordinary Members for every
+     expect(hierarchy.status).toBe(403);
+     expect(member.status).toBe(403);
+     expect(await snapshot(tables)).toEqual(before);
+-    // A denied no-op must not disable inheritance or create an audit either.
++    // A denied no-op must not change custom settings or create an audit either.
+     expect((await w.member.call(`/settings/teams/${child.id}/permissions`, "PUT", initial)).status).toBe(403);
+     expect(await snapshot(tables)).toEqual(before);
+     for (const who of [w.lead, w.admin, w.people.owner]) {
+@@ -143,7 +150,7 @@ it("[TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+   const child = await team(w, "synthetic-vector-6258", "PERMINH", w.team.id);
+   const destination = await team(w, "synthetic-vector-6259", "PERMDEST");
+   for (const id of [child.id, destination.id]) {
+-    expect((await w.call(`/settings/teams/${id}/members/${w.member.id}`, "PUT", { role: "member" })).status).toBe(200);
++    expect((await w.call(`/settings/teams/${id}/members/${w.member.id}`, "PUT", { role: id === destination.id ? "owner" : "member" })).status).toBe(200);
+   }
+   expect((await w.call(`/settings/teams/${w.team.id}/permissions`, "PUT", {
+     settings: "all_members", planning: "team_owners",
+@@ -154,6 +161,20 @@ it("[TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+   const tables = ["teams", "workflow_statuses", "audit_records", "administration_audit_details"];
+   for (const surface of ["call", "api"] as const) {
+     await resetLimits();
++    expect((await w.call(`/settings/teams/${destination.id}/permissions`, "PUT", {
++      settings: "all_members", planning: "team_owners",
++    })).status).toBe(200);
++    const sameValues = await snapshot(tables);
++    const delegated = await change(w, child.id, { parentTeamId: destination.id }, w.member, surface);
++    console.log(`AUDIT ${surface} same-value inherited reparent Member=${delegated.status}`);
++    expect(delegated.status).toBe(403);
++    expect(await snapshot(tables)).toEqual(sameValues);
++    expect((await change(w, child.id, { parentTeamId: destination.id }, w.people.owner, surface)).status).toBe(200);
++    expect((await current(w, child.id)).planningPermission).toBe("team_owners");
++    expect((await change(w, child.id, { parentTeamId: w.team.id })).status).toBe(200);
++    expect((await w.call(`/settings/teams/${destination.id}/permissions`, "PUT", {
++      settings: "all_members", planning: "all_members",
++    })).status).toBe(200);
+     const before = await snapshot(tables);
+     const reparent = await change(w, child.id, { parentTeamId: destination.id }, w.member, surface);
+     console.log(`AUDIT ${surface} inherited reparent Member=${reparent.status}`);

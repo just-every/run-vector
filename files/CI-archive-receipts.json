@@ -1,0 +1,59 @@
+[
+  {
+    "run": 42542996717,
+    "job": 128922112557,
+    "shard": "hosted-artifact",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42542996717",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "128922112557",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "file": "CI-failed-hosted-artifact-128922112557.log",
+    "HTTP": null
+  },
+  {
+    "run": 42542996717,
+    "job": 128922112570,
+    "shard": "administration",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42542996717",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "128922112570",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "file": "CI-failed-administration-128922112570.log",
+    "HTTP": null
+  },
+  {
+    "run": 42542996717,
+    "job": 128922112578,
+    "shard": "imports",
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42542996717",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "128922112578",
+      "--log-failed"
+    ],
+    "exit": 0,
+    "file": "CI-failed-imports-128922112578.log",
+    "HTTP": null
+  }
+]

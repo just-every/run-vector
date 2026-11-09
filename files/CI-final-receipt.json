@@ -1,0 +1,24 @@
+{
+  "command": [
+    "gh",
+    "api",
+    "repos/just-every/run-vector/actions/runs?head_sha=36530f6ec447f66fe76ca2c7cef9adecbab53d1f&per_page=100",
+    "--jq",
+    "{total_count,workflow_runs:[.workflow_runs[]|{id,name,status,conclusion,head_sha,html_url,event,head_branch}]}"
+  ],
+  "exit": 0,
+  "head": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+  "outcome": "BLOCKED",
+  "runs": [
+    {
+      "conclusion": "failure",
+      "event": "push",
+      "head_branch": "cloud/sd-vector-c-f205-fix3",
+      "head_sha": "36530f6ec447f66fe76ca2c7cef9adecbab53d1f",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42548348381",
+      "id": 42548348381,
+      "name": "Verify",
+      "status": "completed"
+    }
+  ]
+}

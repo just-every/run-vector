@@ -1,0 +1,6 @@
+36530f6ec447f66fe76ca2c7cef9adecbab53d1f Protect inherited permission delegation and refresh merged metadata
+d5b49dd4127152146f2e4bf4b668a2da430e4ed5 Enforce owner authority for child-team permission writes
+3503a75381109b411d3cac78293b1bbd28d3c82a Fix sub-team browser filters and regenerate the published SDK
+cf2bb091b0e6168b3a3924f31d1ef812e5be3b31 Fix sub-team permission authority and preserve inherited Git targets
+69464a9b035333e4b9bcbdbd6d2ceed672c3a378 Conceal hidden parent identities in sub-team metadata
+569212d1b2eb44a7ebb45eec4ee5b0a25d025572 Add guarded sub-team hierarchy and inherited workflows [skip ci]

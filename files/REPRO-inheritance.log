@@ -1,0 +1,40 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix3/run-vector
+
+Using secrets defined in .dev.vars
+stdout | tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AUDIT call inherited reparent Member=200
+
+ ❯ tests/worker/sub-teams.test.ts (6 tests | 1 failed | 5 skipped) 1271ms
+   × [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority 1269ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/sub-teams.test.ts > [TEAM-006 ROLE-009] hierarchy inheritance cannot bypass permission authority
+AssertionError: expected 200 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 200
+
+ ❯ tests/worker/sub-teams.test.ts:160:29
+    158|     const reparent = await change(w, child.id, { parentTeamId: destina…
+    159|     console.log(`AUDIT ${surface} inherited reparent Member=${reparent…
+    160|     expect(reparent.status).toBe(403);
+       |                             ^
+    161|     expect(await snapshot(tables)).toEqual(before);
+    162|     expect((await change(w, child.id, { parentTeamId: destination.id }…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 skipped (6)
+   Start at  00:53:09
+   Duration  11.31s (transform 4.33s, setup 0ms, import 9.34s, tests 1.27s, environment 0ms)
+

@@ -1,0 +1,134 @@
+[
+  {
+    "call": 1,
+    "utc": "2026-11-09T00:58:05.247872+00:00",
+    "epoch": 1794185885.2478187,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=d5b49dd4127152146f2e4bf4b668a2da430e4ed5&per_page=100",
+      "--jq",
+      "{total_count,workflow_runs:[.workflow_runs[]|{id,name,status,conclusion,head_sha,html_url}]}"
+    ]
+  },
+  {
+    "call": 2,
+    "utc": "2026-11-09T01:03:05.273222+00:00",
+    "epoch": 1794186185.2732172,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42542996717",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 3,
+    "utc": "2026-11-09T01:08:05.681198+00:00",
+    "epoch": 1794186485.6811924,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42542996717",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 4,
+    "utc": "2026-11-09T01:13:06.105794+00:00",
+    "epoch": 1794186786.105789,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42542996717",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 5,
+    "utc": "2026-11-09T01:18:06.145806+00:00",
+    "epoch": 1794187086.1458013,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42542996717/jobs?per_page=100",
+      "--jq",
+      "{total_count,jobs:[.jobs[]|{id,name,status,conclusion,failed_steps:[.steps[]|select(.conclusion==\"failure\")|{name,conclusion}]}]}"
+    ]
+  },
+  {
+    "call": 6,
+    "utc": "2026-11-09T01:28:06.181389+00:00",
+    "epoch": 1794187686.1813846,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs/42542996717",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 7,
+    "utc": "2026-11-09T01:33:06.203139+00:00",
+    "epoch": 1794187986.2031348,
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42542996717",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "128922112557",
+      "--log-failed"
+    ]
+  },
+  {
+    "call": 8,
+    "utc": "2026-11-09T01:38:06.234374+00:00",
+    "epoch": 1794188286.2343683,
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42542996717",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "128922112570",
+      "--log-failed"
+    ]
+  },
+  {
+    "call": 9,
+    "utc": "2026-11-09T01:43:06.257936+00:00",
+    "epoch": 1794188586.2579317,
+    "command": [
+      "gh",
+      "run",
+      "view",
+      "42542996717",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "128922112578",
+      "--log-failed"
+    ]
+  },
+  {
+    "call": 10,
+    "utc": "2026-11-09T02:28:31.290667+00:00",
+    "epoch": 1794191311.2905955,
+    "command": [
+      "gh",
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=36530f6ec447f66fe76ca2c7cef9adecbab53d1f&per_page=100",
+      "--jq",
+      "{total_count,workflow_runs:[.workflow_runs[]|{id,name,status,conclusion,head_sha,html_url,event,head_branch}]}"
+    ]
+  }
+]

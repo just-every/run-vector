@@ -1,0 +1,4 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+HTTP PROBE child permission door: Member -> 403; Owner -> 200 (settings and planning); root -> 403; hierarchy -> 403; inherited no-op preserved.
