@@ -40,7 +40,7 @@ export async function streamControlsJourney(page, context, base, record, capture
     teamId: teams[0].id, projectId: project.id, priority: 'medium',
     itemType: 'issue', assigneeId: operatorId, attentionReason: 'started-work',
   };
-  const filters = page.locator('.stream-filters');
+  const filters = page.locator('.stream-workspace:not(.has-mobile-detail) .stream-filters');
   async function reset(surface = 'current') {
     await saveControl(page, base, surface,
       () => filters.getByRole('button', { name: 'Reset filters', exact: true }).click(), 'DELETE');
@@ -87,7 +87,11 @@ export async function streamControlsJourney(page, context, base, record, capture
       await detail.press('Escape');
     }
     await page.waitForURL(base + '/app');
+    // The URL changes before the return loader commits. Do not reset the
+    // outgoing detail route: its pending receipt would restore the old filters.
+    await filters.waitFor();
     await streamControlsReady(page);
+    await fixtureRows(page, items, [items.primary]);
     assert.deepEqual((await api('/preferences/current')).filters, combination);
     await reset();
     await open('/app', true);
