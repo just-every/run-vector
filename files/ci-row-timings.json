@@ -1,0 +1,114 @@
+{
+  "run": 42662451317,
+  "head": "8c8ae182873d8ca4a6c33fae3b7c0f63d78bd2eb",
+  "jobs": [
+    {
+      "id": 129317259739,
+      "name": "plan",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 9,
+      "startedAt": "2026-11-09T17:13:13Z",
+      "completedAt": "2026-11-09T17:13:22Z"
+    },
+    {
+      "id": 129317376442,
+      "name": "build",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 44,
+      "startedAt": "2026-11-09T17:13:24Z",
+      "completedAt": "2026-11-09T17:14:08Z"
+    },
+    {
+      "id": 129317818994,
+      "name": "shards (worker-heavy, true, false, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 952,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:30:03Z"
+    },
+    {
+      "id": 129317819048,
+      "name": "shards (hosted-artifact, true, true, false)",
+      "status": "completed",
+      "conclusion": "failure",
+      "seconds": 630,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:24:41Z"
+    },
+    {
+      "id": 129317819083,
+      "name": "shards (core-runtime, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 1133,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:33:04Z"
+    },
+    {
+      "id": 129317819117,
+      "name": "shards (collaboration, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 1314,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:36:05Z"
+    },
+    {
+      "id": 129317819185,
+      "name": "shards (portability, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 1376,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:37:07Z"
+    },
+    {
+      "id": 129317819187,
+      "name": "shards (worker-2, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 805,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:27:36Z"
+    },
+    {
+      "id": 129317819228,
+      "name": "shards (core-runtime-planning, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 1105,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:32:36Z"
+    },
+    {
+      "id": 129317819256,
+      "name": "shards (imports, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 1412,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:37:43Z"
+    },
+    {
+      "id": 129317819589,
+      "name": "shards (administration, true, true, true)",
+      "status": "completed",
+      "conclusion": "success",
+      "seconds": 949,
+      "startedAt": "2026-11-09T17:14:11Z",
+      "completedAt": "2026-11-09T17:30:00Z"
+    },
+    {
+      "id": 129331355850,
+      "name": "verify",
+      "status": "completed",
+      "conclusion": "failure",
+      "seconds": 4,
+      "startedAt": "2026-11-09T17:37:45Z",
+      "completedAt": "2026-11-09T17:37:49Z"
+    }
+  ]
+}

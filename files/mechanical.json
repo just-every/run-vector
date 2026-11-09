@@ -1,0 +1,10 @@
+{
+  "lock": {
+    "command": "pnpm sources:lock",
+    "exit": 0
+  },
+  "check": {
+    "command": "pnpm sources:check",
+    "exit": 0
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "beforeRows": 9,
+  "afterRows": 9,
+  "beforeNonBuildCommands": 36,
+  "afterNonBuildCommands": 36,
+  "nonBuildCommandDuplicates": 0,
+  "effectiveCommandsBefore": 38,
+  "effectiveCommandsAfter": 38,
+  "effectiveCommandMultisetEqual": true,
+  "serialCommandsUnchanged": true,
+  "buildCommandsUnchanged": true,
+  "moved": [
+    {
+      "node": [
+        "tests/e2e/current-intake-runtime.mjs"
+      ]
+    },
+    {
+      "node": [
+        "tests/e2e/theme-runtime.mjs"
+      ]
+    },
+    {
+      "node": [
+        "tests/e2e/housekeeping-runtime.mjs"
+      ]
+    },
+    "test:wave-b",
+    "test:base-auth"
+  ],
+  "unchangedRows": [
+    "imports",
+    "portability",
+    "core-runtime",
+    "core-runtime-planning",
+    "collaboration",
+    "worker-2",
+    "hosted-artifact"
+  ],
+  "note": "An extra build marker on worker-heavy requests this exact SHA shared artifact. Both ordinary-row initial build markers are skipped by verify.mjs; actual CI command multiset is identical. Hosted-artifact fresh builds remain unchanged."
+}

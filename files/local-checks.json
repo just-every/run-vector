@@ -1,0 +1,10 @@
+{
+  "typecheck": {
+    "command": "timeout 600 pnpm typecheck",
+    "exit": 0
+  },
+  "check": {
+    "command": "timeout 600 pnpm check",
+    "exit": 0
+  }
+}

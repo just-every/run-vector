@@ -1,0 +1,210 @@
+[
+  {
+    "run": 42648235349,
+    "attempt": 1,
+    "build": {
+      "secondsInShard": 0,
+      "reason": "Exact-SHA shared production build reused; separate build job covers production compilation."
+    },
+    "commands": [
+      {
+        "command": "test:admin",
+        "startBoundary": "2026-11-09T15:49:41.9491402Z",
+        "endBoundary": "2026-11-09T16:06:12.5757428Z",
+        "seconds": 990.627,
+        "minutes": 16.51,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "current-intake-runtime",
+        "startBoundary": "2026-11-09T16:06:12.5757428Z",
+        "endBoundary": "2026-11-09T16:07:44.9865294Z",
+        "seconds": 92.411,
+        "minutes": 1.54,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "theme-runtime",
+        "startBoundary": "2026-11-09T16:07:44.9865294Z",
+        "endBoundary": "2026-11-09T16:10:03.9448014Z",
+        "seconds": 138.958,
+        "minutes": 2.316,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "housekeeping-runtime",
+        "startBoundary": "2026-11-09T16:10:03.9448014Z",
+        "endBoundary": "2026-11-09T16:11:58.9241485Z",
+        "seconds": 114.979,
+        "minutes": 1.916,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "test:wave-b",
+        "startBoundary": "2026-11-09T16:11:58.9241485Z",
+        "endBoundary": "2026-11-09T16:13:24.4494136Z",
+        "seconds": 85.525,
+        "minutes": 1.425,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "test:base-auth",
+        "startBoundary": "2026-11-09T16:13:24.4494136Z",
+        "endBoundary": "2026-11-09T16:14:19.5168480Z",
+        "seconds": 55.067,
+        "minutes": 0.918,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps.",
+        "censored": true,
+        "note": "Job cancelled at its limit before verify runner saved successful command completion."
+      }
+    ],
+    "safeMarkers": [
+      {
+        "at": "2026-11-09T16:06:12.5463296Z",
+        "message": "Administration browser: 79 clause journeys, 102 functional checkpoints passed."
+      },
+      {
+        "at": "2026-11-09T16:06:12.5754182Z",
+        "message": "# tests 80"
+      },
+      {
+        "at": "2026-11-09T16:06:12.5754902Z",
+        "message": "# pass 80"
+      },
+      {
+        "at": "2026-11-09T16:06:12.5755248Z",
+        "message": "# fail 0"
+      },
+      {
+        "at": "2026-11-09T16:06:12.5756214Z",
+        "message": "# skipped 0"
+      },
+      {
+        "at": "2026-11-09T16:07:44.9865294Z",
+        "message": "[CURR-002] Independent intake queue journey passed at 1440 and 390."
+      },
+      {
+        "at": "2026-11-09T16:10:03.9448014Z",
+        "message": "[VIEW-011] dark first paint, per-member Light across reload and a second browser, live System, AA text and control contrast in both themes at 1440/390"
+      },
+      {
+        "at": "2026-11-09T16:11:58.5337720Z",
+        "message": "[AUTO-003] preview, save, scheduled close and archive with reader-visible reasons and follower notifications, archived page, lists and search at 1440/390"
+      },
+      {
+        "at": "2026-11-09T16:13:24.1359335Z",
+        "message": "Wave B: signed owner claim, second refusal, editor and CSP at 1440/390 passed."
+      },
+      {
+        "at": "2026-11-09T16:14:19.5168480Z",
+        "message": "##[error]The operation was canceled."
+      }
+    ]
+  },
+  {
+    "run": 42648235349,
+    "attempt": 2,
+    "build": {
+      "secondsInShard": 0,
+      "reason": "Exact-SHA shared production build reused; separate build job covers production compilation."
+    },
+    "commands": [
+      {
+        "command": "test:admin",
+        "startBoundary": "2026-11-09T16:19:09.7296478Z",
+        "endBoundary": "2026-11-09T16:35:38.4639896Z",
+        "seconds": 988.734,
+        "minutes": 16.479,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "current-intake-runtime",
+        "startBoundary": "2026-11-09T16:35:38.4639896Z",
+        "endBoundary": "2026-11-09T16:37:05.5536625Z",
+        "seconds": 87.09,
+        "minutes": 1.451,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "theme-runtime",
+        "startBoundary": "2026-11-09T16:37:05.5536625Z",
+        "endBoundary": "2026-11-09T16:39:22.9639661Z",
+        "seconds": 137.41,
+        "minutes": 2.29,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "housekeeping-runtime",
+        "startBoundary": "2026-11-09T16:39:22.9639661Z",
+        "endBoundary": "2026-11-09T16:41:16.4680590Z",
+        "seconds": 113.504,
+        "minutes": 1.892,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "test:wave-b",
+        "startBoundary": "2026-11-09T16:41:16.4680590Z",
+        "endBoundary": "2026-11-09T16:42:40.8450744Z",
+        "seconds": 84.377,
+        "minutes": 1.406,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps."
+      },
+      {
+        "command": "test:base-auth",
+        "startBoundary": "2026-11-09T16:42:40.8450744Z",
+        "endBoundary": "2026-11-09T16:43:38.6079847Z",
+        "seconds": 57.763,
+        "minutes": 0.963,
+        "boundaryNote": "Adjacent pnpm script header or preceding runtime final success; includes small launch/cleanup gaps.",
+        "censored": true,
+        "note": "Job cancelled at its limit before verify runner saved successful command completion. Runtime printed 9 checks passed just before cancellation."
+      }
+    ],
+    "safeMarkers": [
+      {
+        "at": "2026-11-09T16:35:38.4269095Z",
+        "message": "Administration browser: 79 clause journeys, 102 functional checkpoints passed."
+      },
+      {
+        "at": "2026-11-09T16:35:38.4637568Z",
+        "message": "# tests 80"
+      },
+      {
+        "at": "2026-11-09T16:35:38.4638289Z",
+        "message": "# pass 80"
+      },
+      {
+        "at": "2026-11-09T16:35:38.4638588Z",
+        "message": "# fail 0"
+      },
+      {
+        "at": "2026-11-09T16:35:38.4639077Z",
+        "message": "# skipped 0"
+      },
+      {
+        "at": "2026-11-09T16:37:05.5536625Z",
+        "message": "[CURR-002] Independent intake queue journey passed at 1440 and 390."
+      },
+      {
+        "at": "2026-11-09T16:39:22.9639661Z",
+        "message": "[VIEW-011] dark first paint, per-member Light across reload and a second browser, live System, AA text and control contrast in both themes at 1440/390"
+      },
+      {
+        "at": "2026-11-09T16:41:16.0801759Z",
+        "message": "[AUTO-003] preview, save, scheduled close and archive with reader-visible reasons and follower notifications, archived page, lists and search at 1440/390"
+      },
+      {
+        "at": "2026-11-09T16:42:40.5521076Z",
+        "message": "Wave B: signed owner claim, second refusal, editor and CSP at 1440/390 passed."
+      },
+      {
+        "at": "2026-11-09T16:43:38.4956760Z",
+        "message": "Base authentication runtime: 9 checks passed; /home/runner/work/run-vector/run-vector/.wrangler/base-auth-evidence"
+      },
+      {
+        "at": "2026-11-09T16:43:38.6079847Z",
+        "message": "##[error]The operation was canceled."
+      }
+    ]
+  }
+]

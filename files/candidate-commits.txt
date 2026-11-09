@@ -1,0 +1,15 @@
+commit 8c8ae182873d8ca4a6c33fae3b7c0f63d78bd2eb
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Mon Nov 9 17:13:04 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Mon Nov 9 17:13:04 2026 +0000
+
+    ci: move ownership journeys off the administration shard
+
+commit 55d6f915ff823e06f674376500e3e4deb6d2d8fa
+Author:     Run Edit Run fleet <fleet@runeditrun.com>
+AuthorDate: Mon Nov 9 15:47:34 2026 +0000
+Commit:     Run Edit Run fleet <fleet@runeditrun.com>
+CommitDate: Mon Nov 9 15:47:34 2026 +0000
+
+    ci: isolate heavy worker suites in a dedicated verification row

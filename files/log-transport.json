@@ -1,0 +1,24 @@
+{
+  "callsUsed": 7,
+  "commands": [
+    "gh api repos/just-every/run-vector/actions/runs/42648235349/attempts/1/jobs --paginate",
+    "gh api repos/just-every/run-vector/actions/runs/42648235349/attempts/2/jobs --paginate",
+    "gh api repos/just-every/run-vector/actions/runs/42621810959/jobs --paginate",
+    "gh run view 42648235349 --repo just-every/run-vector --attempt 1 --job 129268000380 --log",
+    "gh run view 42648235349 --repo just-every/run-vector --attempt 2 --job 129285466554 --log",
+    "gh run view 42621810959 --repo just-every/run-vector --job 129176165475 --log",
+    "gh api repos/just-every/run-vector/actions/jobs/129176165475/logs"
+  ],
+  "earlierGreenArchive": {
+    "exit": 0,
+    "bytes": 0,
+    "result": "No log text returned by gh run view; per-command green-run timings unavailable."
+  },
+  "earlierGreenJobLogs": {
+    "exit": 1,
+    "error": "Get https://productionresultssa10.blob.core.windows.net/[actions-results path; query removed]: Forbidden",
+    "status": "Forbidden (HTTP status number not supplied by gh diagnostic)"
+  },
+  "noBlockedBlobRetries": true,
+  "rawLogsExcluded": "Raw workflow logs contain environment sections and are never selected for publication."
+}

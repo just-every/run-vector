@@ -1,0 +1,136 @@
+{
+  "files": [
+    {
+      "blob": "52a5957c498088649cc4b1016ec7a83fdeab8d7c",
+      "bytes": 17980,
+      "path": "REPORT.md",
+      "sha256": "37bea1b1cf55cd761f4fcf0af4dcf6c25c3264ec400eaecc99ae8b3259f36bed"
+    },
+    {
+      "blob": "832325e85d4af6108c092d684adfafae294771c7",
+      "bytes": 612,
+      "path": "candidate-commits.txt",
+      "sha256": "c32119495dd683aba700ce6df9993038d620600ba60937240c55c0e367cf52f3"
+    },
+    {
+      "blob": "d1881b86cefd9936c829ec2b834bf9608bf9eb23",
+      "bytes": 3141,
+      "path": "check-plan.mjs",
+      "sha256": "44e1f4df513f5ae0e61175c1545bae75b9d1669e3e06892a5f8d1caadcb9f2f2"
+    },
+    {
+      "blob": "105cee7402504ca55e5b9c07da87d01f6ba290df",
+      "bytes": 2422,
+      "path": "check-worker-coverage.mjs",
+      "sha256": "10cc239cdc475922bb72015a255695f50fe4a951bc69fe1411224941a60f824d"
+    },
+    {
+      "blob": "4fd2aee969e5b906a2f37e51d8cbb2490e513a32",
+      "bytes": 40202,
+      "path": "ci-jobs.json",
+      "sha256": "bdcc1b8e4b1467119b8eed0c9d0716a288d3cbf26bb9ac21a423952570e94edb"
+    },
+    {
+      "blob": "dc194506c676b780049ad7e3fc61c669a41ddf87",
+      "bytes": 3180,
+      "path": "ci-row-timings.json",
+      "sha256": "3cf2dece9d801d1355b94460f520fb98d2fb6cdeb6f6acde86deb3afed095e4f"
+    },
+    {
+      "blob": "10f78a5cb99f09f83452cd8e3c124ec27c87102a",
+      "bytes": 179,
+      "path": "ci-status.json",
+      "sha256": "f4166e6ce0d23bd1ba1c99a999876adbb25baafc743b39f3fe1732ecc13711c7"
+    },
+    {
+      "blob": "ef564d5dacd605e24ede4288d8cbfe3678193b10",
+      "bytes": 8095,
+      "path": "command-timings.json",
+      "sha256": "aa5200908267d84b0105761b31bbf4f84a1042c21ef32483379eb5876a07bbdc"
+    },
+    {
+      "blob": "1fb46087c567a6a724ef17ec4cff7d4398e79d86",
+      "bytes": 6974,
+      "path": "failed-job-metadata.json",
+      "sha256": "fc9ee700b42125d8a6db0625c6a18ba616d8391b7b740ade08db5e9611111908"
+    },
+    {
+      "blob": "9a7179dfe6ee0db8dae68046e27e90305dd5bb85",
+      "bytes": 9448,
+      "path": "hosted-timings.json",
+      "sha256": "50c440e81cbff014309e485fe51dc2978ce3b98db1efd12427ecfe1eef74782d"
+    },
+    {
+      "blob": "babab966da357c9c9815db50b7d736a33ca52bf7",
+      "bytes": 524,
+      "path": "identity-check.json",
+      "sha256": "51e4c3b62af5553c84e892fe98bcf1de83a3c9a7f19836bc251e3c3443807592"
+    },
+    {
+      "blob": "2abe3058a3fff2a7376800577562766df921d185",
+      "bytes": 157,
+      "path": "local-checks.json",
+      "sha256": "56d0182227253e44e86103681ac85a1b7454d3486df26bde206372e65c5b5142"
+    },
+    {
+      "blob": "6941f6351bd1bd1205dd08a9adc4b09176064d06",
+      "bytes": 1211,
+      "path": "log-transport.json",
+      "sha256": "c9dd99211691c387313d1525bd788368ed6eb4b91282ad30c4fe879f0bae58a2"
+    },
+    {
+      "blob": "af7da85b2f4defe9a59f31d02cbd3cbdfe41d3fb",
+      "bytes": 139,
+      "path": "mechanical.json",
+      "sha256": "4da889d63e85474e192b9e077d6b7b523f37eea6dd2c00a37f2fa38feac86ac7"
+    },
+    {
+      "blob": "a65bd879ab36e1c8da6a26ca16ea539ae1118d20",
+      "bytes": 5316,
+      "path": "plan-after.json",
+      "sha256": "8ff0b21fae1809c4674288cc2c1180aa96466bc1ee4fd1d017a27a450196466b"
+    },
+    {
+      "blob": "0da568d4a997df267f2583d59a2a5e6e29ebaa91",
+      "bytes": 5255,
+      "path": "plan-before.json",
+      "sha256": "5c3c5750dd3e0f524cd44aef8556928b4beac383769d0c3dd61f0f7eeff878a0"
+    },
+    {
+      "blob": "b151e7a1d3694d2ffabb34edd7d331d1ddea065d",
+      "bytes": 1044,
+      "path": "plan-coverage.json",
+      "sha256": "46946890926870f73464743aba36fae8ba5dc70003d2cb25eb3c115ac42ab126"
+    },
+    {
+      "blob": "82bfea39f3936ef6877327b1887f4d217ffd09fc",
+      "bytes": 926,
+      "path": "product-push.txt",
+      "sha256": "14cf0c923eaedf5e02617a79000a95df6d924f3d26a2bc378da6ef76b33c137a"
+    },
+    {
+      "blob": "ee939e1cb2fbec546723fce5db13823bcfbe8c42",
+      "bytes": 1421,
+      "path": "scope-receipt.json",
+      "sha256": "d7e0e5249757f4d8962da527b8720bfc9ba332cf3b62c3690645816f21d9d4c3"
+    },
+    {
+      "blob": "765cfcfa393a348e8e1ea349004461033da8e761",
+      "bytes": 4620,
+      "path": "terminal-receipt.json",
+      "sha256": "c1c56b27d94a58fde162b43f16c520f8c8e4b930b60d78c9c0191afc176685c0"
+    },
+    {
+      "blob": "adec026b9e508dca8370bed0694ca52361495a81",
+      "bytes": 8197,
+      "path": "worker-coverage.json",
+      "sha256": "30fe02d69bb2f4f02cbf8a184e5a1b6ee6163ccaaf4535357de0c7a57f98c46a"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-ci-shape-2",
+  "product_head": "8c8ae182873d8ca4a6c33fae3b7c0f63d78bd2eb",
+  "ref": "refs/heads/evidence/sd-vector-ci-shape-2",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-ci-shape-2"
+}

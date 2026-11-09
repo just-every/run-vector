@@ -1,0 +1,250 @@
+{
+  "verificationShards": {
+    "imports": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        [
+          "test:worker",
+          "--shard=4/6",
+          "--exclude=tests/worker/role-matrix.test.ts",
+          "--exclude=tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        [
+          "test:worker",
+          "--shard=5/6",
+          "--exclude=tests/worker/role-matrix.test.ts",
+          "--exclude=tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        "build",
+        {
+          "node": [
+            "tests/e2e/data-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/related-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/issue-copy-runtime.mjs"
+          ]
+        }
+      ]
+    },
+    "portability": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        [
+          "test:worker",
+          "--shard=1/6",
+          "--exclude=tests/worker/role-matrix.test.ts",
+          "--exclude=tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        [
+          "test:worker",
+          "--shard=6/6",
+          "--exclude=tests/worker/role-matrix.test.ts",
+          "--exclude=tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        "build",
+        {
+          "node": [
+            "--import",
+            "./tests/e2e/integrations/register-loader.mjs",
+            "tests/e2e/data-roundtrip.mjs"
+          ]
+        }
+      ]
+    },
+    "core-runtime": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        "build",
+        {
+          "node": [
+            "tests/e2e/core-runtime.mjs",
+            "current"
+          ]
+        }
+      ]
+    },
+    "core-runtime-planning": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        "build",
+        {
+          "node": [
+            "tests/e2e/core-runtime.mjs",
+            "planning"
+          ]
+        }
+      ]
+    },
+    "administration": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        "build",
+        "test:admin"
+      ]
+    },
+    "collaboration": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        "build",
+        "test:collaboration",
+        "sources:verify-base",
+        "check",
+        "test:installer",
+        "test:markdown",
+        "test:deployment",
+        {
+          "node": [
+            "tests/e2e/cycle-schedule-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/personal-time-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/cycle-report-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/project-report-runtime.mjs"
+          ]
+        }
+      ]
+    },
+    "worker-2": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        [
+          "test:worker",
+          "--shard=2/6",
+          "--exclude=tests/worker/role-matrix.test.ts",
+          "--exclude=tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        [
+          "test:worker",
+          "--shard=3/6",
+          "--exclude=tests/worker/role-matrix.test.ts",
+          "--exclude=tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        "build",
+        "test:dev:ci"
+      ]
+    },
+    "worker-heavy": {
+      "browser": true,
+      "native": false,
+      "commands": [
+        [
+          "test:worker",
+          "tests/worker/role-matrix.test.ts",
+          "tests/worker/data-http-audit-recovery.test.ts"
+        ],
+        "build",
+        {
+          "node": [
+            "tests/e2e/current-intake-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/theme-runtime.mjs"
+          ]
+        },
+        {
+          "node": [
+            "tests/e2e/housekeeping-runtime.mjs"
+          ]
+        },
+        "test:wave-b",
+        "test:base-auth"
+      ]
+    },
+    "hosted-artifact": {
+      "browser": true,
+      "native": true,
+      "commands": [
+        "test:public-site",
+        "verify",
+        "build",
+        "test:access",
+        "test:mutation-refresh",
+        "build",
+        "test:integrations",
+        "test:archive-upgrade"
+      ]
+    }
+  },
+  "verificationMatrix": [
+    {
+      "shard": "imports",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "portability",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "core-runtime",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "core-runtime-planning",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "administration",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "collaboration",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "worker-2",
+      "browser": true,
+      "native": true,
+      "prebuilt": true
+    },
+    {
+      "shard": "worker-heavy",
+      "browser": true,
+      "native": false,
+      "prebuilt": true
+    },
+    {
+      "shard": "hosted-artifact",
+      "browser": true,
+      "native": true,
+      "prebuilt": false
+    }
+  ]
+}

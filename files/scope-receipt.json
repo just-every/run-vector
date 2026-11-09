@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "leaseFilesChanged": [
+    "scripts/verification-plan.mjs",
+    "sources.lock.json"
+  ],
+  "preservedFiles": [
+    {
+      "path": "CONTRACT.md",
+      "unchanged": true,
+      "sha256": "0e7afa4c51fa4a6ad415f0f817170f94e9011b0df36e5ee4c8c61c1a5d144f87"
+    },
+    {
+      "path": "ACCEPTANCE.md",
+      "unchanged": true,
+      "sha256": "d823097503bde3f21f3d8cf0630461942592071876800939047000e4d0a59f14"
+    },
+    {
+      "path": "docs/CLAIMS.md",
+      "unchanged": true,
+      "sha256": "a47bd22f32a22237632ac39506b9dec18a8e2c896a6dbcf1fafb736458760078"
+    },
+    {
+      "path": "package.json",
+      "unchanged": true,
+      "sha256": "117d3eb8eca5741a61377872219037986b03d174438bbf7ce4910feb87c4cc07"
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "unchanged": true,
+      "sha256": "af31d374d1bf42687a9b8b5f8296ba69bae941ce7d3a74c9c904d2a92611bbc0"
+    },
+    {
+      "path": "tests/worker/role-matrix.test.ts",
+      "unchanged": true,
+      "sha256": "6a8396de9b6b2ad4c0e477c4a5062331aca99252dbb2f64f2cdfbddbb8ecc574"
+    },
+    {
+      "path": "tests/worker/data-http-audit-recovery.test.ts",
+      "unchanged": true,
+      "sha256": "08b1a6f33f0b88787ed84ac734bd4c4aa89f99a2d11e3bbeb1ae9ef7286b89e1"
+    }
+  ],
+  "clauseCountsBefore": [
+    136,
+    72,
+    64
+  ],
+  "clauseCountsAfter": [
+    136,
+    72,
+    64
+  ],
+  "claim": null,
+  "clauseStatusChanges": []
+}
