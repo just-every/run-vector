@@ -162,7 +162,7 @@ it('[API-003 PROJ-011 ISSUE-008] public tokens page native planning and workspac
  const peerComment=await peerCommentResponse.json() as any;
  const removed=await f.call('/settings/operators/'+peer,'DELETE');expect(removed.status,await removed.clone().text()).toBe(200);
  expect((await f.api(peerToken,'/comments')).status).toBe(401);
- expect((await call('/comments/'+peerComment.id)).author).toEqual({id:peer,displayName:'Removed operator'});
+ expect((await call('/comments/'+peerComment.id)).author).toEqual({id:peer,displayName:'peer (Suspended)'});
  await call('/comments/'+comment.id,'DELETE',{expectedVersion:(await call('/comments/'+comment.id)).version});expect((await f.api(token,'/comments/'+comment.id)).status).toBe(404);
  expect((await call('/comments?issue='+issue.identifier)).comments.some((c:any)=>c.id===comment.id)).toBe(false);
  await call('/projects/'+project.id+'/milestones/'+milestone.id,'PATCH',{completed:true});

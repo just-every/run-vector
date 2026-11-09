@@ -237,5 +237,5 @@ it("[OPS-004 OPS-001] simultaneous active native commands retain their own actor
     )
       .bind(f.member)
       .first())!.n,
-  ).toBe(0);
+  ).toBeGreaterThan(0);
 }, 20000);

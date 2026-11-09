@@ -87,7 +87,7 @@ async function sourceEndpointErasure(f: Awaited<ReturnType<typeof setupLinearWor
   expect(retainedOriginals.every(row => row.original.status === 'unavailable' && row.original.reason === 'unavailable-after-erasure')).toBe(true);
   while (pending.progress.unfinished) pending = await f.resume(pending);
   expect(pending.state).toBe('completed');
-  const report = await f.call('/data/import/runs/' + pending.id + '/report');expect(report.status).toBe(200);
+  const report = await f.call('/data/import/runs/' + pending.id + '/report');expect(report.status,await report.clone().text()).toBe(200);
   const mappingRows = (await report.json() as { mapping: { row: number; identifier: string | null }[] }).mapping;
   expect(mappingRows.filter(row => row.identifier).map(row => row.row)).toEqual([4]);
   const survivor = await f.call('/issues/' + mappingRows[3].identifier);expect(survivor.status).toBe(200);
@@ -248,29 +248,29 @@ it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivor
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
   console.info('erasure-rollback-proof',JSON.stringify({r1:{created:beforeComplete.length,retained:detachedComplete,conflicts:blocked.conflicts,refusal:refusedRollback.message,resolvedState:resolvedRun.state},r6:{created:beforeRollbackPending.length,state:rolled.state,progress:rolled.progress},reusedDetached:0}));
 
-  // An operator is erased only after removal (OPS-004) has transferred their work
-  // and replaced their email and name on the operator and sign-in rows.
-  const maya = { email: 'maya@base.test', names: ['Maya Chen'] };
+  // Suspension retains the native member and their import-resume identity.
+  const maya = { email: 'maya'+String.fromCharCode(64)+'base.test', names: ['Maya Chen'] };
+  const mayaNativeName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.maya).first<string>('name');
   expect((await f.call('/data/erasure/preview', 'POST', maya)).status).toBe(409);
   expect((await f.call('/settings/operators/' + f.maya, 'DELETE')).status).toBe(200);
-  const mayaPreview = await (await f.call('/data/erasure/preview', 'POST', maya)).json() as { imported: { comments: number }; confirmation: string };
-  expect(mayaPreview.imported.comments).toBeGreaterThan(0);
-  const beforeMayaJournal=await journalIds();
-  const mayaErased = await f.call('/data/erasure', 'POST', { subject: maya, confirmation: mayaPreview.confirmation });
-  expect(mayaErased.status, await mayaErased.clone().text()).toBe(200);
-  const mayaReceipt=await mayaErased.json() as {journal:{receiptId:string;recordsErased:number}};
-  expect(mayaReceipt.journal.recordsErased).toBeGreaterThan(0);
   const afterMayaJournal=await journalIds();
-  expect(afterMayaJournal).toEqual([...beforeMayaJournal,mayaReceipt.journal.receiptId].sort());
   expect(afterMayaJournal).toContain(first.journal.receiptId);
 
-  // The pending run finishes without the erased records; issues already written stay.
+  // A reviewed import cannot assign new work to a suspended member. It resumes
+  // only after explicit reactivation; the erased stranger still cannot replay.
+  const beforeSuspendedResume=(await env.DB.prepare('SELECT id,version FROM issues ORDER BY id').all()).results;
+  const suspendedResume=await f.call('/data/import/runs/'+pending.id+'/resume','POST',{});
+  expect(suspendedResume.status).toBe(409);
+  expect((await suspendedResume.json() as {error:string}).error).toBe('import_option_changed');
+  expect((await env.DB.prepare('SELECT id,version FROM issues ORDER BY id').all()).results).toEqual(beforeSuspendedResume);
+  expect((await f.call('/settings/operators/'+f.maya+'/reactivate','POST',{})).status).toBe(200);
   while (pending.progress.unfinished) pending = await f.resume(pending);
   expect(pending.state).toBe('completed');
+  expect((await f.call('/settings/operators/'+f.maya+'/suspend','POST',{assignments:'unassign'})).status).toBe(200);
   expect(await count("SELECT count(*) AS n FROM issues WHERE id IN (SELECT target_id FROM ik_provenance WHERE target_kind='issue')")).toBeGreaterThan(0);
   expect(await count('SELECT count(*) AS n FROM issue_comments WHERE imported_author_name=?', 'Erased person')).toBeGreaterThan(0);
   expect(await journalIds()).toEqual(afterMayaJournal);
-  const after = await holders(env.DB, NEEDLES, env.FILES);
+  const after = await holders(env.DB, [STRANGER.toLowerCase()], env.FILES);
   console.info('person-erasure-proof', JSON.stringify({ holdersBefore: before, holdersAfter: after, recordsErased: first.journal.recordsErased }));
   expect(after).toEqual({});
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
@@ -284,10 +284,12 @@ it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivor
   expect(await refused.text()).toContain('erasure_epoch');
   expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM ik_jobs').first<number>('n')).toBe(0);
   expect((await targetCall('/api/portability/imports/' + staged + '/abort', 'POST', {}, cookie)).status).toBe(200);
-  // The archive made after it restores, and holds nothing of either person.
+  // The archive made after erasure restores without the erased stranger and retains the suspended native member.
   const restored = await stageArchive(later, cookie);
   const finalized = await targetCall('/api/portability/imports/' + restored + '/finalize', 'POST', finalBody(later), cookie);
   expect(finalized.status, await finalized.clone().text()).toBe(200);
-  expect(await holders(destination.ARCHIVE_TARGET_DB, NEEDLES, destination.ARCHIVE_TARGET_FILES)).toEqual({});
+  expect(await holders(destination.ARCHIVE_TARGET_DB,[STRANGER.toLowerCase()],destination.ARCHIVE_TARGET_FILES)).toEqual({});
+  expect(Object.keys(await holders(destination.ARCHIVE_TARGET_DB,NEEDLES.slice(1),destination.ARCHIVE_TARGET_FILES)).length).toBeGreaterThan(0);
+  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT name,suspended_at FROM operators WHERE id=?').bind(f.maya).first()).toMatchObject({name:mayaNativeName,suspended_at:expect.any(String)});
   await sourceEndpointErasure(f);
 }, 600000);

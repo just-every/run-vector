@@ -24,6 +24,7 @@ type Row = {
   teamName: string;
   assigneeId: string | null;
   assigneeName: string | null;
+  assigneeSuspended: number;
   projectId: string | null;
   projectName: string | null;
   milestoneId: string | null;
@@ -68,7 +69,7 @@ export async function listIssues(
       db
         .prepare(
           `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.start_date startDate,i.due_date dueDate,
- s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,p.id projectId,p.name projectName,c.name cycleName,
+ s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,a.suspended_at IS NOT NULL assigneeSuspended,p.id projectId,p.name projectName,c.name cycleName,
  m.id milestoneId,m.name milestoneName,
  parent.identifier parentIdentifier,parent.title parentTitle,${blockedSql} blocked,${group.key} groupKey,
  (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (SELECT l.id,l.name,l.color FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id ORDER BY l.name,l.id)) labels
@@ -140,7 +141,7 @@ export async function listIssues(
       },
       team: { id: row.teamId, name: row.teamName },
       assignee: row.assigneeId
-        ? { id: row.assigneeId, name: row.assigneeName! }
+        ? { id: row.assigneeId, name: row.assigneeName!, suspended: row.assigneeSuspended === 1 }
         : null,
       project: row.projectId
         ? { id: row.projectId, name: row.projectName! }

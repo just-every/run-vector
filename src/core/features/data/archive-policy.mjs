@@ -1,5 +1,6 @@
 // Team hierarchy, inheritance choices and materialized workflow identities are portable domain state.
 // Restore retains these values without reconciling statuses or granting parent membership.
+// Member suspension metadata and lifecycle receipts are portable domain history; credentials remain excluded.
 // Automation configuration, monthly usage and once receipts are portable. Restored rules require an explicit fresh save; historical intents never replay.
 // Slack mapped roots and source receipts are portable history; restored mappings and deliveries stay permanently held.
 // Release note drafts, exact human revisions, source identities and accountable owners are portable domain history.

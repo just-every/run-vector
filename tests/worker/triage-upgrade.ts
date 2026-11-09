@@ -4,7 +4,8 @@ import { expect, inject } from "vitest";
 import { insertHistoricalSample } from "./historical-sample-fixture";
 /**
  * Columns a later migration adds to a table that already held rows, with the value an
- * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1.
+ * untouched pre-existing row takes: 0124 gives every existing team cycles_enabled=1;
+ * 0138 leaves every existing operator unsuspended with no suspending actor.
  */
 const addedAfterBoundary: Record<string, Record<string, unknown>> = {
   teams: {
@@ -15,6 +16,7 @@ const addedAfterBoundary: Record<string, Record<string, unknown>> = {
     hierarchy_version: 1,
   },
   workflow_statuses: { inherited_from: null },
+  operators: { suspended_at: null, suspended_by: null },
 };
 /** A populated prior head retains every value, including queued candidates and mutes. */
 export async function triageUpgrade() {

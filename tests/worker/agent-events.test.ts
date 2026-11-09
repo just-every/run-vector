@@ -17,7 +17,7 @@ it('native title events commit atomically and replay through mounted MCP with cu
   await json(await owner.call(`/settings/teams/${team.id}/members/${member.id}`, 'PUT', { role: 'member' }));
   const issue = await json(await member.call('/issues', 'POST', { teamId: team.id, title: 'synthetic-vector-3702' }), 201);
   const person = (await json(await member.call('/options'))).operators.find((p: any) => p.id === member.id);
-  // This native author is removed and erased before the first agent admission.
+  // This native author is suspended and then erased before the first agent admission.
   // Its private record remains readable by the Owner, never by the main reader.
   const formerTeam = (await json(await owner.call('/settings/teams', 'POST', {
     name: 'synthetic-vector-3719', identifierPrefix: 'FORMER', isPrivate: true,
@@ -29,15 +29,17 @@ it('native title events commit atomically and replay through mounted MCP with cu
   const beforeRemoval = JSON.parse((await env.DB.prepare('SELECT event FROM agent_door_events WHERE uri=?')
     .bind('vector://issue/' + departed.id).first<string>('event'))!);
   expect(beforeRemoval.actor.person).toEqual({ id: w.lead.id, name: departedPerson.name });
-  const removalTables = ['operators', 'operator_removals', 'oa_operators', 'oa_sessions', 'agent_door_events'];
+  const removalTables = ['operators', 'operator_removals', 'member_lifecycle_events', 'oa_operators', 'oa_sessions', 'agent_door_events'];
   const removalBefore = await snapshot(removalTables);
-  await env.DB.exec("CREATE TRIGGER synthetic_vector_removal_failure BEFORE UPDATE ON agent_door_events WHEN NEW.id='" + beforeRemoval.id + "' BEGIN SELECT RAISE(ABORT,'synthetic-vector-3723'); END");
+  await env.DB.exec("CREATE TRIGGER synthetic_vector_removal_failure BEFORE INSERT ON audit_records WHEN NEW.action='operator.suspended' BEGIN SELECT RAISE(ABORT,'synthetic-vector-3723'); END");
   try {
     expect((await owner.call('/settings/operators/' + w.lead.id, 'DELETE')).status).toBe(500);
     expect(await snapshot(removalTables)).toEqual(removalBefore);
   } finally { await env.DB.exec('DROP TRIGGER synthetic_vector_removal_failure'); }
   await json(await owner.call('/settings/operators/' + w.lead.id, 'DELETE'));
   expect((await w.lead.call('/issues/' + departed.identifier)).status).toBe(401);
+  expect(JSON.parse((await env.DB.prepare('SELECT event FROM agent_door_events WHERE id=?')
+    .bind(beforeRemoval.id).first<string>('event'))!)).toEqual(beforeRemoval);
   const subject = { names: [departedPerson.name] };
   const erasure = await json(await owner.call('/data/erasure/preview', 'POST', subject));
   await json(await owner.call('/data/erasure', 'POST', { subject, confirmation: erasure.confirmation }));

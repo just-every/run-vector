@@ -95,8 +95,18 @@ const viewTeams: Resolve<string[] | null> = async request => {
 const restrictedRole = (role: unknown) => role === 'viewer' || role === 'guest'
 const leadership = (role: unknown) => role === 'owner' || role === 'admin'
 async function memberRole(db: D1Database, id: string) {
-  return (await db.prepare('SELECT role FROM operators WHERE id=? AND removed_at IS NULL').bind(id).first<{ role: string }>())?.role
+  return (await db.prepare('SELECT role FROM operators WHERE id=?').bind(id).first<{ role: string }>())?.role
 }
+
+/** Re-inviting a suspended person uses their retained role, never a requested
+ * lower role that could let an Admin reopen an Owner's account. */
+const invitationRow: Resolve<RowId> = async request => {
+  const former = await request.db.prepare(`SELECT role FROM operators WHERE workspace_id=(SELECT workspace_id FROM operators WHERE id=?)
+    AND lower(email)=lower(?) AND suspended_at IS NOT NULL`).bind(request.actor,text(await field(request,'email'))??'').first<string>('role');
+  if (former) return leadership(former) ? 'leaders.reactivate' : 'members.reactivate';
+  const role = await field(request,'role');
+  return leadership(role) ? 'leaders.manage' : role === 'viewer' ? 'viewers.manage' : 'members.manage';
+};
 
 const templateTeam: Resolve<string[] | null> = async request => {
   const id=request.params.id
@@ -189,9 +199,13 @@ export const doors: Door[] = [
   { method: 'GET', path: '/settings/audit', row: 'audit.read' },
   { method: 'GET', path: '/settings/audit.csv', row: 'audit.read' },
   // Workspace, people and permissions
-  { method: 'POST', path: '/settings/operators/invite', invitation: true, row: async request => leadership(await field(request, 'role')) ? 'leaders.manage' : await field(request, 'role') === 'viewer' ? 'viewers.manage' : 'members.manage' },
+  { method: 'POST', path: '/settings/operators/invite', invitation: true, row: invitationRow },
   { method: 'POST', path: '/settings/operators/confirm-identity', invitation: true, row: 'members.manage' },
   { method: 'PATCH', path: '/settings/operators/:operatorId/role', row: async request => leadership(await field(request, 'role')) || leadership(await memberRole(request.db, request.params.operatorId)) ? 'leaders.manage' : restrictedRole(await field(request, 'role')) || restrictedRole(await memberRole(request.db, request.params.operatorId)) ? 'viewers.manage' : 'members.manage' },
+  { method: 'GET', path: '/settings/operators/suspended', row: 'members.reactivate' },
+  { method: 'GET', path: '/settings/operators/:operatorId/suspension', row: 'members.reactivate' },
+  { method: 'POST', path: '/settings/operators/:operatorId/reactivate', row: async ({db,params}) => leadership(await memberRole(db,params.operatorId)) ? 'leaders.reactivate' : 'members.reactivate' },
+  { method: 'POST', path: '/settings/operators/:operatorId/suspend', row: async ({db,actor,params}) => params.operatorId === actor ? 'workspace.leave' : leadership(await memberRole(db,params.operatorId)) ? 'leaders.manage' : await memberRole(db,params.operatorId)==='viewer' ? 'viewers.manage' : 'members.manage' },
   { method: 'DELETE', path: '/settings/operators/:operatorId', row: async ({ db, actor, params }) =>
     params.operatorId === actor ? 'workspace.leave' : leadership(await memberRole(db, params.operatorId)) ? 'leaders.manage' : await memberRole(db, params.operatorId) === 'viewer' ? 'viewers.manage' : 'members.manage' },
   { method: 'PATCH', path: '/settings', row: 'workspace.settings' },

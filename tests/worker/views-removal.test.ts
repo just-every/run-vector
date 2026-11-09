@@ -4,7 +4,7 @@ import { expect, inject, it } from "vitest";
 import { fixture } from "./removal-fixture";
 import { createUlid } from "../../src/core/shared/ids";
 import { savedViewSchema } from "../../src/core/features/views/schema";
-it("[VIEW-002 VIEW-003 OPS-004] required removal transfers preserve board queries even at the successor limit and remove private views and preferences", async () => {
+it("[VIEW-002 VIEW-003 OPS-004] suspension transfers preserve board queries even at the successor limit and keep hidden private views and preferences", async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   const f = await fixture();
   const body = {
@@ -59,13 +59,14 @@ it("[VIEW-002 VIEW-003 OPS-004] required removal transfers preserve board querie
   expect(transferred.query).toEqual(shared.query);
   expect(transferred.name).toBe("Board work (transferred)");
   expect((await f.request("/views/" + privateView.id)).status).toBe(404);
+  expect(await env.DB.prepare("SELECT owner_operator_id FROM saved_views WHERE id=?").bind(privateView.id).first("owner_operator_id")).toBe(f.member);
   expect(
     await env.DB.prepare(
       "SELECT count(*) n FROM list_preferences WHERE operator_id=?",
     )
       .bind(f.member)
       .first<number>("n"),
-  ).toBe(0);
+  ).toBe(1);
   expect(
     await env.DB.prepare(
       "SELECT count(*) n FROM saved_views WHERE owner_operator_id=?",

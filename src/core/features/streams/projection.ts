@@ -40,7 +40,7 @@ export type StreamItem = {
   startDate: string | null;
   dueDate: string | null;
   updatedAt: string;
-  assignee: { id: string; name: string } | null;
+  assignee: { id: string; name: string; suspended?: boolean } | null;
   project: { id: string; name: string; health: string } | null;
   milestoneId: string | null;
   milestone: { id: string; name: string; projectId: string } | null;
@@ -302,7 +302,7 @@ function toStreamItem(
     startDate: issue.startDate,
     dueDate: issue.dueDate,
     updatedAt: issue.updatedAt,
-    assignee: assignee && { id: assignee.id, name: assignee.name },
+    assignee: assignee && { id: assignee.id, name: assignee.name, suspended: assignee.suspendedAt !== null },
     project: project && {
       id: project.id,
       name: project.name,
