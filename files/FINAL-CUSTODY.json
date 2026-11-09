@@ -1,0 +1,19 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-fix2-pc1",
+  "head": "60b465d927881a05b01253df7743e3ac8c0456e9",
+  "remoteHead": "60b465d927881a05b01253df7743e3ac8c0456e9",
+  "checkoutClean": true,
+  "startingPublishedHeadPreserved": true,
+  "ciRunId": 42539853736,
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "60b465d927881a05b01253df7743e3ac8c0456e9",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42539853736",
+    "status": "completed"
+  },
+  "observedAt": "2026-11-09T01:03:35.262456+00:00",
+  "PR": null,
+  "blockers": [],
+  "publicationScan": "Fleet Mac publication scan and landing remain external."
+}

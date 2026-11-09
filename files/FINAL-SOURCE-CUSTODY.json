@@ -22,5 +22,7 @@
   "candidateMigration": "0136_sub_teams.sql",
   "candidateMigrationSha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
   "projectUpgradeCheckpoint": "0125_issue_templates.sql",
-  "projectUpgradeProof": "Historical release inserted before 0133 adds owner_operator_id; all assertions pass."
+  "projectUpgradeProof": "Historical release inserted before 0133 adds owner_operator_id; all assertions pass.",
+  "idMapPaths": [],
+  "idMapNote": "No ID-MAP-named file is tracked in the declared checkout; no such source was introduced or removed."
 }

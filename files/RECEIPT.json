@@ -214,11 +214,14 @@
   "ci": {
     "runId": 42539853736,
     "head": "60b465d927881a05b01253df7743e3ac8c0456e9",
-    "status": "pending",
-    "conclusion": null,
-    "apiCallsUsed": 9,
+    "status": "completed",
+    "conclusion": "success",
+    "apiCallsUsed": 10,
     "budget": 10,
-    "supersededRunId": 42538592587
+    "supersededRunId": 42538592587,
+    "head_sha": "60b465d927881a05b01253df7743e3ac8c0456e9",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42539853736",
+    "observedAt": "2026-11-09T01:03:35.262456+00:00"
   },
   "sourceCustody": "FINAL-SOURCE-CUSTODY.json",
   "evidenceSelection": {
@@ -266,8 +269,24 @@
       "upgrade-probe.log",
       "populated-upgrade.log",
       "setup-summary.txt",
-      "final-build.log"
+      "final-build.log",
+      "evidence-intermediate-return-check.json",
+      "evidence-intermediate-publication.txt",
+      "final-ci-status.json",
+      "final-ci-status.exit",
+      "FINAL-CUSTODY.json"
     ],
     "review": "Explicit regular non-secret report, receipt, logs and synthetic screenshots; no settings, environment dumps, runtime databases, authentication bodies or held-out material selected."
-  }
+  },
+  "evidenceRoundTrip": {
+    "head": "cbe3ecaee418f41664dd9425575262ddaa16db67",
+    "status": "restored",
+    "filesVerified": 44,
+    "manifestSha256": "330cb574bc9cd3e4fc2b3c50b2ccc237f85f528e9bbfedd6ee380b8ac147aa25",
+    "receipt": "evidence-intermediate-return-check.json",
+    "note": "Intermediate evidence save fetched into a separate /tmp root; the fleet final collection destination remains untouched."
+  },
+  "terminalStatus": "READY",
+  "blockers": [],
+  "finalCustody": "FINAL-CUSTODY.json"
 }
