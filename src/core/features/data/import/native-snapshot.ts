@@ -2,6 +2,7 @@
 import inventory from '../archive-inventory.json';
 import type { Json, D1Sql } from '../../../../../vendor/base/import-kit/src/d1/index';
 
+// Leadership digest receipts belong to recipients and initiatives; issue rollback never rewinds outbound history.
 // Direct project edges and their notifications belong to project identities,
 // never an issue snapshot. Issue import rollback must leave that graph intact.
 // Each owned relation participates in the same full-value predicate. Incoming

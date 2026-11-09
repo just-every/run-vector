@@ -1,3 +1,4 @@
+import {addRoadmapRoutes} from '../features/roadmap/routes';
 import {addAutomationRuleRoutes} from '../features/automation-rules/routes';
 import {addSlaRoutes} from '../features/slas/routes';
 import {addProjectDependencyRoutes} from '../features/project-dependencies/routes';
@@ -251,6 +252,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addRoadmapRoutes(app);
   addOAuthRoutes(app);
   addSubscriptionRoutes(app);
   addInitiativeRoutes(app);

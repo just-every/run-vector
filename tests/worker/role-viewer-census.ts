@@ -32,6 +32,7 @@ import {bulkTeamInputSchema,bulkDuplicateInputSchema} from '../../src/core/featu
 import {dependencyInputSchema} from '../../src/core/features/dependencies/input';
 import {moveManualOrderSchema} from '../../src/core/features/manual-order/schema';
 import {importInputSchema,importApplySchema} from '../../src/core/features/data/import/input';
+import {roadmapChange} from '../../src/core/features/roadmap/schema';
 
 type Workspace=Awaited<ReturnType<typeof roleWorkspace>>;
 type Surface='native'|'bearer';
@@ -260,9 +261,14 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/oauth/consent',{request:oauthRequest,decision:'approve'});
   native('POST','/settings/integrations/tokens',{name:'synthetic-vector-31074',scopes:['issues:read']});native('DELETE','/settings/integrations/tokens/:id',undefined,{id:personalToken.credential.id});native('ALL','/portability/*',{}, {},'/portability/exports');
   native('POST','/data/import/preview',importInput);native('POST','/data/import/apply',applyBody);native('POST','/data/import/runs/:id/resume',{}, {id:run.id});native('POST','/data/import/runs/:id/rollback',{confirmed:true},{id:run.id});native('POST','/data/erasure/preview',subject);native('POST','/data/erasure',{subject,confirmation:erasure.confirmation});
+  const roadmap=await call(member,'/roadmap');
+  const roadmapProject=roadmap.projects.find((row:any)=>row.id===project.id);
+  expect(roadmapProject,'the future Viewer can read the project roadmap').toBeDefined();
+  native('PATCH','/roadmap/projects/:id',{expectedVersion:roadmapProject.version,priority:'high'},pp);
   // Validate the administration/resource family bodies with the same schemas
   // their handlers use, independently of the role gate's early refusal.
   const schemas:Record<string,{parse(input:unknown):unknown}>={
+   'PATCH /roadmap/projects/:id':roadmapChange,
    'POST /settings/report-exports':createSchedule,
    'PATCH /settings/report-exports/:id':changeSchedule,
    'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,

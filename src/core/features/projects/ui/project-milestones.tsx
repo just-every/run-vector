@@ -58,7 +58,7 @@ export function ProjectMilestones({ project, writable, onChanged }: {
     {error && <p role="alert">{error}</p>}
     {creating && <MilestoneForm disabled={disabled} onSave={save} onCancel={() => setCreating(false)} />}
     {project.milestones.length === 0 && !creating && <p>No milestones yet.</p>}
-    <ol>{project.milestones.map((milestone, index) => <li key={milestone.id} aria-label={`Milestone ${milestone.name}`}>
+    <ol>{project.milestones.map((milestone, index) => <li key={milestone.id} id={'milestone-'+milestone.id} aria-label={`Milestone ${milestone.name}`}>
       {editing === milestone.id ? <MilestoneForm milestone={milestone} disabled={disabled}
         onSave={event => save(event, milestone)} onCancel={() => setEditing(null)} /> : <>
         <div className="project-milestones__heading"><h3>{milestone.name}</h3>

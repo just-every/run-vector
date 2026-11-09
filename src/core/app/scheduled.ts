@@ -1,3 +1,4 @@
+import { sendLeadershipDigests, type LeadershipDependencies } from '../features/leadership-digests/scheduled';
 import {reconcileRuleDeliveries} from '../features/automation-rules/failures';
 import {evaluateRules} from '../features/automation-rules/evaluation';
 import {advanceSlas} from '../features/slas/service';
@@ -21,6 +22,7 @@ import type { WorkerBindings } from "./server";
 export async function scheduled(
   event: Pick<ScheduledController, "scheduledTime">,
   env: WorkerBindings,
+  leadershipDependencies?: LeadershipDependencies,
 ) {
   const now = new Date(event.scheduledTime);
   configureNotifications(env.DB,env);
@@ -41,6 +43,7 @@ export async function scheduled(
   // Route notifications after scheduled Inbox producers finish, including SQL automation.
   await drainNotificationMail(env, { scheduled: true, now });
   await drainNotificationDigests(env, { now });
+  await sendLeadershipDigests(env,now,leadershipDependencies);
   await dispatchWebhooks(env);
   await reconcileRuleDeliveries(env,now);
   await runReportExports(env, now);

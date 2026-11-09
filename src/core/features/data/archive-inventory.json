@@ -2319,6 +2319,32 @@
   "issue_sla_restore_holds": [
     "issue_id"
   ],
+  "leadership_digest_preferences": [
+    "operator_id",
+    "email_enabled",
+    "slack_enabled",
+    "revision"
+  ],
+  "leadership_digest_receipts": [
+    "id",
+    "workspace_id",
+    "recipient_id",
+    "slot",
+    "channel",
+    "status",
+    "attempts",
+    "claim_token",
+    "claimed_at",
+    "next_attempt_at",
+    "reason",
+    "snapshot_json",
+    "preference_revision",
+    "created_at",
+    "updated_at"
+  ],
+  "leadership_digest_restore_holds": [
+    "receipt_id"
+  ],
   "release_note_drafts": [
     "release_id",
     "owner_operator_id",
