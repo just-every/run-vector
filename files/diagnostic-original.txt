@@ -1,0 +1,18 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/run-vector
+
+Using secrets defined in .dev.vars
+ ↓ tests/worker/role-matrix.test.ts > [ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused
+ ↓ tests/worker/role-matrix.test.ts > [TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported
+ ↓ tests/worker/role-matrix.test.ts > [ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing
+ ↓ tests/worker/role-matrix.test.ts > [ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing
+ ✓ tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 89339ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 4 skipped (5)
+   Start at  11:34:38
+   Duration  138.42s (transform 21.44s, setup 0ms, import 45.82s, tests 89.34s, environment 0ms)
+

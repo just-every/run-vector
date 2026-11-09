@@ -1,0 +1,34 @@
+{
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f205-wk2-split-1",
+  "head": "796399103ffb5de8572661f52ae482f54d4916cc",
+  "ready_basis": "exact-SHA completed/success Verify",
+  "verify_run_id": 42621810959,
+  "verify_conclusion": "success",
+  "worker_2_job_id": 129176165524,
+  "worker_2_duration_seconds": 1448,
+  "worker_2_limit_seconds": 1500,
+  "hosted_file_after_ms": 265318,
+  "local_split_executions": 9,
+  "local_split_passed": 9,
+  "local_split_max_ms": {
+    "guest": 52853,
+    "viewer": 84398,
+    "private": 39840
+  },
+  "test_counts": {
+    "before": 5,
+    "after": 7
+  },
+  "contract_counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "clause_changes": [],
+  "team_006_claim": "none",
+  "local_complete_file_limitation": true,
+  "pr": null,
+  "landing_claim": false
+}

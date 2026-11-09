@@ -1,0 +1,22 @@
+{
+  "command": "cloud_run timeout 900 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts --reporter=json --outputFile=../before-N.json",
+  "attempts": [
+    {
+      "run": 1,
+      "exit": 1,
+      "json_receipt": true
+    },
+    {
+      "run": 2,
+      "exit": 1,
+      "json_receipt": true
+    },
+    {
+      "run": 3,
+      "exit": 124,
+      "json_receipt": false,
+      "outer_timeout_ms": 900000
+    }
+  ],
+  "note": "Three original complete-file attempts were made. The third outer command timed out and has no completed per-test or file timing receipt."
+}

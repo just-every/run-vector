@@ -1,0 +1,22 @@
+[
+  "tests/worker/data-http-object-failure.test.ts",
+  "tests/worker/foundation-rollback.test.ts",
+  "tests/worker/cycle-membership.test.ts",
+  "tests/worker/custom-fields.test.ts",
+  "tests/worker/subissues-access.test.ts",
+  "tests/worker/custom-fields-upgrade.test.ts",
+  "tests/worker/project-dependencies-upgrade.test.ts",
+  "tests/worker/cycle-closure.test.ts",
+  "tests/worker/role-matrix.test.ts",
+  "tests/worker/jira-apply.test.ts",
+  "tests/worker/current-intake-pagination.test.ts",
+  "tests/worker/data-http-concurrency.test.ts",
+  "tests/worker/collaboration-final-admission.test.ts",
+  "tests/worker/base-refresh-upgrade.test.ts",
+  "tests/worker/views-removal.test.ts",
+  "tests/worker/my-work-tabs.test.ts",
+  "tests/worker/data-http-audit-recovery.test.ts",
+  "tests/worker/managed-mail.test.ts",
+  "tests/worker/intake-policy.test.ts",
+  "tests/worker/removal-boundary.test.ts"
+]

@@ -1,0 +1,22 @@
+[
+  "tests/worker/project-dependencies.test.ts",
+  "tests/worker/manual-order-import.test.ts",
+  "tests/worker/subissues-import.test.ts",
+  "tests/worker/housekeeping.test.ts",
+  "tests/worker/current-next.test.ts",
+  "tests/worker/parent-deletion-custody.test.ts",
+  "tests/worker/source-ingest.test.ts",
+  "tests/worker/issue-deletion-webhooks.test.ts",
+  "tests/worker/search-exact-admission.test.ts",
+  "tests/worker/editor.test.ts",
+  "tests/worker/base-auth.test.ts",
+  "tests/worker/current-recently-done.test.ts",
+  "tests/worker/github-links.test.ts",
+  "tests/worker/agent-events.test.ts",
+  "tests/worker/automation-rules.test.ts",
+  "tests/worker/removal-files.test.ts",
+  "tests/worker/current-now.test.ts",
+  "tests/worker/data-http-lost-reply.test.ts",
+  "tests/worker/cycle-schedule.test.ts",
+  "tests/worker/sub-teams.test.ts"
+]

@@ -1,0 +1,34 @@
+diff --git a/sources.lock.json b/sources.lock.json
+index c87d26e5..4fad5b33 100644
+--- a/sources.lock.json
++++ b/sources.lock.json
+@@ -10118,7 +10118,7 @@
+       "executable": false
+     },
+     "tests/worker/role-matrix.test.ts": {
+-      "sha256": "f05b4e56f5ca545b2deaff5d9a13c1a840612bcc6a2be3de9ce6999c7a37a0b4",
++      "sha256": "43cf48be1d085d54767fae0730e0c68b220ebb3b2cba18a302a2be8796b5b233",
+       "executable": false
+     },
+     "tests/worker/role-private-journey.ts": {
+diff --git a/tests/worker/role-matrix.test.ts b/tests/worker/role-matrix.test.ts
+index 8fe40798..92994262 100644
+--- a/tests/worker/role-matrix.test.ts
++++ b/tests/worker/role-matrix.test.ts
+@@ -405,9 +405,15 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
+ });
+ 
+ 
+-it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only", {timeout:120_000}, async () => {
++it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads", {timeout:120_000}, async () => {
+   await guestVisibilityJourney(await roleWorkspace());
++});
++
++it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads", {timeout:120_000}, async () => {
+   await viewerVisibilityJourney(await roleWorkspace());
++});
++
++it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes", {timeout:120_000}, async () => {
+   // Agent admission closes the retained-artifact erasure fence. Keep this
+   // journey after the Viewer's existing erasure-census setup in the shared D1.
+   await privateVisibilityJourney(await roleWorkspace());

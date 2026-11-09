@@ -1,0 +1,290 @@
+[
+  {
+    "phase": "before",
+    "run": 1,
+    "source_commit": "f9c085216b307ca884a4303b32095abc2496f5fc",
+    "completed": true,
+    "selected": 1,
+    "passed": 1,
+    "failed": 0,
+    "name_filtered": 4,
+    "files": [
+      {
+        "file": "worker/role-matrix.test.ts",
+        "duration_ms": 108492,
+        "tests": [
+          {
+            "name": "[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+            "duration_ms": 108492,
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "phase": "before",
+    "run": 2,
+    "source_commit": "f9c085216b307ca884a4303b32095abc2496f5fc",
+    "completed": true,
+    "selected": 1,
+    "passed": 0,
+    "failed": 1,
+    "name_filtered": 4,
+    "files": [
+      {
+        "file": "worker/role-matrix.test.ts",
+        "duration_ms": 140025,
+        "tests": [
+          {
+            "name": "[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+            "duration_ms": 140025,
+            "status": "failed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "phase": "before",
+    "run": 3,
+    "source_commit": "f9c085216b307ca884a4303b32095abc2496f5fc",
+    "completed": true,
+    "selected": 1,
+    "passed": 0,
+    "failed": 1,
+    "name_filtered": 4,
+    "files": [
+      {
+        "file": "worker/role-matrix.test.ts",
+        "duration_ms": 127664,
+        "tests": [
+          {
+            "name": "[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only",
+            "duration_ms": 127664,
+            "status": "failed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "phase": "after",
+    "run": 1,
+    "source_commit": "796399103ffb5de8572661f52ae482f54d4916cc",
+    "completed": true,
+    "selected": 3,
+    "passed": 3,
+    "failed": 0,
+    "name_filtered": 4,
+    "files": [
+      {
+        "file": "worker/role-matrix.test.ts",
+        "duration_ms": 99232,
+        "tests": [
+          {
+            "name": "[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads",
+            "duration_ms": 18085,
+            "status": "passed"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads",
+            "duration_ms": 70167,
+            "status": "passed"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes",
+            "duration_ms": 10977,
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "phase": "after",
+    "run": 2,
+    "source_commit": "796399103ffb5de8572661f52ae482f54d4916cc",
+    "completed": true,
+    "selected": 3,
+    "passed": 3,
+    "failed": 0,
+    "name_filtered": 4,
+    "files": [
+      {
+        "file": "worker/role-matrix.test.ts",
+        "duration_ms": 106313,
+        "tests": [
+          {
+            "name": "[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads",
+            "duration_ms": 19806,
+            "status": "passed"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads",
+            "duration_ms": 52632,
+            "status": "passed"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes",
+            "duration_ms": 33873,
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "phase": "after",
+    "run": 3,
+    "source_commit": "796399103ffb5de8572661f52ae482f54d4916cc",
+    "completed": true,
+    "selected": 3,
+    "passed": 3,
+    "failed": 0,
+    "name_filtered": 4,
+    "files": [
+      {
+        "file": "worker/role-matrix.test.ts",
+        "duration_ms": 177093,
+        "tests": [
+          {
+            "name": "[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing",
+            "duration_ms": null,
+            "status": "skipped"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads",
+            "duration_ms": 52853,
+            "status": "passed"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads",
+            "duration_ms": 84398,
+            "status": "passed"
+          },
+          {
+            "name": "[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes",
+            "duration_ms": 39840,
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  }
+]

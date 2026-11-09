@@ -1,0 +1,79 @@
+[
+  {
+    "call": 1,
+    "utc": "2026-11-09T13:09:29Z",
+    "args": [
+      "api",
+      "repos/just-every/run-vector/actions/runs?head_sha=796399103ffb5de8572661f52ae482f54d4916cc&per_page=100",
+      "--jq",
+      "[.workflow_runs[] | select(.name == \"Verify\") | {id,name,event,status,conclusion,head_sha,html_url,created_at}]"
+    ]
+  },
+  {
+    "call": 2,
+    "utc": "2026-11-09T13:14:30Z",
+    "args": [
+      "api",
+      "repos/just-every/run-vector/actions/runs/42621810959",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 3,
+    "utc": "2026-11-09T13:19:29Z",
+    "args": [
+      "api",
+      "repos/just-every/run-vector/actions/runs/42621810959",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 4,
+    "utc": "2026-11-09T13:24:29Z",
+    "args": [
+      "api",
+      "repos/just-every/run-vector/actions/runs/42621810959",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 5,
+    "epoch": 1794230974.0024266,
+    "utc": "2026-11-09T13:29:33Z",
+    "args": [
+      "api",
+      "repos/just-every/run-vector/actions/runs/42621810959",
+      "--jq",
+      "{status,conclusion,head_sha,html_url}"
+    ]
+  },
+  {
+    "call": 6,
+    "epoch": 1794231279.7640483,
+    "utc": "2026-11-09T13:34:39Z",
+    "args": [
+      "api",
+      "repos/just-every/run-vector/actions/runs/42621810959/jobs?per_page=100",
+      "--jq",
+      "{total_count,jobs:[.jobs[]|{id,name,status,conclusion,head_sha,html_url,started_at,completed_at,steps:[.steps[]|{name,number,status,conclusion}]}]}"
+    ]
+  },
+  {
+    "call": 7,
+    "epoch": 1794232132.519594,
+    "utc": "2026-11-09T13:48:52Z",
+    "args": [
+      "run",
+      "view",
+      "42621810959",
+      "--repo",
+      "just-every/run-vector",
+      "--job",
+      "129176165524",
+      "--log"
+    ]
+  }
+]

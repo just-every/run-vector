@@ -1,0 +1,12 @@
+TIMING: original/run-1 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 108492
+TIMING: split/run-1 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads 18085
+TIMING: split/run-1 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads 70167
+TIMING: split/run-1 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes 10977
+TIMING: original/run-2 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 140025
+TIMING: split/run-2 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads 19806
+TIMING: split/run-2 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads 52632
+TIMING: split/run-2 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes 33873
+TIMING: original/run-3 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 127664
+TIMING: split/run-3 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads 52853
+TIMING: split/run-3 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads 84398
+TIMING: split/run-3 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes 39840

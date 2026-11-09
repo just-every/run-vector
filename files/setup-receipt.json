@@ -1,0 +1,17 @@
+{
+  "command": "cloud_run timeout 900 npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+  "exit": 0,
+  "test_node": "22.20.0",
+  "pnpm": "10.12.4",
+  "full_history_clone": true,
+  "base_head": "f9c085216b307ca884a4303b32095abc2496f5fc",
+  "origin_main": "0b10199c8e0e680447e15291dd8d5b622d5d18c1",
+  "merge_needed": false,
+  "migration": "0139_sub_teams.sql",
+  "counts_before": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  }
+}

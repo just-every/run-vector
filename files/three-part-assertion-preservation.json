@@ -1,0 +1,43 @@
+{
+  "base": "f9c085216b307ca884a4303b32095abc2496f5fc",
+  "test_file": "tests/worker/role-matrix.test.ts",
+  "registrations_before": 5,
+  "registrations_after": 7,
+  "helpers": [
+    {
+      "file": "tests/worker/role-fixture.ts",
+      "unchanged": true,
+      "sha256": "43bc75514fce40f3687ef43aa7fcfb1c8fbea5f372188156daada70e6257e482"
+    },
+    {
+      "file": "tests/worker/role-guest-journey.ts",
+      "unchanged": true,
+      "sha256": "edcd4a8c1233fe162f7387c6c8b4575b9516242426d088c29bd61b5721d34452"
+    },
+    {
+      "file": "tests/worker/role-viewer-journey.ts",
+      "unchanged": true,
+      "sha256": "373cd1e5fa836756c279af2073ef659ed6946d26579763ee8074b9eb55686ac3"
+    },
+    {
+      "file": "tests/worker/role-private-journey.ts",
+      "unchanged": true,
+      "sha256": "b9bd0f32c1e09d13c4c8c3972995f540a24104d6d04bbb68e137778db577e3cc"
+    }
+  ],
+  "journey_calls_before": [
+    "guestVisibilityJourney",
+    "viewerVisibilityJourney",
+    "privateVisibilityJourney"
+  ],
+  "journey_calls_after": [
+    "guestVisibilityJourney",
+    "viewerVisibilityJourney",
+    "privateVisibilityJourney"
+  ],
+  "timeouts_ms": [
+    120000,
+    120000,
+    120000
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "candidate_registrations": 7,
+  "checks": [
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "output_sha256": "94bc9bc9c46b064453c5810261191d87d0eaf85e5b2c4515a0a171695a06cacc"
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "output_sha256": "2fe4bd53c1b06c8540a7bb7eb5b16ae6746b6dce4527bc6af16f110d895d045c"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "output_sha256": "20640ad04a504cb2e17c694491597e149314989bdf1c6344a7df9512e253bede"
+    }
+  ],
+  "source_sha256": {
+    "tests/worker/role-matrix.test.ts": "43cf48be1d085d54767fae0730e0c68b220ebb3b2cba18a302a2be8796b5b233",
+    "sources.lock.json": "b6a3fba36fe5cf700d1a62182356cc785863933f78aff39fd72054768ea4f87c"
+  }
+}

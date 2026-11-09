@@ -1,0 +1,3 @@
+MECHANICAL lock=pnpm sources:lock exit=0
+MECHANICAL check=pnpm sources:check exit=0
+MECHANICAL typecheck=pnpm typecheck exit=0

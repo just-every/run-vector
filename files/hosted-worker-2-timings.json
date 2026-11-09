@@ -1,0 +1,15 @@
+{
+  "command": "gh run view 42621810959 --repo just-every/run-vector --job 129176165524 --log",
+  "exit": 0,
+  "run_id": 42621810959,
+  "job_id": 129176165524,
+  "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+  "timing_lines": [
+    "shards (worker-2, true, true, true)\tVerify the independent shard\t2026-11-09T13:03:06.5928147Z     \"tests/worker/role-matrix.test.ts\": {",
+    "shards (worker-2, true, true, true)\tVerify the independent shard\t2026-11-09T13:07:44.2829800Z  \u2713 tests/worker/role-matrix.test.ts (7 tests) 265318ms",
+    "shards (worker-2, true, true, true)\tVerify the independent shard\t2026-11-09T13:07:44.2850055Z    \u2713 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current invited teams scope Guest native, bearer, search, project, notification and document reads  8170ms",
+    "shards (worker-2, true, true, true)\tVerify the independent shard\t2026-11-09T13:07:44.2852430Z    \u2713 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] Viewers remain read-only through native and bearer doors and current private-team reads  112833ms",
+    "shards (worker-2, true, true, true)\tVerify the independent shard\t2026-11-09T13:07:44.2854680Z    \u2713 [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private teams scope native, bearer, search, project, notification and document reads after membership and privacy changes  6975ms"
+  ],
+  "role_matrix_file_duration_ms": 265318.0
+}

@@ -1,0 +1,95 @@
+{
+  "before_source": "f9c085216b307ca884a4303b32095abc2496f5fc",
+  "after_source": "796399103ffb5de8572661f52ae482f54d4916cc",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "method": "serial original and split clause-tag benchmarks from role-matrix.test.ts, using fresh native D1 fixtures and no private local settings",
+  "command": "cloud_run timeout --kill-after=20s 400 pnpm exec vitest run --config vitest.config.ts tests/worker/role-matrix.test.ts -t 'ROLE-002 ROLE-003 ROLE-013' --reporter=verbose --reporter=json",
+  "selector_actual": "ROLE-002 ROLE-003 ROLE-013",
+  "original_results": [
+    {
+      "run": 1,
+      "exit": 0
+    },
+    {
+      "run": 2,
+      "exit": 1
+    },
+    {
+      "run": 3,
+      "exit": 1
+    }
+  ],
+  "original_failures": {
+    "2": [
+      "Error: Test timed out in 120000ms.",
+      "Test timed out in 120000ms."
+    ],
+    "3": [
+      "Error: Test timed out in 120000ms.",
+      "Test timed out in 120000ms."
+    ]
+  },
+  "split_results": [
+    {
+      "run": 1,
+      "exit": 0
+    },
+    {
+      "run": 2,
+      "exit": 0
+    },
+    {
+      "run": 3,
+      "exit": 0
+    }
+  ],
+  "registered_tests_before": 5,
+  "registered_tests_after": 7,
+  "name_filtered_unchanged_tests_per_benchmark": 4,
+  "source_tests_skipped_or_removed": false,
+  "invocations": [
+    {
+      "phase": "before",
+      "run": 1,
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/original-control",
+      "json_receipt": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-before-1.json",
+      "console_log": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-before-1.log"
+    },
+    {
+      "phase": "before",
+      "run": 2,
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/original-control",
+      "json_receipt": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-before-2.json",
+      "console_log": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-before-2.log"
+    },
+    {
+      "phase": "before",
+      "run": 3,
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/original-control",
+      "json_receipt": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-before-3.json",
+      "console_log": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-before-3.log"
+    },
+    {
+      "phase": "after",
+      "run": 1,
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/run-vector",
+      "json_receipt": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-after-1.json",
+      "console_log": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-after-1.log"
+    },
+    {
+      "phase": "after",
+      "run": 2,
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/run-vector",
+      "json_receipt": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-after-2.json",
+      "console_log": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-after-2.log"
+    },
+    {
+      "phase": "after",
+      "run": 3,
+      "cwd": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/run-vector",
+      "json_receipt": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-after-3.json",
+      "console_log": "/home/agent/rer-consolidation/work/sd-vector-c-f205-wk2-split-1/control-after-3.log"
+    }
+  ]
+}

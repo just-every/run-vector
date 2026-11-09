@@ -1,0 +1,49 @@
+{
+  "repository": "just-every/run-vector",
+  "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+  "observations": [
+    {
+      "utc": "2026-11-09T13:09:29Z",
+      "conclusion": null,
+      "created_at": "2026-11-09T13:01:15Z",
+      "event": "push",
+      "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42621810959",
+      "id": 42621810959,
+      "name": "Verify",
+      "status": "in_progress"
+    },
+    {
+      "utc": "2026-11-09T13:14:29Z",
+      "conclusion": null,
+      "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42621810959",
+      "status": "in_progress"
+    },
+    {
+      "utc": "2026-11-09T13:19:29Z",
+      "conclusion": null,
+      "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42621810959",
+      "status": "in_progress"
+    },
+    {
+      "utc": "2026-11-09T13:24:29Z",
+      "conclusion": null,
+      "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42621810959",
+      "status": "in_progress"
+    },
+    {
+      "utc": "2026-11-09T13:29:29Z",
+      "conclusion": "success",
+      "head_sha": "796399103ffb5de8572661f52ae482f54d4916cc",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42621810959",
+      "status": "completed"
+    }
+  ],
+  "status": "completed",
+  "run_id": 42621810959,
+  "conclusion": "success",
+  "html_url": "https://github.com/just-every/run-vector/actions/runs/42621810959"
+}

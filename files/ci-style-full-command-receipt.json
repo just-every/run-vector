@@ -1,0 +1,14 @@
+{
+  "head": "796399103ffb5de8572661f52ae482f54d4916cc",
+  "attempts": [
+    {
+      "run": 1,
+      "exit": 124,
+      "outer_command_limit_ms": 1200000,
+      "json_receipt": false,
+      "completed": false
+    }
+  ],
+  "runs_2_and_3": "not started: guard stopped after missing receipt",
+  "note": "Private local settings were moved aside without being read. This did not resolve local complete-file timeouts; no cause is inferred. Complete-file hosted verification passed on this exact SHA."
+}
