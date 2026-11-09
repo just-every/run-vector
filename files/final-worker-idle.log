@@ -1,0 +1,37 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+> vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/base-refresh-upgrade.test.ts tests/worker/outbound-broken-destination.test.ts tests/worker/role-matrix.test.ts tests/worker/automation-rules.test.ts tests/worker/project-fields-upgrade.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+ ❯ tests/worker/role-matrix.test.ts (5 tests | 1 failed) 230333ms
+   × [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only 126068ms
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/role-matrix.test.ts > [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+Error: Test timed out in 120000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/worker/role-matrix.test.ts:407:1
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 20 passed (21)
+   Start at  23:44:38
+   Duration  409.12s (transform 5.09s, setup 0ms, import 32.79s, tests 372.78s, environment 1ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

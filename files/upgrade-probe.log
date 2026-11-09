@@ -1,0 +1,20 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+> vitest run --config vitest.config.ts tests/worker/cycle-membership.test.ts tests/worker/cycle-schedule.test.ts tests/worker/source-ingest.test.ts tests/worker/slack-app.test.ts
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+Using secrets defined in .dev.vars
+
+ Test Files  3 passed (3)
+      Tests  8 passed (8)
+   Start at  23:22:28
+   Duration  37.13s (transform 5.27s, setup 0ms, import 20.58s, tests 14.26s, environment 0ms)
+

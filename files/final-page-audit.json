@@ -1,0 +1,240 @@
+[
+  {
+    "path": "/app",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/my-work",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/issues",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/issues/backlog",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/board",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/projects",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/projects/new",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/cycles",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/inbox",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/inbox/snoozed",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/views",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/settings",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/settings/people",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/search",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/new-issue",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/new",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  },
+  {
+    "path": "/app/issues/FLW-843",
+    "axe": [],
+    "geometry": [
+      {
+        "width": 1440,
+        "documentWidth": 1440
+      },
+      {
+        "width": 390,
+        "documentWidth": 390
+      }
+    ]
+  }
+]

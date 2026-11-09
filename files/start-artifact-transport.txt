@@ -1,0 +1,4 @@
+Command: gh run download 42520865907 --repo just-every/run-vector --name vector-verification-core-runtime --dir /tmp/vector-start-artifact
+Exit: 1
+HTTP: 403 Forbidden from redirected artifact blob download
+error downloading vector-verification-core-runtime: Get "https://productionresultssa7.blob.core.windows.net/actions-results/ecabbad7-d70a-857d-8bca-39579a390c78/workflow-job-run-5057f12d-2131-5634-8f6c-b68f2286e8ad/artifacts/fa6b05debe7550d1f923efa833827c9a721518ad37da1884ca7c2de67fd417c4.zip?<query-redacted>": Forbidden

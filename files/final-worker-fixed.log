@@ -1,0 +1,107 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+> vitest run --config vitest.config.ts tests/worker/sub-teams.test.ts tests/worker/base-refresh-upgrade.test.ts tests/worker/outbound-broken-destination.test.ts tests/worker/role-matrix.test.ts tests/worker/automation-rules.test.ts tests/worker/project-fields-upgrade.test.ts --reporter\=default --reporter\=/tmp/vector-diagnostic-reporter.mjs
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+
+Using secrets defined in .dev.vars
+DIAG_FILE /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector/tests/worker/automation-rules.test.ts
+DIAG_TEST [AUTO-002 ROLE-008 ROLE-009] label rules dry-run without effects and commit one accountable priority change and Slack notice with bounded, replay-safe, current authority
+DIAG_RESULT [AUTO-002 ROLE-008 ROLE-009] label rules dry-run without effects and commit one accountable priority change and Slack notice with bounded, replay-safe, current authority passed
+DIAG_TEST [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access
+DIAG_RESULT [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access passed
+ ✓ tests/worker/automation-rules.test.ts (2 tests) 61241ms
+   ✓ [AUTO-002 ROLE-008 ROLE-009] label rules dry-run without effects and commit one accountable priority change and Slack notice with bounded, replay-safe, current authority  60646ms
+   ✓ [AUTO-002 ROLE-002] rule Settings conceals private-team Slack destinations until the manager has current team access  594ms
+Using secrets defined in .dev.vars
+DIAG_FILE /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector/tests/worker/outbound-broken-destination.test.ts
+DIAG_TEST [SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed; member choices route private Slack mentions and daily comment email once with signed actions
+DIAG_RESULT [SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed; member choices route private Slack mentions and daily comment email once with signed actions passed
+DIAG_TEST a Slack action changes only issues its member can still edit after a role or team change
+DIAG_RESULT a Slack action changes only issues its member can still edit after a role or team change passed
+DIAG_TEST [SLACK-001 SEC-001 ROLE-001] Owners create manifests and install Slack through actor-bound one-use OAuth with sealed credentials
+DIAG_RESULT [SLACK-001 SEC-001 ROLE-001] Owners create manifests and install Slack through actor-bound one-use OAuth with sealed credentials passed
+DIAG_TEST [SLACK-001 ROLE-001] Owners and Admins explicitly map Slack members with audited changes
+DIAG_RESULT [SLACK-001 ROLE-001] Owners and Admins explicitly map Slack members with audited changes passed
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE B status=200 mappedReplies=1
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE C status=201 guestPosts=1 ownerPosts=1
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE A status=200 mappedRoots=1 humanControlRoots=1
+
+DIAG_TEST [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+DIAG_RESULT [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake passed
+DIAG_TEST [SLACK-001 SEC-001] Provider uninstall and local removal retire Slack credentials and revoke access
+DIAG_RESULT [SLACK-001 SEC-001] Provider uninstall and local removal retire Slack credentials and revoke access passed
+DIAG_TEST [SLACK-001 SEC-001] Slack archives exclude credentials and restore requires re-entry
+DIAG_RESULT [SLACK-001 SEC-001] Slack archives exclude credentials and restore requires re-entry passed
+DIAG_TEST [SLACK-005 OPS-001 ROLE-002] Slack link previews unfurl issues and projects only for linked members who can read them
+DIAG_RESULT [SLACK-005 OPS-001 ROLE-002] Slack link previews unfurl issues and projects only for linked members who can read them passed
+ ✓ tests/worker/outbound-broken-destination.test.ts (8 tests) 36584ms
+   ✓ [SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed; member choices route private Slack mentions and daily comment email once with signed actions  11142ms
+   ✓ a Slack action changes only issues its member can still edit after a role or team change  357ms
+   ✓ [SLACK-001 SEC-001 ROLE-001] Owners create manifests and install Slack through actor-bound one-use OAuth with sealed credentials  1340ms
+   ✓ [SLACK-001 ROLE-001] Owners and Admins explicitly map Slack members with audited changes  1638ms
+   ✓ [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake  5428ms
+   ✓ [SLACK-001 SEC-001] Provider uninstall and local removal retire Slack credentials and revoke access  1072ms
+   ✓ [SLACK-001 SEC-001] Slack archives exclude credentials and restore requires re-entry  13723ms
+   ✓ [SLACK-005 OPS-001 ROLE-002] Slack link previews unfurl issues and projects only for linked members who can read them  1882ms
+Using secrets defined in .dev.vars
+DIAG_FILE /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector/tests/worker/sub-teams.test.ts
+DIAG_TEST [TEAM-006 TEAM-007 TEAM-008 ROLE-007 OPS-001] team hierarchy, membership, workflow and paged visible issues retain identity and current access
+DIAG_RESULT [TEAM-006 TEAM-007 TEAM-008 ROLE-007 OPS-001] team hierarchy, membership, workflow and paged visible issues retain identity and current access passed
+DIAG_TEST [TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door
+DIAG_RESULT [TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door passed
+DIAG_TEST [TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody
+DIAG_RESULT [TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody passed
+DIAG_TEST [TEAM-006 REPORT-003] browser-parsed full-list links retain explicit sub-team inclusion and exclusion
+DIAG_RESULT [TEAM-006 REPORT-003] browser-parsed full-list links retain explicit sub-team inclusion and exclusion passed
+ ✓ tests/worker/sub-teams.test.ts (4 tests) 26320ms
+   ✓ [TEAM-006 TEAM-007 TEAM-008 ROLE-007 OPS-001] team hierarchy, membership, workflow and paged visible issues retain identity and current access  23766ms
+   ✓ [TEAM-006 ROLE-009] hierarchy permission values require the same team-owner authority as the permission door  1040ms
+   ✓ [TEAM-006 GITHUB-003] reparenting preserves configured Git automation targets and rule custody  872ms
+   ✓ [TEAM-006 REPORT-003] browser-parsed full-list links retain explicit sub-team inclusion and exclusion  639ms
+Using secrets defined in .dev.vars
+DIAG_FILE /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector/tests/worker/project-fields-upgrade.test.ts
+DIAG_TEST [PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrades preserve records and export the extended planning inventory
+DIAG_RESULT [PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrades preserve records and export the extended planning inventory passed
+ ✓ tests/worker/project-fields-upgrade.test.ts (1 test) 12722ms
+   ✓ [PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrades preserve records and export the extended planning inventory  12721ms
+Using secrets defined in .dev.vars
+DIAG_FILE /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector/tests/worker/role-matrix.test.ts
+DIAG_TEST [ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused
+DIAG_RESULT [ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused passed
+DIAG_TEST [TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported
+DIAG_RESULT [TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported passed
+DIAG_TEST [ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing
+DIAG_RESULT [ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing passed
+DIAG_TEST [ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing
+DIAG_RESULT [ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing passed
+DIAG_TEST [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only
+DIAG_RESULT [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only passed
+ ✓ tests/worker/role-matrix.test.ts (5 tests) 198652ms
+   ✓ [ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused  8424ms
+   ✓ [TEAM-005 ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported  15561ms
+   ✓ [ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing  56342ms
+   ✓ [ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing  20794ms
+   ✓ [ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only  97528ms
+Using secrets defined in .dev.vars
+DIAG_FILE /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector/tests/worker/base-refresh-upgrade.test.ts
+DIAG_TEST [BASE-ACCESS-002 DATA-011] a populated store keeps every row, index and trigger when Base sign-in ledgers, import retirement and reversal fences are added, and the owner signs in after
+DIAG_RESULT [BASE-ACCESS-002 DATA-011] a populated store keeps every row, index and trigger when Base sign-in ledgers, import retirement and reversal fences are added, and the owner signs in after passed
+ ✓ tests/worker/base-refresh-upgrade.test.ts (1 test) 6602ms
+   ✓ [BASE-ACCESS-002 DATA-011] a populated store keeps every row, index and trigger when Base sign-in ledgers, import retirement and reversal fences are added, and the owner signs in after  6601ms
+
+ Test Files  6 passed (6)
+      Tests  21 passed (21)
+   Start at  00:00:05
+   Duration  379.77s (transform 5.10s, setup 0ms, import 33.77s, tests 342.12s, environment 0ms)
+

@@ -1,0 +1,49 @@
+{
+  "views": {
+    "write": "node scripts/contract-docs.mjs write TEAM-006",
+    "check": "node scripts/contract-docs.mjs check TEAM-006",
+    "exit": 0,
+    "restored": [
+      "ACCEPTANCE.md",
+      "docs/CLAIMS.md"
+    ]
+  },
+  "ledger": {
+    "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0
+  },
+  "spec": {
+    "write": "pnpm integration:sync",
+    "check": "pnpm integration:check",
+    "exit": 0,
+    "note": "Regenerated and checked after the final merged-source production build."
+  },
+  "sdk": {
+    "write": "node sdk/generate.mjs",
+    "check": "node sdk/generate.mjs --check",
+    "exit": 0
+  },
+  "lock": {
+    "write": "pnpm sources:lock",
+    "check": "pnpm sources:check",
+    "exit": 0,
+    "sha256": "243f4c2701937d1e03fe16a0c5ee8908ed5cb3eb553b35e7dace1abc483b90ca",
+    "finalLog": "historical-checkpoint-lock.log"
+  },
+  "migrationPreservation": {
+    "mainMigrationFilesPreserved": 135,
+    "mainHighest": 135,
+    "candidateMigration": "0136_sub_teams.sql",
+    "candidateMigrationSha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
+    "numberCollisions": 0,
+    "mainHead": "ea77c904c8e553bca43f152710a5d04e4e9e2587"
+  },
+  "finalHead": "60b465d927881a05b01253df7743e3ac8c0456e9",
+  "finalMechanicalLogs": [
+    "merge-final-views.log",
+    "merge-final-sdk.log",
+    "merge-final-spec.log",
+    "merge-final-ledger.log",
+    "merge-final-lock.log"
+  ]
+}

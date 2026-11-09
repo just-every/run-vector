@@ -1,0 +1,26 @@
+{
+  "mainHead": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "productHead": "60b465d927881a05b01253df7743e3ac8c0456e9",
+  "counts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64,
+    "total": 272
+  },
+  "startingCounts": {
+    "done": 136,
+    "partial": 72,
+    "missing": 64
+  },
+  "statusChanges": [],
+  "allParentStatusRowsPreserved": true,
+  "allUntouchedMainRowsExact": true,
+  "TEAM006": "missing",
+  "idMapUnchanged": true,
+  "generatedViewsUnchanged": true,
+  "migrationFilesPreserved": 135,
+  "candidateMigration": "0136_sub_teams.sql",
+  "candidateMigrationSha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
+  "projectUpgradeCheckpoint": "0125_issue_templates.sql",
+  "projectUpgradeProof": "Historical release inserted before 0133 adds owner_operator_id; all assertions pass."
+}

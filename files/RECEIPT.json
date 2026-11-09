@@ -1,0 +1,273 @@
+{
+  "startingProductHead": "3503a75381109b411d3cac78293b1bbd28d3c82a",
+  "mergedMain": "ea77c904c8e553bca43f152710a5d04e4e9e2587",
+  "commands": [
+    {
+      "command": "npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive",
+      "exit": 0,
+      "receipt": "setup-retry.log",
+      "note": "Initial setup collided with an unresolved source merge marker; successful retry followed source resolution."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/sub-teams.test.ts tests/worker/base-refresh-upgrade.test.ts tests/worker/dependencies.test.ts tests/worker/triage.test.ts tests/worker/team-cycles.test.ts",
+      "exit": 0,
+      "files": 3,
+      "testsPassed": 14,
+      "note": "The two nonexistent optional filter names matched no files; the three actual files all passed."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/cycle-membership.test.ts tests/worker/cycle-schedule.test.ts tests/worker/source-ingest.test.ts tests/worker/slack-app.test.ts",
+      "exit": 0,
+      "files": 3,
+      "testsPassed": 8,
+      "note": "slack-app.test.ts matched no file; the actual Slack suite was separately run in full."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/base-refresh-upgrade.test.ts",
+      "exit": 0,
+      "files": 1,
+      "testsPassed": 1,
+      "note": "After adding preservation of every column at the 0134 checkpoint."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/outbound-broken-destination.test.ts -t 'Signed Slack Events'",
+      "exit": 1,
+      "testsFailed": 1,
+      "note": "Reproduced the new migration-default mismatch in the full-head upgrade."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/outbound-broken-destination.test.ts",
+      "exit": 0,
+      "files": 1,
+      "testsPassed": 8,
+      "note": "After preserving the full-row comparison and asserting all five added defaults."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0
+    },
+    {
+      "command": "timeout 420 pnpm test:worker tests/worker/sub-teams.test.ts tests/worker/base-refresh-upgrade.test.ts tests/worker/outbound-broken-destination.test.ts tests/worker/role-matrix.test.ts tests/worker/automation-rules.test.ts tests/worker/project-fields-upgrade.test.ts",
+      "exit": 124,
+      "note": "Whole batch reached its hard bound. It reported one role-census failure while the earlier browser command was concurrent; no complete batch pass is claimed."
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "note": "Includes pnpm typecheck and production Vite client/server output on the final merged source."
+    },
+    {
+      "command": "timeout 300 pnpm test:worker tests/worker/role-matrix.test.ts -t 'current private and invited teams'",
+      "exit": 0,
+      "testsPassed": 1,
+      "durationSeconds": 25.93,
+      "note": "Idle rerun of the existing unmodified 120-second census test passed."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/sub-teams.test.ts tests/worker/base-refresh-upgrade.test.ts tests/worker/outbound-broken-destination.test.ts tests/worker/role-matrix.test.ts tests/worker/automation-rules.test.ts tests/worker/project-fields-upgrade.test.ts",
+      "exit": 1,
+      "testsPassed": 20,
+      "testsFailed": 1,
+      "note": "Idle batch confirmed the full-file Viewer census timed out at its unchanged 120-second limit. Its isolated fresh-state run passed in 25.93 seconds."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/role-matrix.test.ts -t 'native actions populate an immutable'",
+      "exit": 0,
+      "testsPassed": 1,
+      "durationSeconds": 9.22,
+      "note": "All immutable audit assertions passed with the owned export released immediately after its actual complete receipt."
+    },
+    {
+      "command": "pnpm test:worker tests/worker/sub-teams.test.ts tests/worker/base-refresh-upgrade.test.ts tests/worker/outbound-broken-destination.test.ts tests/worker/role-matrix.test.ts tests/worker/automation-rules.test.ts tests/worker/project-fields-upgrade.test.ts",
+      "exit": 0,
+      "filesPassed": 6,
+      "testsPassed": 21,
+      "durationSeconds": 379.77,
+      "receipt": "final-worker-fixed.log",
+      "note": "Completed inherited run at 00:06:25 UTC; all original cases and timeouts retained.",
+      "actualReporterArguments": "--reporter=default --reporter=/tmp/vector-diagnostic-reporter.mjs"
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "receipt": "final-typecheck.log",
+      "note": "After the archive fixture cleanup changes."
+    },
+    {
+      "command": "timeout 240 pnpm test:worker tests/worker/project-fields-upgrade.test.ts",
+      "exit": 0,
+      "filesPassed": 1,
+      "testsPassed": 1,
+      "durationSeconds": 24.88,
+      "receipt": "historical-checkpoint-probe.log",
+      "note": "Restored main's 0125 checkpoint so the historical release row is inserted before the owner column is added; all original historical proof is retained."
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "receipt": "historical-checkpoint-typecheck.log"
+    },
+    {
+      "command": "timeout 1200 npx -y @runeditrun/rer verify",
+      "exit": 0,
+      "receipt": "final-rer-verify.log",
+      "note": "Exact final SHA; public verifier completed build, generated/source checks, hosted artifact/hydration boundaries and 1483/1483 agent conformance points."
+    }
+  ],
+  "mechanical": {
+    "viewsWrite": 0,
+    "viewsCheck": 0,
+    "SDKGenerate": 0,
+    "SDKCheck": 0,
+    "integrationSync": 0,
+    "integrationCheck": 0,
+    "migrationLedger": 0,
+    "sourceLock": 0,
+    "sourceCheck": 0,
+    "migrationFilesUnchangedFromMain": 134,
+    "viewsRestoredFromMain": true
+  },
+  "runtime": {
+    "status": "bounded-command-timeout",
+    "command": "timeout 1200 env PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium node tests/e2e/core-runtime.mjs current",
+    "currentPortion": {
+      "passed": true,
+      "checks": 59,
+      "builtCandidate": "49c14f649d2159efe4683434d9d5597ee3b44c80",
+      "note": "Production output predates the second main merge. The independent projects portion remains in progress."
+    },
+    "exit": 124,
+    "note": "The first-merge Current portion completed all 59 checks; the independent project portion reached the release journey when the 1200-second process bound closed its browser. No full-command pass is claimed. All owned descendants exited.",
+    "finalCommand": "timeout 2400 env PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium node tests/e2e/core-runtime.mjs current",
+    "finalStatus": "passed",
+    "finalCurrentPortion": {
+      "passed": true,
+      "checks": 59,
+      "receipt": "final-current-results.json",
+      "desktop": "final-desktop-1440.png",
+      "phone": "final-mobile-390.png",
+      "note": "Production source includes the second main merge. The later forward correction changes only a test checkpoint and the source lock.",
+      "productionBuiltBeforeCommit": "46a15bf8c93017a98d65e8612587e05d8acc2609"
+    },
+    "finalExit": 0,
+    "finalChecks": 113,
+    "finalProjectPortion": {
+      "passed": true,
+      "checks": 54,
+      "receipt": "final-project-results.json"
+    },
+    "finalNote": "Both Current and independent projects passed; all owned browsers and workers exited. The final forward commit changes only a stronger historical test checkpoint and source lock; CI rebuilds the exact final SHA.",
+    "supplementalPublicVerifier": {
+      "passed": true,
+      "agentConformancePointsPassed": 1483,
+      "total": 1483,
+      "receipt": "final-rer-verify.log"
+    }
+  },
+  "contract": {
+    "before": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "after": {
+      "done": 136,
+      "partial": 72,
+      "missing": 64,
+      "total": 272
+    },
+    "statusChanges": [],
+    "TEAM006": "missing"
+  },
+  "migrationPreservation": {
+    "mainMigrationFilesPreserved": 135,
+    "mainHighest": 135,
+    "candidateMigration": "0136_sub_teams.sql",
+    "candidateMigrationSha256": "be24c66181052af052789c3ae5c8ea37bc1f660ddee216430a9a62c4d16b0218",
+    "numberCollisions": 0,
+    "mainHead": "ea77c904c8e553bca43f152710a5d04e4e9e2587"
+  },
+  "ciAccess": "CI-ACCESS.md",
+  "publicationScan": "Fleet Mac publication scan and landing remain external; no local publication acceptance claim.",
+  "validationNotes": [
+    "Toolchain followed the provided installer, retaining the newer VM Node v24.19.0 with pnpm 10.12.4. Exact pinned Node 22.20.0 remains covered by CI.",
+    "No test was deleted, weakened or marked skipped. One diagnostic invocation selected a single test by title; the complete file then passed all eight tests."
+  ],
+  "clone": {
+    "repository": "just-every/run-vector",
+    "shallow": "false",
+    "filter": "blob:none",
+    "branch": "cloud/sd-vector-c-f205-fix2-pc1"
+  },
+  "productHead": "60b465d927881a05b01253df7743e3ac8c0456e9",
+  "productParents": [
+    "46a15bf8c93017a98d65e8612587e05d8acc2609"
+  ],
+  "historyNote": "First published merge 49c14f649d2159efe4683434d9d5597ee3b44c80 retained unchanged. Second forward merge preserves main automation migration 0135 and moves only the candidate sub-team migration to 0136. Final forward-only commit 60b465d927881a05b01253df7743e3ac8c0456e9 restores the historical project checkpoint; all previously published commits remain unchanged.",
+  "fixtureFixes": [
+    "Audit fixture captures only its own export ID and aborts it through the real public endpoint immediately after the completion receipt, before later erasure invalidates the job. Original audit assertions are unchanged.",
+    "The data.export role probe aborts as the creating actor, including Admin; HTTP 200 is now asserted rather than silently ignoring the Owner's HTTP 404.",
+    "All original test cases, full registered-door enumeration, complete storage snapshots, assertions and 120-second census timeout remain.",
+    "Restore the original pre-owner project migration checkpoint 0125, preserving insertion of the historical release before the owner field is added. The stronger historical fixture passes."
+  ],
+  "ci": {
+    "runId": 42539853736,
+    "head": "60b465d927881a05b01253df7743e3ac8c0456e9",
+    "status": "pending",
+    "conclusion": null,
+    "apiCallsUsed": 9,
+    "budget": 10,
+    "supersededRunId": 42538592587
+  },
+  "sourceCustody": "FINAL-SOURCE-CUSTODY.json",
+  "evidenceSelection": {
+    "files": [
+      "REPORT.md",
+      "PLAN.md",
+      "RECEIPT.json",
+      "MECHANICAL.json",
+      "CI-ACCESS.md",
+      "FINAL-SOURCE-CUSTODY.json",
+      "contract-counts.json",
+      "final-candidate-identity.txt",
+      "product-push.txt",
+      "final-product-push.txt",
+      "start-jobs.jsonl",
+      "start-core-job.json",
+      "start-artifact-transport.txt",
+      "slack-upgrade-repro.log",
+      "slack-upgrade-probe.log",
+      "role-census-idle.log",
+      "role-matrix-cleanup-probe.log",
+      "audit-cleanup-probe.log",
+      "final-worker-idle.log",
+      "final-worker-fixed.log",
+      "final-typecheck.log",
+      "merge-final-views.log",
+      "merge-final-sdk.log",
+      "merge-final-spec.log",
+      "merge-final-ledger.log",
+      "final-ci-discovery.jsonl",
+      "first-merge-current-results.json",
+      "first-merge-page-audit.json",
+      "first-merge-desktop-1440.png",
+      "first-merge-mobile-390.png",
+      "historical-checkpoint-probe.log",
+      "historical-checkpoint-typecheck.log",
+      "final-current-results.json",
+      "final-desktop-1440.png",
+      "final-mobile-390.png",
+      "final-page-audit.json",
+      "final-project-results.json",
+      "final-core-runtime.log",
+      "final-rer-verify.log",
+      "worker-probe.log",
+      "upgrade-probe.log",
+      "populated-upgrade.log",
+      "setup-summary.txt",
+      "final-build.log"
+    ],
+    "review": "Explicit regular non-secret report, receipt, logs and synthetic screenshots; no settings, environment dumps, runtime databases, authentication bodies or held-out material selected."
+  }
+}

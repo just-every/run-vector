@@ -1,0 +1,95 @@
+ WARN  Unsupported engine: wanted: {"node":"22.20.0"} (current: {"node":"v24.19.0","pnpm":"10.12.4"})
+
+> vector@0.4.1 test:worker /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+> vitest run --config vitest.config.ts tests/worker/outbound-broken-destination.test.ts -t 'Signed Slack Events'
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ RUN  v4.1.11 /home/agent/rer-consolidation/work/sd-vector-c-f205-fix2-pc1/run-vector
+
+Using secrets defined in .dev.vars
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE B status=200 mappedReplies=1
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE C status=201 guestPosts=1 ownerPosts=1
+
+stdout | tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+GATE_PROBE A status=200 mappedRoots=1 humanControlRoots=1
+
+ ❯ tests/worker/outbound-broken-destination.test.ts (8 tests | 1 failed | 7 skipped) 6499ms
+   × [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake 6497ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/worker/outbound-broken-destination.test.ts > [SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake
+AssertionError: teams: expected [ { …(19) }, { …(19) } ] to deeply equal [ { …(15) }, { …(15) } ]
+
+- Expected
++ Received
+
+@@ -3,34 +3,42 @@
+      "archived_at": null,
+      "auto_cycle_completed": 0,
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "cycles_enabled": 1,
++     "hierarchy_version": 1,
+      "id": "01J00000000000000000000010",
+      "identifier_prefix": "FLW",
+      "is_private": 0,
+      "membership_mode": "open",
+      "name": "Flow",
++     "parent_team_id": null,
++     "permissions_inherited": 0,
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+      "updated_at": "2026-09-01T00:00:00.000Z",
++     "workflow_inherited": 0,
+      "workspace_id": "01J00000000000000000000001",
+    },
+    {
+      "archived_at": null,
+      "auto_cycle_completed": 0,
+      "auto_cycle_started": 0,
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "cycles_enabled": 1,
++     "hierarchy_version": 1,
+      "id": "01J00000000000000000000011",
+      "identifier_prefix": "PLT",
+      "is_private": 0,
+      "membership_mode": "open",
+      "name": "Platform",
++     "parent_team_id": null,
++     "permissions_inherited": 0,
+      "planning_permission": "all_members",
+      "requests_enabled": 0,
+      "settings_permission": "team_owners",
+      "updated_at": "2026-09-01T00:00:00.000Z",
++     "workflow_inherited": 0,
+      "workspace_id": "01J00000000000000000000001",
+    },
+  ]
+
+ ❯ slackThreadUpgrade tests/worker/slack-thread-upgrade.ts:18:74
+     16|  await applyD1Migrations(db,migrations.slice(boundary));
+     17|  const after=await db.batch(tables.map(t=>db.prepare('SELECT * FROM "'…
+     18|  for(let n=0;n<tables.length;n++)expect(after[n].results,tables[n].nam…
+       |                                                                          ^
+     19|  for(const table of ['vector_slack_threads','vector_slack_thread_messa…
+     20|  expect((await db.prepare('PRAGMA foreign_key_check').all()).results).…
+ ❯ slackAppScenario tests/worker/slack-app-scenario.ts:115:94
+ ❯ tests/worker/outbound-broken-destination.test.ts:79:129
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  23:23:30
+   Duration  18.90s (transform 5.66s, setup 0ms, import 11.75s, tests 6.50s, environment 0ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

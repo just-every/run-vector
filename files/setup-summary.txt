@@ -1,0 +1,9 @@
+Command: npx -y @runeditrun/rer setup --owner-email fleet@runeditrun.com --non-interactive
+Successful retry exit: 0
+  ➜  Local:   http://127.0.0.1:45033/
+Claiming the first owner
+First owner claimed
+Opening your application
+Your application is running locally
+RER_SETUP_READY http://127.0.0.1:8787
+Next: rer dev opens http://127.0.0.1:8787 signed in as the owner; first-run setup finishes at http://127.0.0.1:8787/setup. rer preview prints a one-time native owner link on loopback; rer demo also prints a separate native owner entry.
