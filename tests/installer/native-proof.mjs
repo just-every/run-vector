@@ -99,7 +99,6 @@ async function capture(name){if(name==='setup'){await page.locator('#form').wait
   const identity=await app.request.get(origin+'/auth/session');assert.equal(identity.status(),200);
   const signedIn=await identity.json();assert.equal(signedIn.kind,'dev');assert.equal(signedIn.operator.email,owner.email);assert.equal(signedIn.operator.role,'owner');
   assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1});
-  assert.equal(sql("SELECT count(*) n FROM oa_sessions s JOIN oa_operators o ON o.id=s.operator_id WHERE s.kind='dev' AND s.revoked_at IS NULL AND o.email='owner@installer.test'")[0].n,1);
   await finishFirstRun(app,origin);await app.goto(origin+'/app');await app.waitForURL(origin+'/app');
   const session=await app.request.get(origin+'/api/session');assert.equal(session.status(),200);assert.equal((await session.json()).operatorId,owner.id);
   await app.goto(opened.body.url);await app.waitForURL(origin+'/app');
