@@ -2081,7 +2081,8 @@
     "sponsor_name",
     "revoked",
     "window",
-    "requests"
+    "requests",
+    "tombstone"
   ],
   "agent_door_audit": [
     "sequence",
@@ -2099,7 +2100,8 @@
     "decision_id",
     "created_at",
     "state",
-    "outcome"
+    "outcome",
+    "expires_at"
   ],
   "agent_door_approvals": [
     "id",
@@ -2448,5 +2450,25 @@
     "method",
     "assignments",
     "created_at"
+  ],
+  "agent_door_replay_aliases": [
+    "agent",
+    "alias",
+    "call_id",
+    "tombstone"
+  ],
+  "agent_door_relay": [
+    "sequence",
+    "decision_id",
+    "business"
+  ],
+  "agent_door_retired_refs": [
+    "digest",
+    "marker"
+  ],
+  "bs_retired": [
+    "digest",
+    "invite",
+    "erasure_id"
   ]
 }

@@ -10,19 +10,21 @@ export function nativePeople(env: WorkerBindings): PeopleAdapter {
     FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id
     JOIN oa_operators a ON a.id=m.auth_id WHERE o.id=?`).bind(id).first<Person>();
   const owner = async () => (await env.DB.prepare('SELECT setup_operator_id AS id FROM workspace_installation').first<{id:string}>())?.id;
+  const settings = () => env.DB.prepare('SELECT owner_id,stopped FROM bs_settings WHERE singleton=1').first<{owner_id:string;stopped:number}>();
   return {
+    async businessStopped() { return (await settings())?.stopped !== 0; },
     async person(id) { const p=await person(id); return p ? {...p,active:Boolean(p.active)} : null; },
     async session(request) { const p=await requireOperator(env,request); return p ? this.person(p.id) : null; },
     async sponsor({sub}) {
-      const settings=await env.DB.prepare('SELECT owner_id FROM bs_settings WHERE singleton=1 AND stopped=0').first<{owner_id:string}>();
-      if (!settings) return null;
-      const id=settings.owner_id===sub ? await owner() : (await env.DB.prepare("SELECT operator_id FROM bs_team WHERE business_id=? AND state='active'").bind(sub).first<{operator_id:string}>())?.operator_id;
+      const business=await settings();
+      if (!business) return null;
+      const id=business.owner_id===sub ? await owner() : (await env.DB.prepare("SELECT operator_id FROM bs_team WHERE business_id=? AND state='active'").bind(sub).first<{operator_id:string}>())?.operator_id;
       return id ? this.person(id) : null;
     },
     async businessMember(p) {
-      const settings=await env.DB.prepare('SELECT owner_id FROM bs_settings WHERE singleton=1 AND stopped=0').first<{owner_id:string}>();
-      if (!settings) return null;
-      if (p.id===await owner()) return {id:settings.owner_id,role:'owner'};
+      const business=await settings();
+      if (!business) return null;
+      if (p.id===await owner()) return {id:business.owner_id,role:'owner'};
       const row=await env.DB.prepare("SELECT business_id,business_role FROM bs_team WHERE operator_id=? AND state='active'").bind(p.id).first<{business_id:string;business_role:string}>();
       return row?.business_id ? {id:row.business_id,role:row.business_role==='admin'?'editor':null} : null;
     },
