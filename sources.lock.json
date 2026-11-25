@@ -9346,7 +9346,7 @@
       "executable": false
     },
     "tests/installer/native-proof.mjs": {
-      "sha256": "7002efbdd3fa5d1f54cc2f332c3fc142eb2f8f063615ee3a6d56ccb65ffd2a38",
+      "sha256": "2cd0108a49baef20296810ef570340170591d3235d75f788d86b74e4275c1684",
       "executable": false
     },
     "tests/installer/older-archive.test.mjs": {

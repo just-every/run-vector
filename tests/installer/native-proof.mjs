@@ -101,7 +101,9 @@ async function capture(name){if(name==='setup'){await page.locator('#form').wait
   assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1});
   await finishFirstRun(app,origin);await app.goto(origin+'/app');await app.waitForURL(origin+'/app');
   const session=await app.request.get(origin+'/api/session');assert.equal(session.status(),200);assert.equal((await session.json()).operatorId,owner.id);
-  await app.goto(opened.body.url);await app.waitForURL(origin+'/app');
+  await app.goto(opened.body.url);await app.waitForURL(origin+'/setup');
+  await app.getByRole('link',{name:'Open my workspace',exact:true}).click();
+  await app.waitForURL(origin+'/app');
   assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1},'reopening the owner entry reuses its dev session');
   for(const path of ['/','/signin','/does-not-exist','/__dev/outbox'])assert.equal((await app.request.get(origin+path)).status(),['/does-not-exist','/__dev/outbox'].includes(path)?404:200);
   check('completion link automatically signs in the configured dev owner, reuses its session, keeps the outbox retired, and preserves document statuses');
