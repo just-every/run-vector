@@ -38,12 +38,13 @@ export function baseAuth(env: WorkerBindings) {
   const local = localMailEnabled(env)
   if (local && !['localhost', '127.0.0.1', '[::1]'].includes(new URL(env.APP_ORIGIN).hostname))
     throw new AuthError('local_outbox_requires_loopback', 503)
-  if (!env.MAIL_FROM) throw new AuthError('MAIL_FROM_required', 503)
   const capture = local || env.RER_DEMO === '1'
-  if (!capture && !['sendgrid', 'resend', 'rer'].includes(env.MAIL_PROVIDER ?? '')) throw new AuthError('MAIL_PROVIDER_required', 503)
+  const mailOff = env.MAIL_PROVIDER === 'none'
+  if (!mailOff && !env.MAIL_FROM) throw new AuthError('MAIL_FROM_required', 503)
+  if (!capture && !mailOff && !['sendgrid', 'resend', 'rer'].includes(env.MAIL_PROVIDER ?? '')) throw new AuthError('MAIL_PROVIDER_required', 503)
   // A mail key enables email delivery. Native owner claim, sessions and linked
   // identity providers remain available before optional mail is configured.
-  const sender = capture ? developmentSender(env) : hostedMailSender(env)
+  const sender = mailOff ? undefined : capture ? developmentSender(env) : hostedMailSender(env)
   return createOperatorAuth({
     db: env.DB,
     config: authConfig(env),

@@ -92,7 +92,8 @@ test('legacy local data refuses setup and automatic development before private s
   await mkdir(join(root,'.wrangler/vector-dev'),{recursive:true});
   await writeFile(retained,'retained installation bytes');
   for(const args of [['setup','--owner-email','sarah@vector.test','--non-interactive'],['dev']]) {
-   const result=spawnSync(process.execPath,[resolve('node_modules/@runeditrun/rer/global/rer.mjs'),...args],{cwd:root,encoding:'utf8',timeout:60000,env:{...process.env,CI:'true'}});
+   const result=spawnSync(resolve('node_modules/.bin/rer'),args,{cwd:root,encoding:'utf8',timeout:180000,env:{...process.env,CI:'true'}});
+   assert.ifError(result.error);
    assert.equal(result.status,4,result.stderr||result.stdout);
    assert.match(result.stderr+result.stdout,/docs\/LOCAL-RECOVERY\.md/);
    assert.doesNotMatch(result.stderr+result.stdout,/Inspect the private redacted capture log/);

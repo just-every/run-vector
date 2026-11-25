@@ -6,11 +6,13 @@ import { chmod,mkdir,mkdtemp,readFile,stat,writeFile,rm,symlink } from 'node:fs/
 import { createServer } from 'node:net';
 import { join,resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 import { parseEnv } from 'node:util';
 import { tmpdir } from 'node:os';
 import { chromium } from '@playwright/test';
 import { readLocalD1 } from '../e2e/local-d1-read.mjs';
 import { readCheckoutKey } from '../e2e/dev-gate.mjs';
+import { readOwnedGroup } from '../e2e/owned-dev-processes.mjs';
 process.env.RER_SERVER_JOURNEY = '1';
 const axeSource=await readFile(new URL('../../node_modules/axe-core/axe.min.js',import.meta.url),'utf8');
 const source=process.cwd(), slow=process.argv.includes('--slow'), evidence=resolve(process.env.VECTOR_INSTALLER_EVIDENCE??'evidence/installer');
@@ -22,7 +24,7 @@ const realPnpm=execFileSync('/bin/sh',['-c','command -v pnpm'],{encoding:'utf8'}
 const work=await mkdtemp(join(tmpdir(),'vector-native-installer-')), root=join(work,'source');
 const quote=value=>"'"+value.replaceAll("'","'\\''")+"'";
 const timing=join(work,'timing');const originalPath=process.env.PATH;
-let browser,installer,page,token,startInstaller,createSeed,readOwnedGroup;let phase='provisioning';
+let browser,installer,page,token,startInstaller,createSeed;let phase='provisioning';
 const ports=new Set(),groups=new Set();
 async function close(){try{await page?.close();}finally{page=undefined;await installer?.close();installer=undefined;}}
 try{
@@ -42,9 +44,9 @@ check('fresh clone provisions its own frozen installer dependencies');
 // rer install may recreate node_modules (as it does on the Linux CI runner).
 // Place the disposable delay only after each successful real dependency install.
 await prepareStartupFixture({root,work,timing,slow,pnpm:realPnpm,shim:join(basePath,'pnpm')});
-({startInstaller}=await import(pathToFileURL(join(root,'node_modules/@runeditrun/rer/onboarding/server.mjs'))));
+const resolveFromClone=createRequire(join(root,'package.json')).resolve;
+({startInstaller}=await import(pathToFileURL(resolveFromClone('@runeditrun/rer/installer-server'))));
 ({createSeed}=await import(pathToFileURL(join(root,'scripts/installer/seed.mjs'))));
-({readOwnedGroup}=await import(pathToFileURL(join(root,'node_modules/@runeditrun/rer/onboarding/local/process-table.mjs'))));
 browser=await chromium.launch({headless:true});
 async function open(resume){
  const seed=createSeed(),install=seed.install;seed.install=(root,input,store,onApp,signal)=>install(root,input,store,child=>{groups.add(child.pid);onApp(child)},signal);

@@ -18,13 +18,14 @@ export async function configurationReport(env={},root=process.cwd()) {
   }
   catch {return {ok:false,mode,missing:['.dev.vars'],guidance:'Run rer setup --owner-email EMAIL. See OPERATIONS.md.'};}
  }
- const missing=(mode==='hosted'?hostedInputs:artifactInputs).filter(key=>typeof env[key]!=='string'||!env[key].trim());
+ const required = mode === 'hosted' ? hostedInputs.filter(key => env.MAIL_PROVIDER !== 'none' || key !== 'MAIL_FROM') : artifactInputs;
+ const missing=required.filter(key=>typeof env[key]!=='string'||!env[key].trim());
  const invalid=[];
  if(mode==='hosted') {
   if(env.APP_ORIGIN) {try {const u=new URL(env.APP_ORIGIN);if(u.protocol!=='https:'||u.origin!==env.APP_ORIGIN) invalid.push('APP_ORIGIN');}catch {invalid.push('APP_ORIGIN');}}
   invalid.push(...invalidConfigurationNames(env,{CLOUDFLARE_ACCOUNT_ID:controllerValidators.CF_THROWAWAY_ACCOUNT_ID,CLOUDFLARE_API_TOKEN:controllerValidators.CF_THROWAWAY_API_TOKEN}));
   invalid.push(...invalidConfigurationNames(env,{...publicValidators,SESSION_SECRET:secretValidators.SESSION_SECRET,SENDGRID_API_KEY:secretValidators.MAIL_API_KEY}));
-  if(env.MAIL_PROVIDER&&env.MAIL_PROVIDER!=='sendgrid')invalid.push('MAIL_PROVIDER');
+  if(env.MAIL_PROVIDER&&!['sendgrid','none'].includes(env.MAIL_PROVIDER))invalid.push('MAIL_PROVIDER');
  } else { invalid.push(...invalidConfigurationNames(env,controllerValidators)); }
  return {ok:missing.length===0&&invalid.length===0,mode,missing,invalid,sources:Object.fromEntries([...missing,...invalid].map(key=>[key,environmentSources[key]??'DEPLOY.md owner account inputs and private installation settings'])),mailBinding:mode==='hosted'?{input:'SENDGRID_API_KEY',binding:'MAIL_API_KEY'}:undefined};
 }

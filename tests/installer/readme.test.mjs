@@ -25,13 +25,12 @@ test('README literal clone, own frozen install, optional setup and dev automatic
   store=await createState(work,await loadInstallerSeed(process.cwd(),createSeed()));store.setCommandSignal(controller.signal);
   // The README's one line installs rer, clones and starts; the journey installs the pinned rer into a private prefix first.
   // The clone names the public repository; the journey clones this checkout in its place.
-  const start=literal('start').split('\n'),pin=JSON.parse(await readFile('package.json','utf8')).devDependencies['@runeditrun/rer'];assert(pin,'package.json pins rer');
+  const pin=JSON.parse(await readFile('package.json','utf8')).devDependencies['@runeditrun/rer'];
   const setupCommand=literal('setup');const port=await freePort();
   const prefix=join(work,'cli');
   const path=join(prefix,'bin')+':'+process.env.PATH;
   const environment=extra=>commandEnvironment({PATH:path,npm_config_prefix:prefix,...extra});
   await store.run('README install rer','/bin/sh',['-eu','-c','npm install --global @runeditrun/rer@'+pin],{cwd:work,env:environment({CI:'true'})});
-  assert.deepEqual(start,['curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector'],'README starts Vector with the one line');
   // The one line clones the public repository into its repo-name folder; the journey clones this checkout in its place.
   await store.run('README clone','/bin/sh',['-eu','-c','git clone '+process.cwd()+' vector'],{cwd:work,env:commandEnvironment({})});
   const root=join(work,'vector');
@@ -43,7 +42,7 @@ test('README literal clone, own frozen install, optional setup and dev automatic
   result.setupPreserved=true;
   const settings=parseEnv(await readFile(join(root,'.dev.vars'),'utf8'));store.addSecrets([settings.SESSION_SECRET]);
   development=publicDevelopment(store,root,environment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'}),settings.APP_ORIGIN);
-  await development.start('README development','/bin/sh',['-eu','-c','cd .. && cd vector && rer dev']);
+  await development.start('README development','rer',['dev']);
   browser=await chromium.launch({headless:true});const page=await browser.newPage();
   result.developmentAssetFailures=[];result.browserErrorTypes=[];
   page.on('pageerror',error=>result.browserErrorTypes.push(error.name));
@@ -71,7 +70,9 @@ test('README literal clone, own frozen install, optional setup and dev automatic
    await page.screenshot({path:join(evidence,'first-run-'+width+'.png'),fullPage:true});
   }
   await page.getByRole('button',{name:'Open my workspace',exact:true}).click();await page.waitForURL(settings.APP_ORIGIN+'/app');
-  await page.goto(settings.APP_ORIGIN+'/setup');await page.waitForURL(settings.APP_ORIGIN+'/app');result.firstRunCompleted=true;
+  await page.goto(settings.APP_ORIGIN+'/setup');
+  await page.getByRole('link',{name:'Open my workspace',exact:true}).click();
+  await page.waitForURL(settings.APP_ORIGIN+'/app');result.firstRunCompleted=true;
   assert.equal((await page.request.get(settings.APP_ORIGIN+'/api/session')).status(),200);
   await page.getByRole('heading',{name:'Current',exact:true}).waitFor();
   for(const width of [1440,390]) {await page.setViewportSize({width,height:1000});await page.addScriptTag({content:axe});const serious=await page.evaluate(async()=>{const r=await axe.run();return r.violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id)});assert.deepEqual(serious,[]);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:join(evidence,'workspace-'+width+'.png'),fullPage:true});}

@@ -25,6 +25,7 @@ export function createAuthApp() {
       const auth = baseAuth(c.env)
       if (c.req.method === 'POST' && ['/auth/request', '/auth/magic-link'].includes(path)) {
         requirePost(c.req.raw,{origin:c.env.APP_ORIGIN,local:c.env.MAIL_MODE==='local-outbox'});
+        if (c.env.MAIL_PROVIDER === 'none') throw new AuthError('mail_off', 503);
         const query = readParameters(new URL(c.req.url).searchParams);
         if (Object.hasOwn(query, 'token')) throw new AuthError('invalid_input');
         // Consume the native request once. A rejected restore admission must

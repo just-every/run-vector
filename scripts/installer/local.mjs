@@ -36,6 +36,7 @@ export const install = async (root, input, store, onApp, signal) => {
 export const commandAdapter = createCommandAdapter(adapter, {
  dev: async context => { await recordDevelopmentOrigin(context.root, context.origin); return developmentTarget(context); },
  preview: previewTarget, verify: ['pnpm', ['run', 'verify:build']], deploy,
+ mailOffSignIn: 'rer signin',
  portability,
  // The production build rewrites the router's generated tree; preview must not read that as a source edit.
  generatedOutputs: ['src/routeTree.gen.ts'],

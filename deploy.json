@@ -35,6 +35,7 @@
   "originVar": "APP_ORIGIN",
   "vars": {
     "MAIL_PROVIDER": "sendgrid",
+    "MAIL_FROM": "",
     "MAIL_MODE": "production",
     "SEED_SAMPLE_DATA": "false",
     "NOTIFICATION_EMAIL_ENABLED": "true"
@@ -46,7 +47,8 @@
     },
     {
       "binding": "MAIL_API_KEY",
-      "environment": "SENDGRID_API_KEY"
+      "environment": "SENDGRID_API_KEY",
+      "optional": true
     },
     {
       "binding": "SETUP_TOKEN",

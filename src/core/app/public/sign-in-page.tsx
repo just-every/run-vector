@@ -33,7 +33,9 @@ export function SignInPage({ providerLinks = [], loginHint = '' }: { loginHint?:
         .parse(await response.json());
       if (!response.ok)
         throw new Error(
-          (body.error === 'mail_unavailable'
+          (body.error === 'mail_off'
+            ? 'Sign-in email is off. Workspace owners can use rer signin from the deploying checkout.'
+            : body.error === 'mail_unavailable'
             ? 'Sign-in email is unavailable. Ask the workspace owner to check its mail settings.'
             : body.message) ??
             body.error ??

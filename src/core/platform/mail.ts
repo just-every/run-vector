@@ -10,6 +10,9 @@ export function hostedMailConfigured(env: WorkerBindings) {
 
 type Message = { headers?: Record<string, string>; [name: string]: unknown }
 export function hostedMailSender(env: WorkerBindings, network: typeof fetch = (url, init) => globalThis.fetch(url, init)) {
+  if (env.MAIL_PROVIDER === 'none') return { async send(_message: Message) {
+    return { status: 'rejected' as const, code: 'mail_off', retryAfterSeconds: undefined }
+  } }
   if (!hostedMailConfigured(env)) return undefined
   return { async send(message: Message) {
     let retryAfterSeconds: number | undefined

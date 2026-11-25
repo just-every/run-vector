@@ -38,8 +38,8 @@ export const secretValidators = {
   SESSION_SECRET(value) { assert(typeof value === 'string' && value.trim() && value.length >= 32 && value.length <= 1024, 'invalid-secret-SESSION_SECRET'); },
   MAIL_API_KEY(value) { assert(typeof value === 'string' && value.length > 0 && value.length <= 4096 && !/[\s\x00-\x1f\x7f]/.test(value), 'invalid-secret-MAIL_API_KEY'); },
 };
-export function validatePublicConfiguration(configuration) {
-  for (const [key, validate] of Object.entries(publicValidators)) validate(configuration[key]);
+export function validatePublicConfiguration(configuration, names = Object.keys(publicValidators)) {
+  for (const name of names) publicValidators[name](configuration[name]);
 }
 // Omitted secrets may be inherited; the deploy kit requires missing bindings
 // before resource writes. Never expose values or write them into plan/receipt.

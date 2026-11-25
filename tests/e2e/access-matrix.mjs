@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
 import {createState} from '@runeditrun/rer/state';
 import {freePort} from '@runeditrun/rer/adapter-settings';
-import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
+import {readOwnedGroup} from './owned-dev-processes.mjs';
 import {commandEnvironment} from '../../scripts/installer-env.mjs';
 import {opaqueToken,hashToken} from '../../vendor/base/operator-auth/crypto.mjs';
 import {readLocalD1} from './local-d1-read.mjs';

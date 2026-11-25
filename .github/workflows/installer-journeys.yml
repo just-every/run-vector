@@ -58,7 +58,7 @@ jobs:
       - name: Native installer with startup exceeding two minutes
         if: matrix.journey == 'installer'
         run: pnpm test:installer:slow
-      - name: README literal clone and independent frozen installation
+      - name: README setup from a fresh checkout
         if: matrix.journey == 'readme'
         run: pnpm test:readme
       - uses: actions/upload-artifact@v4

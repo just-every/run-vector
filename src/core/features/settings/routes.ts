@@ -93,6 +93,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       // Base issues its implementation owner link; the product role travels
       // with that link and is granted when it is accepted.
       const actor = await settingsActor(c.env.DB, c.get("operatorId"));
+      if (c.env.MAIL_PROVIDER === 'none') throw new AuthError('mail_off', 503);
       const suspended = await c.env.DB.prepare('SELECT id FROM operators WHERE workspace_id=? AND lower(email)=? AND suspended_at IS NOT NULL')
         .bind(actor.workspace_id,invitee.email.trim().toLowerCase()).first<{id:string}>();
       if (suspended) {
@@ -133,6 +134,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   // from the last ten minutes. This sends a one-use link to confirm it in place.
   app.post("/settings/operators/confirm-identity", async (c) => {
     try {
+      if (c.env.MAIL_PROVIDER === 'none') throw new AuthError('mail_off', 503);
       await baseAuth(c.env).requestStepUp(c.req.raw, {
         action: "owner:transfer",
         returnTo: "/app/settings/people",

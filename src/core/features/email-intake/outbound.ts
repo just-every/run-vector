@@ -52,6 +52,7 @@ async function submit(env: WorkerBindings, config: IntakeSettings, root: IntakeM
 }
 
 export async function sendEmailReply(env: WorkerBindings, actor: string, issue: {id:string;identifier:string;teamId:string}, input: {body:string;parentId?:string;requestId:string}) {
+  if (env.MAIL_PROVIDER === 'none') throw new SettingsError('mail_off','Email delivery is off.',409);
   const config = await replySettings(env.DB,issue.teamId), root = await rootMessage(env.DB,issue.id);
   if (!root?.message_id || !root.sender) throw new SettingsError('no_email_requester','This issue has no email requester.',409);
   if (env.MAIL_PROVIDER !== 'sendgrid' || !hostedMailSender(env))
@@ -89,6 +90,7 @@ export async function sendEmailReply(env: WorkerBindings, actor: string, issue: 
 }
 
 export async function sendAcknowledgement(env: WorkerBindings, config: IntakeSettings, rootId: string, issue: {id:string;identifier:string}) {
+  if (env.MAIL_PROVIDER === 'none') return;
   const root = await env.DB.prepare('SELECT * FROM intake_email_messages WHERE id=?').bind(rootId).first<IntakeMessage>();
   if (!root) throw new Error('Email requester unavailable.');
   const at = new Date().toISOString(), id = createUlid(new Date()), messageId = `<vector-${id}@${config.address.split('@')[1]}>`;

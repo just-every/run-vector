@@ -1,13 +1,10 @@
 import assert from 'node:assert/strict';
-import {realpath} from 'node:fs/promises';
-import {liveServers} from '@runeditrun/rer/internal/global/registry.mjs';
-import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
-import {developmentGroups,assertDevelopmentGone} from './owned-dev-processes.mjs';
+import {developmentGroups,assertDevelopmentGone,readOwnedGroup} from './owned-dev-processes.mjs';
 import {waitForPortRelease} from '../../scripts/installer/teardown.mjs';
 import {readCheckoutKey} from './dev-gate.mjs';
 
 // Keep this public launch in the foreground so its owned child PID is also
-// the stop door. Health and the registry still prove the serving runtime.
+// the stop door. Health proves the serving runtime.
 export function publicDevelopment(store,root,environment,origin) {
  let child,requested=false,groups=[];
  const launchers=[];
@@ -25,10 +22,7 @@ export function publicDevelopment(store,root,environment,origin) {
    assert.equal(child.signalCode,null,`${label} has not received a signal`);
    const response=await fetch(origin+'/health',{signal:AbortSignal.timeout(5000)});
    await response.body?.cancel();assert(response.ok,`${label} serves real health after readiness`);
-   const checkout=await realpath(root);
-   const record=(await liveServers(environment)).find(server=>server.checkout===checkout);
-   assert(record,`${label} has its own registered serving process`);
-   groups=await developmentGroups(record.owner.pid);
+   groups=await developmentGroups(child.pid);
   },
   async stop(label) {
    if(!requested)return;

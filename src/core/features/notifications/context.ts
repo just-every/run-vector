@@ -5,7 +5,7 @@ const contexts = new WeakMap<
   { available: boolean; origin: string; eventIds: Set<string>; directEventIds: Set<string> }
 >();
 export function notificationEmailAvailable(env: WorkerBindings): boolean {
-  if (env.NOTIFICATION_EMAIL_ENABLED === "false" || !env.MAIL_FROM)
+  if (env.MAIL_PROVIDER === 'none' || env.NOTIFICATION_EMAIL_ENABLED === "false" || !env.MAIL_FROM)
     return false;
   let origin: URL;
   try {

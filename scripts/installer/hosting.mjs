@@ -8,16 +8,20 @@ import { join } from 'node:path';
 export const hostingDeclaration = '.rer/deploy/declaration.json';
 export const hostingSecrets = './.rer/deploy/secrets.env';
 export async function prepareHosting(context, env) {
- const missing=publicNames.filter(key=>typeof env[key]!=='string'||!env[key].trim());
+ const mailOff = env.MAIL_PROVIDER === 'none';
+ const names = mailOff ? publicNames.filter(key => key !== 'MAIL_FROM') : publicNames;
+ const missing=names.filter(key=>typeof env[key]!=='string'||!env[key].trim());
  if (missing.length) {context.store.report(`Missing ${missing.join(', ')}. See DEPLOY.md.`);throw context.fail('deploy');}
- validatePublicConfiguration(env);
- const mailKey = env.MAIL_API_KEY ?? env.SENDGRID_API_KEY;
+ validatePublicConfiguration(env, names);
+ const mailKey = mailOff ? undefined : env.MAIL_API_KEY ?? env.SENDGRID_API_KEY;
  validateSuppliedSecrets({SESSION_SECRET:env.SESSION_SECRET,MAIL_API_KEY:mailKey});
  const secretContext={...context};
  await prepareSettings(secretContext,{secrets:{file:hostingSecrets,generate:env.SESSION_SECRET?[]:['SESSION_SECRET'],values:{SENDGRID_API_KEY:mailKey,SESSION_SECRET:env.SESSION_SECRET}}});
  await privateDirectory(context.root,['.rer','deploy']);
- const secrets=declaration.secrets.filter(item=>item.binding!=='MAIL_API_KEY'||secretContext.vars.SENDGRID_API_KEY);
- await writePrivateFile(join(context.root,hostingDeclaration),JSON.stringify({...declaration,secrets,vars:{...declaration.vars,...Object.fromEntries(publicNames.map(name=>[name,env[name]])),MAIL_FROM:parseAddress(env.MAIL_FROM).email}},null,2)+'\n');
+ const vars = { ...declaration.vars, ...Object.fromEntries(names.map(name => [name, env[name]])),
+  ...(mailOff ? { MAIL_PROVIDER: 'none' } : { MAIL_FROM: parseAddress(env.MAIL_FROM).email }),
+ };
+ await writePrivateFile(join(context.root,hostingDeclaration),JSON.stringify({...declaration,vars},null,2)+'\n');
  context.store.report?.(`Owner secrets are kept in ${hostingSecrets}; preserve this file and .rer/deploy state.`);
  return secretContext.vars;
 }
@@ -34,7 +38,7 @@ export const deploy = Object.assign(async context => {
  // preflight, so normalizing only declaration.vars does not reach that check.
  const sender = process.env.MAIL_FROM;
  try {
-  if (sender) process.env.MAIL_FROM = parseAddress(sender).email;
+  if (sender && process.env.MAIL_PROVIDER !== 'none') process.env.MAIL_FROM = parseAddress(sender).email;
   return await ownerDeploy(context.options.dryRun ? 'deploy.json' : hostingDeclaration, local)({
    ...context, options: { ...context.options, ...(context.options.dryRun ? {} : { envFile: hostingSecrets }) },
   });
