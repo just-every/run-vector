@@ -8598,7 +8598,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-write-retry.mjs": {
-      "sha256": "e199a889fc9d490f99cc4fac148793fb928c61f0c3b98c65d883a2473845c58b",
+      "sha256": "bd8d981ac66a05fa95d61c949c76d6f510e8285c4b092ec01c7e4d357f897d75",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
@@ -9414,7 +9414,7 @@
       "executable": false
     },
     "tests/worker/agent-prompts.test.ts": {
-      "sha256": "7c7c887f628abcfaf141ac641c938b82d146ffa2f892b21fa6f64be8993e48d2",
+      "sha256": "7dcb6e1d57c3c4a807a34102af347a5dc7a9ce9f90f3aeae24bc628203e6d560",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {

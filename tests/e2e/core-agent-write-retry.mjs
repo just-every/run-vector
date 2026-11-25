@@ -40,9 +40,12 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
       const request=arguments_=>({method:'POST',headers:{Origin:base,Authorization:'Bearer '+grant.token,
         'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-11-25','Mcp-Method':'tools/call',Connection:'close'},
         body:JSON.stringify({jsonrpc:'2.0',id:++id,method:'tools/call',params:{name:'vector.issue.concurrent_edits',arguments:arguments_}})});
-      const rpc=async arguments_=>{
+      const rpc=async (arguments_,expectedStatus=200)=>{
         const init=request(arguments_),response=await publicRequest(base+'/mcp',{method:init.method,headers:init.headers,data:JSON.parse(init.body)});
-        const body=await response.json();assert.equal(body.id,id);return {status:response.status,body};
+        assert.equal(response.status,expectedStatus);
+        const body=await response.json();
+        assert.equal(body.id,expectedStatus===401?null:id);
+        return body;
       };
       // This fetch does reach the built Worker. Cancel the body without reading
       // or cloning it, then prove the committed edit through independent doors.
@@ -62,19 +65,19 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
       const events=sql(`SELECT agent_operation_id FROM issue_activity WHERE issue_id='${issue.id}' AND kind='issue.updated'`);
       assert.equal(events.length,1);assert.equal(events[0].agent_operation_id,audit.operation_id);
       if(disposition==='review')assert.ok(original.review.id);
-      const immediate=await rpc(args);assert.notEqual(id,lostId);assert.equal(immediate.body.result.isError,false);
-      assert.deepEqual(immediate.body.result.structuredContent,original.result);
-      assert.deepEqual(immediate.body.result._meta['com.runeditrun/review'],original.review);
+      const immediate=await rpc(args);assert.notEqual(id,lostId);assert.equal(immediate.result.isError,false);
+      assert.deepEqual(immediate.result.structuredContent,original.result);
+      assert.deepEqual(immediate.result._meta['com.runeditrun/review'],original.review);
       assert.deepEqual(await member.api(path),first);
       const conflict=await rpc({...args,change:{...args.change,title:marker+'-conflicting'}});
-      assert.deepEqual(conflict.body.result._meta['com.runeditrun/error'],{code:'idempotency_conflict'});
-      assert.equal(conflict.body.result.isError,true);assert.deepEqual(await member.api(path),first);
+      assert.deepEqual(conflict.result._meta['com.runeditrun/error'],{code:'idempotency_conflict'});
+      assert.equal(conflict.result.isError,true);assert.deepEqual(await member.api(path),first);
       await member.api(path,'PATCH',{expectedVersion:2,title:marker+'-later-'+disposition});
       const later=await member.api(path);
       assert.equal(later.version,3);assert.equal(later.title,marker+'-later-'+disposition);
       const stale=await rpc({...args,idempotency_key:crypto.randomUUID(),change:{expectedVersion:3,title:marker+'-stale'}});
-      assert.deepEqual(stale.body.result._meta['com.runeditrun/error'],{code:'revision_conflict',current_revision:3});
-      assert.equal(stale.body.result.isError,true);assert.deepEqual(await member.api(path),later);
+      assert.deepEqual(stale.result._meta['com.runeditrun/error'],{code:'revision_conflict',current_revision:3});
+      assert.equal(stale.result.isError,true);assert.deepEqual(await member.api(path),later);
       await navigate(page,base+'/');await navigate(member.page,base+'/');
       await page.waitForLoadState('networkidle');await member.page.waitForLoadState('networkidle');
       // Leave no live document requesting assets while its owned Worker is down.
@@ -83,9 +86,9 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
       // Resume the private app: the public lobby deliberately forbids API fetches.
       await navigate(page,base+'/');await navigate(member.page,base+'/app');
       const replay=await rpc(args);
-      assert.equal(replay.status,200);assert.equal(replay.body.result.isError,false);
-      assert.deepEqual(replay.body.result.structuredContent,original.result);
-      assert.deepEqual(replay.body.result._meta['com.runeditrun/review'],original.review);
+      assert.equal(replay.result.isError,false);
+      assert.deepEqual(replay.result.structuredContent,original.result);
+      assert.deepEqual(replay.result._meta['com.runeditrun/review'],original.review);
       assert.deepEqual(await member.api(path),later,'Restarted replay preserves the later native edit');
       const replays=(await owner('/agents/api/audit')).rows.filter(row=>row.replay_of===audit.id);
       assert.equal(replays.length,2);for(const row of replays)assert.equal(row.operation_id,audit.operation_id);
@@ -109,16 +112,16 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
       assert.equal(await member.page.evaluate(()=>performance.timeOrigin),timeOrigin,'Viewport inspection retains the hydrated document');
       await navigate(member.page,base+'/app');
       await owner('/agents/api/pause','POST',{paused:true});
-      const paused=await rpc(args);assert.equal(paused.body.result._meta['com.runeditrun/error'].code,'agents_paused');
-      assert.equal(paused.body.result.structuredContent,undefined);assert.deepEqual(await member.api(path),later);
+      const paused=await rpc(args);assert.equal(paused.result._meta['com.runeditrun/error'].code,'agents_paused');
+      assert.equal(paused.result.structuredContent,undefined);assert.deepEqual(await member.api(path),later);
       await owner('/agents/api/pause','POST',{paused:false});
       await owner(`/api/settings/teams/${team.id}/members/${member.id}`,'DELETE');
-      const hidden=await rpc(args);assert.equal(hidden.body.result._meta['com.runeditrun/error'].code,'not_found');
-      assert.equal(hidden.body.result.structuredContent,undefined);
+      const hidden=await rpc(args);assert.equal(hidden.result._meta['com.runeditrun/error'].code,'not_found');
+      assert.equal(hidden.result.structuredContent,undefined);
       await owner(`/api/settings/teams/${team.id}/members/${member.id}`,'PUT',{role:'member'});
       assert.deepEqual(await member.api(path),later);
       await member.api('/settings/integrations/tokens/'+grant.credential.id,'DELETE');
-      const revoked=await rpc(args);assert.equal(revoked.status,401);assert.equal(revoked.body.result,undefined);
+      const revoked=await rpc(args,401);assert.equal(revoked.result,undefined);
       assert.deepEqual(await member.api(path),later);
       receipts.push({disposition,discardedResponse:true,restarted:true,singleAgentEdit:true,linkedAudit:true,conflictingKeyRefused:true,
         staleRevision:3,laterWorkRetained:true,admissionBeforeReplay:true});

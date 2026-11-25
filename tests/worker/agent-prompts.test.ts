@@ -62,17 +62,24 @@ it('native issue-triage guidance is discoverable, inert and governed by current 
   for (const disposition of ['autonomous', 'review'] as const) {
     await policy(disposition);
     for (const version of ['2026-07-28', '2025-11-25']) {
-      // Modern discovery and listing work before any initialize request.
-      const discovery = await rpc(discoverMethod, {}, version, null);
+      // Discovery and initialization require an agent credential before reading the request ID.
+      const initialize = { protocolVersion: version, capabilities: {}, clientInfo: { name: 'synthetic-vector-3505', version: '1' } };
+      for (const denied of [await rpc(discoverMethod, {}, version, null), await rpc('initialize', initialize, version, null)]) {
+        expect(denied.status).toBe(401);
+        expect(denied.body.id).toBeNull();
+        expect(denied.body.result).toBeUndefined();
+      }
+      // Authorized discovery and listing work before any initialize request.
+      const discovery = await rpc(discoverMethod, {}, version);
       expect(discovery.status).toBe(200);
-      expect(discovery.body.result.supportedVersions).toEqual(expect.arrayContaining(['2026-07-28', '2025-11-25']));
+      expect(discovery.body.result.supportedVersions).toContain(version);
       expect(discovery.body.result.capabilities.prompts).toEqual({ listChanged: false });
       expect(discovery.body.result._meta['io.modelcontextprotocol/serverInfo'].name).toBeTruthy();
       expect(discovery.body.result.instructions).toMatch(/specialist/);
       for (const unsupported of ['roots', 'sampling', 'logging'])
         expect(discovery.body.result.capabilities[unsupported]).toBeUndefined();
       if (version === '2025-11-25') {
-        const initialized = await rpc('initialize', { protocolVersion: version, capabilities: {}, clientInfo: { name: 'synthetic-vector-3505', version: '1' } }, version, null);
+        const initialized = await rpc('initialize', initialize, version);
         expect(initialized.body.result).toMatchObject({ protocolVersion: version, capabilities: discovery.body.result.capabilities, instructions: discovery.body.result.instructions });
       }
       const first = await rpc(promptList, {}, version), second = await rpc(promptList, {}, version);
