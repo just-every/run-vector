@@ -1,74 +1,161 @@
 {
-  "version": "0.4.1",
-  "date": "2026-10-21",
-  "previousVersion": "0.4.0",
-  "contractChanges": {
-    "ROLE-002": {
-      "change": "changed",
-      "summary": "Private teams.** An Admin can make a team private. Its issues, comments, attachments, cycles, triage, project memberships and search entries are visible only to its members and to Owners; a project or initiative that spans a private team shows other viewers only the counts they may see, never titles. Making a team public or private is audited and re-evaluates notifications, followers, Slack channel routes and webhooks. Inherited from WORK-004: after a member loses access to a private-team issue, it is absent from Created, Subscribed and Activity; the private-team journey checks every tab. Inherited from SLACK-003: private-team content posts only to channels an Admin bound to that team; its acceptance journey verifies that project and saved-view bindings cannot bypass this rule. SLACK-003 channel posts and SLACK-004 direct messages for private/restricted items use only a generic notice without actor or text, or a DM to a permitted explicitly mapped member; its acceptance proves this before private teams ship. Current status: missing."
-    },
-    "ROLE-011": {
-      "change": "changed",
-      "summary": "Suspend and reactivate members.** Suspension is the default offboarding: Settings \u2192 Members' Suspend action (Owners and Admins; only an Owner suspends an Owner or Admin), a member's own Leave workspace, and SCIM `PATCH` with `active: false` or `DELETE` on the user (ROLE-004) all produce the same suspended state, which takes effect on the member's next request. It revokes every session on every device, every personal API token (API-001), every OAuth grant they authorized (API-004) and the MCP sessions under them (AGENT-005), every passkey (ROLE-010), every mobile, desktop and Web Push registration (MOBILE-002, MOBILE-005), and their linked Slack, Teams and GitHub identities (SLACK-001, SLACK-004, TEAMS-001, GITHUB-006), so a suspended member's SLACK-004 link is deleted, no Slack direct message reaches them and a signed Slack action from their account is refused; magic-link, Google and SSO sign-in for that email are refused while they are suspended. A suspended member no longer counts in the member count or any seat limit, cannot be mentioned, assigned, added to a team or project, or delegated work, and receives no notification or digest; their team memberships and team ownerships are kept but inactive, and a team left with no active team owner is managed by Admins until one is named (ROLE-007). Their name stays, labeled \"Suspended\", on every comment, description revision, activity entry, audit entry (ROLE-005), project update and customer request they wrote and on their profile, which Owners and Admins open from the member directory's Suspended filter to see their issue activity; the directory lists suspended members apart from active ones. In the same dialog the person suspending chooses whether the member's non-terminal issues stay assigned (each flagged \"Assignee suspended\" in lists, Current and the Members page for reassignment) or are unassigned; projects they led and shared views they owned transfer as OPS-004 states; their private saved views, favorites and drafts are kept hidden and return on reactivation; and coding-agent sessions they delegated (AGENT-001) are paused and listed for an Admin to reassign or cancel. Reactivation \u2014 by an Owner or Admin from the Suspended filter (only an Owner reactivates a former Owner or Admin), by SCIM `active: true`, or by inviting the same email again \u2014 restores the same member record and ID with its role, history, team memberships and private views; it never restores a revoked session, token, OAuth grant, passkey, push registration or linked identity, so the member signs in afresh. Suspension, leaving and reactivation each write one audit entry with the actor and the method (Settings, self or SCIM), and neither suspension nor any SCIM call anonymizes anything (ROLE-012). The portable export (DATA-001) carries each member's state with the suspension time and actor, and a restore (DATA-005) brings a suspended member back suspended, with no session or credential. Current status: partial."
-    },
-    "PROJ-010": {
-      "change": "changed",
-      "summary": "Project updates.** The project's lead and members (PROJ-014), Owners and Admins post dated updates (Guests cannot, role matrix) with a status of On track, At risk or Off track and a Markdown body; Vector prefills the draft with computed health (PROJ-005), progress since the last update, completed and newly added scope, and slipped milestones. Updates appear in the project, roll up into initiatives (INIT-002), notify project followers, and post to the project's Slack or Teams channel (SLACK-003). Leads are reminded on the project's cadence (AUTO-005). Computed health and the lead's stated status are shown side by side, never merged. Inherited from NOTIFY-001: a followed project or initiative update notifies once in the inbox, never the actor; the receiving journey verifies this before the event ships. Inherited from SLACK-003: each project update posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post. Current status: missing."
-    },
-    "INIT-001": {
-      "change": "changed",
-      "summary": "Initiatives.** An initiative groups projects (and sub-initiatives up to three levels) under an owner, description, target date and status (Planned, Active, Completed), across teams. A project can belong to several initiatives. Owners, Admins and Members create and edit initiatives and add projects to them; Guests cannot (role matrix). Inherited from SLACK-003: initiatives bind chosen events to a Slack or Discord channel and each event posts to its bound channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the binding and bound post. Current status: missing."
-    },
-    "RELEASE-001": {
-      "change": "changed",
-      "summary": "Releases.** Owners, Admins and Members define team or workspace releases (versions) \u2014 a Member a team's releases only for teams they can see, and Guests none (role matrix) \u2014 each with name, target date, status (Planned, In progress, Released) and description; issues and projects join a release; a release page shows scope, progress, blockers and linked PRs, and can be shared read-only inside the workspace. Jira fix versions import as releases. Inherited from SLACK-003: a release posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post. Current status: missing."
-    },
-    "RELEASE-003": {
-      "change": "changed",
-      "summary": "Release notes.** For a release or a date range, Vector drafts internal release notes from completed issues grouped by label or project, using each issue's title and an optional \"release note\" field, which the release owner edits and publishes to the workspace, Slack, or hands to Penny as a changelog draft. Inherited from SLACK-003: publishing release notes posts the release event to its bound Slack or Discord channel once, without duplicating RELEASE-001\u2019s post; its acceptance journey verifies the bound post. Current status: missing."
-    },
-    "NOTIFY-007": {
-      "change": "changed",
-      "summary": "Channels and digests.** Each member chooses per event type whether it reaches them in the inbox only, by email, in a Slack or Teams direct message, by mobile push, or as a desktop notification (MOBILE-005), and can take email as an immediate message or an hourly or daily digest; Admins set workspace defaults. Working hours gate every time-of-day digest delivery. Digests follow the member's personal time zone and working hours (NOTIFY-010): a daily digest is sent once at the start of the member's working hours on each working day, and hourly digests are sent only within working hours, with anything collected outside them carried into the next digest. Every channel honors mutes (NOTIFY-004), actor exclusion (NOTIFY-003) and access (OPS-001), and never repeats a delivered notification. SLACK-004 delivers Slack direct messages for assignments and mentions now, the events NOTIFY-006 mails; the per-event choice for every other event, Admin defaults, digests, mobile push (MOBILE-002), desktop notifications (MOBILE-005) and Teams direct messages (TEAMS-001) remain this clause's. Current status: partial."
-    },
-    "AUTO-004": {
-      "change": "changed",
-      "summary": "SLAs.** Teams set SLA targets by priority, label or customer tier (for example: Urgent bugs from Enterprise customers resolved in 24 hours, triage within 4 business hours in the workspace timezone); issues show time remaining, warn the assignee and triage owner before breach, and record breaches for reporting (REPORT-001). Inherited from NOTIFY-001: an SLA warning notifies once in the inbox, never the actor; the receiving journey verifies this before the event ships. Inherited from SLACK-003: an SLA warning posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post. Current status: missing."
-    },
-    "SLACK-001": {
-      "change": "changed",
-      "summary": "Slack app.** Each installation has its own Slack app, created from Settings \u2192 Integrations \u2192 Slack through Slack's app manifest (INTEG-001's table): with a one-time app configuration token Vector calls `apps.manifest.create` with the generated manifest (this installation's event, interactivity, slash-command, unfurl and OAuth redirect URLs and least scopes) and receives the app's credentials; without a token, Vector opens Slack's create-from-manifest page prefilled and the Admin pastes the signing secret, client ID and client secret Slack shows. The Admin then clicks Install, which completes OAuth v2 to the company's Slack workspace (or an Enterprise Grid org) and stores the bot token encrypted. Members link their Slack identity to their Vector member; uninstalling or unlinking stops all calls and removes stored tokens. Inherited from SEC-001: credentials are sealed, shown once, least-scoped, excluded from archives, re-entered on restore, rotated on demand and revoked on removal; an archive-then-restore journey proves no credential is exported and the restored connection needs re-entry. SLACK-003 already covers the sealed bot-token paste path and its archive/re-entry proof; SLACK-004 covers member-confirmed linking by the member's own sign-in email, the pasted signing secret and the interactivity door; the manifest/OAuth installation, Events API, @Vector issue creation, explicit Admin mapping and uninstall remain this clause\u2019s acceptance. Current status: missing."
-    },
-    "SLACK-003": {
-      "change": "changed",
-      "summary": "Channel notifications.** Teams, projects, initiatives and saved views can post chosen events (new triage item, new issue, status change, project update, release, SLA warning, agent completion) to a Slack channel, respecting ROLE-002 so private-team content only posts to channels the Admin bound to that team. A team or project can create its own Slack channel when it is created (`conversations.create`, named from its identifier or name) and bind it automatically, and a Discord channel can receive the same events through a Discord webhook URL. An Admin enters a Slack bot token in Settings \u2192 Integrations once; auth.test validates it, sealSecret/openSecret seal it per workspace, settings never reveal it again, archives exclude it, restored installations need attention until re-entry, and removal calls auth.revoke, deletes local custody and disables bindings (a provider error refuses removal visibly). Until ROLE-001 every admitted operator acts as Admin; no private teams exist, so every team is workspace-visible and bindable, and ROLE-002 inherits the private-team channel restriction before private teams ship. Existing new-triage, new-issue and status-change events post through the shared native outbound claim, bounded-retry, uncertain-result and visible Settings failure machinery, once per event per binding. Saved-view membership uses the same list predicates at dispatch. Messages carry identifier, title, readable actor, old \u2192 new status and the canonical /app/issues/:identifier link, never description or comment bodies. Unbinding, issue deletion and operator removal stop future posts; already-posted Slack or Discord messages cannot be recalled by local erasure (SEC-003). Channel creation makes one conversations.create call with a lowercase hyphenated identifier or name of at most 80 characters, public channels only; name_taken and other Slack errors are shown without a retry loop and refuse object creation. Discord accepts only HTTPS discord.com or discordapp.com URLs whose path starts /api/webhooks/, seals the URL and refuses redirects; this fixed-host rule does not depend on arbitrary resolved-address egress. PROJ-010, RELEASE-001/RELEASE-003, AUTO-004, AGENT-002/AGENT-003 and INIT-001 inherit their future objects\u2019 bound-channel events and acceptance before shipping. Slack channel selection and each post explicitly check conversations.info: bot membership and is_channel true, archived/shared/external-shared/org-shared/pending-external-shared false, and not frozen; the held Slack conversation object omits is_frozen, recorded as an assumption that an absent is_frozen means not frozen (revisable if a provider run contradicts it). Unsafe channels and archived/frozen/not-joined post refusals suspend routing visibly until an Admin confirms a fresh binding; held events are not replayed. Channel IDs are explicitly mapped by the Admin, never inferred from email or name. Actor display names are allowed for current workspace-visible items (ct, 20 Oct 19:12Z); ROLE-002 inherits generic notices without actor or text, or a DM to a permitted explicitly mapped member, for private/restricted items before they ship. Current status: done."
-    },
-    "SLACK-004": {
-      "change": "changed",
-      "summary": "Personal Slack notifications.** Members can receive their notifications as Slack direct messages under NOTIFY-007 with actions (assign to me, change status, open). A signed-in member chooses Link Slack in Settings \u2192 Notifications; Vector calls `users.lookupByEmail` (scope users:read.email) with that member's own Vector sign-in email, shows the Slack account it found and links it only when the member confirms; no match shows \"No Slack account found for this email\" and stores nothing, and a lookup error is shown and not retried. There is no silent or background lookup, no lookup by an Admin for someone else's email, no bulk directory read (`users.list`) and no matching on names (ct, 20 Oct 19:12Z); explicit Admin mapping remains SLACK-001's. The link is shown, audited (`slack.member_linked`, `slack.member_unlinked`) and revocable with Unlink; unlinking, member removal, suspension (ROLE-011 inherits) and removal of the workspace's Slack credential delete it and stop every direct message. A linked member turns on Slack direct messages separately for assignments and for direct mentions, the events Vector mails today (NOTIFY-006); the option is unavailable, with the reason shown, while the workspace has no valid Slack credential or the member has no link, and NOTIFY-007 keeps the choice for every other event. Each qualifying notification creates at most one direct-message intent per recipient in the same transaction as its source mutation, in the native outbound ledger (no second queue); immediately after commit, like immediate mail, and before every later attempt Vector rechecks mutes (NOTIFY-004), actor exclusion (NOTIFY-003), the active recipient, issue access (OPS-001) and the member's link and choice, then calls `conversations.open` (im:write) and `chat.postMessage`. A delivered message is never repeated: rate limits and an unanswered `conversations.open` (which posts nothing) retry at most three attempts, after one and then five minutes; an unknown `chat.postMessage` result is uncertain and never resent; failed and uncertain messages are listed to the recipient in Settings \u2192 Notifications. A message carries only the event kind, issue identifier and title, actor display name, status change, due date and the authenticated canonical `/app/issues/:identifier` link, in plain-text blocks with `unfurl_links` and `unfurl_media` false \u2014 never a description, comment or mention body, free text or AI output; private or restricted items (none exist until ROLE-002) get a generic notice with no actor or text under ROLE-002. Open is the canonical link button; Assign to me and Change status (an inline select of the team's workflow states the issue-edit door accepts) appear only while the workspace's Slack signing secret is stored, and Settings says they are off until it is entered (pattern 3). Slack's interactivity requests reach `POST /api/integrations/slack/interactive`, which verifies `X-Slack-Signature` (HMAC-SHA256 over `v0:<timestamp>:<raw body>`) in constant time, refuses a timestamp more than 5 minutes from the Worker clock and a replayed request key, maps the Slack user to the Vector member only through the confirmed link and runs the change through the version-checked issue-edit door with that member's own authority and the issue version the message carried. A changed issue is refused with a threaded Slack reply carrying Open and is never overwritten; an applied change refreshes the message with the new version. The door answers before Slack's 3-second limit and replies afterwards. An unlinked, removed or suspended Slack user, a bad or missing signature, a stale timestamp and a replay change nothing. An Admin enters the Slack app's signing secret beside the bot token in Settings \u2192 Integrations; it is sealed with sealSecret/openSecret per workspace, never shown again, excluded from archives with the member links (SEC-001: after a restore it is entered again and members re-link) and removed with the credential. docs/INTEGRATIONS.md names the Interactivity Request URL the Admin sets in their Slack app until SLACK-001's manifest sets it, and what leaves the deployment in a direct message. Current status: done."
-    },
-    "AGENT-002": {
-      "change": "changed",
-      "summary": "Agent session on the issue.** Each delegation opens an agent session shown on the issue, fed by the provider mechanism of AGENT-009, with live progress (plan, steps, files touched, commands run, elapsed time and cost in USD when the provider reports it), questions the agent asks a person (answered in the issue or Slack), and a cancel action that stops the session within one minute and records who stopped it. Where a provider has no mid-run question channel, the session says so and a member's answer starts a follow-up run on the same branch (AGENT-009). Inherited from NOTIFY-001: a delegated agent question or completion notifies once in the inbox, never the actor; the receiving journey verifies this before the event ships. Inherited from SLACK-003: agent completion posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post. Current status: missing."
-    },
-    "AGENT-003": {
-      "change": "changed",
-      "summary": "Reviewable output, human completion.** An agent's work lands as a branch and pull request linked to the issue (GITHUB-003), with the tests it added or ran and a summary; the issue moves to In Review, never to Completed, until a person reviews and merges the PR and the team rule or a person completes the issue. An agent may not merge, deploy, change priority, due date or assignee, or message a customer. Inherited from SLACK-003: reviewable agent completion posts to its bound Slack or Discord channel once, without duplicating AGENT-002\u2019s completion event; its acceptance journey verifies the bound post. Current status: missing."
-    },
-    "SEC-001": {
-      "change": "changed",
-      "summary": "Integration credentials.** Every integration and agent credential (GitHub App keys, Slack and Teams tokens, provider API tokens, OAuth refresh tokens) is stored encrypted, shown once, scoped to the least access the feature needs, excluded from archives, re-entered on restore, rotated on demand and revoked when the integration is removed. The Slack bot-token paste path (SLACK-003), the Slack signing secret and member-confirmed Slack links (SLACK-004) and Discord webhook URLs are covered now. SLACK-001\u2019s manifest/OAuth install, Events API, @Vector issue creation and explicit identity linking beyond the member-confirmed email link remain SLACK-001\u2019s. SLACK-001, GITHUB-006 and AGENT-004 inherit these credential rules and their provider archive/re-entry acceptance cells before they ship. Current status: done."
-    }
-  },
+  "version": "0.5.0",
+  "date": "2026-11-27",
+  "previousVersion": "0.4.1",
+  "contractChanges": {},
   "extensionPointChanges": [],
   "migrations": [
     {
-      "id": "0073_channel_notifications.sql",
-      "buyerSteps": "Apply after all earlier migrations, without rewriting them. Adds Slack and Discord channel destinations on the existing outbound ledger (a destination kind defaulting to webhook, Slack installations and channel bindings) and replaces the native webhook trigger so existing webhook destinations keep their exact events; existing rows and deliveries stay intact."
+      "id": "0075_workspace_roles.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. ROLE-001: every member holds exactly one product role, read from this record on each request. Base's oa_operators.role remains the implementation owner role of 0011, so changing a product role never ends a session or a token. The default keeps every existing operator, and every operator restored fro"
     },
     {
-      "id": "0074_slack_direct_messages.sql",
-      "buyerSteps": "Apply after all earlier migrations, without rewriting them. Adds member-confirmed Slack links and signed-request replay keys; both stay out of archives, and a restored installation re-links. Removing the Slack credential or a member deletes the affected links."
+      "id": "0076_team_membership.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. ROLE-007: every team has a member list and one or more team owners. A public team's membership never narrows what a workspace member sees. Someone who left or was removed from a team keeps their assigned issues; the team lists them for its owners to reassign until the person rejoins. Upgrade default"
+    },
+    {
+      "id": "0077_team_permissions.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. ROLE-009 (team.permissions.v1): each team decides who manages its settings (default Team owners only) and who manages its cycles and templates (default All team members). Owners and Admins pass both and Guests fail both, whatever their value."
+    },
+    {
+      "id": "0078_project_slack_channels.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Explicit workspace channels that an Owner/Admin lets project creators bind."
+    },
+    {
+      "id": "0079_workspace_audit.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Retain provenance without a foreign key to a deletable subject or person. Privacy erasure may null the live-person link or redact the old display label. Opaque references, action and event time remain immutable. Native sign-in commits a durable event with its session, before product projection of an"
+    },
+    {
+      "id": "0080_guest_invitations.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. ROLE-003: the exact invitation link carries its role and named teams before it can be delivered or accepted. Historical invitations retain their grant. Native acceptance cannot activate an invite without its product grant. Old links were backfilled in 0075; every new link records its grant in the na"
+    },
+    {
+      "id": "0081_notification_channels.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. NOTIFY-007. Forward-only channel choices and durable digest envelopes. Retain receipts, terminal outcomes and local slots on compatible-source rollback. Destination-only quarantine, excluded from archives like restore mail holds. An imported pending routing intent is historical, not a newly authored"
+    },
+    {
+      "id": "0082_email_intake.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Keep replay identities, while ordinary issue erasure removes mail content. Destination authority is never inherited. Mail content and replay keys stay portable; interrupted/historical submissions can never become sendable jobs."
+    },
+    {
+      "id": "0083_issue_references.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. ISSUE-027: live subjects, with a single retained backlink activity per pair. References are admitted by the existing issues.write command, in its batch. Clear obsolete subjects even on erasure/undo paths. Native content writes reinsert the newly parsed subjects later in the same transaction. Hard de"
+    },
+    {
+      "id": "0084_label_creation_permission.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Additive ISSUE-014 policy; existing workspaces continue to allow Member creation."
+    },
+    {
+      "id": "0085_team_creation_permission.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. TEAM-008: public-team creation is restricted by default."
+    },
+    {
+      "id": "0086_team_join_requests.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. TEAM-007: explicit request exposure; existing public teams stay open."
+    },
+    {
+      "id": "0087_github_automation.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Team rules are portable configuration; provider credentials remain excluded."
+    },
+    {
+      "id": "0088_github_commits.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0089_github_deployments.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0090_releases.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0091_subject_subscriptions.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Preferences and history stay portable. Destination-only cutoffs prevent any restored pending event from creating a new effect after access review."
+    },
+    {
+      "id": "0092_initiatives.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0093_calendar_feeds.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Feed capabilities are credentials, excluded from portable archives."
+    },
+    {
+      "id": "0094_dashboards.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Only definitions are saved. Every count and issue is read as the current viewer."
+    },
+    {
+      "id": "0095_project_templates.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0096_private_teams.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Retained deletion receipts keep their current team visibility after the issue is erased. Re-evaluate already queued immediate mail and digests at final admission."
+    },
+    {
+      "id": "0097_viewer_roles.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. ROLE-013: widen product roles in place, retaining child foreign keys and revisions."
+    },
+    {
+      "id": "0098_issue_reactions.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0099_email_provider_events.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0100_subscription_category_transitions.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Forward-only: changing a terminal status identity within its category is a status change. Completion channels apply only on category transitions. Existing subscription events and delivery history remain unchanged."
+    },
+    {
+      "id": "0101_slack_event_receipts.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Durable identifier-only Slack intake receipts. Retain on archive/restore so a provider retry cannot recreate an issue after credentials are re-entered."
+    },
+    {
+      "id": "0102_slack_installation_team.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Bind explicit Slack mappings to the workspace verified by auth.test."
+    },
+    {
+      "id": "0103_documents.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0104_initiative_channel_bindings.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Initiative subjects share destination custody and durable delivery history. Removal retires new subjects without changing any existing issue trigger."
+    },
+    {
+      "id": "0105_initiative_destination_approvals.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. An Owner or Admin approves one existing destination for one initiative and audience (INIT-001). Identity is the provider, its workspace and the immutable channel identity, never a display name. A binding saved through the scoped initiative capability names the approval that admitted it."
+    },
+    {
+      "id": "0106_oauth_apps.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. OAuth credentials and consent are local to this installation and excluded from archives."
+    },
+    {
+      "id": "0107_issue_start_date.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0108_error_connections.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Provider profiles and replay history are portable; credentials use the excluded secret store."
+    },
+    {
+      "id": "0109_import_aliases.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Imported aliases are identities, never a second issue or a credential. Backfill retained import history without changing any native issue."
+    },
+    {
+      "id": "0110_alias_prefix_owner_choice.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Explicit Owner choices outlive whole-run rollback without retaining raw source labels in the immutable audit trail."
+    },
+    {
+      "id": "0111_import_alias_source_ids.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Retain the stable provider record ID alongside its human issue key. Both identities use the same Owner-controlled prefix."
+    },
+    {
+      "id": "0112_document_issue_references.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. A document is the source; no issue is created or borrowed to carry it. Removed references retain their identity until the document or issue is erased."
     },
     {
       "id": "0113_description_thread_anchors.sql",
@@ -103,19 +190,91 @@
       "buyerSteps": "Apply after 0119_webhook_subscriptions.sql without rewriting applied SQL. Retains identifier-only comment deletion events for external author labels. Preserve additive schema and terminal delivery ledgers on compatible-source rollback."
     },
     {
+      "id": "0121_triage_responsibility.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Weekly responsibility is portable configuration. A consumed creation receipt survives handovers; no scheduler reconstructs notification history. Retain every prior mute and candidate while admitting the new event kind."
+    },
+    {
+      "id": "0122_document_mentions.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Native document custody. Retain receipts on compatible application rollback. Upgrades never scan historical text or deliver historical mentions."
+    },
+    {
+      "id": "0123_report_export_schedules.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Schedules retain safe configuration and receipts. Credentials use the existing excluded secret vault; checkpoints contain digests, never exported bodies."
+    },
+    {
       "id": "0124_team_cycles_enabled.sql",
       "buyerSteps": "Apply after 0123_report_export_schedules.sql without rewriting applied SQL. Existing teams keep cycles enabled; disabling cycles pauses automation and retains commitments, schedules and snapshots. Preserve additive schema and history on compatible-source rollback."
     },
     {
-      "buyerSteps": "Apply after all earlier migrations through unchanged 0124_team_cycles_enabled.sql. Adds portable native issue template definitions; applying a template creates independent issues. Retain additive schema and created issues on compatible-source rollback.",
-      "id": "0125_issue_templates.sql"
+      "id": "0125_issue_templates.sql",
+      "buyerSteps": "Apply after all earlier migrations through unchanged 0124_team_cycles_enabled.sql. Adds portable native issue template definitions; applying a template creates independent issues. Retain additive schema and created issues on compatible-source rollback."
+    },
+    {
+      "id": "0126_project_dependencies.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Direct project edges are separate from issue dependencies. SQLite serializes these triggers with the edge write, including concurrent opposite edges. Edge identity and direction never mutate. A change is removal and a new edge."
+    },
+    {
+      "id": "0127_custom_field_definitions.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. FIELD-001: typed custom-field definitions and their single-select options. Issue values stay in issues.custom_fields_json, keyed by definition ID with the option ID as the value. Legacy untyped keys and historical values are retained unchanged; nothing here rewrites an existing issue. A name is uniq"
+    },
+    {
+      "id": "0128_resolution_slas.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Resolution targets and their clock snapshots are portable domain state. A resolved or withdrawn clock cannot resume on a later reopen or team move. Restored clock history is inert even after effect review. New issues may start new clocks. Observe starts and withdrawals in the native issue transactio"
+    },
+    {
+      "id": "0129_sla_restore_holds.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Restore admission is installation state. Keep portable clock rows byte-for-byte."
+    },
+    {
+      "id": "0130_sla_label_start.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Applying a selected label starts the clock at that application, even when the issue update follows the label join writes in the native transaction."
+    },
+    {
+      "id": "0131_sla_import_admission.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Native creation starts after its real activity row. An imported snapshot acquires no unplanned clock while the import transaction is publishing it."
+    },
+    {
+      "id": "0132_sla_team_archive.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Team withdrawal stops every existing clock in the archive transaction, even when the team is restored before the next scheduled observation. Populate the same stop for teams already archived at upgrade. Retain all elapsed time, target snapshots and occurrence receipts without replay."
+    },
+    {
+      "id": "0133_release_notes.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Historical releases keep unknown ownership; only native creation supplies it."
+    },
+    {
+      "id": "0134_slack_threads.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Thread identity is domain history. Restores retain it inert, never reconnect it."
+    },
+    {
+      "id": "0135_automation_rules.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Portable configuration and once receipts; no credential is created for a rule."
+    },
+    {
+      "id": "0136_leadership_digests.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept."
+    },
+    {
+      "id": "0137_leadership_restore_holds.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Native restore publishes table copies with their row triggers suspended. Quarantine historical receipts when the destination's restore status commits."
+    },
+    {
+      "id": "0138_member_suspension.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. removed_at remains the shared inactive admission fence. Only suspended_at distinguishes reversible suspension from legacy anonymous removal. Suspension preserves personal choices and follows. Pending digest batches are cancelled, and existing active-recipient views refuse any future send."
     },
     {
       "id": "0139_sub_teams.sql",
       "buyerSteps": "Apply after all earlier migrations through unchanged 0138_member_suspension.sql without rewriting applied SQL. Adds portable team hierarchy, inheritance choices and materialized workflow identities; existing teams remain independent. Retain the additive schema and domain history on compatible-source rollback."
+    },
+    {
+      "id": "0140_agent_door_relay_upgrade.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Agent door upgrade from the schema in 0114 to the rer 0.2.134 runtime (Base c2efb501: erasure/replay custody, relay, policy-reference suppression, relay privacy), as modules/agent-door/ADOPTING.md prescribes for a copy older than 0.2.96. Backfill only legacy completed calls, using their start, never"
+    },
+    {
+      "id": "0141_business_retired.sql",
+      "buyerSteps": "Apply after all earlier migrations, in filename order, without rewriting them (rer setup locally, rer deploy hosted). Additive; existing rows are kept. Value-free tombstones of people erased from the installation: domain-separated SHA-256 digests of the roster address and the Business member id, with the invite number they had. Never a name, address or id."
     }
   ],
   "breaking": false,
-  "agentUpdateInstructions": "Upgrade from 0.4.0: stop local development by its own PID, export a backup, preserve owner customizations and all applied SQL, pull this release, run rer install and rer dev. On own-account hosting back up with the authenticated transfer client, pull the release and rer deploy using the existing environment and deployment custody. Pin @runeditrun/rer 0.2.77. Apply 0073\u20130074 in order after unchanged 0001\u20130072. A local backup or restore of a database Run Edit Run Platform migrated (rer_migrations ledger) no longer runs Wrangler; Platform must have applied every migration first, otherwise the transfer refuses with migration_ledger:unapplied:<file> and changes nothing. Slack and Discord credentials are excluded from archives: re-enter them and re-link Slack members after a restore. Retain all additive tables, terminal effects and delivery ledgers on compatible-source rollback. Restore into isolated empty resources and re-enter excluded credentials before changing traffic.",
-  "publicReleaseNotes": "Vector 0.4.1 restores backups into installations whose database Run Edit Run Platform migrated. Such a database records its migrations in Platform's ledger, which Wrangler cannot read; a local restore or backup used to run Wrangler anyway and stopped at \"Preparing archive schema\" with \"table workspace_settings already exists\". Vector now leaves that database to Platform's runner, checks that every migration is applied, and restores the listed version's backups and its own with every archived row, cell and file intact, into Platform-migrated and native installations alike. This release uses rer 0.2.77.\n\nTeams, projects and saved views can post new triage items, new issues and status changes to a Slack channel or a Discord webhook, and a team or project can create its own Slack channel. Members can link their Slack account and receive assignments and mentions as Slack direct messages with Assign to me, Change status and Open actions. Messages carry the identifier, title, actor and status change, never descriptions or comments; credentials are sealed and never travel in backups. TanStack Start is patched for GHSA-qx66-fv34-fjm8.\n\nApply migrations 0073\u20130074 after unchanged 0001\u20130072. Back up before upgrading; retain additive schema and delivery ledgers on rollback.\n\nKnown limits: roles, private teams, guests and most provider integrations remain incomplete as shown in CONTRACT.md; Slack app installation through its manifest, @Vector issue creation and Teams are not available. Linear and Jira importers are documented-format, synthetic-only; there is no Asana importer. Managed mail relay and broad capacity are not claimed. Local setup and development still migrate with Wrangler; a local database carrying Platform's migration ledger is for backup and restore only. For hosted backups use the authenticated Base transfer client described in CHANGELOG.md.\n\nProduct screenshot: docs/retained-verification/ui/1440-app.png"
+  "agentUpdateInstructions": "Back up first: stop your development process by PID and rer export --output exports/vector.rer locally, or take a backup with the authenticated Base transfer client for a hosted copy, and validate recovery in isolated empty resources. Pull v0.5.0, pnpm install --frozen-lockfile, then rer setup locally or rer deploy --environment <name> hosted with the existing environment and custody files: the 67 new migrations (0075_workspace_roles.sql through 0141_business_retired.sql) apply in filename order. @runeditrun/rer moves from 0.2.77 to 0.2.134. MAIL_PROVIDER=none is new: it needs no sender or key, nothing is sent, and the owner signs in with rer signin; an existing mail configuration is unchanged.",
+  "publicReleaseNotes": "Vector 0.5.0 brings the release up to Run Edit Run 0.2.134 and lets a Business set Vector up with mail off: MAIL_PROVIDER=none needs no sender or key, nothing is sent, and the owner signs in with rer signin. Since 0.4.1 it adds roles (Owner, Admin, Member, Viewer, Guest) with team membership and permissions, private teams and sub-teams, member suspension and reactivation, guest invitations and team join requests, a workspace audit, notification channels with Slack threads and initiative bindings, email intake, GitHub automation, commits and deployments, releases and release notes, initiatives, documents with mentions and issue references, dashboards, calendar feeds, project templates and dependencies, issue templates, reactions and start dates, custom fields, resolution SLAs, automation rules, leadership digests, report export schedules, OAuth apps, webhook subscriptions, error-tracker connections, import aliases, and the agent door with Business settings and people. Migrations: 0075_workspace_roles.sql, 0076_team_membership.sql, 0077_team_permissions.sql, 0078_project_slack_channels.sql, 0079_workspace_audit.sql, 0080_guest_invitations.sql, 0081_notification_channels.sql, 0082_email_intake.sql, 0083_issue_references.sql, 0084_label_creation_permission.sql, 0085_team_creation_permission.sql, 0086_team_join_requests.sql, 0087_github_automation.sql, 0088_github_commits.sql, 0089_github_deployments.sql, 0090_releases.sql, 0091_subject_subscriptions.sql, 0092_initiatives.sql, 0093_calendar_feeds.sql, 0094_dashboards.sql, 0095_project_templates.sql, 0096_private_teams.sql, 0097_viewer_roles.sql, 0098_issue_reactions.sql, 0099_email_provider_events.sql, 0100_subscription_category_transitions.sql, 0101_slack_event_receipts.sql, 0102_slack_installation_team.sql, 0103_documents.sql, 0104_initiative_channel_bindings.sql, 0105_initiative_destination_approvals.sql, 0106_oauth_apps.sql, 0107_issue_start_date.sql, 0108_error_connections.sql, 0109_import_aliases.sql, 0110_alias_prefix_owner_choice.sql, 0111_import_alias_source_ids.sql, 0112_document_issue_references.sql, 0113_description_thread_anchors.sql, 0114_agent_door.sql, 0115_business_settings.sql, 0116_business_people.sql, 0117_agent_activity.sql, 0118_dependency_key_sealing.sql, 0119_webhook_subscriptions.sql, 0120_comment_webhook_author_labels.sql, 0121_triage_responsibility.sql, 0122_document_mentions.sql, 0123_report_export_schedules.sql, 0124_team_cycles_enabled.sql, 0125_issue_templates.sql, 0126_project_dependencies.sql, 0127_custom_field_definitions.sql, 0128_resolution_slas.sql, 0129_sla_restore_holds.sql, 0130_sla_label_start.sql, 0131_sla_import_admission.sql, 0132_sla_team_archive.sql, 0133_release_notes.sql, 0134_slack_threads.sql, 0135_automation_rules.sql, 0136_leadership_digests.sql, 0137_leadership_restore_holds.sql, 0138_member_suspension.sql, 0139_sub_teams.sql, 0140_agent_door_relay_upgrade.sql, 0141_business_retired.sql."
 }
